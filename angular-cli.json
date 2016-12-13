@@ -18,7 +18,10 @@
       "prefix": "app",
       "mobile": false,
       "styles": [
-        "styles.css"
+        "styles.scss",
+        "../node_modules/bootstrap/dist/css/bootstrap.css",
+        "../node_modules/leaflet/dist/leaflet.css",
+        "../node_modules/openlayers/css/ol.css"
       ],
       "scripts": [],
       "environments": {
@@ -41,7 +44,7 @@
     }
   },
   "defaults": {
-    "styleExt": "css",
+    "styleExt": "scss",
     "prefixInterfaces": false,
     "inline": {
       "style": false,
