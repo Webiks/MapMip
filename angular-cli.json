@@ -21,9 +21,13 @@
         "styles.scss",
         "../node_modules/bootstrap/dist/css/bootstrap.css",
         "../node_modules/leaflet/dist/leaflet.css",
-        "../node_modules/openlayers/css/ol.css"
+        "../node_modules/openlayers/css/ol.css",
+        "../node_modules/cesium/Build/Cesium/Widgets/widgets.css"
       ],
-      "scripts": [],
+      "scripts": [
+        "../node_modules/cesium/Build/Cesium/Cesium.js",
+        "../node_modules/rison/js/rison.js"
+      ],
       "environments": {
         "source": "environments/environment.ts",
         "dev": "environments/environment.ts",

@@ -1,8 +1,10 @@
-import {NgModule} from "@angular/core";
-import {RouterModule, Routes} from "@angular/router";
-import {AppComponent} from "./app.component";
+import {NgModule, Injectable} from "@angular/core";
+import {RouterModule, Routes, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Params} from "@angular/router";
 import {LeafletComponent} from "./leaflet/leaflet.component";
 import {OpenlayersComponent} from "./openlayers/openlayers.component";
+import {CesiumComponent} from "./cesium/cesium.component";
+import {CesiumResolver} from "./cesium/cesium.resolver";
+
 
 const appRoutes:Routes = [
   {
@@ -10,8 +12,15 @@ const appRoutes:Routes = [
     children:
       [
         {
+          path:'cesium',
+          component:CesiumComponent,
+          resolve: {
+            res: CesiumResolver
+          }
+        },
+        {
           path:'leaflet',
-          component:LeafletComponent
+          component:LeafletComponent,
         },
         {
           path:'openlayers',
@@ -23,7 +32,8 @@ const appRoutes:Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(appRoutes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers:[CesiumResolver]
 })
 
 export class AppRoutingModule {}

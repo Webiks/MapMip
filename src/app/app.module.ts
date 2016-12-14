@@ -10,22 +10,28 @@ import {RouterOutlet} from "@angular/router";
 import { LeafletComponent } from './leaflet/leaflet.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { OpenlayersComponent } from './openlayers/openlayers.component';
+import {QueryParamsHelperService} from "./query-params-helper.service";
+import {CalcService} from "./calc.service";
+import { CesiumComponent } from './cesium/cesium.component';
+import {CommonModule} from "@angular/common";
 
 @NgModule({
   declarations: [
     AppComponent,
     LeafletComponent,
     NavbarComponent,
-    OpenlayersComponent
+    OpenlayersComponent,
+    CesiumComponent
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     FormsModule,
     HttpModule,
     Ng2BootstrapModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [QueryParamsHelperService, CalcService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
