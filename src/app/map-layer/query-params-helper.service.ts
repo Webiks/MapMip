@@ -1,4 +1,4 @@
-import {Injectable, Component} from '@angular/core';
+import {Injectable, Component, style, state, animate, transition, trigger} from '@angular/core';
 import {Params, ActivatedRoute, Router, NavigationExtras} from "@angular/router";
 
 @Injectable()
@@ -17,7 +17,6 @@ export class QueryParamsHelperService {
   queryLat(params:Params):number {
     return +params['lat'] || 0;
   }
-
   queryLng(params:Params):number {
     return +params['lng'] || 0;
   }
@@ -35,21 +34,17 @@ export class QueryParamsHelperService {
     let roll:number = params['roll'] ? params['roll'] : 0;
     return roll;
   }
+  queryDim(params:Params) {
+    return +params['dim'];
+  }
 
-  setQuery(lng:number, lat:number, zoom:number, activatedRoute:ActivatedRoute, heading?:number, pitch?:number, roll?:number){
-
+  getQuery(lng:number, lat:number, zoom:number, heading?:number, pitch?:number, roll?:number, dim?:number):NavigationExtras {
     roll =  roll % 360  == 0 ? undefined : roll;
     heading = heading % 360  == 0 ? undefined : heading;
     pitch = Math.cos(Cesium.Math.toRadians(pitch) ) < 0.001 ? undefined : pitch;
 
-    // if(heading) console.log("header = " + Cesium.Math.toRadians(heading));
-
-    let navigationExtras:NavigationExtras = {
-      queryParams: {lng, lat, zoom, heading, pitch, roll},
-      relativeTo: activatedRoute
+    return <NavigationExtras> {
+      queryParams: {lng, lat, zoom, heading, pitch, roll, dim}
     };
-
-    this.router.navigate(['./'], navigationExtras);
   }
-
 }

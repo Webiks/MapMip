@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, style, state, animate, transition, trigger} from '@angular/core';
 import * as ol from 'openlayers';
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParamsHelperService} from "../query-params-helper.service";
 import 'rxjs/add/operator/take';
+import {host, animations} from "../map-layer.component";
 
 @Component({
+  host: host,
   selector: 'app-openlayers',
   templateUrl: './openlayers.component.html',
-  styleUrls: ['./openlayers.component.scss']
+  styleUrls: ['./openlayers.component.scss'],
+  animations: animations
 })
+
 export class OpenlayersComponent implements OnInit {
   public map;
   public moveend;
@@ -43,7 +47,7 @@ export class OpenlayersComponent implements OnInit {
       let centerCord:ol.Coordinate = ol.proj.transform(event.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
       let zoom:number = event.map.getView().getZoom();
       let center:{lat:number, lng:number} = {lng: centerCord[0], lat: centerCord[1]};
-      this.queryParamsHelperService.setQuery(center.lng, center.lat, zoom, this.activatedRoute);
+      this.queryParamsHelperService.getQuery(center.lng, center.lat, zoom);
     };
 
     this.moveend = this.map.on('moveend', onMoveEnd);
