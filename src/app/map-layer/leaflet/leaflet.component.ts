@@ -7,7 +7,7 @@ import 'rxjs/add/operator/take';
 import {QueryParamsHelperService} from "../query-params-helper.service";
 import {CalcService} from "../calc.service";
 import {host, animations} from "../map-layer.component";
-
+import {isEqual} from 'lodash';
 @Component({
   host: host,
   selector: 'app-leaflet',
@@ -19,43 +19,52 @@ export class LeafletComponent implements OnInit {
   // @ViewChild() leaflet:ElementRef;
   public map;
   public moveEnd;
-  public moveEnded:boolean;
-
+  public currentParams:Params;
 
   constructor(private router:Router, private activatedRoute:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService, private calcService:CalcService) {}
 
   ngOnInit() {
+    this.initializeMap();
     this.activatedRoute.queryParams.subscribe( (params:Params) => {
-      if(!this.map) this.initializeMap(params);
-      if(!this.moveEnded) this.setMapView(params);
-      this.moveEnded = false;
+      this.currentParams = params;
+      if(this.queryParamsHelperService.hasBounds()){
+        this.setMapBounds();
+      } else if(this.anyParamChanges(params)) {
+        this.setMapView(params);
+      }
     });
-
-    // let cesiumSubs = this.cesiumResolver.leaveCesium.subscribe(() => {
-    //   this.cesiumResolver.finishLeaveCesium.emit();
-    //   cesiumSubs.unsubscribe();
-    // });
 
   }
 
-  initializeMap(params:Params) {
+  initializeMap() {
 
     this.map = L.map('leafletContainer');
+    window['map'] = this.map;
 
     L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       id: 'mapbox.streets'
     }).addTo(this.map);
 
+    this.initializeMoveend();
+
+  }
+
+  initializeMoveend() {
+
     this.moveEnd = (event) => {
-      this.moveEnded = true;
-      let center: L.LatLng  = event.target.getCenter();
+
+      let lng: L.LatLng  = event.target.getCenter().lng;
+      let lat: L.LatLng  = event.target.getCenter().lat;
       let zoom:number = event.target.getZoom();
-      let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery(center.lng, center.lat, zoom);
-      this.router.navigate([], navigationExtras);
+
+      let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, zoom});
+
+      return this.router.navigate([], navigationExtras);
     };
 
     this.map.on('moveend', this.moveEnd);
   }
+
 
   setMapView(params:Params):void {
     let longitude:number = this.queryParamsHelperService.queryLng(params);
@@ -64,8 +73,43 @@ export class LeafletComponent implements OnInit {
 
     this.map.setView([latitude, longitude], zoom);
   }
-  ngOnDestroy() {
+
+  setMapBounds() {
+      let bounds:[number, number, number, number] = this.queryParamsHelperService.getBounds();
+
+      this.map.fitBounds([[bounds[1], bounds[0]], [ bounds[3], bounds[2]] ]);
+
+      this.queryParamsHelperService.resetBounds();
   }
 
+
+  anyParamChanges(params:Params) {
+
+    let longitudeP:number = this.queryParamsHelperService.queryLng(params) || this.map.getCenter().lng;
+    let latitudeP:number  = this.queryParamsHelperService.queryLng(params) || this.map.getCenter().lat;
+    let zoomP:number      = this.queryParamsHelperService.queryZoom(params) || this.map.getZoom();
+
+    let arrayP = [longitudeP, latitudeP, zoomP];
+
+    let longitude:number        = this.map.getCenter().lng;
+    let latitude:number         = this.map.getCenter().lat;
+    let zoom:number             = this.map.getZoom();
+
+    let array = [longitude, latitude, zoom];
+
+    arrayP.forEach( (value, index) => {arrayP[index] = +arrayP[index].toFixed(7)});
+    array.forEach( (value, index) => {array[index] = +array[index].toFixed(7)});
+    return !isEqual(arrayP, array);
+  }
+
+  ngOnDestroy() {
+    this.saveBounds();
+  }
+
+  saveBounds():void {
+    let leaflet_bounds:L.LatLngBounds = this.map.getBounds();
+    let saved_bounds:[number, number, number, number] = [leaflet_bounds.getSouthWest().lng, leaflet_bounds.getSouthWest().lat, leaflet_bounds.getNorthEast().lng, leaflet_bounds.getNorthEast().lat];
+    this.queryParamsHelperService.setBounds(saved_bounds);
+  }
 
 }

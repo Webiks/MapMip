@@ -1,8 +1,11 @@
 import {Injectable, Component, style, state, animate, transition, trigger} from '@angular/core';
 import {Params, ActivatedRoute, Router, NavigationExtras} from "@angular/router";
+import {isEqual} from 'lodash';
 
 @Injectable()
 export class QueryParamsHelperService {
+
+  public bounds:[number, number,number,number] = [0,0,0,0];
 
   constructor(private router:Router) { }
 
@@ -35,16 +38,34 @@ export class QueryParamsHelperService {
     return roll;
   }
   queryDim(params:Params) {
-    return +params['dim'];
+    return +params['dim'] || 3;
   }
 
-  getQuery(lng:number, lat:number, zoom:number, heading?:number, pitch?:number, roll?:number, dim?:number):NavigationExtras {
-    roll =  roll % 360  == 0 ? undefined : roll;
-    heading = heading % 360  == 0 ? undefined : heading;
-    pitch = Math.cos(Cesium.Math.toRadians(pitch) ) < 0.001 ? undefined : pitch;
-
+  getQuery(queryObj):NavigationExtras {
+    queryObj.roll =  queryObj.roll % 360  == 0 ? undefined : queryObj.roll;
+    queryObj.heading = queryObj.heading % 360  == 0 ? undefined : queryObj.heading;
+    queryObj.pitch = queryObj.pitch == -90 ? undefined : queryObj.pitch;//Math.cos(Cesium.Math.toRadians(queryObj.pitch) ) < 0.001 ? undefined : queryObj.pitch;
     return <NavigationExtras> {
-      queryParams: {lng, lat, zoom, heading, pitch, roll, dim}
+      queryParams: queryObj
     };
+  }
+  queryHeight(params:Params):number {
+    return +params["height"] || 0;
+  }
+  hasBounds():boolean {
+    return !isEqual(this.bounds, [0,0,0,0]);
+  }
+
+  setBounds(bounds:[number,number, number, number]):void {
+    console.log("bounds = ",bounds);
+    this.bounds = bounds;
+  }
+
+  getBounds():[number,number, number, number] {
+    return this.bounds;
+  }
+
+  resetBounds():void {
+    this.bounds = [0,0,0,0];
   }
 }

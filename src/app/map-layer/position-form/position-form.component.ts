@@ -13,22 +13,26 @@ export class PositionFormComponent implements OnInit {
   public heading:number;
   public pitch:number;
   public roll:number;
+  public height:number;
+  public dim:number;
 
   constructor(private router:Router, private route:ActivatedRoute) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe((params:Params)=> {
-      this.lat = params['lat'];
-      this.lng = params['lng'];
-      this.zoom = params['zoom'];
-      this.heading = params['heading'];
-      this.pitch = params['pitch'];
-      this.roll = params['roll'];
+      this.lat = params['lat'] || undefined;
+      this.lng = params['lng'] || undefined;
+      this.zoom = params['zoom'] || undefined;
+      this.heading = params['heading'] || undefined;
+      this.pitch = params['pitch'] || undefined;
+      this.roll = params['roll'] || undefined;
+      this.height = +params['height'] || undefined;
+      this.dim = +params['dim'] || undefined;
     })
   }
   submitForm() {
 
-    let obj = {lat: this.lat ,lng: this.lng,zoom: this.zoom, heading:this.heading, pitch:this.pitch, roll:this.roll};
+    let obj = {lat: this.lat ,lng: this.lng, height: this.height, heading:this.heading, pitch:this.pitch, roll:this.roll, dim:this.dim};
 
     this.router.navigate([], {queryParams: obj})
   }
