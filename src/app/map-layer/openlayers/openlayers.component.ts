@@ -45,9 +45,12 @@ export class OpenlayersComponent implements OnInit {
   public initializeQueryChanges() {
     let onMoveEnd:Function = event => {
       let centerCord:ol.Coordinate = ol.proj.transform(event.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
-      let zoom:number = event.map.getView().getZoom();
       let center:{lat:number, lng:number} = {lng: centerCord[0], lat: centerCord[1]};
-      this.queryParamsHelperService.getQuery(center.lng, center.lat, zoom);
+      let lat = centerCord[1];
+      let lng = centerCord[0];
+
+      let zoom:number = event.map.getView().getZoom();
+      this.queryParamsHelperService.getQuery({lng, lat, zoom});
     };
 
     this.moveend = this.map.on('moveend', onMoveEnd);

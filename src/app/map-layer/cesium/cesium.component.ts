@@ -43,6 +43,7 @@ export class CesiumComponent implements OnInit  {
     this.cesiumCanDeactivate.leaveCesium = new Observable<boolean>((observer:Observer<boolean>) => {
 
       this.viewer.camera.moveEnd.removeEventListener(this.moveEnd);
+
       this.flyToCenterAndGetBounds().subscribe((bool:boolean) => {
         this.getBounds().then((bounds:[number,number,number,number])=> {
           this.queryParamsHelperService.setBounds(bounds);
@@ -64,10 +65,9 @@ export class CesiumComponent implements OnInit  {
   }
 
   anyParamChanges(params:Params) {
-
-    let longitudeP:number       = this.queryParamsHelperService.queryLng(params) || this.getCenter().lng;
-    let latitudeP:number        = this.queryParamsHelperService.queryLat(params) || this.getCenter().lat;
-    let heightP:number          = this.queryParamsHelperService.queryHeight(params) || this.viewer.camera.positionCartographic.height;
+    let longitudeP:number       = this.queryParamsHelperService.queryLng(params)// || this.getCenter().lng;
+    let latitudeP:number        = this.queryParamsHelperService.queryLat(params)// || this.getCenter().lat;
+    let heightP:number          = this.queryParamsHelperService.queryHeight(params)// || this.viewer.camera.positionCartographic.height;
     let headingRadiansP:number  = this.queryParamsHelperService.queryHeading(params) % 360;
     let pitchRadiansP:number    = this.queryParamsHelperService.queryPitch(params) % 360;
     let rollRadiansP:number     = this.queryParamsHelperService.queryRoll(params) % 360;
@@ -140,7 +140,7 @@ export class CesiumComponent implements OnInit  {
 
   getCenter(): {lat:number, lng:number} | any {
     let lng, lat;
-    lat = this.viewer.camera.positionCartographic.latitude * (180 / Math.PI);
+      lat = this.viewer.camera.positionCartographic.latitude * (180 / Math.PI);
     lng = this.viewer.camera.positionCartographic.longitude * (180 / Math.PI);
     lat = +lat.toFixed(7);
     lng = +lng.toFixed(7);
@@ -152,7 +152,10 @@ export class CesiumComponent implements OnInit  {
     const pitchDeg = Cesium.Math.toDegrees(this.viewer.camera.pitch);
     const rollDeg = Cesium.Math.toDegrees(this.viewer.camera.roll);
 
-    if( headingDeg % 360 === 0 && pitchDeg === -90 && rollDeg % 360 === 0 ) {
+    let on_d3 = headingDeg % 360 === 0 && pitchDeg === -90 && rollDeg % 360 === 0;
+    let on_d2 = this.viewer.scene.mode == Cesium.SceneMode.SCENE2D;
+
+    if(on_d3 || on_d2) {
       return Observable.of(true);
     }
 
@@ -177,7 +180,6 @@ export class CesiumComponent implements OnInit  {
           }
           catch(err){
             position = that.viewer.camera.position;
-            hasNotFlown = true;
           }
         }
 
@@ -200,7 +202,7 @@ export class CesiumComponent implements OnInit  {
   }
 
 
-  getBounds(){
+  getBounds() : Promise<[number,number,number,number]>{
     let promise = new Promise((res, rej)=> {
 
       this.viewer.scene.mode = Cesium.SceneMode.SCENE2D;
@@ -209,7 +211,7 @@ export class CesiumComponent implements OnInit  {
       this.viewer.scene.camera.pickEllipsoid(c2, this.viewer.scene.globe.ellipsoid, leftTop);
       c2 = new Cesium.Cartesian2(this.viewer.scene.canvas.width, this.viewer.scene.canvas.height, 0);
       var rightDown = this.viewer.scene.camera.pickEllipsoid(c2, this.viewer.scene.globe.ellipsoid);
-      this.viewer.scene.mode = Cesium.SceneMode.SCENE3D;
+
       if (leftTop != undefined && rightDown != undefined) {
         leftTop = Cesium.Cartographic.fromCartesian(leftTop);
         rightDown = Cesium.Cartographic.fromCartesian(rightDown);
@@ -230,6 +232,8 @@ export class CesiumComponent implements OnInit  {
     this.viewer.camera.setView({
       destination: Cesium.Rectangle.fromDegrees(...bounds)
     });
+
+    // this.moveEnd();
 
     this.queryParamsHelperService.resetBounds();
   }

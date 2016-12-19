@@ -67,6 +67,7 @@ export class LeafletComponent implements OnInit {
 
 
   setMapView(params:Params):void {
+
     let longitude:number = this.queryParamsHelperService.queryLng(params);
     let latitude:number = this.queryParamsHelperService.queryLat(params);
     let zoom:number = this.queryParamsHelperService.queryZoom(params);
@@ -84,16 +85,24 @@ export class LeafletComponent implements OnInit {
 
 
   anyParamChanges(params:Params) {
-
-    let longitudeP:number = this.queryParamsHelperService.queryLng(params) || this.map.getCenter().lng;
-    let latitudeP:number  = this.queryParamsHelperService.queryLng(params) || this.map.getCenter().lat;
-    let zoomP:number      = this.queryParamsHelperService.queryZoom(params) || this.map.getZoom();
+    let longitudeP:number = this.queryParamsHelperService.queryLng(params);
+    let latitudeP:number  = this.queryParamsHelperService.queryLng(params);
+    let zoomP:number      = this.queryParamsHelperService.queryZoom(params);
 
     let arrayP = [longitudeP, latitudeP, zoomP];
 
-    let longitude:number        = this.map.getCenter().lng;
-    let latitude:number         = this.map.getCenter().lat;
-    let zoom:number             = this.map.getZoom();
+    let longitude:number;
+    let latitude:number;
+    let zoom:number;
+
+    try{
+      longitude = this.map.getCenter().lng;
+      latitude  = this.map.getCenter().lat;
+      zoom      = this.map.getZoom();
+    } catch (e) {
+
+      return true;
+    }
 
     let array = [longitude, latitude, zoom];
 

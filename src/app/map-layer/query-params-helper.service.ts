@@ -13,10 +13,6 @@ export class QueryParamsHelperService {
     return +params['zoom'] || 0;
   }
 
-  queryCenter(params:Params):{lng:number, lat:number} {
-    return {lng: this.queryLng(params), lat: this.queryLat(params)};
-  }
-
   queryLat(params:Params):number {
     return +params['lat'] || 0;
   }
@@ -41,23 +37,15 @@ export class QueryParamsHelperService {
     return +params['dim'] || 3;
   }
 
-  getQuery(queryObj):NavigationExtras {
-    queryObj.roll =  queryObj.roll % 360  == 0 ? undefined : queryObj.roll;
-    queryObj.heading = queryObj.heading % 360  == 0 ? undefined : queryObj.heading;
-    queryObj.pitch = queryObj.pitch == -90 ? undefined : queryObj.pitch;//Math.cos(Cesium.Math.toRadians(queryObj.pitch) ) < 0.001 ? undefined : queryObj.pitch;
-    return <NavigationExtras> {
-      queryParams: queryObj
-    };
-  }
   queryHeight(params:Params):number {
     return +params["height"] || 0;
   }
+
   hasBounds():boolean {
     return !isEqual(this.bounds, [0,0,0,0]);
   }
 
   setBounds(bounds:[number,number, number, number]):void {
-    console.log("bounds = ",bounds);
     this.bounds = bounds;
   }
 
@@ -68,4 +56,15 @@ export class QueryParamsHelperService {
   resetBounds():void {
     this.bounds = [0,0,0,0];
   }
+
+
+  getQuery(queryObj):NavigationExtras {
+    queryObj.roll =  queryObj.roll % 360  == 0 ? undefined : queryObj.roll;
+    queryObj.heading = queryObj.heading % 360  == 0 ? undefined : queryObj.heading;
+    queryObj.pitch = queryObj.pitch == -90 ? undefined : queryObj.pitch;
+    return <NavigationExtras> {
+      queryParams: queryObj
+    };
+  }
+
 }

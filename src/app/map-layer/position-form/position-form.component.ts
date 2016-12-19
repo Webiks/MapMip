@@ -15,7 +15,6 @@ export class PositionFormComponent implements OnInit {
   public roll:number;
   public height:number;
   public dim:number;
-
   constructor(private router:Router, private route:ActivatedRoute) { }
 
   ngOnInit() {
@@ -32,7 +31,7 @@ export class PositionFormComponent implements OnInit {
   }
   submitForm() {
 
-    let obj = {lat: this.lat ,lng: this.lng, height: this.height, heading:this.heading, pitch:this.pitch, roll:this.roll, dim:this.dim};
+    let obj = {lat: this.lat ,lng: this.lng, height: this.height, heading:this.heading, pitch:this.pitch, roll:this.roll, dim:this.dim, zoom:this.zoom};
 
     this.router.navigate([], {queryParams: obj})
   }
