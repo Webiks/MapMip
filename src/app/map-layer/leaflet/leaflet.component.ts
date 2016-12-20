@@ -123,6 +123,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   saveBounds():void {
     let leaflet_bounds:L.LatLngBounds = this.map.getBounds();
     let saved_bounds:[number, number, number, number] = [leaflet_bounds.getSouthWest().lng, leaflet_bounds.getSouthWest().lat, leaflet_bounds.getNorthEast().lng, leaflet_bounds.getNorthEast().lat];
+    console.log(saved_bounds)
     this.queryParamsHelperService.setBounds(saved_bounds);
   }
 

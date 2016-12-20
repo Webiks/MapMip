@@ -31,10 +31,16 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
 
     this.activatedRoute.queryParams.subscribe( (params:Params) => {
       this.currentParams = params;
-      if(this.queryParamsHelperService.hasBounds()){
-        this.setMapBounds();
-      } else if(this.anyParamChanges(params)) {
-        this.setMapView(params);
+      if(this.queryParamsHelperService.hasQueryBounds(params)) {
+        let bounds:[number, number, number, number] = this.queryParamsHelperService.queryBounds(params);
+        this.setMapBounds(bounds);
+      } else{
+        if(this.queryParamsHelperService.hasBounds()){
+          let bounds:[number, number, number, number] = this.queryParamsHelperService.getBounds();
+          this.setMapBounds(bounds);
+        } else if(this.anyParamChanges(params)) {
+          this.setMapView(params);
+        }
       }
     });
 
@@ -251,15 +257,10 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     return bounds;
   }
 
-  setMapBounds() {
-    let bounds:[number, number, number, number] = this.queryParamsHelperService.getBounds();
-
+  setMapBounds(bounds:[number, number, number, number]) {
     this.viewer.camera.setView({
       destination: Cesium.Rectangle.fromDegrees(...bounds)
     });
-
-    // this.moveEnd();
-
     this.queryParamsHelperService.resetBounds();
   }
 

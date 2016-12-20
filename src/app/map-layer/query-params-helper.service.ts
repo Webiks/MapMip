@@ -10,6 +10,17 @@ export class QueryParamsHelperService {
 
   constructor(private router:Router) { }
 
+  queryBounds(params:Params):[number, number, number, number] {
+    let boundsString = params['bounds'];
+    let bounds:[number, number, number, number] = boundsString.split(',').map(strToNum => +strToNum);
+    return bounds;
+  }
+
+  hasQueryBounds(params:Params):boolean {
+    let boundsString = params['bounds'];
+    return !isUndefined(boundsString)
+  }
+
   queryZoom(params:Params):number {
     return +params['zoom'] || 0;
   }
