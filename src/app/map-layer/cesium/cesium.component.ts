@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {CalcService} from "../calc.service";
 import {Observable, Observer} from "rxjs";
 import {QueryParamsHelperService} from "../query-params-helper.service";
 import {ActivatedRoute, Params, Router, NavigationExtras} from "@angular/router";
 import {CesiumCanDeactivate} from "./cesium.canDeactivate";
 import {host, animations} from "../map-layer.component";
 import 'rxjs/add/operator/take';
-import {isEqual} from 'lodash';
+import * as _ from 'lodash';
+import {MapLayerChild} from "../map-layer-child.interface";
 
 @Component({
   host: host,
@@ -16,15 +16,14 @@ import {isEqual} from 'lodash';
   animations:animations
 })
 
-export class CesiumComponent implements OnInit  {
+export class CesiumComponent implements OnInit, MapLayerChild  {
 
   public viewer:any;
   public zoom:Observable<string>;
   public moveEnd:Function;
-  public skipMoveEnd:boolean;
   public currentParams:Params;
 
-  constructor(private calcService:CalcService, private queryParamsHelperService:QueryParamsHelperService, private activatedRoute:ActivatedRoute, private cesiumCanDeactivate:CesiumCanDeactivate, private router:Router) { }
+  constructor(private queryParamsHelperService:QueryParamsHelperService, private activatedRoute:ActivatedRoute, private cesiumCanDeactivate:CesiumCanDeactivate, private router:Router) { }
 
   ngOnInit() {
 
@@ -45,11 +44,8 @@ export class CesiumComponent implements OnInit  {
       this.viewer.camera.moveEnd.removeEventListener(this.moveEnd);
 
       this.flyToCenterAndGetBounds().subscribe((bool:boolean) => {
-        this.getBounds().then((bounds:[number,number,number,number])=> {
-          this.queryParamsHelperService.setBounds(bounds);
+          this.queryParamsHelperService.setBounds(this.getBounds());
           observer.next(true);
-        })
-
       })
 
     });
@@ -64,7 +60,7 @@ export class CesiumComponent implements OnInit  {
     this.initializeMoveend();
   }
 
-  anyParamChanges(params:Params) {
+  anyParamChanges(params:Params):boolean {
     let longitudeP:number       = this.queryParamsHelperService.queryLng(params)// || this.getCenter().lng;
     let latitudeP:number        = this.queryParamsHelperService.queryLat(params)// || this.getCenter().lat;
     let heightP:number          = this.queryParamsHelperService.queryHeight(params)// || this.viewer.camera.positionCartographic.height;
@@ -87,7 +83,7 @@ export class CesiumComponent implements OnInit  {
 
     arrayP.forEach( (value, index) => {arrayP[index] = +arrayP[index].toFixed(7)});
     array.forEach( (value, index) => {array[index] = +array[index].toFixed(7)});
-    return !isEqual(arrayP, array);
+    return !_.isEqual(arrayP, array);
   }
 
   setMapView(params:Params):void {
@@ -140,7 +136,7 @@ export class CesiumComponent implements OnInit  {
 
   getCenter(): {lat:number, lng:number} | any {
     let lng, lat;
-      lat = this.viewer.camera.positionCartographic.latitude * (180 / Math.PI);
+    lat = this.viewer.camera.positionCartographic.latitude * (180 / Math.PI);
     lng = this.viewer.camera.positionCartographic.longitude * (180 / Math.PI);
     lat = +lat.toFixed(7);
     lng = +lng.toFixed(7);
@@ -202,28 +198,57 @@ export class CesiumComponent implements OnInit  {
   }
 
 
-  getBounds() : Promise<[number,number,number,number]>{
-    let promise = new Promise((res, rej)=> {
+  // getBounds() : Promise<[number,number,number,number]>{
+  //   let promise = new Promise((res, rej)=> {
+  //     this.viewer.scene.mode = Cesium.SceneMode.SCENE2D;
+  //
+  //     var c2 = new Cesium.Cartesian2(0, 0);
+  //     let leftTop  = this.viewer.scene.camera.pickEllipsoid(c2, this.viewer.scene.globe.ellipsoid);
+  //     c2 = new Cesium.Cartesian2(this.viewer.scene.canvas.width, this.viewer.scene.canvas.height, 0);
+  //     let rightDown = this.viewer.scene.camera.pickEllipsoid(c2, this.viewer.scene.globe.ellipsoid);
+  //
+  //     // this.viewer.scene.mode = Cesium.SceneMode.SCENE3D;
+  //
+  //     if (leftTop != undefined && rightDown != undefined) {
+  //       leftTop = Cesium.Cartographic.fromCartesian(leftTop);
+  //       rightDown = Cesium.Cartographic.fromCartesian(rightDown);
+  //       if (leftTop == undefined || rightDown == undefined) {
+  //         res([0,0,0,0]);
+  //       }
+  //
+  //       let bounds1 = this.viewer.camera.computeViewRectangle();
+  //
+  //       forEach(bounds1, (val, key) => {
+  //         bounds1[key] = Cesium.Math.toDegrees(val)
+  //       });
+  //
+  //       res(bounds1);
+  //
+  //       console.log("bounds1 = ", bounds1);
+  //       console.log("bounds2 = ", [Cesium.Math.toDegrees(rightDown.longitude), Cesium.Math.toDegrees(leftTop.latitude), Cesium.Math.toDegrees(leftTop.longitude), Cesium.Math.toDegrees(rightDown.latitude)]);
+  //
+  //       this.viewer.scene.mode = Cesium.SceneMode.SCENE3D;
+  //
+  //       res([Cesium.Math.toDegrees(rightDown.longitude), Cesium.Math.toDegrees(leftTop.latitude), Cesium.Math.toDegrees(leftTop.longitude), Cesium.Math.toDegrees(rightDown.latitude)]);
+  //     }
+  //
+  //   });
+  //
+  //   return promise;
+  // }
 
-      this.viewer.scene.mode = Cesium.SceneMode.SCENE2D;
-      var c2 = new Cesium.Cartesian2(0, 0);
-      var leftTop = new Cesium.Cartesian3();
-      this.viewer.scene.camera.pickEllipsoid(c2, this.viewer.scene.globe.ellipsoid, leftTop);
-      c2 = new Cesium.Cartesian2(this.viewer.scene.canvas.width, this.viewer.scene.canvas.height, 0);
-      var rightDown = this.viewer.scene.camera.pickEllipsoid(c2, this.viewer.scene.globe.ellipsoid);
+  getBounds() : [number,number,number,number]{
+    let current_mode = this.viewer.scene.mode;
 
-      if (leftTop != undefined && rightDown != undefined) {
-        leftTop = Cesium.Cartographic.fromCartesian(leftTop);
-        rightDown = Cesium.Cartographic.fromCartesian(rightDown);
-        if (leftTop == undefined || rightDown == undefined) {
-          res([0,0,0,0]);
-        }
-        res([Cesium.Math.toDegrees(rightDown.longitude), Cesium.Math.toDegrees(leftTop.latitude), Cesium.Math.toDegrees(leftTop.longitude), Cesium.Math.toDegrees(rightDown.latitude)]);
-      }
+    this.viewer.scene.mode = Cesium.SceneMode.SCENE2D;
 
-    });
+    let bounds = this.viewer.camera.computeViewRectangle();
 
-    return promise;
+    bounds = _.map(bounds, value => Cesium.Math.toDegrees(value));
+
+    this.viewer.scene.mode = current_mode;
+
+    return bounds;
   }
 
   setMapBounds() {

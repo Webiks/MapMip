@@ -8,6 +8,7 @@ import {QueryParamsHelperService} from "../query-params-helper.service";
 import {CalcService} from "../calc.service";
 import {host, animations} from "../map-layer.component";
 import {isEqual} from 'lodash';
+import {MapLayerChild} from "../map-layer-child.interface";
 @Component({
   host: host,
   selector: 'app-leaflet',
@@ -15,21 +16,25 @@ import {isEqual} from 'lodash';
   styleUrls: ['./leaflet.component.scss'],
   animations: animations
 })
-export class LeafletComponent implements OnInit {
-  // @ViewChild() leaflet:ElementRef;
+export class LeafletComponent implements OnInit, MapLayerChild {
+
   public map;
-  public moveEnd;
+  public moveEnd:Function;
   public currentParams:Params;
 
   constructor(private router:Router, private activatedRoute:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService, private calcService:CalcService) {}
 
   ngOnInit() {
     this.initializeMap();
+
     this.activatedRoute.queryParams.subscribe( (params:Params) => {
+
       this.currentParams = params;
-      if(this.queryParamsHelperService.hasBounds()){
+      if(this.queryParamsHelperService.haveLeafletOpenlayersParams(params) && this.anyParamChanges(params)) {
+        this.setMapView(params);
+      } else if(this.queryParamsHelperService.hasBounds()) {
         this.setMapBounds();
-      } else if(this.anyParamChanges(params)) {
+      } else {
         this.setMapView(params);
       }
     });

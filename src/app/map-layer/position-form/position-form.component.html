@@ -1,43 +1,20 @@
 <form class="row" (submit)="submitForm()">
-  <div class="form-group col-md-2">
-    <label for="formGroupExampleInput" *ngIf="lng">Lng</label>
-    <input type="text" class="form-control" [(ngModel)]="lng" id="formGroupExampleInput" name="lng" placeholder="Lng">
-  </div>
-  <div class="form-group col-md-2" *ngIf="lat">
-    <label for="formGroupExampleInput2">Lat</label>
-    <input type="text" class="form-control" [(ngModel)]="lat" id="formGroupExampleInput2" name="lat" placeholder="Lat">
-  </div>
 
-  <div class="form-group col-md-2" *ngIf="zoom">
-    <label for="formGroupExampleInput2">Zoom</label>
-    <input type="text" class="form-control" [(ngModel)]="zoom" id="formGroupExampleInput2" name="zoom" placeholder="Zoom">
-  </div>
+  <div *ngFor="let key of keys(params)">
 
-  <div class="form-group col-md-2" *ngIf="height">
-    <label for="formGroupExampleInput2">Height</label>
-    <input type="text" class="form-control" [(ngModel)]="height" id="formGroupExampleInput2" name="height" placeholder="Height">
-  </div>
-  <div class="form-group col-md-1" *ngIf="heading">
-    <label for="formGroupExampleInput2">Heading</label>
-    <input type="text" class="form-control" [(ngModel)]="heading" id="formGroupExampleInput2" name="heading" placeholder="0">
-  </div>
-  <div class="form-group col-md-1" *ngIf="pitch">
-    <label for="formGroupExampleInput2">Pitch</label>
-    <input type="text" class="form-control" [(ngModel)]="pitch" id="formGroupExampleInput2" name="pitch" placeholder="-90">
-  </div>
+    <!--key = {{key}} val = {{params[key].val}}-->
 
-  <div class="form-group col-md-1" *ngIf="roll">
-    <label for="formGroupExampleInput2">Roll</label>
-    <input type="text" class="form-control" [(ngModel)]="roll" id="formGroupExampleInput2" name="roll" placeholder="0">
-  </div>
-
-    <div class="form-group col-md-1" *ngIf="dim">
-      <label for="formGroupExampleInput2">Dim</label>
-      <input type="text" class="form-control" [(ngModel)]="dim" id="formGroupExampleInput2" name="dim" placeholder="3">
+    <div class="form-group col-md-2" *ngIf="hasPremision(params[key])">
+      <div class="input-group">
+        <span class="input-group-addon">{{key}}</span>
+        <input type="text" class="form-control" [(ngModel)]="params[key].val" name="{{key}}" placeholder="Lat">
+      </div>
     </div>
 
-  <div class="form-group col-md-1" style="display: none;">
-    <input type="submit" class="btn btn-info" value="Save">
   </div>
+
+  <!--<div class="form-group col-md-1" style="display: none;">-->
+  <input type="submit" class="btn btn-info" value="Save" style="display: none;">
+  <!--</div>-->
 
 </form>

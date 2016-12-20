@@ -1,6 +1,7 @@
 import {Injectable, Component, style, state, animate, transition, trigger} from '@angular/core';
 import {Params, ActivatedRoute, Router, NavigationExtras} from "@angular/router";
 import {isEqual} from 'lodash';
+import {isUndefined} from "util";
 
 @Injectable()
 export class QueryParamsHelperService {
@@ -39,6 +40,10 @@ export class QueryParamsHelperService {
 
   queryHeight(params:Params):number {
     return +params["height"] || 0;
+  }
+
+  haveLeafletOpenlayersParams(params:Params):boolean {
+    return !isUndefined(params['zoom']) && !isUndefined(params['lat']) && !isUndefined(params['lng'])
   }
 
   hasBounds():boolean {
