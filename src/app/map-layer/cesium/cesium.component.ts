@@ -19,7 +19,6 @@ import {MapLayerChild} from "../map-layer-child.interface";
 export class CesiumComponent implements OnInit, MapLayerChild  {
 
   public viewer:any;
-  public zoom:Observable<string>;
   public moveEnd:Function;
   public currentParams:Params;
 
@@ -29,33 +28,34 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
 
     this.initializeMap();
 
-    this.activatedRoute.queryParams.subscribe( (params:Params) => {
-      this.currentParams = params;
-      if(this.queryParamsHelperService.hasQueryBounds(params)) {
-        let bounds:[number, number, number, number] = this.queryParamsHelperService.queryBounds(params);
+    this.activatedRoute.queryParams.subscribe(this.queryParams);
+
+    this.cesiumCanDeactivate.leaveCesium = Observable.create(this.leaveCesium);
+
+  };
+
+  leaveCesium: (Observer) => void = (observer:Observer<boolean>):void => {
+    this.viewer.camera.moveEnd.removeEventListener(this.moveEnd);
+    this.flyToCenterAndGetBounds().subscribe((bool:boolean) => {
+      let bounds = this.getBounds();
+      this.queryParamsHelperService.setBounds(bounds);
+      observer.next(bool);
+    })
+  };
+
+  queryParams: (Params) => void = (params:Params):void => {
+    this.currentParams = params;
+    if(this.queryParamsHelperService.hasQueryBounds(params)) {
+      let bounds:[number, number, number, number] = this.queryParamsHelperService.queryBounds(params);
+      this.setMapBounds(bounds);
+    } else{
+      if(this.queryParamsHelperService.hasBounds()){
+        let bounds:[number, number, number, number] = this.queryParamsHelperService.getBounds();
         this.setMapBounds(bounds);
-      } else{
-        if(this.queryParamsHelperService.hasBounds()){
-          let bounds:[number, number, number, number] = this.queryParamsHelperService.getBounds();
-          this.setMapBounds(bounds);
-        } else if(this.anyParamChanges(params)) {
-          this.setMapView(params);
-        }
+      } else if(this.anyParamChanges(params)) {
+        this.setMapView(params);
       }
-    });
-
-
-    this.cesiumCanDeactivate.leaveCesium = new Observable<boolean>((observer:Observer<boolean>) => {
-
-      this.viewer.camera.moveEnd.removeEventListener(this.moveEnd);
-
-      this.flyToCenterAndGetBounds().subscribe((bool:boolean) => {
-          this.queryParamsHelperService.setBounds(this.getBounds());
-          observer.next(true);
-      })
-
-    });
-
+    }
   };
 
   initializeMap():void {
@@ -204,52 +204,12 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   }
 
 
-  // getBounds() : Promise<[number,number,number,number]>{
-  //   let promise = new Promise((res, rej)=> {
-  //     this.viewer.scene.mode = Cesium.SceneMode.SCENE2D;
-  //
-  //     var c2 = new Cesium.Cartesian2(0, 0);
-  //     let leftTop  = this.viewer.scene.camera.pickEllipsoid(c2, this.viewer.scene.globe.ellipsoid);
-  //     c2 = new Cesium.Cartesian2(this.viewer.scene.canvas.width, this.viewer.scene.canvas.height, 0);
-  //     let rightDown = this.viewer.scene.camera.pickEllipsoid(c2, this.viewer.scene.globe.ellipsoid);
-  //
-  //     // this.viewer.scene.mode = Cesium.SceneMode.SCENE3D;
-  //
-  //     if (leftTop != undefined && rightDown != undefined) {
-  //       leftTop = Cesium.Cartographic.fromCartesian(leftTop);
-  //       rightDown = Cesium.Cartographic.fromCartesian(rightDown);
-  //       if (leftTop == undefined || rightDown == undefined) {
-  //         res([0,0,0,0]);
-  //       }
-  //
-  //       let bounds1 = this.viewer.camera.computeViewRectangle();
-  //
-  //       forEach(bounds1, (val, key) => {
-  //         bounds1[key] = Cesium.Math.toDegrees(val)
-  //       });
-  //
-  //       res(bounds1);
-  //
-  //       console.log("bounds1 = ", bounds1);
-  //       console.log("bounds2 = ", [Cesium.Math.toDegrees(rightDown.longitude), Cesium.Math.toDegrees(leftTop.latitude), Cesium.Math.toDegrees(leftTop.longitude), Cesium.Math.toDegrees(rightDown.latitude)]);
-  //
-  //       this.viewer.scene.mode = Cesium.SceneMode.SCENE3D;
-  //
-  //       res([Cesium.Math.toDegrees(rightDown.longitude), Cesium.Math.toDegrees(leftTop.latitude), Cesium.Math.toDegrees(leftTop.longitude), Cesium.Math.toDegrees(rightDown.latitude)]);
-  //     }
-  //
-  //   });
-  //
-  //   return promise;
-  // }
-
   getBounds() : [number,number,number,number]{
-    let current_mode = this.viewer.scene.mode;
 
+    let current_mode = this.viewer.scene.mode;
     this.viewer.scene.mode = Cesium.SceneMode.SCENE2D;
 
     let bounds = this.viewer.camera.computeViewRectangle();
-
     bounds = _.map(bounds, value => Cesium.Math.toDegrees(value));
 
     this.viewer.scene.mode = current_mode;
@@ -257,7 +217,17 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     return bounds;
   }
 
-  setMapBounds(bounds:[number, number, number, number]) {
+  // getBoundsPick() {
+  //   let leftBottom = new Cesium.Cartesian2(0, 0);
+  //   let westSouth = this.viewer.camera.pickEllipsoid(leftBottom);
+  //   let rightTop = new Cesium.Cartesian2(this.viewer.canvas.width, this.viewer.canvas.height);
+  //   let eastNorth = this.viewer.camera.pickEllipsoid(rightTop);
+  //   Cesium.
+  // }
+
+
+
+  setMapBounds(bounds:[number, number, number, number]):void {
     this.viewer.camera.setView({
       destination: Cesium.Rectangle.fromDegrees(...bounds)
     });

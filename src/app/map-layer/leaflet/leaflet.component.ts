@@ -22,24 +22,28 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   public moveEnd:Function;
   public currentParams:Params;
 
+
   constructor(private router:Router, private activatedRoute:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService, private calcService:CalcService) {}
 
   ngOnInit() {
     this.initializeMap();
+    this.activatedRoute.queryParams.subscribe(this.queryParams);
+  }
 
-    this.activatedRoute.queryParams.subscribe( (params:Params) => {
-
-      this.currentParams = params;
-      if(this.queryParamsHelperService.haveLeafletOpenlayersParams(params) && this.anyParamChanges(params)) {
-        this.setMapView(params);
-      } else if(this.queryParamsHelperService.hasBounds()) {
-        this.setMapBounds();
-      } else {
+  queryParams: (Params) => void = (params:Params):void => {
+    this.currentParams = params;
+    if(this.queryParamsHelperService.hasQueryBounds(params)) {
+      let bounds:[number, number, number, number] = this.queryParamsHelperService.queryBounds(params);
+      this.setMapBounds(bounds);
+    } else{
+      if(this.queryParamsHelperService.hasBounds()){
+        let bounds:[number, number, number, number] = this.queryParamsHelperService.getBounds();
+        this.setMapBounds(bounds);
+      } else if(this.anyParamChanges(params)) {
         this.setMapView(params);
       }
-    });
-
-  }
+    }
+  };
 
   initializeMap() {
 
@@ -80,16 +84,13 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     this.map.setView([latitude, longitude], zoom);
   }
 
-  setMapBounds() {
-      let bounds:[number, number, number, number] = this.queryParamsHelperService.getBounds();
-
+  setMapBounds(bounds:[number, number, number, number]):void {
+      // let leafletLatLng: L.LatLng
       this.map.fitBounds([[bounds[1], bounds[0]], [ bounds[3], bounds[2]] ]);
-
       this.queryParamsHelperService.resetBounds();
   }
 
-
-  anyParamChanges(params:Params) {
+  anyParamChanges(params:Params):boolean {
     let longitudeP:number = this.queryParamsHelperService.queryLng(params);
     let latitudeP:number  = this.queryParamsHelperService.queryLng(params);
     let zoomP:number      = this.queryParamsHelperService.queryZoom(params);
