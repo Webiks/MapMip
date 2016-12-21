@@ -4,7 +4,6 @@ import { TestBed, inject } from '@angular/core/testing';
 import { QueryParamsHelperService } from './query-params-helper.service';
 import {Params} from "@angular/router";
 import any = jasmine.any;
-import {isUndefined} from "util";
 
 fdescribe('QueryParamsHelperService', () => {
 
@@ -30,11 +29,6 @@ fdescribe('QueryParamsHelperService', () => {
     let bounds = queryParamsHelperService.queryBounds(params);
     expect(bounds).toEqual([1,2,3,4]);
   });
-  //
-  // hasQueryBounds(params:Params):boolean {
-  //   let boundsString = params['bounds'];
-  //   return !isUndefined(boundsString)
-  // }
 
   it('hasQueryBounds should return Boolean if params["bounds"] is not undefined', () => {
     params['bounds'] = undefined;
@@ -44,14 +38,7 @@ fdescribe('QueryParamsHelperService', () => {
     expect(queryParamsHelperService.hasQueryBounds(params) ).toBeTruthy();
   });
 
-  it('queryZoom should return Number while params["bounds"] is string', () => {
-    params['zoom'] = '11';
-    let zoomResult = queryParamsHelperService.queryZoom(params);
-    expect(zoomResult).toEqual(jasmine.any(Number));
-    expect(zoomResult).toEqual(11);
-  });
-
-  it('queryZoom should return Number while params["bounds"] is string, if params["bounds"] is undefined should return 0', () => {
+  it('queryZoom should return Number when params["bounds"] is string, should return zero when params["bounds"] is undefined ', () => {
     params['zoom'] = '11';
     let zoomResult = queryParamsHelperService.queryZoom(params);
     expect(zoomResult).toEqual(jasmine.any(Number));
@@ -61,17 +48,34 @@ fdescribe('QueryParamsHelperService', () => {
     expect(zoomResult).toEqual(0);
   });
 
+  it('queryHeight should return Number when params["bounds"] is string, should return zero when params["height"] is undefined ', () => {
+    params['height'] = '11.98';
+    let heightResult = queryParamsHelperService.queryHeight(params);
+    expect(heightResult ).toEqual(jasmine.any(Number));
+    expect(heightResult ).toEqual(11.98);
+    params['height'] = undefined;
+    heightResult  = queryParamsHelperService.queryHeight(params);
+    expect(heightResult ).toEqual(0);
+  });
 
-  // queryZoom(params:Params):number {
-  //   return +params['zoom'] || 0;
-  // }
-  // it('should be defined', () => {
-  //   expect(queryParamsHelperService ).toBeDefined();
-  // });
-  //
-  // it('should be defined', () => {
-  //   expect(queryParamsHelperService ).toBeDefined();
-  // });
+  it('queryPitch should return Number when params["bounds"] is string, should return -90 when params["pitch"] is undefined ', () => {
+    params['pitch'] = '100.18';
+    let heightResult = queryParamsHelperService.queryPitch(params);
+    expect(heightResult ).toEqual(jasmine.any(Number));
+    expect(heightResult ).toEqual(100.18);
+    params['pitch'] = undefined;
+    heightResult  = queryParamsHelperService.queryPitch(params);
+    expect(heightResult ).toEqual(-90);
+  });
 
+  it('queryDim should return Number when params["bounds"] is string, should return 3 when params["dim"] is undefined ', () => {
+    params['dim'] = '2';
+    let heightResult = queryParamsHelperService.queryDim(params);
+    expect(heightResult ).toEqual(jasmine.any(Number));
+    expect(heightResult ).toEqual(2);
+    params['dim'] = undefined;
+    heightResult  = queryParamsHelperService.queryDim(params);
+    expect(heightResult ).toEqual(3);
+  });
 
 });

@@ -30,24 +30,28 @@ export class QueryParamsHelperService {
   }
 
   queryHeading(params:Params):number {
-    let heading:number = params['heading'] ? params['heading'] : 0;
-    return heading;
+    return +params['heading'] || 0;
   }
 
-  queryPitch(params:Params):number {
-    let pitch:number = params['pitch'] ? params['pitch'] : -90;
-    return pitch;
-  }
   queryRoll(params:Params) {
-    let roll:number = params['roll'] ? params['roll'] : 0;
-    return roll;
+    return +params['roll'] || 0;
   }
-  queryDim(params:Params) {
-    return +params['dim'] || 3;
+
+  queryRoll(params:Params) {
+    return +params['roll'] || 0;
   }
 
   queryHeight(params:Params):number {
     return +params["height"] || 0;
+  }
+
+  queryPitch(params:Params):number {
+    return +params['pitch'] || -90;
+  }
+
+
+  queryDim(params:Params) {
+    return +params['dim'] || 3;
   }
 
   getQuery(queryObj):NavigationExtras {
