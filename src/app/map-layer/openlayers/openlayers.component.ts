@@ -50,6 +50,7 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
 
     this.map = new ol.Map(<any>{
       target: 'ol',
+      projection: 'EPSG:4326',
       layers: [
         new ol.layer.Tile(<olx.layer.TileOptions>{
           source: new ol.source.OSM()
