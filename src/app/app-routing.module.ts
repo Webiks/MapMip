@@ -1,39 +1,23 @@
-import {NgModule, Injectable} from "@angular/core";
-import {RouterModule, Routes, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Params} from "@angular/router";
-import {LeafletComponent} from "./leaflet/leaflet.component";
-import {OpenlayersComponent} from "./openlayers/openlayers.component";
-import {CesiumComponent} from "./cesium/cesium.component";
-import {CesiumResolver} from "./cesium/cesium.resolver";
+import {NgModule} from "@angular/core";
+import {RouterModule, Routes} from "@angular/router";
+import {CesiumCanDeactivate} from "./map-layer/cesium/cesium.canDeactivate";
+import {MapLayerModule} from "./map-layer/map-layer.module";
 
 
 const appRoutes:Routes = [
   {
     path: '',
-    children:
-      [
-        {
-          path:'cesium',
-          component:CesiumComponent,
-          resolve: {
-            res: CesiumResolver
-          }
-        },
-        {
-          path:'leaflet',
-          component:LeafletComponent,
-        },
-        {
-          path:'openlayers',
-          component:OpenlayersComponent
-        }
-      ]
+    loadChildren: '../app/map-layer/map-layer.module#MapLayerModule'
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(appRoutes)],
+  imports: [
+    RouterModule.forRoot(appRoutes, {useHash:true}) ,
+    MapLayerModule
+  ],
   exports: [RouterModule],
-  providers:[CesiumResolver]
+  providers:[CesiumCanDeactivate]
 })
 
 export class AppRoutingModule {}
