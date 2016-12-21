@@ -1,14 +1,11 @@
-import {Injectable, Component, style, state, animate, transition, trigger} from '@angular/core';
-import {Params, ActivatedRoute, Router, NavigationExtras} from "@angular/router";
-import {isEqual} from 'lodash';
+import {Injectable} from '@angular/core';
+import {Params, NavigationExtras} from "@angular/router";
 import {isUndefined} from "util";
 
 @Injectable()
 export class QueryParamsHelperService {
 
-  public bounds:[number, number,number,number] = [0,0,0,0];
-
-  constructor(private router:Router) { }
+  constructor() { }
 
   queryBounds(params:Params):[number, number, number, number] {
     let boundsString = params['bounds'];
@@ -52,27 +49,6 @@ export class QueryParamsHelperService {
   queryHeight(params:Params):number {
     return +params["height"] || 0;
   }
-
-  haveLeafletOpenlayersParams(params:Params):boolean {
-    return !isUndefined(params['zoom']) && !isUndefined(params['lat']) && !isUndefined(params['lng'])
-  }
-
-  hasBounds():boolean {
-    return !isEqual(this.bounds, [0,0,0,0]);
-  }
-
-  setBounds(bounds:[number,number, number, number]):void {
-    this.bounds = bounds;
-  }
-
-  getBounds():[number,number, number, number] {
-    return this.bounds;
-  }
-
-  resetBounds():void {
-    this.bounds = [0,0,0,0];
-  }
-
 
   getQuery(queryObj):NavigationExtras {
     queryObj.roll =  queryObj.roll % 360  == 0 ? undefined : queryObj.roll;

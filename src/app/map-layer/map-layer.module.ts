@@ -5,7 +5,6 @@ import {CesiumComponent} from "./cesium/cesium.component";
 import {LeafletComponent} from "./leaflet/leaflet.component";
 import {OpenlayersComponent} from "./openlayers/openlayers.component";
 import {MapLayerRouting} from "./map-layer-routing.module";
-import {CalcService} from "./calc.service";
 import {QueryParamsHelperService} from "./query-params-helper.service";
 import { PositionFormComponent } from './position-form/position-form.component';
 import {FormsModule} from "@angular/forms";
@@ -18,6 +17,6 @@ import {FormsModule} from "@angular/forms";
   ],
   declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent, PositionFormComponent],
   exports: [MapLayerComponent],
-  providers:[QueryParamsHelperService, CalcService]
+  providers:[QueryParamsHelperService]
 })
 export class MapLayerModule { }

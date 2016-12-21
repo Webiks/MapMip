@@ -3,7 +3,12 @@ import {Params} from "@angular/router";
 export interface MapLayerChild {
   initializeMap():void;
   anyParamChanges(Params):boolean
-  currentParams:Params;
   setMapView(params:Params):void
-  setMapBounds(bounnds:[number,number,number,number]):void
+  setMapBounds(bounds:[number,number,number,number]):void
+  getBounds(): [number,number,number,number]
+
+  currentParams:Params;
+  queryParams: (Params) => void;
+  moveEnd: (event) => Promise<boolean>
 }
+
