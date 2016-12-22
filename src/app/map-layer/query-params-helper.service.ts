@@ -43,7 +43,8 @@ export class QueryParamsHelperService {
   }
   queryMarkers(params:Params):[number, number, number] | any {
 
-    one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum);
+    // all.split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === all.split("),(").length ? "(" + one : "(" + one + ")")
+    // one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum);
 
     let markersStr = params['marker']; // [[1,2,3], [4,5,6]]
     if(!markersStr) return;
