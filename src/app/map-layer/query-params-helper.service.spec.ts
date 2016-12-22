@@ -5,7 +5,7 @@ import { QueryParamsHelperService } from './query-params-helper.service';
 import {Params} from "@angular/router";
 import any = jasmine.any;
 
-fdescribe('QueryParamsHelperService', () => {
+describe('QueryParamsHelperService', () => {
 
   let queryParamsHelperService:QueryParamsHelperService;
   let params:Params = {};

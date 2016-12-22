@@ -30,7 +30,5 @@ export const host = {
   '[style.display]': "'block'",
   '[style.position]': "'absolute'",
   '[style.width]': "'100%'",
-  // '[style.background]': "'#b5d0d0'"
-  // '(@routeAnimation.start)': "moveEnd()"
 };
 

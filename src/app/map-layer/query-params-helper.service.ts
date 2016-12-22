@@ -17,41 +17,38 @@ export class QueryParamsHelperService {
     let boundsString = params['bounds'];
     return !isUndefined(boundsString)
   }
-
-  queryZoom(params:Params):number {
-    return +params['zoom'] || 0;
-  }
-
   queryLat(params:Params):number {
     return +params['lat'] || 0;
   }
   queryLng(params:Params):number {
     return +params['lng'] || 0;
   }
-
+  queryZoom(params:Params):number {
+    return +params['zoom'] || 0;
+  }
   queryHeading(params:Params):number {
     return +params['heading'] || 0;
   }
-
   queryRoll(params:Params) {
     return +params['roll'] || 0;
   }
-
-  queryRoll(params:Params) {
-    return +params['roll'] || 0;
-  }
-
   queryHeight(params:Params):number {
     return +params["height"] || 0;
   }
-
   queryPitch(params:Params):number {
     return +params['pitch'] || -90;
   }
-
-
   queryDim(params:Params) {
     return +params['dim'] || 3;
+  }
+  queryMarkers(params:Params):[number, number, number] | any {
+
+    one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum);
+
+    let markersStr = params['marker']; // [[1,2,3], [4,5,6]]
+    if(!markersStr) return;
+    let marker = markersStr.split(',').map((strToNum) => +strToNum);
+    return marker;
   }
 
   getQuery(queryObj):NavigationExtras {

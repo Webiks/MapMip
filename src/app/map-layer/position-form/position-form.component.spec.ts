@@ -1,42 +1,29 @@
 /* tslint:disable:no-unused-variable */
 import {async, ComponentFixture, TestBed, inject} from '@angular/core/testing';
 
-import { PositionFormComponent } from './position-form.component';
+import {PositionFormComponent, PERMISSIONS} from './position-form.component';
 import {RouterTestingModule} from "@angular/router/testing";
-import {MapLayerComponent} from "../map-layer.component";
-import {MapLayerModule} from "../map-layer.module";
 import {Router} from "@angular/router";
-import {AppModule} from "../../app.module";
-import {AppComponent} from "../../app.component";
+import {FormsModule} from "@angular/forms";
+import {QueryParamsHelperService} from "../query-params-helper.service";
+import {CommonModule} from "@angular/common";
 
-fdescribe('PositionFormComponent', () => {
+describe('PositionFormComponent', () => {
   let component: PositionFormComponent;
   let fixture: ComponentFixture<PositionFormComponent>;
   let element: any;
-  let router:Router
+  let router:Router;
+  let current_state = '/cesium';
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      declarations:[PositionFormComponent],
       imports:[
-        RouterTestingModule.withRoutes([
-          {
-            path: '',
-            component:AppComponent,
-            children:
-            [
-              { path: 'dd', component: MapLayerComponent, children:[
-                { path: '', redirectTo:'/cesium', pathMatch: 'full' },
-                { path: '/cesium'},
-                { path: '/leaflet'},
-                { path: '/openlayer'}
-              ]
-              },
-              { path: '', redirectTo:'dd', pathMatch: 'full' }
-            ]
-          }
-          ]),
-        AppModule,
-        MapLayerModule
+        CommonModule,
+        FormsModule,
+        RouterTestingModule
       ],
+      providers:[QueryParamsHelperService]
     })
     .compileComponents();
   }));
@@ -47,7 +34,11 @@ fdescribe('PositionFormComponent', () => {
     element = fixture.nativeElement;
     fixture.detectChanges();
     router = _router;
-    router.navigate(['/dd']);
+
+    spyOn(router, 'isActive').and.callFake((url) => {
+      return url.includes(current_state)
+    });
+
   }));
 
   it('should be defined', () => {
@@ -64,13 +55,110 @@ fdescribe('PositionFormComponent', () => {
     expect(keys[2]).toEqual('three');
   });
 
-  it('should show all params that have premision', () => {
+  it('should havePermission to return if param should include on current state', () => {
 
-    Object.keys(component.params).forEach((key)=>{
-      component.params[key].value = Math.random();
-    });
-    let list = element.querySelectorAll('form-group');
+
+
+    fixture.detectChanges();
+
+    let height = {
+      permissions: [PERMISSIONS['/cesium']]
+    };
+
+    let zoom = {
+      permissions: [PERMISSIONS['/leaflet']]
+    };
+
+    let lat = {
+      permissions: [PERMISSIONS['/cesium'], PERMISSIONS['/leaflet']]
+    };
+
+    let rotation = {
+      permissions: [PERMISSIONS['/openlayers']]
+    };
+
+
+    current_state = '/cesium';
+
+    expect(component.havePermission(height)).toBeTruthy();
+    expect(component.havePermission(zoom)).toBeFalsy();
+    expect(component.havePermission(lat)).toBeTruthy();
+    expect(component.havePermission(rotation)).toBeFalsy();
+
+    current_state = '/leaflet';
+
+    expect(component.havePermission(height)).toBeFalsy();
+    expect(component.havePermission(zoom)).toBeTruthy();
+    expect(component.havePermission(lat)).toBeTruthy();
+    expect(component.havePermission(rotation)).toBeFalsy();
+
+    current_state = '/openlayers';
+
+    expect(component.havePermission(height)).toBeFalsy();
+    expect(component.havePermission(zoom)).toBeFalsy();
+    expect(component.havePermission(lat)).toBeFalsy();
+    expect(component.havePermission(rotation)).toBeTruthy();
+
   });
 
+  it('should show all params that include permission of current_state value', () => {
+
+    current_state = '/leaflet'; //lat,lng,zoom have permissions.
+
+    component.params["lat"].val = 30;
+    component.params["lng"].val = 20;
+    component.params["zoom"].val = 10;
+
+    fixture.detectChanges();
+
+    let form_groups = element.querySelectorAll('.input-group');
+
+    expect(form_groups.length).toEqual(3);
+
+    let lat = form_groups[0];
+    let lng = form_groups[1];
+    let zoom = form_groups[2];
+
+    expect(lat.querySelector("span").textContent).toEqual("lat");
+    expect(lng.querySelector("span").textContent).toEqual("lng");
+    expect(zoom.querySelector("span").textContent).toEqual("zoom");
+
+    expect(+lat.querySelector("input").attributes['ng-reflect-model'].value).toEqual(30);
+    expect(+lng.querySelector("input").attributes['ng-reflect-model'].value).toEqual(20);
+    expect(+zoom.querySelector("input").attributes['ng-reflect-model'].value).toEqual(10);
+
+  });
+
+  it('submitForm should navigate with the new params values', () => {
+    spyOn(router, 'navigate');
+
+    current_state = '/cesium';
+
+    //cesium params
+    component.params.lng.val = 1;
+    component.params.lat.val = 2;
+    component.params.height.val = 3;
+    component.params.pitch.val = 4;
+    component.params.roll.val = 5;
+    component.params.heading.val = 6;
+    component.params.dim.val = 3;
+
+    component.submitForm();
+    fixture.detectChanges();
+
+    let queryParams = {
+      lng:1,
+      lat:2,
+      height:3,
+      pitch:4,
+      roll:5,
+      heading:6,
+      zoom:undefined, //no permission on cesium
+      dim:3,
+    };
+
+
+    expect(router.navigate).toHaveBeenCalledWith([], {queryParams: queryParams});
+ });
 
 });
