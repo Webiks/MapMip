@@ -25,7 +25,8 @@
         "../node_modules/cesium/Build/Cesium/Widgets/widgets.css"
       ],
       "scripts": [
-        "../node_modules/cesium/Build/Cesium/Cesium.js"
+        "../node_modules/cesium/Build/Cesium/Cesium.js",
+        "../node_modules/rison/js/rison.js"
       ],
       "environments": {
         "source": "environments/environment.ts",

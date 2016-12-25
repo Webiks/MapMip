@@ -41,15 +41,12 @@ export class QueryParamsHelperService {
   queryDim(params:Params) {
     return +params['dim'] || 3;
   }
-  queryMarkers(params:Params):[number, number, number] | any {
-
-    // all.split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === all.split("),(").length ? "(" + one : "(" + one + ")")
-    // one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum);
-
-    let markersStr = params['marker']; // [[1,2,3], [4,5,6]]
-    if(!markersStr) return;
-    let marker = markersStr.split(',').map((strToNum) => +strToNum);
-    return marker;
+  queryMarkers(params:Params){
+    let markersStr = params['markers'];
+    if(!markersStr) return [];
+    markersStr = markersStr.trim().split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === markersStr.split("),(").length ? "(" + one : "(" + one + ")");
+    let markers = markersStr.map(one => one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum));
+    return markers;
   }
 
   getQuery(queryObj):NavigationExtras {
