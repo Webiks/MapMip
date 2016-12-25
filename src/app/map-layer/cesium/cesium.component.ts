@@ -39,6 +39,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   setQueryBoundsOnNavigationEnd: (NavigationEnd) => void = (event:NavigationEnd):void => {
     let urlTree:UrlTree = this.router.parseUrl(event.url);
     urlTree.queryParams['bounds'] = this.getBounds().toString();
+    urlTree.queryParams['heading'] = (360 - (+urlTree.queryParams['heading'])).toString();
     this.router.navigateByUrl(urlTree.toString());
   };
 
@@ -55,8 +56,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
 
     //view
     if(this.queryParamsHelperService.hasQueryBounds(params)) {
-      let bounds:[number, number, number, number] = this.queryParamsHelperService.queryBounds(params);
-      this.setMapBounds(bounds);
+      this.setMapBounds(params);
     } else if(this.anyViewChanges(params)){
       this.setMapView(params);
     }
@@ -78,14 +78,17 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   }
 
   anyViewChanges(params:Params):boolean {
+
     let longitudeP:number       = this.queryParamsHelperService.queryLng(params)// || this.getCenter().lng;
     let latitudeP:number        = this.queryParamsHelperService.queryLat(params)// || this.getCenter().lat;
     let heightP:number          = this.queryParamsHelperService.queryHeight(params)// || this.viewer.camera.positionCartographic.height;
     let headingRadiansP:number  = this.queryParamsHelperService.queryHeading(params) % 360;
     let pitchRadiansP:number    = this.queryParamsHelperService.queryPitch(params) % 360;
     let rollRadiansP:number     = this.queryParamsHelperService.queryRoll(params) % 360;
-    let dimP:number             =  this.queryParamsHelperService.queryDim(params);
-    let arrayP = [longitudeP, latitudeP, heightP, headingRadiansP, pitchRadiansP, rollRadiansP, dimP];
+    let dimP:number             = this.queryParamsHelperService.queryDim(params);
+    let rotateP:number          = this.queryParamsHelperService.queryRotate(params);
+
+    let arrayP:Array<number> = [longitudeP, latitudeP, heightP, headingRadiansP, pitchRadiansP, rollRadiansP, dimP, rotateP];
 
     let longitude:number        = this.getCenter().lng;
     let latitude:number         = this.getCenter().lat;
@@ -94,12 +97,14 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     let pitchRadians:number     = +Cesium.Math.toDegrees(this.viewer.camera.pitch) % 360;
     let rollRadians:number      = +Cesium.Math.toDegrees(this.viewer.camera.roll) % 360;
     let dim:number              = this.viewer.scene.mode;
-    let array = [longitude, latitude, height, headingRadians, pitchRadians, rollRadians, dim];
+    let rotate:number           = this.viewer.scene.mapMode2D == Cesium.MapMode2D.INFINITE_SCROLL ? 0 : 1;
+
+    let array = [longitude, latitude, height, headingRadians, pitchRadians, rollRadians, dim, rotate];
 
     arrayP.forEach( (value, index) => {arrayP[index] = +arrayP[index].toFixed(7)});
     array.forEach( (value, index) => {array[index] = +array[index].toFixed(7)});
 
-    return !_.isEqual(arrayP, array)
+    return !_.isEqual(arrayP, array) || rotate == rotateP
   }
 
   anyMarkersParamsChanges(currentParams:Params): boolean{
@@ -167,6 +172,10 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     let pitchRadians = Cesium.Math.toRadians(this.queryParamsHelperService.queryPitch(params));
     let rollRadians = Cesium.Math.toRadians(this.queryParamsHelperService.queryRoll(params));
     let dim:number =  this.queryParamsHelperService.queryDim(params);
+    let rotate:number =  this.queryParamsHelperService.queryRotate(params) == 0 ? 1 : 0;
+
+    this.viewer.scene.mode = (dim == 2 || dim == 3) ? dim : 3 ;
+    this.viewer.scene._mapMode2D = rotate;
 
     this.viewer.camera.setView({
       destination : Cesium.Cartesian3.fromDegrees(
@@ -178,10 +187,11 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
         heading: headingRadians,
         pitch: pitchRadians,
         roll: rollRadians
-      }
+      },
+      rotatable2D: true
     });
 
-    this.viewer.scene.mode = (dim == 2 || dim == 3) ? dim : 3 ;
+
   }
 
   setMarkersChanges(params_markers_position:Array<[number, number, number]>):void {
@@ -244,19 +254,21 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   moveEnd: () => Promise<boolean> = ():Promise<boolean> => {
 
     if(!this.anyViewChanges(this.currentParams)) return;
-
+    //
     let center: {lat:number, lng:number} = this.getCenter();
     if(!center) return;
     let lat:number = center.lat;
     let lng:number = center.lng;
     let height:number = this.viewer.camera.positionCartographic.height;//.toFixed(7);
     let heading:number = +Cesium.Math.toDegrees(this.viewer.camera.heading);//.toFixed(7);
+
     let pitch:number = +Cesium.Math.toDegrees(this.viewer.camera.pitch);//.toFixed(7);
     let roll:number = +Cesium.Math.toDegrees(this.viewer.camera.roll);//.toFixed(7);
     let dim:number = this.viewer.scene.mode;
     let markers = this.currentParams['markers'];
+    let rotate = this.viewer.scene._mapMode2D == 0 ? 1 : 0;
 
-    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, dim, markers});
+    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, dim, markers, rotate});
 
     return this.router.navigate([], navigationExtras);
 
@@ -286,6 +298,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     else {
       let position, that = this;
       return new Observable<any>(obs => {
+        let heading = this.viewer.camera.heading;
 
         if (Math.cos(that.viewer.camera.pitch) < 0.001){
           position = that.viewer.camera.position;
@@ -311,7 +324,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
           destination: position,
           easingFunction: Cesium.EasingFunction.LINEAR_NONE,
           orientation: {
-            heading: 0.0, //go north
+            heading: heading ,
             pitch: Cesium.Math.toRadians(-90.0), //look down
             roll: 0.0 //no change
           },
@@ -361,10 +374,17 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     return bounds;
   }
 
-  setMapBounds(bounds:[number, number, number, number]):void {
+  setMapBounds(params:Params):void {
+    let bounds:[number, number, number, number] = this.queryParamsHelperService.queryBounds(params);
+    let heading:number = Cesium.Math.toRadians(this.queryParamsHelperService.queryHeading(this.currentParams));
+
     this.viewer.camera.setView({
-      destination: Cesium.Rectangle.fromDegrees(...bounds)
+      destination: Cesium.Rectangle.fromDegrees(...bounds),
+      orientation: {
+        heading: heading
+      }
     });
+
   }
 
 

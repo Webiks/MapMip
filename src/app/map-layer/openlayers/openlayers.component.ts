@@ -6,6 +6,7 @@ import 'rxjs/add/operator/take';
 import {host, animations} from "../map-layer.component";
 import * as _ from 'lodash';
 import {MapLayerChild} from "../map-layer-child.interface";
+import {CalcService} from "../calc-service";
 
 @Component({
   host: host,
@@ -21,7 +22,7 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
   public moveEndEvent;
   public currentParams:Params;
 
-  constructor(private activatedRoute:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService, private router:Router) { }
+  constructor(private activatedRoute:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService, private router:Router, private calcService:CalcService) { window['current'] = this}
 
   ngOnInit() {
     this.initializeMap();
@@ -32,6 +33,7 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
   setQueryBoundsOnNavigationEnd: (NavigationEnd) => void = (event:NavigationEnd):void => {
     let urlTree:UrlTree = this.router.parseUrl(event.url);
     urlTree.queryParams['bounds'] = this.getBounds().toString();
+    urlTree.queryParams['heading'] = (360 - (+urlTree.queryParams['heading'])).toString();
     this.router.navigateByUrl(urlTree.toString());
   };
 
@@ -39,8 +41,7 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
   queryParams: (Params) => void = (params:Params):void => {
     this.currentParams = params;
     if(this.queryParamsHelperService.hasQueryBounds(params)) {
-      let bounds:[number, number, number, number] = this.queryParamsHelperService.queryBounds(params);
-      this.setMapBounds(bounds);
+      this.setMapBounds(params);
     } else if(this.anyParamChanges(params)) {
       this.setMapView(params);
     }
@@ -65,34 +66,43 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
     this.map.setView(new ol.View(<olx.ViewOptions>{
       center: ol.proj.fromLonLat([this.queryParamsHelperService.queryLng(params),this.queryParamsHelperService.queryLat(params)]),
       zoom: this.queryParamsHelperService.queryZoom(params),
+      rotation: this.calcService.toRadians(this.queryParamsHelperService.queryHeading(params))
     }))
   }
 
-  setMapBounds(bounds:[number, number, number, number] ):void {
+  setMapBounds(params:Params):void {
+    let bounds:[number, number, number, number] = this.queryParamsHelperService.queryBounds(params);
+    let heading:number = this.calcService.toRadians(this.queryParamsHelperService.queryHeading(params));
+
     this.map.getView().fit(this.transformExtent(bounds), this.map.getSize());
+    this.map.getView().setRotation(heading)
   }
 
   anyParamChanges(params:Params):boolean {
     let longitudeP:number = this.queryParamsHelperService.queryLng(params);
     let latitudeP:number  = this.queryParamsHelperService.queryLng(params);
     let zoomP:number      = this.queryParamsHelperService.queryZoom(params);
+    let headingP:number   = this.queryParamsHelperService.queryHeading(params);
 
-    let arrayP = [longitudeP, latitudeP, zoomP];
+    let arrayP = [longitudeP, latitudeP, zoomP, headingP];
 
     let longitude:number;
     let latitude:number;
     let zoom:number;
+    let heading:number;
 
     try{
       longitude = this.map.getView().getCenter()[0];
       latitude  = this.map.getView().getCenter()[1];
       zoom      = this.map.getView().getZoom();
+      heading   = this.calcService.toDegrees(this.map.getView().getRotation());
+
     } catch (e) {
 
       return true;
     }
 
-    let array = [longitude, latitude, zoom];
+    let array = [longitude, latitude, zoom, heading];
 
     arrayP.forEach( (value, index) => {arrayP[index] = +arrayP[index].toFixed(7)});
     array.forEach( (value, index) => {array[index] = +array[index].toFixed(7)});
@@ -105,7 +115,9 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
     let lng = centerCord[0];
     let lat = centerCord[1];
     let zoom:number = event.map.getView().getZoom();
-    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, zoom});
+    let heading:number = this.calcService.toDegrees(event.map.getView().getRotation());
+
+    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, zoom, heading});
     return this.router.navigate([], navigationExtras);
 
   }
@@ -116,6 +128,7 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
 
   ngOnDestroy() {
   }
+
 
   getBounds():[number, number, number, number] {
     let bounds:ol.Extent = this.map.getView().calculateExtent(this.map.getSize());

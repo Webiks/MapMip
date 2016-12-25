@@ -1,7 +1,7 @@
 <form class="row" (submit)="submitForm()">
 
   <div *ngFor="let key of keys(params)">
-    <div class="form-group col-md-2" *ngIf="havePermission(params[key])">
+    <div class="form-group col-md-4" *ngIf="havePermission(params[key])">
       <div class="input-group">
         <span class="input-group-addon">{{key}}</span>
         <input type="text" class="form-control" [(ngModel)]="params[key].val" name="{{key}}" placeholder="Lat">

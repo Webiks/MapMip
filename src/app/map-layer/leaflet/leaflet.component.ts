@@ -40,8 +40,8 @@ export class LeafletComponent implements OnInit, MapLayerChild, OnDestroy {
   queryParams: (Params) => void = (params:Params):void => {
     this.currentParams = params;
     if(this.queryParamsHelperService.hasQueryBounds(params)) {
-      let bounds:[number, number, number, number] = this.queryParamsHelperService.queryBounds(params);
-      this.setMapBounds(bounds);
+
+      this.setMapBounds(params);
     } else{
       if(this.anyParamChanges(params)) {
         this.setMapView(params);
@@ -82,8 +82,9 @@ export class LeafletComponent implements OnInit, MapLayerChild, OnDestroy {
     this.map.setView([latitude, longitude], zoom);
   }
 
-  setMapBounds(bounds:[number, number, number, number]):void {
-      this.map.fitBounds([[bounds[1], bounds[0]], [ bounds[3], bounds[2]] ]);
+  setMapBounds(params:Params):void {
+    let bounds:[number, number, number, number] = this.queryParamsHelperService.queryBounds(params);
+    this.map.fitBounds([[bounds[1], bounds[0]], [ bounds[3], bounds[2]] ]);
   }
 
   anyParamChanges(params:Params):boolean {

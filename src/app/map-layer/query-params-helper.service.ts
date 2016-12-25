@@ -41,10 +41,15 @@ export class QueryParamsHelperService {
   queryDim(params:Params) {
     return +params['dim'] || 3;
   }
+  queryRotate(params:Params):number {
+    if(isNaN(+params['rotate'])) return 0;
+    return +params['rotate']  ;
+  }
+
   queryMarkers(params:Params){
     let markersStr = params['markers'];
     if(!markersStr) return [];
-    markersStr = markersStr.trim().split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === markersStr.split("),(").length ? "(" + one : "(" + one + ")");
+    markersStr = markersStr.split(" ").join("").split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === markersStr.split("),(").length ? "(" + one : "(" + one + ")");
     let markers = markersStr.map(one => one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum));
     return markers;
   }
@@ -53,6 +58,9 @@ export class QueryParamsHelperService {
     queryObj.roll =  queryObj.roll % 360  == 0 ? undefined : queryObj.roll;
     queryObj.heading = queryObj.heading % 360  == 0 ? undefined : queryObj.heading;
     queryObj.pitch = queryObj.pitch == -90 ? undefined : queryObj.pitch;
+    queryObj.dim = queryObj.dim == 2 ? queryObj.dim : undefined;
+    queryObj.rotate = queryObj.rotate == 0 ? undefined : queryObj.rotate;
+
     return <NavigationExtras> {
       queryParams: queryObj
     };

@@ -8,6 +8,7 @@ import {MapLayerRouting} from "./map-layer-routing.module";
 import {QueryParamsHelperService} from "./query-params-helper.service";
 import { PositionFormComponent } from './position-form/position-form.component';
 import {FormsModule} from "@angular/forms";
+import {CalcService} from "./calc-service";
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import {FormsModule} from "@angular/forms";
   ],
   declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent, PositionFormComponent],
   exports: [MapLayerComponent],
-  providers:[QueryParamsHelperService]
+  providers:[QueryParamsHelperService, CalcService]
 })
 export class MapLayerModule { }

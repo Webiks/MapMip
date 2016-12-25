@@ -5,7 +5,7 @@ import { QueryParamsHelperService } from './query-params-helper.service';
 import {Params} from "@angular/router";
 import any = jasmine.any;
 
-describe('QueryParamsHelperService', () => {
+fdescribe('QueryParamsHelperService', () => {
 
   let queryParamsHelperService:QueryParamsHelperService;
   let params:Params = {};
@@ -77,5 +77,18 @@ describe('QueryParamsHelperService', () => {
     heightResult  = queryParamsHelperService.queryDim(params);
     expect(heightResult ).toEqual(3);
   });
+
+
+  it('queryMarkers should return Array of markers with 3 numbers(lng,lat,height), in addition should ignore spaces', () => {
+    params['markers'] = '(1 , 2 , 3)  ,  (4 ,5 ,6)  ,  (7 , 8 , 9)';
+    let markersResult = queryParamsHelperService.queryMarkers(params);
+    expect(markersResult).toEqual(jasmine.any(Array));
+    expect(markersResult.length).toEqual(3);
+    expect(markersResult[0]).toEqual([1,2,3]);
+    expect(markersResult[1]).toEqual([4,5,6]);
+    expect(markersResult[2]).toEqual([7,8,9]);
+  });
+
+
 
 });
