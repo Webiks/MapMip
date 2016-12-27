@@ -1,4 +1,5 @@
 import {Component, OnInit, style, state, animate, transition, trigger} from '@angular/core';
+import {Router, UrlTree} from "@angular/router";
 
 @Component({
   selector: 'app-map-layer',
@@ -7,9 +8,22 @@ import {Component, OnInit, style, state, animate, transition, trigger} from '@an
 })
 export class MapLayerComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router:Router) { }
 
   ngOnInit() {
+  }
+
+  markerCenter() {
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    let center_marker:string = `(${urlTree.queryParams['lng']},${urlTree.queryParams['lat']},0)`;
+
+    if(!urlTree.queryParams['markers']){
+      urlTree.queryParams['markers'] = center_marker;
+    } else {
+      urlTree.queryParams['markers'] += `,${center_marker}`;
+    }
+
+    this.router.navigateByUrl(urlTree.toString())
   }
 
 }
@@ -30,5 +44,6 @@ export const host = {
   '[style.display]': "'block'",
   '[style.position]': "'absolute'",
   '[style.width]': "'100%'",
+  '[style.height]': "'100%'"
 };
 

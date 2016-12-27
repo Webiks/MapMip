@@ -13,7 +13,7 @@ describe('PositionFormComponent', () => {
   let fixture: ComponentFixture<PositionFormComponent>;
   let element: any;
   let router:Router;
-  let current_state = '/cesium';
+  let current_state:string = '/cesium';
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -36,8 +36,10 @@ describe('PositionFormComponent', () => {
     router = _router;
 
     spyOn(router, 'isActive').and.callFake((url) => {
-      return url.includes(current_state)
+      return current_state.includes(url)
     });
+
+    router['__defineGetter__']('url', () => current_state)
 
   }));
 
@@ -73,8 +75,8 @@ describe('PositionFormComponent', () => {
       permissions: [PERMISSIONS['/cesium'], PERMISSIONS['/leaflet']]
     };
 
-    let rotation = {
-      permissions: [PERMISSIONS['/openlayers']]
+    let rotate = {
+      permissions: [PERMISSIONS['/openlayers'], PERMISSIONS['/cesium?dim=2']]
     };
 
 
@@ -83,21 +85,29 @@ describe('PositionFormComponent', () => {
     expect(component.havePermission(height)).toBeTruthy();
     expect(component.havePermission(zoom)).toBeFalsy();
     expect(component.havePermission(lat)).toBeTruthy();
-    expect(component.havePermission(rotation)).toBeFalsy();
+    expect(component.havePermission(rotate)).toBeFalsy();
 
     current_state = '/leaflet';
 
     expect(component.havePermission(height)).toBeFalsy();
     expect(component.havePermission(zoom)).toBeTruthy();
     expect(component.havePermission(lat)).toBeTruthy();
-    expect(component.havePermission(rotation)).toBeFalsy();
+    expect(component.havePermission(rotate)).toBeFalsy();
 
     current_state = '/openlayers';
 
     expect(component.havePermission(height)).toBeFalsy();
     expect(component.havePermission(zoom)).toBeFalsy();
     expect(component.havePermission(lat)).toBeFalsy();
-    expect(component.havePermission(rotation)).toBeTruthy();
+    expect(component.havePermission(rotate)).toBeTruthy();
+
+    current_state = '/cesium?dim=2';
+
+    expect(component.havePermission(height)).toBeTruthy();
+    expect(component.havePermission(zoom)).toBeFalsy();
+    expect(component.havePermission(lat)).toBeTruthy();
+    expect(component.havePermission(rotate)).toBeTruthy();
+
 
   });
 
@@ -141,7 +151,10 @@ describe('PositionFormComponent', () => {
     component.params.pitch.val = 4;
     component.params.roll.val = 5;
     component.params.heading.val = 6;
-    component.params.dim.val = 3;
+    component.params.mode3d.val = 1;
+    component.params.rotate.val = 1;
+    component.params.markers.val = '(1,2,3)';
+
 
     component.submitForm();
     fixture.detectChanges();
@@ -155,6 +168,8 @@ describe('PositionFormComponent', () => {
       heading:6,
       zoom:undefined, //no permission on cesium
       dim:3,
+      rotate: 1,
+      markers: '(1,2,3)'
     };
 
 

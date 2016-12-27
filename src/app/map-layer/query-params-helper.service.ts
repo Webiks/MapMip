@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Params, NavigationExtras} from "@angular/router";
 import {isUndefined} from "util";
+import * as _ from 'lodash';
 
 @Injectable()
 export class QueryParamsHelperService {
@@ -38,8 +39,8 @@ export class QueryParamsHelperService {
   queryPitch(params:Params):number {
     return +params['pitch'] || -90;
   }
-  queryDim(params:Params) {
-    return +params['dim'] || 3;
+  queryMode3d(params:Params) {
+    return +params['mode3d'] == 0 ? 0 : 1;
   }
   queryRotate(params:Params):number {
     if(isNaN(+params['rotate'])) return 0;
@@ -49,16 +50,32 @@ export class QueryParamsHelperService {
   queryMarkers(params:Params){
     let markersStr = params['markers'];
     if(!markersStr) return [];
-    markersStr = markersStr.split(" ").join("").split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === markersStr.split("),(").length ? "(" + one : "(" + one + ")");
-    let markers = markersStr.map(one => one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum));
-    return markers;
+    // markersStr = markersStr.split(" ").join("").split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === markersStr.split("),(").length ? "(" + one : "(" + one + ")");
+    // let markers = markersStr.map(one => one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum));
+    return this.markersStrToArray(markersStr);
   }
+
+  markersStrToArray(markersStr) {
+    markersStr = markersStr.split(" ").join("").split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === markersStr.split("),(").length ? "(" + one : "(" + one + ")");
+    return markersStr.map(one => one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum));
+  }
+
+  markersArrayToStr(markersArray:Array<any>):string {
+    return _.size(markersArray) != 0 ? "(" + markersArray.join("),(") + ")" : "";
+  }
+
+  anyMarkersParamsChanges(prevParams:Params, currentParams:Params): boolean{
+    let currentMarkers = this.queryMarkers(currentParams);
+    let prevMarkers = this.queryMarkers(prevParams);
+    return !_.isEqual(currentMarkers, prevMarkers) ;
+  }
+
 
   getQuery(queryObj):NavigationExtras {
     queryObj.roll =  queryObj.roll % 360  == 0 ? undefined : queryObj.roll;
     queryObj.heading = queryObj.heading % 360  == 0 ? undefined : queryObj.heading;
     queryObj.pitch = queryObj.pitch == -90 ? undefined : queryObj.pitch;
-    queryObj.dim = queryObj.dim == 2 ? queryObj.dim : undefined;
+    queryObj.mode3d = queryObj.mode3d == 0 ? queryObj.mode3d : undefined;
     queryObj.rotate = queryObj.rotate == 0 ? undefined : queryObj.rotate;
 
     return <NavigationExtras> {

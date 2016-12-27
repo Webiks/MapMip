@@ -6,17 +6,22 @@ import {LeafletComponent} from "./leaflet/leaflet.component";
 import {OpenlayersComponent} from "./openlayers/openlayers.component";
 import {MapLayerRouting} from "./map-layer-routing.module";
 import {QueryParamsHelperService} from "./query-params-helper.service";
-import { PositionFormComponent } from './position-form/position-form.component';
 import {FormsModule} from "@angular/forms";
 import {CalcService} from "./calc-service";
+import { JWBootstrapSwitchModule } from 'jw-bootstrap-switch-ng2';
+import {Ng2BootstrapModule} from "ng2-bootstrap";
+import {PositionFormModule} from "./position-form/position-form.module";
 
 @NgModule({
   imports: [
     CommonModule,
     MapLayerRouting,
-    FormsModule
+    FormsModule,
+    Ng2BootstrapModule,
+    JWBootstrapSwitchModule,
+    PositionFormModule
   ],
-  declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent, PositionFormComponent],
+  declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent],
   exports: [MapLayerComponent],
   providers:[QueryParamsHelperService, CalcService]
 })

@@ -68,15 +68,15 @@ fdescribe('QueryParamsHelperService', () => {
     expect(heightResult ).toEqual(-90);
   });
 
-  it('queryDim should return Number when params["bounds"] is string, should return 3 when params["dim"] is undefined ', () => {
-    params['dim'] = '2';
-    let heightResult = queryParamsHelperService.queryDim(params);
-    expect(heightResult ).toEqual(jasmine.any(Number));
-    expect(heightResult ).toEqual(2);
-    params['dim'] = undefined;
-    heightResult  = queryParamsHelperService.queryDim(params);
-    expect(heightResult ).toEqual(3);
-  });
+  // it('queryDim should return Number when params["bounds"] is string, should return 3 when params["dim"] is undefined ', () => {
+  //   params['dim'] = '2';
+  //   let heightResult = queryParamsHelperService.queryDim(params);
+  //   expect(heightResult ).toEqual(jasmine.any(Number));
+  //   expect(heightResult ).toEqual(2);
+  //   params['dim'] = undefined;
+  //   heightResult  = queryParamsHelperService.queryDim(params);
+  //   expect(heightResult ).toEqual(3);
+  // });
 
 
   it('queryMarkers should return Array of markers with 3 numbers(lng,lat,height), in addition should ignore spaces', () => {
