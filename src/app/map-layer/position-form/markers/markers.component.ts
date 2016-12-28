@@ -3,6 +3,7 @@ import {ModalDirective} from "ng2-bootstrap";
 import * as _ from 'lodash';
 import {QueryParamsHelperService} from "../../query-params-helper.service";
 import {Router, Params, ActivatedRoute} from "@angular/router";
+import {FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-markers',
@@ -13,7 +14,9 @@ import {Router, Params, ActivatedRoute} from "@angular/router";
 export class MarkersComponent implements OnInit{
 
   @ViewChild('smModal') public smModal:ModalDirective;
+  @ViewChild('addModal') public addModal:ModalDirective;
   @ViewChild('ul') public ul:ElementRef;
+  public addInput:string = "";
 
   @Output() submitMarkersEmitter = new EventEmitter();
 
@@ -28,9 +31,14 @@ export class MarkersComponent implements OnInit{
     this.ul.nativeElement.scrollTop = 500;
   }
 
+  changeInput(inp:string) {
+    console.log(inp)
+  }
+
   queryParams: (Params) => void = (params:Params):void => {
     let arr = this.queryParamsHelperService.queryMarkers({markers: params['markers']});
     this.markers_array = arr.map((arr_pos) => {return {str: arr_pos.toString()} });
+    this.cloneEditedMarkers();
   };
 
   cloneEditedMarkers() {
@@ -40,7 +48,7 @@ export class MarkersComponent implements OnInit{
 
   rmvMarker(index:number) {
     this.edited_markers_array.splice(index, 1);
-    this.submitMarkers()
+    // this.submitMarkers()
   }
 
   parseMarkers(edited_markers_array) {
@@ -48,9 +56,36 @@ export class MarkersComponent implements OnInit{
     return this.queryParamsHelperService.markersArrayToStr(markersArrayToStr);
   }
 
+  canApply() {
+    let array2 = this.markers_array;
+
+    let some = (obj, index) => {
+      let obj2 = array2[index];
+      if(!obj2) return true;
+      return obj.str != obj2.str;
+    };
+
+    let array1res:boolean = this.edited_markers_array.some(some);
+    array2 = this.edited_markers_array;
+    let array2res:boolean = this.markers_array.some(some);
+
+    let regex_is_ok = !this.edited_markers_array.some((obj) => !obj || !this.markerStrRegex(obj.str));
+    return (array1res || array2res) && regex_is_ok;
+  }
+
   submitMarkers(hide:boolean=false) {
-    this.submitMarkersEmitter.emit({parsed_markers: this.parseMarkers(this.edited_markers_array), smModal:this.smModal, hide:hide})
+    !this.canApply() ? this.smModal.hide() : this.submitMarkersEmitter.emit({parsed_markers: this.parseMarkers(this.edited_markers_array), smModal:this.smModal, hide:hide})
    }
 
+   submitAddMarkers(markerStr:string) {
+     this.addModal.hide();
+     this.edited_markers_array.push({str: markerStr, disabled: true})
+   }
+
+   markerStrRegex(markerStr:string):boolean {
+     let a = markerStr.split(",");
+     if(a.length!=3) return false;
+     return !a.some((o) => !o || Number.isNaN(+o))
+   }
 
 }

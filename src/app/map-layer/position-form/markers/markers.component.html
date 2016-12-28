@@ -1,8 +1,8 @@
-<button class="btn btn-primary" (click)="smModal.show()" type="button" [disabled]="markers_array.length == 0">Markers</button>
+<button class="btn btn-primary" (click)="smModal.show()" type="button">Markers</button>
 
-<div [config]="{backdrop: false}" bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="edited_markers_array = null" (onShow)="cloneEditedMarkers()">
+<div [config]="{backdrop: false}" bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="cloneEditedMarkers()">
   <div class="modal-dialog modal-md">
-    <form class="modal-content">
+    <form class="modal-content" (submit)="submitMarkers(true)">
       <div class="modal-header">
         <button type="button" class="close" aria-label="Close" (click)="smModal.hide()">
           <span aria-hidden="true">&times;</span>
@@ -10,21 +10,54 @@
         <h4 class="modal-title">Markers</h4>
       </div>
       <div class="modal-body">
-          <button class="btn btn-info" style="margin: 0 10px 10px 10px;" type="button">Add</button>
+          <button class="btn btn-info" style="margin: 0 10px 10px 10px;" type="button" (click)="addModal.show()">Add</button>
 
-        <ul class="list-group" style="overflow-y: auto;height: 170px;" #ul>
+        <ul class="list-group" style="overflow-y: auto;max-height: 170px;" #ul>
           <li class="list-group-item" style="margin: 0 10px;" *ngFor="let marker of edited_markers_array; let i = index">
             ({{i + 1}})
 
             <button style="font-size: 15px;padding: 2px 5px;" class="btn btn-danger glyphicon glyphicon-trash" type="button" (click)="rmvMarker(index)"></button>
             <button style="font-size: 15px;padding: 2px 5px;" class="btn btn-info glyphicon glyphicon-pencil" type="button" (click)="marker.disabled = !marker.disabled;"></button>
-            <input type="text" class="pull-right form-control" style="width: 80%;text-align: center;" [(ngModel)]="marker.str" name="marker-{{i}}" [disabled]="marker.disabled">
+            <input
+              type="text"
+              class="pull-right form-control"
+              style="width: 80%;text-align: center;"
+              [(ngModel)]="marker.str" name="marker-{{i}}"
+              [disabled]="marker.disabled"
+              [style.border-color]="!markerStrRegex(marker.str) ? 'red' : ''"
+              (focus)="iAddInput = marker.str"
+              (blur)="marker.str = !markerStrRegex(marker.str) ? iAddInput : marker.str"
+            >
           </li>
         </ul>
       </div>
 
       <div class="modal-footer">
-        <button class="col-sm-offset-5 btn btn-default" (click)="submitMarkers(true)" type="submit">Submit</button>
+        <button class="btn btn-default" (click)="smModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" [disabled]="!canApply()" (click)="submitMarkers()" type="button">Apply</button>
+        <button class="btn btn-default" type="submit">Ok</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+<div [config]="{backdrop: false}" bsModal #addModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="addInput = ''">
+  <div class="modal-dialog modal-sm">
+    <form class="modal-content" (submit)="submitAddMarkers(addInput)">
+      <div class="modal-header">
+         <h4 class="modal-title">Add Marker</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <input class="form-control text-center" [(ngModel)]="addInput" name="addInput" [style.border-color]="addInput && !markerStrRegex(addInput) ? 'red' : '#66afe9'">
+          <h6 class="modal-subtitle text-info text-center">Number,Number,Number</h6>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" (click)="addModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" [disabled]="!markerStrRegex(addInput)" type="submit">Add</button>
       </div>
 
     </form>

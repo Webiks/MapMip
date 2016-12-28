@@ -30,6 +30,7 @@
     "core-js": "^2.4.1",
     "jw-bootstrap-switch-ng2": "0.0.6",
     "leaflet": "^1.0.2",
+    "leaflet-bing-layer": "^3.1.0",
     "lodash": "^4.17.2",
     "ng2-bootstrap": "^1.1.16",
     "openlayers": "^3.20.0",
