@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Router, ActivatedRoute, Params, UrlTree} from "@angular/router";
+import {Router, ActivatedRoute, Params, UrlTree, NavigationExtras} from "@angular/router";
 import {ModalDirective} from "ng2-bootstrap";
 import {QueryParamsHelperService} from "../query-params-helper.service";
 import {isUndefined} from "util";
@@ -81,7 +81,8 @@ export class PositionFormComponent implements OnInit {
       queryParams[key] = val;
     });
 
-    return this.router.navigate([], {queryParams: queryParams})
+    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery(queryParams);
+    return this.router.navigate([], navigationExtras);
   }
 
   havePermission(obj:{permissions:number[]}):boolean {

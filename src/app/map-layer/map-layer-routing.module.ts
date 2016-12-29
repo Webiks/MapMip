@@ -4,7 +4,7 @@ import {MapLayerComponent} from "./map-layer.component";
 import {CesiumComponent} from "./cesium/cesium.component";
 import {OpenlayersComponent} from "./openlayers/openlayers.component";
 import {LeafletComponent} from "./leaflet/leaflet.component";
-import {CesiumCanDeactivate} from "./cesium/cesium.canDeactivate";
+import {GeneralCanDeactivateService} from "./general-can-deactivate.service";
 
 const mayLayerRoutes :Routes = [
   {
@@ -15,11 +15,12 @@ const mayLayerRoutes :Routes = [
       {
         path: 'cesium',
         component: CesiumComponent,
-        canDeactivate: [CesiumCanDeactivate]
+        canDeactivate: [GeneralCanDeactivateService]
       },
       {
         path: 'openlayers',
-        component: OpenlayersComponent
+        component: OpenlayersComponent,
+        canDeactivate: [GeneralCanDeactivateService]
       },
       {
         path: 'leaflet',
@@ -32,7 +33,7 @@ const mayLayerRoutes :Routes = [
 @NgModule({
   imports: [RouterModule.forChild(mayLayerRoutes)],
   exports: [RouterModule],
-  providers: [CesiumCanDeactivate]
+  providers: [GeneralCanDeactivateService]
 })
 
 export class MapLayerRouting {

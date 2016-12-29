@@ -55,9 +55,16 @@ export class QueryParamsHelperService {
     return this.markersStrToArray(markersStr);
   }
 
-  markersStrToArray(markersStr) {
-    markersStr = markersStr.split(" ").join("").split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === markersStr.split("),(").length ? "(" + one : "(" + one + ")");
-    return markersStr.map(one => one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum));
+  markersStrToArray(markersStr:string) {
+    let markersArrayStr:Array<string> = markersStr.split(" ").join("").split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === markersStr.split("),(").length ? "(" + one : "(" + one + ")");
+    let markersArrayNum:Array<any> = markersArrayStr.map(one => one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum));
+    markersArrayNum.forEach((markerPos, index, array) => {
+      if (_.size(markerPos) === 2) {
+        markerPos.push(0);
+        array[index] = markerPos;
+      }
+    });
+    return markersArrayNum;
   }
 
   markersArrayToStr(markersArray:Array<any>):string {
@@ -77,6 +84,7 @@ export class QueryParamsHelperService {
     queryObj.pitch = queryObj.pitch == -90 ? undefined : queryObj.pitch;
     queryObj.mode3d = queryObj.mode3d == 0 ? queryObj.mode3d : undefined;
     queryObj.rotate = queryObj.rotate == 0 ? undefined : queryObj.rotate;
+    queryObj.markers = _.isEmpty(queryObj.markers) ? undefined : queryObj.markers;
 
     return <NavigationExtras> {
       queryParams: queryObj

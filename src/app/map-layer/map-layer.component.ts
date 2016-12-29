@@ -15,7 +15,7 @@ export class MapLayerComponent implements OnInit {
 
   markerCenter() {
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
-    let center_marker:string = `(${urlTree.queryParams['lng']},${urlTree.queryParams['lat']},0)`;
+    let center_marker:string = `(${urlTree.queryParams['lng']},${urlTree.queryParams['lat']})`;
 
     if(!urlTree.queryParams['markers']){
       urlTree.queryParams['markers'] = center_marker;

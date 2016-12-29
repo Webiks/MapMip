@@ -9,7 +9,7 @@ import {MapLayerChild} from "../map-layer-child.interface";
 import * as _ from 'lodash'
 import * as L from 'leaflet';
 import Marker = L.Marker;
-
+import "leaflet-bing-layer/leaflet-bing-layer";
 
 @Component({
   host: host,
@@ -18,6 +18,7 @@ import Marker = L.Marker;
   styleUrls: ['./leaflet.component.scss'],
   animations: animations
 })
+
 export class LeafletComponent implements OnInit, MapLayerChild, OnDestroy {
 
   public map;
@@ -63,15 +64,13 @@ export class LeafletComponent implements OnInit, MapLayerChild, OnDestroy {
 
   initializeMap():void {
 
-
-
-
-
     this.map = L.map('leafletContainer');
 
-    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      id: 'mapbox.streets'
-    }).addTo(this.map);
+    L.tileLayer['bing']('Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq').addTo(this.map);
+    //
+    // L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //   id: 'mapbox.streets'
+    // }).addTo(this.map);
 
     // let icon = L.icon(<L.IconOptions>{
     //   iconUrl: '/assets/Leaflet/images/marker-icon.png',
@@ -239,38 +238,4 @@ export class LeafletComponent implements OnInit, MapLayerChild, OnDestroy {
     });
     return obj;
   }
-}
-
-class BingMap {
-  // var BingLayer = L.TileLayer.extend({
-  //   getTileUrl: function (tilePoint) {
-  //     this._adjustTilePoint(tilePoint);
-  //     return L.Util.template(this._url, {
-  //       s: this._getSubdomain(tilePoint),
-  //       q: this._quadKey(tilePoint.x, tilePoint.y, this._getZoomForUrl())
-  //     });
-  //   },
-  //   _quadKey: function (x, y, z) {
-  //     var quadKey = [];
-  //     for (var i = z; i > 0; i--) {
-  //       var digit = '0';
-  //       var mask = 1 << (i - 1);
-  //       if ((x & mask) != 0) {
-  //         digit++;
-  //       }
-  //       if ((y & mask) != 0) {
-  //         digit++;
-  //         digit++;
-  //       }
-  //       quadKey.push(digit);
-  //     }
-  //     return quadKey.join('');
-  //   }
-  // });
-  //
-  // var layer = new BingLayer('http://t{s}.tiles.virtualearth.net/tiles/a{q}.jpeg?g=1398', {
-  //   subdomains: ['0', '1', '2', '3', '4'],
-  //   attribution: '&copy; <a href="http://bing.com/maps">Bing Maps</a>'
-  // });
-
 }

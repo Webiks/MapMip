@@ -1,6 +1,5 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {CesiumCanDeactivate} from "./map-layer/cesium/cesium.canDeactivate";
 import {MapLayerModule} from "./map-layer/map-layer.module";
 
 
@@ -16,8 +15,7 @@ const appRoutes:Routes = [
     RouterModule.forRoot(appRoutes, {useHash:true}) ,
     MapLayerModule
   ],
-  exports: [RouterModule],
-  providers:[CesiumCanDeactivate]
+  exports: [RouterModule]
 })
 
 export class AppRoutingModule {}

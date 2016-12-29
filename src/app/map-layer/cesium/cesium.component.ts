@@ -1,13 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable, Observer} from "rxjs";
 import {QueryParamsHelperService} from "../query-params-helper.service";
-import {ActivatedRoute, Params, Router, NavigationExtras, UrlTree, NavigationEnd} from "@angular/router";
-import {CesiumCanDeactivate} from "./cesium.canDeactivate";
+import {
+  ActivatedRoute, Params, Router, NavigationExtras, UrlTree, NavigationEnd,
+  NavigationStart
+} from "@angular/router";
 import {host, animations} from "../map-layer.component";
 import 'rxjs/add/operator/take';
 import * as _ from 'lodash';
 import {MapLayerChild} from "../map-layer-child.interface";
 import {isUndefined} from "util";
+import "cesium/Build/Cesium/Cesium.js";
+import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
 
 @Component({
   host: host,
@@ -26,20 +30,21 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   public prevParams:Params = {};
   public currentParams:Params = {};
   public queryParamsSubscriber;
+  public go_north:boolean = false;
 
-  constructor(private queryParamsHelperService:QueryParamsHelperService, private activatedRoute:ActivatedRoute, private cesiumCanDeactivate:CesiumCanDeactivate, private router:Router) {window['current'] = this;}
+  constructor(private queryParamsHelperService:QueryParamsHelperService, private activatedRoute:ActivatedRoute, private generalCanDeactivateService:GeneralCanDeactivateService, private router:Router) {window['current'] = this;}
 
   ngOnInit() {
     this.initializeMap();
     this.queryParamsSubscriber = this.activatedRoute.queryParams.subscribe(this.queryParams);
-    this.cesiumCanDeactivate.leaveCesium = Observable.create(this.leaveCesium);
+    this.generalCanDeactivateService.leaveCesium = Observable.create(this.leaveCesium);
+    this.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
     this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/cesium", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd);
   };
 
   setQueryBoundsOnNavigationEnd: (NavigationEnd) => void = (event:NavigationEnd):void => {
     let urlTree:UrlTree = this.router.parseUrl(event.url);
     urlTree.queryParams['bounds'] = this.getBounds().toString();
-    urlTree.queryParams['heading'] = (360 - (+urlTree.queryParams['heading'])).toString();
     this.router.navigateByUrl(urlTree.toString());
   };
 
@@ -130,7 +135,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
 
 
   getMarkersPosition() {
-    let points = this.viewer.entities.values.filter( (one) => one.point );
+    let points = this.viewer.entities.values.filter( (one) => one.billboard );
     let cartesianPositions = points.map( (entity) => {
       return entity.position.getValue();
     });
@@ -195,9 +200,8 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
       if(!this.markerExistOnMap(marker)) {
         this.viewer.entities.add({
           position : Cesium.Cartesian3.fromDegrees(...marker),
-          point: {
-            color : Cesium.Color.LIME,
-            pixelSize : 20
+          billboard: {
+            image: "/assets/Leaflet/images/marker-icon.png"
           }
         });
       }
@@ -321,7 +325,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
           destination: position,
           easingFunction: Cesium.EasingFunction.LINEAR_NONE,
           orientation: {
-            heading: heading ,
+            heading: this.go_north ? 0 : heading ,
             pitch: Cesium.Math.toRadians(-90.0), //look down
             roll: 0.0 //no change
           },
@@ -335,16 +339,49 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     }
   }
 
+  drawBounds() {
+    let rec = {
+      rectangle: {
+        coordinates: Cesium.Rectangle.fromDegrees(...this.getBounds()),
+        material: new Cesium.StripeMaterialProperty({
+          evenColor: Cesium.Color.WHITE,
+          oddColor: Cesium.Color.BLUE,
+          repeat: 5
+        })
+      }
+    }
+    this.viewer.entities.add(rec);
+  }
 
   getBounds() : [number,number,number,number]{
 
-    // let current_mode = this.viewer.scene.mode;
+    let current_mode:number = this.viewer.scene.mode;
+    let current_heading:number = this.viewer.camera.heading;
+    let current_mapMode2D:number = this.viewer.scene.mapMode2D;
+
     this.viewer.scene.mode = Cesium.SceneMode.SCENE2D;
-    let bounds: [number,number,number,number] = this.viewer.camera.computeViewRectangle();
+    this.viewer.scene._mapMode2D = 0;
+
+    this.viewer.camera.setView({
+      orientation: {
+        heading : 0
+      }
+    });
+
+    // let bounds: [number,number,number,number] = this.viewer.camera.computeViewRectangle();
+    let bounds;
     if(isUndefined(bounds)) bounds = this.calcBounds();
     bounds = <[number,number,number,number]>_.map(bounds, value => Cesium.Math.toDegrees(value));
 
-    // this.viewer.scene.mode = current_mode;
+
+    this.viewer.scene.mode = current_mode;
+    this.viewer.scene._mapMode2D = current_mapMode2D;
+
+    this.viewer.camera.setView({
+      orientation: {
+        heading : current_heading
+      }
+    });
 
     return bounds;
 
