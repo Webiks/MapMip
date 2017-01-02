@@ -1,14 +1,16 @@
 /* tslint:disable:no-unused-variable */
 import {async, ComponentFixture, TestBed, inject} from '@angular/core/testing';
 
-import {PositionFormComponent, PERMISSIONS} from './position-form.component';
+import {PositionFormComponent} from './position-form.component';
 import {RouterTestingModule} from "@angular/router/testing";
 import {Router} from "@angular/router";
-import {FormsModule} from "@angular/forms";
 import {QueryParamsHelperService} from "../query-params-helper.service";
-import {CommonModule} from "@angular/common";
+import {Permissions} from "./permissions.enum";
+import {PositionFormModule} from "./position-form.module";
+import {CalcService} from "../calc-service";
+import {ModalDirective} from "ng2-bootstrap";
 
-describe('PositionFormComponent', () => {
+fdescribe('PositionFormComponent', () => {
   let component: PositionFormComponent;
   let fixture: ComponentFixture<PositionFormComponent>;
   let element: any;
@@ -17,13 +19,11 @@ describe('PositionFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations:[PositionFormComponent],
       imports:[
-        CommonModule,
-        FormsModule,
+        PositionFormModule,
         RouterTestingModule
       ],
-      providers:[QueryParamsHelperService]
+      providers:[QueryParamsHelperService,CalcService]
     })
     .compileComponents();
   }));
@@ -64,19 +64,19 @@ describe('PositionFormComponent', () => {
     fixture.detectChanges();
 
     let height = {
-      permissions: [PERMISSIONS['/cesium']]
+      permissions: [Permissions['/cesium']]
     };
 
     let zoom = {
-      permissions: [PERMISSIONS['/leaflet']]
+      permissions: [Permissions['/leaflet']]
     };
 
     let lat = {
-      permissions: [PERMISSIONS['/cesium'], PERMISSIONS['/leaflet']]
+      permissions: [Permissions['/cesium'], Permissions['/leaflet']]
     };
 
     let rotate = {
-      permissions: [PERMISSIONS['/openlayers'], PERMISSIONS['/cesium?dim=2']]
+      permissions: [Permissions['/openlayers'], Permissions['/cesium?mode3d=0']]
     };
 
 
@@ -101,13 +101,12 @@ describe('PositionFormComponent', () => {
     expect(component.havePermission(lat)).toBeFalsy();
     expect(component.havePermission(rotate)).toBeTruthy();
 
-    current_state = '/cesium?dim=2';
+    current_state = '/cesium?mode3d=0';
 
     expect(component.havePermission(height)).toBeTruthy();
     expect(component.havePermission(zoom)).toBeFalsy();
     expect(component.havePermission(lat)).toBeTruthy();
     expect(component.havePermission(rotate)).toBeTruthy();
-
 
   });
 
@@ -132,12 +131,57 @@ describe('PositionFormComponent', () => {
     expect(lat.querySelector("span").textContent).toEqual("lat");
     expect(lng.querySelector("span").textContent).toEqual("lng");
     expect(zoom.querySelector("span").textContent).toEqual("zoom");
-
     expect(+lat.querySelector("input").attributes['ng-reflect-model'].value).toEqual(30);
     expect(+lng.querySelector("input").attributes['ng-reflect-model'].value).toEqual(20);
     expect(+zoom.querySelector("input").attributes['ng-reflect-model'].value).toEqual(10);
-
   });
+
+  it('markerCenter should create marker with the of the current center lng,lat ', () => {
+    spyOn(router, 'navigateByUrl');
+    current_state = '/leaflet?lng=2&lat=1';
+    component.markerCenter();
+    let markers:string = encodeURIComponent("(2,1)");
+    expect(router.navigateByUrl).toHaveBeenCalledWith(`/leaflet?lng=2&lat=1&markers=${markers}`);
+
+    current_state = '/leaflet?lng=7&lat=8&markers=(1,2,3),(4,5,6)';
+    component.markerCenter();
+    markers = encodeURIComponent("(1,2,3),(4,5,6),(7,8)");
+    expect(router.navigateByUrl).toHaveBeenCalledWith(`/leaflet?lng=7&lat=8&markers=${markers}`);
+  });
+
+
+  fit('submitMarkers should: put the correct value on markers, call submitForm hide modal if need', async(() => {
+
+    let mockModal = new ModalDirective(null,null,null);
+    let $event: {hide:boolean, smModal:ModalDirective, parsed_markers:string} = {hide:false, smModal: mockModal, parsed_markers:'(1,2,3),(4,5,6)'}
+    spyOn($event.smModal, 'hide');
+
+    component.submitMarkers($event);
+    fixture.detectChanges();
+    fixture.whenStable().then(()=>{
+      expect(component.params.markers.val).toEqual('(1,2,3),(4,5,6)');
+    });
+
+    $event.hide = true;
+
+    component.submitMarkers($event);
+    fixture.detectChanges();
+    fixture.whenStable().then(()=>{
+      expect(component.params.markers.val).toEqual('(1,2,3),(4,5,6)');
+      expect($event.smModal.hide).toHaveBeenCalledTimes(2);
+    });
+    //   spyOn(router, 'navigateByUrl');
+  //   current_state = '/leaflet?lng=2&lat=1';
+  //   component.markerCenter();
+  //   let markers:string = encodeURIComponent("(2,1)");
+  //   expect(router.navigateByUrl).toHaveBeenCalledWith(`/leaflet?lng=2&lat=1&markers=${markers}`);
+  //
+  //   current_state = '/leaflet?lng=7&lat=8&markers=(1,2,3),(4,5,6)';
+  //   component.markerCenter();
+  //   markers = encodeURIComponent("(1,2,3),(4,5,6),(7,8)");
+  //   expect(router.navigateByUrl).toHaveBeenCalledWith(`/leaflet?lng=7&lat=8&markers=${markers}`);
+  }));
+
 
   it('submitForm should navigate with the new params values', () => {
     spyOn(router, 'navigate');
@@ -167,11 +211,10 @@ describe('PositionFormComponent', () => {
       roll:5,
       heading:6,
       zoom:undefined, //no permission on cesium
-      dim:3,
-      rotate: 1,
+      mode3d:undefined, //undefined when default (1)
+      rotate: undefined,//undefined when default (1)
       markers: '(1,2,3)'
     };
-
 
     expect(router.navigate).toHaveBeenCalledWith([], {queryParams: queryParams});
  });

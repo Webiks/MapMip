@@ -3,7 +3,7 @@
 import { TestBed, async, inject } from '@angular/core/testing';
 import {CalcService} from "./calc-service";
 
-fdescribe('CalcServiceService', () => {
+describe('CalcServiceService', () => {
   let calcService:CalcService;
 
   beforeEach(() => {

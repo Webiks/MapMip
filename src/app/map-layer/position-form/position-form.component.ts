@@ -1,9 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router, ActivatedRoute, Params, UrlTree, NavigationExtras} from "@angular/router";
 import {ModalDirective} from "ng2-bootstrap";
 import {QueryParamsHelperService} from "../query-params-helper.service";
-import {isUndefined} from "util";
 import * as _ from 'lodash';
+import {Permissions} from "./permissions.enum";
 
 @Component({
   selector: 'app-position-form',
@@ -25,16 +25,16 @@ export class PositionFormComponent implements OnInit {
     rotate:{val?: number, permissions: number[], input_type?:string},
     markers:{val?: string, permissions: number[], input_type?:string},
   } = {
-    lat:{permissions: [PERMISSIONS['/cesium'], PERMISSIONS['/leaflet'], PERMISSIONS['/openlayers']]},
-    lng:{permissions: [PERMISSIONS['/cesium'], PERMISSIONS['/leaflet'], PERMISSIONS['/openlayers']]},
-    zoom:{permissions: [PERMISSIONS['/leaflet'], PERMISSIONS['/openlayers']]},
-    heading:{permissions: [PERMISSIONS['/cesium'], PERMISSIONS['/openlayers']]},
-    pitch:{permissions: [PERMISSIONS['/cesium']]},
-    roll:{permissions: [PERMISSIONS['/cesium']]},
-    height:{permissions: [PERMISSIONS['/cesium']]},
-    mode3d:{permissions: [PERMISSIONS['/cesium']], input_type: 'Bswitch'},
-    rotate:{permissions: [PERMISSIONS['/cesium?mode3d=0'], PERMISSIONS['/openlayers']], input_type: 'Bswitch'},
-    markers:{permissions: [PERMISSIONS['/cesium'], PERMISSIONS['/leaflet'], PERMISSIONS['/openlayers']], input_type: 'app-markers'}
+    lat:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
+    lng:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
+    zoom:{permissions: [Permissions['/leaflet'], Permissions['/openlayers']]},
+    heading:{permissions: [Permissions['/cesium'], Permissions['/openlayers']]},
+    pitch:{permissions: [Permissions['/cesium']]},
+    roll:{permissions: [Permissions['/cesium']]},
+    height:{permissions: [Permissions['/cesium']]},
+    mode3d:{permissions: [Permissions['/cesium']], input_type: 'Bswitch'},
+    rotate:{permissions: [Permissions['/cesium?mode3d=0'], Permissions['/openlayers']], input_type: 'Bswitch'},
+    markers:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-markers'}
 
   };
 
@@ -75,7 +75,7 @@ export class PositionFormComponent implements OnInit {
     _.forEach(this.params, (obj, key) => {
       let val = obj.val;
 
-      if(!isUndefined(this.bSwitch[key])) {
+      if(!_.isEmpty(this.bSwitch[key])) {
         val = this.bSwitch[key] ? 1 : 0;
       }
 
@@ -91,7 +91,7 @@ export class PositionFormComponent implements OnInit {
     let havePermission = false;
 
     _.forEach(obj.permissions, (num:number) => {
-      let url:string  = PERMISSIONS[num];
+      let url:string  = Permissions[num];
       let urlTreeCheck:UrlTree = this.router.parseUrl(url);
       let path:string = urlTreeCheck.root.children['primary'].segments[0].path;
       if(this.router.isActive(path, false)){
@@ -118,11 +118,4 @@ export class PositionFormComponent implements OnInit {
     return Object.keys(obj);
   }
 
-}
-
-export enum PERMISSIONS {
-  "/cesium" = 1,
-  "/leaflet" = 2,
-  "/openlayers" = 3,
-  "/cesium?mode3d=0" = 4,
 }
