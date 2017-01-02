@@ -2,11 +2,12 @@ import {Injectable} from '@angular/core';
 import {Params, NavigationExtras} from "@angular/router";
 import {isUndefined} from "util";
 import * as _ from 'lodash';
+import {CalcService} from "./calc-service";
 
 @Injectable()
 export class QueryParamsHelperService {
 
-  constructor() { }
+  constructor(private calcService:CalcService) { }
 
   queryBounds(params:Params):[number, number, number, number] {
     let boundsString = params['bounds'];
@@ -47,15 +48,19 @@ export class QueryParamsHelperService {
     return +params['rotate']  ;
   }
 
-  queryMarkers(params:Params){
+  queryMarkers(params:Params):Array<[number, number, number]>{
     let markersStr = params['markers'];
     if(!markersStr) return [];
-    // markersStr = markersStr.split(" ").join("").split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === markersStr.split("),(").length ? "(" + one : "(" + one + ")");
-    // let markers = markersStr.map(one => one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum));
-    return this.markersStrToArray(markersStr);
+    let marker_str_to_array = this.markersStrToArray(markersStr);
+    let marker_str_to_array_fixed7 = marker_str_to_array.map( markerPos => this.calcService.toFixes7Obj(markerPos));
+    return marker_str_to_array_fixed7;
   }
 
-  markersStrToArray(markersStr:string) {
+  queryMarkersNoHeight(params:Params):Array<[number, number]> {
+    return this.queryMarkers(params).map((position:[number,number, number]) => <[number, number]> [position[0], position[1]]);
+  }
+
+  markersStrToArray(markersStr:string="") {
     let markersArrayStr:Array<string> = markersStr.split(" ").join("").split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === markersStr.split("),(").length ? "(" + one : "(" + one + ")");
     let markersArrayNum:Array<any> = markersArrayStr.map(one => one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum));
     markersArrayNum.forEach((markerPos, index, array) => {

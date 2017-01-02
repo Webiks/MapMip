@@ -26,13 +26,8 @@ export class MarkersComponent implements OnInit{
   constructor(private queryParamsHelperService:QueryParamsHelperService, private route:ActivatedRoute) { }
 
   ngOnInit() {
-
     this.route.queryParams.subscribe(this.queryParams);
     this.ul.nativeElement.scrollTop = 500;
-  }
-
-  changeInput(inp:string) {
-    console.log(inp)
   }
 
   queryParams: (Params) => void = (params:Params):void => {
@@ -48,7 +43,6 @@ export class MarkersComponent implements OnInit{
 
   rmvMarker(index:number) {
     this.edited_markers_array.splice(index, 1);
-    // this.submitMarkers()
   }
 
   parseMarkers(edited_markers_array) {

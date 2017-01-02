@@ -34,19 +34,24 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
   ngOnInit() {
     this.initializeMap();
     this.activatedRoute.queryParams.subscribe(this.queryParams);
-    this.generalCanDeactivateService.leaveCesium = Observable.create(this.onLeave);
+    this.generalCanDeactivateService.onLeave = this.onLeave();
 
     this.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
     this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/openlayers", false) && !this.router.isActive("/leaflet", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd);
 
   }
 
-  onLeave = (observer:Observer<boolean>) => {
-    if(this.map.getView().getRotation() == 0 || !this.go_north){
-      observer.next(true);
-    } else {
-      this.map.getView().animate({rotation:0, duration:500}, (complete:boolean) => {observer.next(complete)});
-    }
+  onLeave():Observable<boolean> {
+    return Observable.create((observer:Observer<boolean>) =>{
+        if(this.map.getView().getRotation() == 0 || !this.go_north){
+          observer.next(true);
+        } else {
+          let radian_rotation = this.map.getView().getRotation();
+          let north = this.calcService.toDegrees(radian_rotation) < 180 ? 0 : Cesium.Math.toRadians(360);
+          this.map.getView().animate({rotation:north, duration:500}, (complete:boolean) => {observer.next(complete)});
+        }
+      }
+    )
   };
 
   setQueryBoundsOnNavigationEnd: (NavigationEnd) => void = (event:NavigationEnd):void => {
@@ -67,9 +72,11 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
       this.setMapView(params);
     }
     //markers
-    if(this.queryParamsHelperService.anyMarkersParamsChanges(this.prevParams, params)) {
-      let markers = this.queryParamsHelperService.queryMarkers(params);
-      if(this.anyMarkersMapChanges(markers)) this.setMarkersChanges(markers);
+    let params_changes:boolean = this.queryParamsHelperService.anyMarkersParamsChanges(this.prevParams, params);
+    let map_changes:boolean = this.anyMarkersMapChanges(params);
+
+    if(params_changes && map_changes) {
+      this.setMarkersChanges(params);
     }
   };
 
@@ -205,25 +212,13 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
     return saved_bounds;
   }
 
-  anyMarkersMapChanges(queryMarkersCartographicDegreesPositions):boolean {
-    let mapMarkerCartesienPositions = this.getMarkersPosition();
-
-    mapMarkerCartesienPositions.forEach((markerCartesienPosition) => {
-      _.forEach(markerCartesienPosition, (val, key) => {
-        markerCartesienPosition[key] = +val.toFixed(7)
-      });
-    });
-
-    queryMarkersCartographicDegreesPositions.forEach((markerCartesienPosition) => {
-      _.forEach(markerCartesienPosition, (val, key) => {
-        markerCartesienPosition[key] = +val.toFixed(7)
-      });
-    });
-
-    return !_.isEqual(mapMarkerCartesienPositions, queryMarkersCartographicDegreesPositions ) ;
+  anyMarkersMapChanges(params:Params):boolean {
+    let queryMarkersPositions:Array<[number, number]> = this.queryParamsHelperService.queryMarkersNoHeight(params);
+    let mapMarkerPositions:Array<[number, number]> = this.getMarkersPosition();
+    return !_.isEqual(mapMarkerPositions, queryMarkersPositions);
   }
 
-  getMarkersPosition(){
+  getMarkersPosition(): Array<[number,number]>{
     return this.LayersArray.filter( (layer) => {
       let geom;
       if(layer.getSource().getFeatures) geom = layer.getSource().getFeatures()[0].getGeometry();
@@ -231,20 +226,27 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
     }) . map(layer => {
       let cord= layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
       cord = ol.proj.transform(cord, 'EPSG:3857', 'EPSG:4326');
-      cord = this.toFixes7Obj(cord);
-      return cord;
+      return this.calcService.toFixes7Obj(cord);
     });
   }
 
-  setMarkersChanges(params_markers_position:Array<[number, number]>):void {
+  setMarkersChanges(params:Params):void {
+    let params_markers_positions:Array<[number, number]> = this.queryParamsHelperService.queryMarkersNoHeight(params);
+    let map_markers_positions:Array<[number, number]> = this.getMarkersPosition();
+
+    this.addMarkersViaUrl(params_markers_positions);
+    this.removeMarkersViaUrl(map_markers_positions);
+  }
+
+  addMarkersViaUrl(params_markers_position:Array<[number, number]>) {
     params_markers_position.forEach( (marker:[number, number]) => {
       if(!this.markerExistOnMap(marker)) {
         this.addIcon(marker);
       }
     });
+  }
 
-    let map_markers_positions = this.getMarkersPosition();
-
+  removeMarkersViaUrl(map_markers_positions:Array<[number, number]>) {
     map_markers_positions.forEach((markerPos) => {
       if(!this.markerExistOnParams(markerPos)) {
         let marker_to_remove = this.LayersArray.find(
@@ -254,10 +256,10 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
             if (!(geom instanceof ol.geom.Point)) return false;
             let cord = layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
             cord = ol.proj.transform(cord, 'EPSG:3857', 'EPSG:4326');
-            cord = this.toFixes7Obj(cord);
+            cord = this.calcService.toFixes7Obj(cord);
             return _.isEqual(cord, markerPos);
           });
-        this.map.removeLayer(marker_to_remove )
+        this.map.removeLayer(marker_to_remove)
       }
     })
   }
@@ -269,22 +271,11 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
   }
 
   markerExistOnParams(markerPosition) {
-    let markerPositionFixed = this.toFixes7Obj(markerPosition);
-    let markers_params_positions = this.queryParamsHelperService.queryMarkers(this.currentParams);
-    let exist_point = markers_params_positions.find(
-      (positionArray) => {
-        let positionArrayFixed = this.toFixes7Obj(positionArray);
-        return _.isEqual(positionArrayFixed , markerPositionFixed)
-      });
+    let markers_params_positions = this.queryParamsHelperService.queryMarkersNoHeight(this.currentParams);
+    let exist_point = markers_params_positions.find(positionArray => _.isEqual(positionArray , markerPosition));
     return !_.isEmpty(exist_point);
   }
 
-  toFixes7Obj(obj) {
-    _.forEach(obj, (val, key) => {
-      obj[key] = +val.toFixed(7)
-    });
-    return obj;
-  }
 
   get LayersArray() {
     return this.map.getLayers().getArray();

@@ -16,7 +16,7 @@
           <li class="list-group-item" style="margin: 0 10px;" *ngFor="let marker of edited_markers_array; let i = index">
             ({{i + 1}})
 
-            <button style="font-size: 15px;padding: 2px 5px;" class="btn btn-danger glyphicon glyphicon-trash" type="button" (click)="rmvMarker(index)"></button>
+            <button style="font-size: 15px;padding: 2px 5px;" class="btn btn-danger glyphicon glyphicon-trash" type="button" (click)="rmvMarker(i)"></button>
             <button style="font-size: 15px;padding: 2px 5px;" class="btn btn-info glyphicon glyphicon-pencil" type="button" (click)="marker.disabled = !marker.disabled;"></button>
             <input
               type="text"

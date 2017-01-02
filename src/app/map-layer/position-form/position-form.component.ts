@@ -34,7 +34,8 @@ export class PositionFormComponent implements OnInit {
     height:{permissions: [PERMISSIONS['/cesium']]},
     mode3d:{permissions: [PERMISSIONS['/cesium']], input_type: 'Bswitch'},
     rotate:{permissions: [PERMISSIONS['/cesium?mode3d=0'], PERMISSIONS['/openlayers']], input_type: 'Bswitch'},
-    markers:{permissions: [PERMISSIONS['/cesium'], PERMISSIONS['/leaflet'], PERMISSIONS['/openlayers']], input_type: 'button'}
+    markers:{permissions: [PERMISSIONS['/cesium'], PERMISSIONS['/leaflet'], PERMISSIONS['/openlayers']], input_type: 'app-markers'}
+
   };
 
   public bSwitch: {
@@ -101,6 +102,16 @@ export class PositionFormComponent implements OnInit {
       }
     });
     return havePermission;
+  }
+
+
+  markerCenter() {
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    let markers_array:Array<[number, number]> = this.queryParamsHelperService.markersStrToArray(urlTree.queryParams['markers']);
+    let center_marker:[number, number] = [+urlTree.queryParams['lng'] , +urlTree.queryParams['lat']];
+    markers_array.push(center_marker);
+    urlTree.queryParams['markers'] = this.queryParamsHelperService.markersArrayToStr(markers_array);
+    this.router.navigateByUrl(urlTree.toString())
   }
 
   keys(obj) {

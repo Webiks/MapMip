@@ -8,22 +8,9 @@ import {Router, UrlTree} from "@angular/router";
 })
 export class MapLayerComponent implements OnInit {
 
-  constructor(private router:Router) { }
+  constructor() { }
 
   ngOnInit() {
-  }
-
-  markerCenter() {
-    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
-    let center_marker:string = `(${urlTree.queryParams['lng']},${urlTree.queryParams['lat']})`;
-
-    if(!urlTree.queryParams['markers']){
-      urlTree.queryParams['markers'] = center_marker;
-    } else {
-      urlTree.queryParams['markers'] += `,${center_marker}`;
-    }
-
-    this.router.navigateByUrl(urlTree.toString())
   }
 
 }

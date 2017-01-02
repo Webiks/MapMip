@@ -9,19 +9,19 @@ import {LeafletComponent} from "./leaflet/leaflet.component";
 @Injectable()
 export class GeneralCanDeactivateService implements CanDeactivate<CesiumComponent | OpenlayersComponent | LeafletComponent> {
 
-  private _leaveCesium:Observable<boolean>;
+  private _onLeave:Observable<boolean>;
 
   canDeactivate(component: CesiumComponent | OpenlayersComponent | LeafletComponent, route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this._leaveCesium;
+    return this.onLeave;
   }
 
 
-  set leaveCesium(value: Observable<boolean>) {
-    this._leaveCesium = value;
+  set onLeave(value: Observable<boolean>) {
+    this._onLeave = value;
   }
 
-  get leaveCesium(): Observable<boolean> {
-    return this._leaveCesium;
+  get onLeave(): Observable<boolean> {
+    return this._onLeave;
   }
 
 }
