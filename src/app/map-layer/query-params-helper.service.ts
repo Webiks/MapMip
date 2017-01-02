@@ -61,14 +61,17 @@ export class QueryParamsHelperService {
   }
 
   markersStrToArray(markersStr:string="") {
+    if(_.isEmpty(markersStr)) return [];
     let markersArrayStr:Array<string> = markersStr.split(" ").join("").split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === markersStr.split("),(").length ? "(" + one : "(" + one + ")");
     let markersArrayNum:Array<any> = markersArrayStr.map(one => one.split("(").join("").split(")").join("").split(",").map((strToNum) => +strToNum));
+
     markersArrayNum.forEach((markerPos, index, array) => {
       if (_.size(markerPos) === 2) {
         markerPos.push(0);
         array[index] = markerPos;
       }
     });
+
     return markersArrayNum;
   }
 
