@@ -350,7 +350,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     let current_mapMode2D:number = this.viewer.scene.mapMode2D;
 
     this.viewer.scene.mode = Cesium.SceneMode.SCENE2D;
-    this.viewer.scene._mapMode2D = 0;
+    this.viewer.scene._mapMode2D = Cesium.MapMode2D.ROTATE;
 
     this.viewer.camera.setView({
       orientation: {
@@ -358,11 +358,10 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
       }
     });
 
+    let bounds: [number,number,number,number] = this.calcBounds();
+    bounds = <[number,number,number,number]> bounds.map( (value:number) => Cesium.Math.toDegrees(value));
     // let bounds: [number,number,number,number] = this.viewer.camera.computeViewRectangle();
-    let bounds;
-    if(isUndefined(bounds)) bounds = this.calcBounds();
-    bounds = <[number,number,number,number]>_.map(bounds, value => Cesium.Math.toDegrees(value));
-
+    // if(isUndefined(bounds)) bounds = this.calcBounds();
 
     this.viewer.scene.mode = current_mode;
     this.viewer.scene._mapMode2D = current_mapMode2D;
