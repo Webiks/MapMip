@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {Params, NavigationExtras} from "@angular/router";
-import {isUndefined} from "util";
 import * as _ from 'lodash';
 import {CalcService} from "./calc-service";
 
@@ -17,7 +16,7 @@ export class QueryParamsHelperService {
 
   hasQueryBounds(params:Params):boolean {
     let boundsString = params['bounds'];
-    return !isUndefined(boundsString)
+    return !_.isEmpty(boundsString)
   }
   queryLat(params:Params):number {
     return +params['lat'] || 0;

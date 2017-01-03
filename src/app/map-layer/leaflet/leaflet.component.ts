@@ -20,9 +20,9 @@ import {CalcService} from "../calc-service";
   animations: animations
 })
 
-export class LeafletComponent implements OnInit, MapLayerChild, OnDestroy {
+export class LeafletComponent implements OnInit, MapLayerChild {
 
-  public map;
+  private _map;
   public currentParams:Params = {};
   public prevParams:Params = {};
 
@@ -67,16 +67,19 @@ export class LeafletComponent implements OnInit, MapLayerChild, OnDestroy {
 
   initializeMap():void {
     this.map = L.map('leafletContainer');
-    L.tileLayer['bing']('Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq').addTo(this.map);
+    // L.tileLayer['bing']('Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq').addTo(this.map);
+    L.tileLayer('https://api.mapbox.com/styles/v1/idanbarak/cixg4xdev00ms2qo9e4h5ywsb/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw', {
+      // id: 'mapbox.streets'
+    }).addTo(this.map);
     this.map.on('moveend', this.moveEnd);
   }
 
   moveEnd: (event) => Promise<boolean> = (event):Promise<boolean> => {
 
-    let lng: L.LatLng  = event.target.getCenter().lng;
-    let lat: L.LatLng  = event.target.getCenter().lat;
-    let zoom:number = event.target.getZoom();
-    let markers = this.currentParams['markers'];
+    let lng: number  = event.target.getCenter().lng;
+    let lat: number  = event.target.getCenter().lat;
+    let zoom:number  = event.target.getZoom();
+    let markers      = this.currentParams['markers'];
 
     let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, zoom, markers});
 
@@ -95,12 +98,12 @@ export class LeafletComponent implements OnInit, MapLayerChild, OnDestroy {
 
   setMapBounds(params:Params):void {
     let bounds:[number, number, number, number] = this.queryParamsHelperService.queryBounds(params);
-    this.map.fitBounds([[bounds[1], bounds[0]], [ bounds[3], bounds[2]] ]);
+    this.map.fitBounds(<L.LatLngBoundsExpression> [[bounds[1], bounds[0]], [ bounds[3], bounds[2]] ], null);
   }
 
   anyParamChanges(params:Params):boolean {
     let longitudeP:number = this.queryParamsHelperService.queryLng(params);
-    let latitudeP:number  = this.queryParamsHelperService.queryLng(params);
+    let latitudeP:number  = this.queryParamsHelperService.queryLat(params);
     let zoomP:number      = this.queryParamsHelperService.queryZoom(params);
 
     let arrayP = [longitudeP, latitudeP, zoomP];
@@ -123,9 +126,6 @@ export class LeafletComponent implements OnInit, MapLayerChild, OnDestroy {
     arrayP = this.calcService.toFixes7Obj(arrayP);
     array = this.calcService.toFixes7Obj(array);
     return !_.isEqual(arrayP, array);
-  }
-
-  ngOnDestroy() {
   }
 
   getBounds():[number, number, number, number] {
@@ -213,4 +213,11 @@ export class LeafletComponent implements OnInit, MapLayerChild, OnDestroy {
     return !_.isEmpty(exist_point);
   }
 
+  get map():L.Map {
+    return this._map;
+  }
+
+  set map(value:L.Map) {
+    this._map = value;
+  }
 }

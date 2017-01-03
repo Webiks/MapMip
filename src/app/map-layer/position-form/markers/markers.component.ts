@@ -2,8 +2,7 @@ import {Component, OnInit, ViewChild, EventEmitter, Output, Input, ElementRef} f
 import {ModalDirective} from "ng2-bootstrap";
 import * as _ from 'lodash';
 import {QueryParamsHelperService} from "../../query-params-helper.service";
-import {Router, Params, ActivatedRoute} from "@angular/router";
-import {FormGroup} from "@angular/forms";
+import {Params, ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-markers',
@@ -50,7 +49,7 @@ export class MarkersComponent implements OnInit{
     return this.queryParamsHelperService.markersArrayToStr(markersArrayToStr);
   }
 
-  canApply() {
+  canApply():boolean {
     let array2 = this.markers_array;
 
     let some = (obj, index) => {

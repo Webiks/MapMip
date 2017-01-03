@@ -48,6 +48,10 @@ export class PositionFormComponent implements OnInit {
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService) {}
 
+  /**
+   * this func create rusi
+   * @param $event
+   */
   submitMarkers($event: {hide:boolean, smModal:ModalDirective, parsed_markers:string}) {
     this.params.markers.val = $event.parsed_markers;
 
@@ -56,6 +60,9 @@ export class PositionFormComponent implements OnInit {
     });
   }
 
+  /**
+   *
+   */
   ngOnInit() {
     this.route.queryParams.subscribe((params:Params)=> {
       //params

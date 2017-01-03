@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused-variable */
-import {async, ComponentFixture, TestBed, inject} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed, inject, fakeAsync, tick} from '@angular/core/testing';
 
 import {PositionFormComponent} from './position-form.component';
 import {RouterTestingModule} from "@angular/router/testing";
@@ -10,7 +10,7 @@ import {PositionFormModule} from "./position-form.module";
 import {CalcService} from "../calc-service";
 import {ModalDirective} from "ng2-bootstrap";
 
-fdescribe('PositionFormComponent', () => {
+describe('PositionFormComponent', () => {
   let component: PositionFormComponent;
   let fixture: ComponentFixture<PositionFormComponent>;
   let element: any;
@@ -150,37 +150,28 @@ fdescribe('PositionFormComponent', () => {
   });
 
 
-  fit('submitMarkers should: put the correct value on markers, call submitForm hide modal if need', async(() => {
+  it('submitMarkers should: put the correct value on markers, call submitForm hide modal if need', async(() => {
 
     let mockModal = new ModalDirective(null,null,null);
     let $event: {hide:boolean, smModal:ModalDirective, parsed_markers:string} = {hide:false, smModal: mockModal, parsed_markers:'(1,2,3),(4,5,6)'}
     spyOn($event.smModal, 'hide');
 
     component.submitMarkers($event);
-    fixture.detectChanges();
     fixture.whenStable().then(()=>{
       expect(component.params.markers.val).toEqual('(1,2,3),(4,5,6)');
+      expect($event.smModal.hide).not.toHaveBeenCalled();
     });
 
+    fixture.detectChanges();
     $event.hide = true;
-
     component.submitMarkers($event);
     fixture.detectChanges();
+
     fixture.whenStable().then(()=>{
       expect(component.params.markers.val).toEqual('(1,2,3),(4,5,6)');
-      expect($event.smModal.hide).toHaveBeenCalledTimes(2);
+      expect($event.smModal.hide).toHaveBeenCalled();
     });
-    //   spyOn(router, 'navigateByUrl');
-  //   current_state = '/leaflet?lng=2&lat=1';
-  //   component.markerCenter();
-  //   let markers:string = encodeURIComponent("(2,1)");
-  //   expect(router.navigateByUrl).toHaveBeenCalledWith(`/leaflet?lng=2&lat=1&markers=${markers}`);
-  //
-  //   current_state = '/leaflet?lng=7&lat=8&markers=(1,2,3),(4,5,6)';
-  //   component.markerCenter();
-  //   markers = encodeURIComponent("(1,2,3),(4,5,6),(7,8)");
-  //   expect(router.navigateByUrl).toHaveBeenCalledWith(`/leaflet?lng=7&lat=8&markers=${markers}`);
-  }));
+}));
 
 
   it('submitForm should navigate with the new params values', () => {
