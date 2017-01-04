@@ -8,7 +8,7 @@ import {Router, UrlTree} from "@angular/router";
 })
 export class MapLayerComponent implements OnInit {
 
-  constructor() { }
+  constructor() { window['CESIUM_BASE_URL'] = 'assets/Cesium';}
 
   ngOnInit() {
   }

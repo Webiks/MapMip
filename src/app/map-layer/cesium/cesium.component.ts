@@ -9,7 +9,6 @@ import {host, animations} from "../map-layer.component";
 import 'rxjs/add/operator/take';
 import * as _ from 'lodash';
 import {MapLayerChild} from "../map-layer-child.interface";
-import {isUndefined} from "util";
 import "cesium/Build/Cesium/Cesium.js";
 import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
 import {CalcService} from "../calc-service";
@@ -80,7 +79,6 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   };
 
   initializeMap():void {
-    window['CESIUM_BASE_URL'] = 'assets/Cesium';
     Cesium.BingMapsApi.defaultKey = 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq';
     this.viewer = new Cesium.Viewer('cesiumContainer');
     window['viewer'] = this.viewer;
@@ -216,7 +214,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     let current_marker_radian_position = Cesium.Cartesian3.fromDegrees(...markerPosition);
     let markers_map_positions = this.getMarkersPosition();
     let exist_point = markers_map_positions .find((positionArray) => _.isEqual(positionArray, current_marker_radian_position));
-    return !isUndefined(exist_point);
+    return !_.isEmpty(exist_point);
   }
 
   // toFixes7Obj(obj) {
@@ -236,7 +234,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
       markerPosition = this.calcService.toFixes7Obj(markerPosition );
       return _.isEqual(positionCartesian, markerPosition)
     });
-    return !isUndefined(exist_point);
+    return !_.isEmpty(exist_point);
   }
 
 
