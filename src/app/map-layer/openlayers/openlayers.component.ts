@@ -21,37 +21,37 @@ import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
   animations: animations
 })
 
-export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
+export class OpenlayersComponent implements OnInit, MapLayerChild {
 
   private _map;
   public moveEndEvent;
   public currentParams:Params = {};
   public prevParams:Params = {};
   public go_north:boolean = false;
+  public andRotation: (boolean) => void;
 
   constructor(private activatedRoute:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService, private router:Router, private calcService:CalcService, private generalCanDeactivateService:GeneralCanDeactivateService) { window['current'] = this}
 
   ngOnInit() {
     this.initializeMap();
     this.activatedRoute.queryParams.subscribe(this.queryParams);
-    this.generalCanDeactivateService.onLeave = this.onLeave();
+    this.generalCanDeactivateService.onLeave =  Observable.create((observer:Observer<boolean>) => this.onLeave(observer)) ;
 
     this.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
     this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/openlayers", false) && !this.router.isActive("/leaflet", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd);
 
   }
 
-  onLeave():Observable<boolean> {
-    return Observable.create((observer:Observer<boolean>) =>{
-        if(this.map.getView().getRotation() == 0 || !this.go_north){
-          observer.next(true);
-        } else {
-          let radian_rotation = this.map.getView().getRotation();
-          let north = this.calcService.toDegrees(radian_rotation) < 180 ? 0 : Cesium.Math.toRadians(360);
-          this.map.getView().animate({rotation:north, duration:500}, (complete:boolean) => {observer.next(complete)});
-        }
-      }
-    )
+  onLeave(observer:Observer<boolean>):void {
+    this.andRotation = (complete:boolean) => {observer.next(complete)};
+
+    if(this.map.getView().getRotation() == 0 || !this.go_north){
+      observer.next(true);
+    } else {
+      let radian_rotation = this.map.getView().getRotation();
+      let north = this.calcService.toDegrees(radian_rotation) < 180 ? 0 : Cesium.Math.toRadians(360);
+      this.map.getView().animate({rotation:north, duration:500}, this.andRotation);
+    }
   };
 
   setQueryBoundsOnNavigationEnd: (NavigationEnd) => void = (event:NavigationEnd):void => {
@@ -110,16 +110,16 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
   }
 
   addIcon(lnglat:[number, number]){
-    var iconFeature = new ol.Feature({
+    let iconFeature = new ol.Feature({
       geometry: new ol.geom.Point(ol.proj.transform(lnglat, 'EPSG:4326', 'EPSG:3857')),
       name: 'Null Island',
       population: 4000,
       rainfall: 500
     });
-    var vectorSource = new ol.source.Vector(<any>{
+    let vectorSource = new ol.source.Vector(<any>{
       features: [iconFeature]
     });
-    var iconStyle = new ol.style.Style(<any>{
+    let iconStyle = new ol.style.Style(<any>{
       image: new ol.style.Icon(<any>{
         anchor: [0.5, 46],
         anchorXUnits: 'fraction',
@@ -128,7 +128,7 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
         src: '/assets/Leaflet/images/marker-icon.png'
       })
     });
-    var vectorLayer = new ol.layer.Vector(<any>{
+    let vectorLayer = new ol.layer.Vector(<any>{
       source: vectorSource,
       style: iconStyle
     });
@@ -153,7 +153,7 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
 
   anyParamChanges(params:Params):boolean {
     let longitudeP:number = this.queryParamsHelperService.queryLng(params);
-    let latitudeP:number  = this.queryParamsHelperService.queryLng(params);
+    let latitudeP:number  = this.queryParamsHelperService.queryLat(params);
     let zoomP:number      = this.queryParamsHelperService.queryZoom(params);
     let headingP:number   = 360 - this.queryParamsHelperService.queryHeading(params);
 
@@ -177,8 +177,9 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
 
     let array = [longitude, latitude, zoom, heading];
 
-    arrayP.forEach( (value, index) => {arrayP[index] = +arrayP[index].toFixed(7)});
-    array.forEach( (value, index) => {array[index] = +array[index].toFixed(7)});
+    arrayP = this.calcService.toFixes7Obj(arrayP) ;
+    array = this.calcService.toFixes7Obj(array) ;
+
     return !_.isEqual(arrayP, array);
   }
 
@@ -197,9 +198,6 @@ export class OpenlayersComponent implements OnInit,OnDestroy, MapLayerChild {
 
   transformExtent(extent:ol.Extent):ol.Extent {
     return ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857')
-  }
-
-  ngOnDestroy() {
   }
 
   getBounds():[number, number, number, number] {

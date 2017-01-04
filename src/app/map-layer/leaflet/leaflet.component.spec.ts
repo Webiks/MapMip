@@ -135,7 +135,7 @@ describe('LeafletComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([], navigationExtras);
   });
 
-  it('setMapView should get params and use them to call map.setView with ',()=>{
+  it('setMapView should get params and use them to call map.setView with params values',()=>{
     spyOn(component.map, 'setView');
     let params:Params = {
       lng: 1,
@@ -218,7 +218,6 @@ describe('LeafletComponent', () => {
     expect(component.removeMarkersViaUrl).toHaveBeenCalledWith(map_markers_positions);
   });
 
-  //fix english
   it('addMarkersViaUrl: should get positions array from params. for each position create marker if not exists on map', ()=>{
     let params_markers_position:Array<[number, number]> = [[1,2], [3,4]];
     component.addMarkersViaUrl(params_markers_position);

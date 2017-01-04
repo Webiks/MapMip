@@ -150,27 +150,32 @@ describe('PositionFormComponent', () => {
   });
 
 
-  it('submitMarkers should: put the correct value on markers, call submitForm hide modal if need', async(() => {
+  it('submitMarkers should: put the correct value on markers, call submitForm and hide modal if need', async(() => {
 
     let mockModal = new ModalDirective(null,null,null);
     let $event: {hide:boolean, smModal:ModalDirective, parsed_markers:string} = {hide:false, smModal: mockModal, parsed_markers:'(1,2,3),(4,5,6)'}
+    spyOn(component,'submitForm').and.callFake( () => {
+      return{
+        then(callback:() => void) {
+          callback();
+        }
+      };
+    });
     spyOn($event.smModal, 'hide');
 
     component.submitMarkers($event);
-    fixture.whenStable().then(()=>{
-      expect(component.params.markers.val).toEqual('(1,2,3),(4,5,6)');
-      expect($event.smModal.hide).not.toHaveBeenCalled();
-    });
+    // fixture.whenStable().then(()=>{
+    //
+    // });
+    expect(component.params.markers.val).toEqual('(1,2,3),(4,5,6)');
+    expect($event.smModal.hide).not.toHaveBeenCalled();
 
-    fixture.detectChanges();
     $event.hide = true;
-    component.submitMarkers($event);
-    fixture.detectChanges();
 
-    fixture.whenStable().then(()=>{
-      expect(component.params.markers.val).toEqual('(1,2,3),(4,5,6)');
-      expect($event.smModal.hide).toHaveBeenCalled();
-    });
+    component.submitMarkers($event);
+    expect(component.params.markers.val).toEqual('(1,2,3),(4,5,6)');
+    expect($event.smModal.hide).toHaveBeenCalled();
+
 }));
 
 
@@ -187,7 +192,7 @@ describe('PositionFormComponent', () => {
     component.params.roll.val = 5;
     component.params.heading.val = 6;
     component.params.mode3d.val = 1;
-    component.params.rotate.val = 1;
+    component.params.rotate.val = 0;
     component.params.markers.val = '(1,2,3)';
 
 
@@ -206,7 +211,6 @@ describe('PositionFormComponent', () => {
       rotate: undefined,//undefined when default (1)
       markers: '(1,2,3)'
     };
-
     expect(router.navigate).toHaveBeenCalledWith([], {queryParams: queryParams});
  });
 
