@@ -22,9 +22,6 @@ import {CalcService} from "../calc-service";
 })
 
 export class CesiumComponent implements OnInit, MapLayerChild  {
-  anyParamChanges(Params): boolean {
-    return undefined;
-  }
 
   public viewer:any;
   public prevParams:Params = {};
@@ -37,7 +34,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   ngOnInit() {
     this.initializeMap();
     this.queryParamsSubscriber = this.activatedRoute.queryParams.subscribe(this.queryParams);
-    this.generalCanDeactivateService.onLeave = this.onLeave();
+    this.generalCanDeactivateService.onLeave =  Observable.create((observer:Observer<boolean>) => this.onLeave(observer)) ;
     this.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
     this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/cesium", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd);
   };
@@ -48,14 +45,12 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     this.router.navigateByUrl(urlTree.toString());
   };
 
-  onLeave():Observable<boolean> {
-    return Observable.create((observer:Observer<boolean>) => {
-      this.viewer.camera.moveEnd.removeEventListener(this.moveEnd);
-      this.queryParamsSubscriber.unsubscribe();
-      this.flyToCenterAndGetBounds().subscribe((bool:boolean) => {
-        observer.next(bool);
-      })
-    });
+  onLeave(observer:Observer<boolean>):void{
+    this.viewer.camera.moveEnd.removeEventListener(this.moveEnd);
+    this.queryParamsSubscriber.unsubscribe();
+    this.flyToCenterAndGetBounds().subscribe((bool:boolean) => {
+      observer.next(bool);
+    })
   };
 
   queryParams: (Params) => void = (params:Params):void => {
@@ -65,7 +60,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     //view
     if(this.queryParamsHelperService.hasQueryBounds(params)) {
       this.setMapBounds(params);
-    } else if(this.anyViewChanges(params)){
+    } else if(this.anyParamChanges(params)){
       this.setMapView(params);
     }
 
@@ -85,7 +80,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     this.viewer.camera.moveEnd.addEventListener(this.moveEnd);
   }
 
-  anyViewChanges(params:Params):boolean {
+  anyParamChanges(params:Params):boolean {
 
     let longitudeP:number       = this.queryParamsHelperService.queryLng(params)// || this.getCenter().lng;
     let latitudeP:number        = this.queryParamsHelperService.queryLat(params)// || this.getCenter().lat;
@@ -109,28 +104,20 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
 
     let array = [longitude, latitude, height, headingRadians, pitchRadians, rollRadians, mode3d, rotate];
 
-    arrayP.forEach( (value, index) => {arrayP[index] = +arrayP[index].toFixed(7)});
-    array.forEach( (value, index) => {array[index] = +array[index].toFixed(7)});
+    arrayP = this.calcService.toFixes7Obj(arrayP);
+    array = this.calcService.toFixes7Obj(array);
 
-    return !_.isEqual(arrayP, array) || rotate == rotateP
+    return !_.isEqual(arrayP, array)
   }
 
   anyMarkersMapChanges(params:Params): boolean{
+
     let queryMarkersCartographicDegreesPositions:Array<[number, number, number]> = this.queryParamsHelperService.queryMarkers(params);
     let mapMarkerCartesienPositions = this.getMarkersPosition();
-
     let queryMarkersCartesienPositions = queryMarkersCartographicDegreesPositions.map((marker) => Cesium.Cartesian3.fromDegrees(...marker));
-    mapMarkerCartesienPositions.forEach((markerCartesienPosition) => {
-      _.forEach(markerCartesienPosition, (val, key) => {
-        markerCartesienPosition[key] = +val.toFixed(7)
-      });
-    });
 
-    queryMarkersCartesienPositions.forEach((markerCartesienPosition) => {
-      _.forEach(markerCartesienPosition, (val, key) => {
-        markerCartesienPosition[key] = +val.toFixed(7)
-      });
-    });
+    mapMarkerCartesienPositions    =  mapMarkerCartesienPositions.map( mapMarkerCartesienPosition => this.calcService.toFixes7Obj(mapMarkerCartesienPosition));
+    queryMarkersCartesienPositions =  queryMarkersCartesienPositions.map( queryMarkerCartesienPosition => this.calcService.toFixes7Obj(queryMarkerCartesienPosition));
 
     return !_.isEqual(mapMarkerCartesienPositions, queryMarkersCartesienPositions ) ;
   }
@@ -148,13 +135,13 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   setMapView(params:Params):void {
 
     let longitude:number = this.queryParamsHelperService.queryLng(params) || this.getCenter().lng;
-    let latitude:number = this.queryParamsHelperService.queryLat(params) || this.getCenter().lat;
-    let height = this.queryParamsHelperService.queryHeight(params) || this.viewer.camera.positionCartographic.height;
-    let headingRadians = Cesium.Math.toRadians(this.queryParamsHelperService.queryHeading(params));
-    let pitchRadians = Cesium.Math.toRadians(this.queryParamsHelperService.queryPitch(params));
-    let rollRadians = Cesium.Math.toRadians(this.queryParamsHelperService.queryRoll(params));
-    let mode3d:number =  this.queryParamsHelperService.queryMode3d(params);
-    let rotate:number =  this.queryParamsHelperService.queryRotate(params) == 0 ? 1 : 0;
+    let latitude:number  = this.queryParamsHelperService.queryLat(params) || this.getCenter().lat;
+    let height           = this.queryParamsHelperService.queryHeight(params) || this.viewer.camera.positionCartographic.height;
+    let headingRadians   = Cesium.Math.toRadians(this.queryParamsHelperService.queryHeading(params));
+    let pitchRadians     = Cesium.Math.toRadians(this.queryParamsHelperService.queryPitch(params));
+    let rollRadians      = Cesium.Math.toRadians(this.queryParamsHelperService.queryRoll(params));
+    let mode3d:number    =  this.queryParamsHelperService.queryMode3d(params);
+    let rotate:number    =  this.queryParamsHelperService.queryRotate(params) == 0 ? 1 : 0;
 
     this.viewer.scene.mode = mode3d == 0 ? Cesium.SceneMode.SCENE2D : Cesium.SceneMode.SCENE3D;
     this.viewer.scene._mapMode2D = rotate;
@@ -217,13 +204,6 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     return !_.isEmpty(exist_point);
   }
 
-  // toFixes7Obj(obj) {
-  //   _.forEach(obj, (val, key) => {
-  //     obj[key] = +val.toFixed(7)
-  //   });
-  //   return obj;
-  // }
-
   markerExistOnParams(markerPosition:{x:number,y:number,z:number}) {
 
     let markers_params_positions = this.queryParamsHelperService.queryMarkers(this.currentParams);
@@ -239,9 +219,8 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
 
 
   moveEnd: () => Promise<boolean> = ():Promise<boolean> => {
+    if(!this.anyParamChanges(this.currentParams)) return;
 
-    if(!this.anyViewChanges(this.currentParams)) return;
-    //
     let center: {lat:number, lng:number} = this.getCenter();
     if(!center) return;
     let lat:number = center.lat;
@@ -262,12 +241,9 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   };
 
   getCenter(): {lat:number, lng:number} | any {
-    let lng, lat;
-    lat = this.viewer.camera.positionCartographic.latitude * (180 / Math.PI);
-    lng = this.viewer.camera.positionCartographic.longitude * (180 / Math.PI);
-    lat = +lat.toFixed(7);
-    lng = +lng.toFixed(7);
-    return {lat:lat, lng:lng};
+    let lat = Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.latitude);
+    let lng = Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.longitude);
+    return this.calcService.toFixes7Obj({lat:lat, lng:lng});
   }
 
   flyToCenterAndGetBounds() {
@@ -279,7 +255,6 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
 
     let on_d3 = headingDeg % 360 === 0 && pitchDeg === -90 && rollDeg % 360 === 0;
     let on_d2 = this.viewer.scene.mode == Cesium.SceneMode.SCENE2D;
-
     if(on_d3 || on_d2) {
       return Observable.of(true);
     }
@@ -322,7 +297,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
             obs.next(true);
           }
         };
-        that.viewer.scene.camera.flyTo(flyToObj);
+        that.viewer.camera.flyTo(flyToObj);
       });
     }
   }
@@ -341,7 +316,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     this.viewer.entities.add(rec);
   }
 
-  getBounds() : [number,number,number,number]{
+  getBounds():[number,number,number,number] {
 
     let current_mode:number = this.viewer.scene.mode;
     let current_heading:number = this.viewer.camera.heading;
@@ -374,7 +349,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
 
   }
 
-  private calcBounds() : [number,number,number,number] {
+  calcBounds() : [number,number,number,number] {
     let bounds:[number,number,number,number];
 
     let leftTopCartesian2 = new Cesium.Cartesian2(0, 0);
@@ -396,7 +371,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
 
   setMapBounds(params:Params):void {
     let bounds:[number, number, number, number] = this.queryParamsHelperService.queryBounds(params);
-    let heading:number = Cesium.Math.toRadians(this.queryParamsHelperService.queryHeading(this.currentParams));
+    let heading:number = Cesium.Math.toRadians(this.queryParamsHelperService.queryHeading(params));
 
     this.viewer.camera.setView({
       destination: Cesium.Rectangle.fromDegrees(...bounds),

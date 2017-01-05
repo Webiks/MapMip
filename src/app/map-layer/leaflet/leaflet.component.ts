@@ -75,7 +75,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   }
 
   moveEnd: (event) => Promise<boolean> = (event):Promise<boolean> => {
-
+    if(!this.anyParamChanges(this.currentParams)) return;
     let lng: number  = event.target.getCenter().lng;
     let lat: number  = event.target.getCenter().lat;
     let zoom:number  = event.target.getZoom();
