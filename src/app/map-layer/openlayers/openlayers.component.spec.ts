@@ -244,7 +244,7 @@ describe('OpenlayersComponent', () => {
     };
 
     component.moveEnd(event);
-    let navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)'});
+    let navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)', tms:undefined});
     expect(router.navigate).toHaveBeenCalledWith([], navigationExtras);
   });
 

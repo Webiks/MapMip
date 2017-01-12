@@ -14,19 +14,20 @@ import {Permissions} from "./permissions.enum";
 export class PositionFormComponent implements OnInit {
 
   public params: {
-    lat:{val?: number, permissions: number[], input_type?:string},
     lng:{val?: number, permissions: number[], input_type?:string},
+    lat:{val?: number, permissions: number[], input_type?:string},
     zoom:{val?: number, permissions: number[], input_type?:string},
     heading:{val?: number, permissions: number[], input_type?:string},
     pitch:{val?: number, permissions: number[], input_type?:string},
     roll:{val?: number, permissions: number[], input_type?:string},
     height:{val?: number, permissions: number[], input_type?:string},
-    mode3d:{val?: number, permissions: number[], input_type?:string},
-    rotate:{val?: number, permissions: number[], input_type?:string},
+    mode3d:{val?: boolean, permissions: number[], input_type?:string},
+    rotate:{val?: boolean, permissions: number[], input_type?:string},
     markers:{val?: string, permissions: number[], input_type?:string},
+    tms: {val?: string, permissions: number[], input_type?:string}
   } = {
-    lat:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
     lng:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
+    lat:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
     zoom:{permissions: [Permissions['/leaflet'], Permissions['/openlayers']]},
     heading:{permissions: [Permissions['/cesium'], Permissions['/openlayers']]},
     pitch:{permissions: [Permissions['/cesium']]},
@@ -34,45 +35,44 @@ export class PositionFormComponent implements OnInit {
     height:{permissions: [Permissions['/cesium']]},
     mode3d:{permissions: [Permissions['/cesium']], input_type: 'Bswitch'},
     rotate:{permissions: [Permissions['/cesium?mode3d=0'], Permissions['/openlayers']], input_type: 'Bswitch'},
-    markers:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-markers'}
-
-  };
-
-  public bSwitch: {
-    rotate: boolean,
-    mode3d: boolean
-  } = {
-    rotate: false,
-    mode3d: true
+    markers:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-markers'},
+    tms: {permissions: [Permissions['/leaflet']], input_type: 'app-tms'}
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService) {}
 
-  /**
-   * this func create rusi
-   * @param $event
-   */
+
   submitMarkers($event: {hide:boolean, smModal:ModalDirective, parsed_markers:string}) {
     this.params.markers.val = $event.parsed_markers;
 
     this.submitForm().then(()=>{
-      if($event.hide || _.isEmpty(this.params.markers.val)) $event.smModal.hide();
+      if($event.hide || _.isNil(this.params.markers.val)) $event.smModal.hide();
     });
   }
 
-  /**
-   *
-   */
+  submitTms($event: {hide:boolean, modal:ModalDirective, parsed_tms:string}) {
+    this.params.tms.val = $event.parsed_tms;
+
+    this.submitForm().then(()=>{
+      if($event.hide || _.isNil(this.params.tms.val)) $event.modal.hide();
+    });
+  }
+
   ngOnInit() {
     this.route.queryParams.subscribe((params:Params)=> {
       //params
-      _.forEach(this.params, (obj, key) => {
-          obj.val = params[key] || undefined;
+      _.forEach(this.params, (obj, key, ) => {
+        switch (key) {
+          case "mode3d":
+            obj.val = params['mode3d'] == 0 ? false: true;
+            break;
+          case "rotate":
+            obj.val = params['rotate'] == 1 ? true : false;
+            break;
+          default:
+            obj.val = params[key] || undefined;
+        }
       });
-
-      //bSwitch
-      this.bSwitch.rotate = this.params.rotate.val == 1 ? true : false;
-      this.bSwitch.mode3d = this.params.mode3d.val == 0 ? false: true ;
     })
   }
 
@@ -80,16 +80,20 @@ export class PositionFormComponent implements OnInit {
     let queryParams:{[key: string]: number | string | boolean} = {};
 
     _.forEach(this.params, (obj, key) => {
-      let val = obj.val;
-
-      if(!_.isEmpty(this.bSwitch[key])) {
-        val = this.bSwitch[key] ? 1 : 0;
-      }
-
-      queryParams[key] = val;
+        let val = obj.val;
+        switch (key) {
+          case 'mode3d':
+            val = obj.val == false ? 0 : 1;
+            break;
+          case 'rotate':
+            val = obj.val == true ? 1 : 0;
+            break;
+        }
+        queryParams[key] = val;
     });
 
     let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery(queryParams);
+
     return this.router.navigate([], navigationExtras);
   }
 

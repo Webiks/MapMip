@@ -15,9 +15,13 @@
         <app-markers (submitMarkersEmitter)="submitMarkers($event)"></app-markers>
       </div>
 
+      <div class="form-group col-md-1" *ngIf="params[key].input_type == 'app-tms'">
+        <app-tms [tmsString]="params[key].val" (submitTmsEmitter)="submitTms($event)"></app-tms>
+      </div>
+
 
       <div class="form-group col-md-2" *ngIf="params[key].input_type == 'Bswitch'">
-        <bSwitch [switch-label-text]="key" [(ngModel)]="bSwitch[key]" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>
+        <bSwitch [switch-label-text]="key" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>
       </div>
 
     </div>

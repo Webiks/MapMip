@@ -191,11 +191,10 @@ describe('PositionFormComponent', () => {
     component.params.pitch.val = 4;
     component.params.roll.val = 5;
     component.params.heading.val = 6;
-    component.params.mode3d.val = 1;
-    component.params.rotate.val = 0;
+    component.params.mode3d.val = true;
+    component.params.rotate.val = false;
     component.params.markers.val = '(1,2,3)';
-
-
+    component.params.tms.val = "(url: 'url_tms')";
     component.submitForm();
     fixture.detectChanges();
 
@@ -208,10 +207,23 @@ describe('PositionFormComponent', () => {
       heading:6,
       zoom:undefined, //no permission on cesium
       mode3d:undefined, //undefined when default (1)
-      rotate: undefined,//undefined when default (1)
-      markers: '(1,2,3)'
+      rotate: undefined,//undefined when default (0)
+      markers: '(1,2,3)',
+      tms: "(url: 'url_tms')"
     };
     expect(router.navigate).toHaveBeenCalledWith([], {queryParams: queryParams});
- });
+
+    component.params.markers.val = '(1,2,3),(4,5)';
+    component.params.mode3d.val = false;
+    component.params.rotate.val = true;
+
+    queryParams.markers =  '(1,2,3),(4,5)';
+    queryParams.mode3d =  0;
+    queryParams.rotate =  1;
+
+    component.submitForm();
+    fixture.detectChanges();
+    expect(router.navigate).toHaveBeenCalledWith([], {queryParams: queryParams});
+  });
 
 });

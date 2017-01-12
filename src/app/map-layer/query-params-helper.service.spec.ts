@@ -6,7 +6,7 @@ import {Params} from "@angular/router";
 import any = jasmine.any;
 import {CalcService} from "./calc-service";
 
-describe('QueryParamsHelperService', () => {
+fdescribe('QueryParamsHelperService', () => {
 
   let queryParamsHelperService:QueryParamsHelperService;
   let params:Params = {};
@@ -128,6 +128,43 @@ describe('QueryParamsHelperService', () => {
     currentParams['markers'] = '(1,2,8.666),(3,4)';
     result= queryParamsHelperService.anyMarkersParamsChanges(prevParams, currentParams);
     expect(result).toBeTruthy();
+  });
+
+  fit('tmsObjecttToUrl should get object and parse him to url', ()=>{
+    let url_obj = {
+      url: 'the_tms_of_url',
+      p1: 'p1_value',
+      p2: 'p2_value'
+    };
+    let url_string:string = queryParamsHelperService.tmsObjecttToUrl(url_obj);
+    expect(url_string).toEqual(`${url_obj.url}?p1=${url_obj.p1}&p2=${url_obj.p2}`);
+  });
+
+  it('queryTms should return array of strings with tms urls', () => {
+    let params:Params = {};
+
+    let tms_array:Array<string> = queryParamsHelperService.queryTms(params);
+    expect(tms_array.length).toEqual(0);
+
+    params = {
+      tms: '(url: tms_url1, q1: a, q2: b), (url: tms_url2, q3: c, q4: d)'
+    };
+
+    tms_array = queryParamsHelperService.queryTms(params);
+    expect(tms_array.length).toEqual(2);
+    expect(tms_array[0]).toEqual("tms_url1?q1=a&q2=b");
+    expect(tms_array[1]).toEqual("tms_url2?q3=c&q4=d");
+  });
+
+  it('anyTmsChanges should return boolean of compere between prev and current params["tms"] ', () => {
+    let c_params:Params = {
+      tms: 'tms_url1, tms_url2 , tms_url3 , tms_url4'
+    };
+    let p_params:Params = {
+      tms: 'tms_url1, tms_url2 , tms_url3'
+    };
+    let anyTmsChanges:boolean = queryParamsHelperService.anyTmsChanges(p_params,c_params);
+    expect(anyTmsChanges).toBeTruthy();
   });
 
 

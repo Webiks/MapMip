@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router, ActivatedRoute, Params, NavigationExtras, NavigationEnd, UrlTree} from "@angular/router";
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
@@ -8,7 +8,6 @@ import {host, animations} from "../map-layer.component";
 import {MapLayerChild} from "../map-layer-child.interface";
 import * as _ from 'lodash'
 import * as L from 'leaflet';
-import Marker = L.Marker;
 import "leaflet-bing-layer/leaflet-bing-layer";
 import {CalcService} from "../calc-service";
 
@@ -45,6 +44,10 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     this.prevParams = this.currentParams;
     this.currentParams = params;
 
+    if(this.queryParamsHelperService.anyTmsChanges(this.prevParams, this.currentParams) || _.isEmpty(this.getLayersArray())) {
+      this.setTmsLayers(params);
+    }
+
     //view
     if(this.queryParamsHelperService.hasQueryBounds(params)) {
       this.setMapBounds(params);
@@ -65,11 +68,46 @@ export class LeafletComponent implements OnInit, MapLayerChild {
 
   };
 
+  setTmsLayers(params:Params) {
+    let params_tms_array:Array<string> = this.queryParamsHelperService.queryTms(params);
+    let map_tms_array:Array<string> = this.getMapTmsUrls();
+
+    if(_.isEmpty(params_tms_array)) {
+      this.addBaseLayer();
+    } else {
+      this.addTmsLayersViaUrl(params_tms_array);
+      this.removeTmsLayersViaUrl(map_tms_array);
+    }
+  }
+  addBaseLayer():void {
+    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
+    // L.tileLayer('https://api.mapbox.com/styles/v1/idanbarak/cixg4xdev00ms2qo9e4h5ywsb/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw').addTo(this.map);
+  }
+
+  addTmsLayersViaUrl(params_tms_array:Array<string>) {
+    params_tms_array.forEach( (tms_url:string) => {
+      if(!this.tmsUrlExistOnMap(tms_url)) {
+        console.log("layer added = ", tms_url);
+        L.tileLayer(tms_url).addTo(this.map);
+      }
+    })
+  }
+
+  removeTmsLayersViaUrl(map_tms_array:Array<string>) {
+    map_tms_array.forEach( (tms_url:string) => {
+      if(!this.tmsUrlExistOnParams(tms_url)) {
+        let layer = this.getLayersArray().find((l:L.Layer) => l['_url'] == tms_url);
+        console.log("layer removed = ", layer["_url"]);
+        this.map.removeLayer(layer)
+      }
+    })
+  }
+
   initializeMap():void {
     this.map = L.map('leafletContainer');
-    L.tileLayer['bing']('Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq').addTo(this.map);
+    // L.tileLayer['bing']('Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq').addTo(this.map);
     // L.tileLayer('https://api.mapbox.com/styles/v1/idanbarak/cixg4xdev00ms2qo9e4h5ywsb/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw', {
-      // id: 'mapbox.streets'
+    //   id: 'mapbox.streets'
     // }).addTo(this.map);
     this.map.on('moveend', this.moveEnd);
   }
@@ -80,8 +118,9 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     let lat: number  = event.target.getCenter().lat;
     let zoom:number  = event.target.getZoom();
     let markers      = this.currentParams['markers'];
+    let tms          = this.currentParams['tms'];
 
-    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, zoom, markers});
+    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, zoom, markers, tms});
 
     return this.router.navigate([], navigationExtras);
   };
@@ -134,7 +173,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     return saved_bounds;
   }
 
-  getLayersArray() {
+  getLayersArray():Array<L.Layer> {
     let layers = [];
     this.map.eachLayer((l) => layers.push(l));
     return layers;
@@ -149,7 +188,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   getMarkersPosition():Array<[number, number]> {
     let markers_position:Array<[number, number]> = [];
 
-    this.map.eachLayer( (layer:Marker) => {
+    this.map.eachLayer( (layer:L.Marker) => {
       if(layer.setIcon){
         let latlng = layer.getLatLng();
         let marker_position:[number, number] = [+latlng.lng.toFixed(7), +latlng.lat.toFixed(7)];
@@ -159,6 +198,26 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     return markers_position;
   }
 
+
+  getMapTmsUrls():Array<string> {
+    let TmsUrls:Array<string> = [];
+    this.map.eachLayer( (layer:L.TileLayer) => {
+      if(layer.getTileSize){
+        TmsUrls.push(layer['_url']);
+      }
+    });
+    return TmsUrls;
+  }
+
+  tmsUrlExistOnMap(url:string):boolean {
+    let urls = this.getMapTmsUrls();
+    return !_.isNil(urls.find((_url:string) => _url == url));
+  }
+
+  tmsUrlExistOnParams(url:string):boolean {
+    let params_tms_urls = this.queryParamsHelperService.queryTms(this.currentParams);
+    return !_.isNil(params_tms_urls.find(_url => _url == url));
+  }
 
   setMarkersChanges(params:Params):void {
     let params_markers_position:Array<[number, number]> = this.queryParamsHelperService.queryMarkersNoHeight(params);
@@ -176,7 +235,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
           iconUrl: '/assets/Leaflet/images/marker-icon.png',
           shadowUrl: '/assets/Leaflet/images/marker-shadow.png',
         });
-        let l_marker:Marker = L.marker([marker[1],marker[0]], {icon:icon});
+        let l_marker:L.Marker = L.marker([marker[1],marker[0]], {icon:icon});
         l_marker.addTo(this.map);
       }
     });
@@ -189,7 +248,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
       if(!this.markerExistOnParams(markerPos)) {
 
         let marker_to_remove = this.getLayersArray().find(
-          (layer:Marker) => {
+          (layer:L.Marker) => {
             if(layer.getLatLng) {
               let currentM = [layer.getLatLng().lng, layer.getLatLng().lat];
               return _.isEqual(currentM, markerPos);

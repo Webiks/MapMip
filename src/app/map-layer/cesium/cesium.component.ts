@@ -357,14 +357,13 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     let rightBottomCartesian2  = new Cesium.Cartesian2(this.viewer.canvas.width, this.viewer.canvas.height);
     let rightBottomCartesian3 = this.viewer.camera.pickEllipsoid(rightBottomCartesian2);
 
+    if(_.isEmpty(leftTopCartesian3) || _.isEmpty(rightBottomCartesian3)) {
+      let o_bounds = this.viewer.camera.computeViewRectangle();
+      return [o_bounds.west, o_bounds.north, o_bounds.east, o_bounds.south];
+    }
     let cartographicLeftTop = Cesium.Cartographic.fromCartesian(leftTopCartesian3);
     let cartographicRightBottom = Cesium.Cartographic.fromCartesian(rightBottomCartesian3);
-
-    if(cartographicLeftTop && cartographicRightBottom){
-      bounds = [cartographicRightBottom.longitude, cartographicLeftTop .latitude, cartographicLeftTop .longitude, cartographicRightBottom.latitude];
-    } else {
-      bounds = [0, 0, 0, 0];
-    }
+    bounds = [cartographicRightBottom.longitude, cartographicLeftTop .latitude, cartographicLeftTop .longitude, cartographicRightBottom.latitude];
 
     return bounds;
   }

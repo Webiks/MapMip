@@ -2,11 +2,12 @@ import {Injectable} from '@angular/core';
 import {Params, NavigationExtras} from "@angular/router";
 import * as _ from 'lodash';
 import {CalcService} from "./calc-service";
+declare let rison;
 
 @Injectable()
 export class QueryParamsHelperService {
 
-  constructor(private calcService:CalcService) { }
+  constructor(private calcService:CalcService) {}
 
   queryBounds(params:Params):[number, number, number, number] {
     let boundsString = params['bounds'];
@@ -55,6 +56,48 @@ export class QueryParamsHelperService {
     return marker_str_to_array_fixed7;
   }
 
+  anyTmsChanges(prev:Params, current:Params):boolean{
+    let currentTms = this.queryTms(current);
+    let prevTms = this.queryTms(prev);
+    return !_.isEqual(prevTms, currentTms);
+  }
+
+  queryTms(params:Params):Array<string>{
+    return this.queryTmsStrings(params);
+  }
+
+  queryTmsStrings(params:Params):Array<string>{
+    let decode_tms_array:Array<Object> = this.queryTmsStringToObjects(params);
+    return decode_tms_array.map( tms_obj => this.tmsObjecttToUrl(tms_obj));
+  }
+
+  queryTmsStringToObjects(params:Params):Array<Object>{
+    let tms_to_decode:string = params['tms'];
+    if(_.isEmpty(tms_to_decode) ) tms_to_decode = '';
+    tms_to_decode = tms_to_decode.split(" ").join("");
+    return rison.decode_array(tms_to_decode);
+  }
+
+  queryTmsObjectToString(tms_obj):string{
+    if(_.isEmpty(tms_obj)) return "";
+    return rison.encode_array(tms_obj);
+  }
+
+  tmsObjecttToUrl(tms_obj):string {
+    let obj = _.cloneDeep(tms_obj);
+    let url = obj.url;
+    delete obj.url;
+    Object.keys(obj).forEach( (val,index,array) => {
+      if(index == 0 ) {
+        url += '?';
+      } else {
+        url += '&';
+      }
+      url += `${val}=${obj[val]}`
+    });
+    return url;
+  }
+
   queryMarkersNoHeight(params:Params):Array<[number, number]> {
     return this.queryMarkers(params).map((position:[number,number, number]) => <[number, number]> [position[0], position[1]]);
   }
@@ -86,12 +129,13 @@ export class QueryParamsHelperService {
 
 
   getQuery(queryObj):NavigationExtras {
-    queryObj.roll =  queryObj.roll % 360  == 0 ? undefined : queryObj.roll;
+    queryObj.roll    =  queryObj.roll % 360  == 0 ? undefined : queryObj.roll;
     queryObj.heading = queryObj.heading % 360  == 0 ? undefined : queryObj.heading;
-    queryObj.pitch = queryObj.pitch == -90 ? undefined : queryObj.pitch;
-    queryObj.mode3d = queryObj.mode3d == 0 ? queryObj.mode3d : undefined;
-    queryObj.rotate = queryObj.rotate == 0 ? undefined : queryObj.rotate;
+    queryObj.pitch   = queryObj.pitch == -90 ? undefined : queryObj.pitch;
+    queryObj.mode3d  = queryObj.mode3d == 0 ? queryObj.mode3d : undefined;
+    queryObj.rotate  = queryObj.rotate == 1 ? 1 : undefined;
     queryObj.markers = _.isEmpty(queryObj.markers) ? undefined : queryObj.markers;
+    queryObj.tms     = _.isEmpty(queryObj.tms) ? undefined : queryObj.tms;
 
     return <NavigationExtras> {
       queryParams: queryObj
