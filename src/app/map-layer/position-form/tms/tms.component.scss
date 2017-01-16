@@ -18,7 +18,10 @@ ul {
         width: 75%;
         height: 100%;
       }
-      span{
+      span.url{
+        width: calc(100% - 125px);
+        overflow: hidden;
+
         flex-grow: 10;
 
         display: flex;

@@ -152,7 +152,24 @@ describe('OpenlayersComponent', () => {
       component.queryParams(params);
       expect(component.setMarkersChanges).toHaveBeenCalledWith(params);
 
-    })
+    });
+
+    it('setTmsLayers should to have been call if: not layers on map or anyTmsChanges is "true"', ()=>{
+      let anyTmsChangesRes:boolean = false;
+      let getLayersArray:Array<any> = [1,2,3];
+      let params:Params = {};
+      let map_layers = component.map.getLayers();
+
+      spyOn(queryParamsHelperService, 'anyTmsChanges').and.callFake(() => anyTmsChangesRes);
+      spyOn(map_layers, 'getArray').and.callFake(() => getLayersArray);
+      spyOn(component, 'setTmsLayers');
+      component.queryParams(params);
+      expect(component.setTmsLayers).not.toHaveBeenCalled();
+      anyTmsChangesRes = true;
+      component.queryParams(params);
+      expect(component.setTmsLayers).toHaveBeenCalledWith(params);
+    });
+
   });
 
   it('setMapView should get params and use them to call map.setView with params values',()=>{
@@ -345,4 +362,28 @@ describe('OpenlayersComponent', () => {
   //   let saved_bounds:[number, number, number, number] = t_bounds;
   //   return saved_bounds;
   // }
+
+
+  it('setTmsLayers: should call addBaseLayer when tms_array empty, else call addTmsLayersViaUrl and removeTmsLayersViaUrl', ()=>{
+    let params:Params = {};
+    let fake_parmas_tms_array:Array<Object> = [];
+    let fake_map_tms_array:Array<string> = [];
+
+    spyOn(queryParamsHelperService, 'queryTms').and.callFake(() => fake_parmas_tms_array);
+    spyOn(component, 'getMapTmsUrls').and.callFake(() => fake_map_tms_array);
+
+    spyOn(component, 'addBaseLayer');
+    spyOn(component, 'addTmsLayersViaUrl');
+    spyOn(component, 'removeTmsLayersViaUrl');
+    component.setTmsLayers(params);
+    expect(component.addBaseLayer).toHaveBeenCalled();
+    expect(component.addTmsLayersViaUrl).not.toHaveBeenCalled();
+    expect(component.removeTmsLayersViaUrl).not.toHaveBeenCalled();
+    fake_parmas_tms_array = [{url:'tms1'}, {url:'tms2'}];
+    fake_map_tms_array = ['mapurl1','mapurl2'];
+    component.setTmsLayers(params);
+    expect(component.addTmsLayersViaUrl).toHaveBeenCalledWith(fake_parmas_tms_array);
+    expect(component.removeTmsLayersViaUrl).toHaveBeenCalledWith(fake_map_tms_array);
+  });
+
 });

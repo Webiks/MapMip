@@ -9,7 +9,7 @@ import {CalcService} from "../../calc-service";
 import {Ng2BootstrapModule} from "ng2-bootstrap";
 import {element} from "protractor";
 
-fdescribe('TmsComponent', () => {
+describe('TmsComponent', () => {
   let component: TmsComponent;
   let fixture: ComponentFixture<TmsComponent>;
 

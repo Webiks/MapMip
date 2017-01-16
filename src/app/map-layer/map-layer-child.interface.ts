@@ -7,8 +7,11 @@ export interface MapLayerChild {
   setMapBounds(params:Params):void
   getBounds(): [number,number,number,number]
 
+  queryParams(Params):void;
+  moveEnd(event):Promise<boolean>;
+
   currentParams:Params;
-  queryParams: (Params) => void;
-  moveEnd: (event) => Promise<boolean>
+  prevParams:Params;
+
 }
 

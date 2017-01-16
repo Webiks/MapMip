@@ -38,7 +38,10 @@ export class TmsComponent implements OnInit, OnChanges {
   public examples = [
     {name: 'openstreetmap base', tms_obj: {url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'}},
     {name: 'mapbox idan', tms_obj: {url: 'https://api.mapbox.com/styles/v1/idanbarak/cixg4xdev00ms2qo9e4h5ywsb/tiles/256/{z}/{x}/{y}', access_token: 'pk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw'}},
-    {name: 'wmflabs', tms_obj: {url: 'http://a.tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png'}}
+    {name: 'wmflabs', tms_obj: {url: 'http://{s}.tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png'}},
+    {name: 'thunderforest', tms_obj: {url: 'https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png'}},
+    {name: 'OpenCycleMap', tms_obj: {url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'}},
+
   ];
 
   public addObject = {

@@ -30,21 +30,21 @@ export class LeafletComponent implements OnInit, MapLayerChild {
 
   ngOnInit() {
     this.initializeMap();
-    this.activatedRoute.queryParams.subscribe(this.queryParams);
-    this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/leaflet", false) && !this.router.isActive("/openlayers", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd);
+    this.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
+    this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/leaflet", false) && !this.router.isActive("/openlayers", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
   }
 
-  setQueryBoundsOnNavigationEnd: (NavigationEnd) => void = (event:NavigationEnd):void => {
+  setQueryBoundsOnNavigationEnd(event:NavigationEnd):void {
     let urlTree:UrlTree = this.router.parseUrl(event.url);
     urlTree.queryParams['bounds'] = this.getBounds().toString();
     this.router.navigateByUrl(urlTree.toString());
-  };
+  }
 
-  queryParams: (Params) => void = (params:Params):void => {
+  queryParams(params:Params):void {
     this.prevParams = this.currentParams;
     this.currentParams = params;
-
-    if(this.queryParamsHelperService.anyTmsChanges(this.prevParams, this.currentParams) || _.isEmpty(this.getLayersArray())) {
+    //layers
+    if(this.queryParamsHelperService.anyTmsChanges(this.prevParams, this.currentParams) || this.noTileLayer()) {
       this.setTmsLayers(params);
     }
 
@@ -66,13 +66,21 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     }
 
 
-  };
+  }
+
+
+  noTileLayer():boolean {
+    return _.isNil(this.getLayersArray().find((l) => {
+      return l['_url'];
+    }))
+  }
+
 
   setTmsLayers(params:Params) {
     let params_tms_array:Array<string> = this.queryParamsHelperService.queryTms(params);
     let map_tms_array:Array<string> = this.getMapTmsUrls();
 
-    if(_.isEmpty(params_tms_array)) {
+    if(_.isEmpty(params_tms_array) && _.isEmpty(map_tms_array)) {
       this.addBaseLayer();
     } else {
       this.addTmsLayersViaUrl(params_tms_array);
@@ -81,7 +89,6 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   }
   addBaseLayer():void {
     L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
-    // L.tileLayer('https://api.mapbox.com/styles/v1/idanbarak/cixg4xdev00ms2qo9e4h5ywsb/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw').addTo(this.map);
   }
 
   addTmsLayersViaUrl(params_tms_array:Array<string>) {
@@ -98,17 +105,14 @@ export class LeafletComponent implements OnInit, MapLayerChild {
       if(!this.tmsUrlExistOnParams(tms_url)) {
         let layer = this.getLayersArray().find((l:L.Layer) => l['_url'] == tms_url);
         console.log("layer removed = ", layer["_url"]);
-        this.map.removeLayer(layer)
+        this.map.removeLayer(layer);
+        if(this.noTileLayer()) this.addBaseLayer();
       }
     })
   }
 
   initializeMap():void {
     this.map = L.map('leafletContainer');
-    // L.tileLayer['bing']('Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq').addTo(this.map);
-    // L.tileLayer('https://api.mapbox.com/styles/v1/idanbarak/cixg4xdev00ms2qo9e4h5ywsb/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw', {
-    //   id: 'mapbox.streets'
-    // }).addTo(this.map);
     this.map.on('moveend', this.moveEnd);
   }
 
@@ -117,6 +121,9 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     let lng: number  = event.target.getCenter().lng;
     let lat: number  = event.target.getCenter().lat;
     let zoom:number  = event.target.getZoom();
+    // let lng: number  = this.map.getCenter().lng;
+    // let lat: number  = this.map.getCenter().lat;
+    // let zoom:number  = this.map.getZoom();
     let markers      = this.currentParams['markers'];
     let tms          = this.currentParams['tms'];
 
@@ -164,6 +171,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
 
     arrayP = this.calcService.toFixes7Obj(arrayP);
     array = this.calcService.toFixes7Obj(array);
+
     return !_.isEqual(arrayP, array);
   }
 

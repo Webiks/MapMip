@@ -36,7 +36,7 @@ export class PositionFormComponent implements OnInit {
     mode3d:{permissions: [Permissions['/cesium']], input_type: 'Bswitch'},
     rotate:{permissions: [Permissions['/cesium?mode3d=0'], Permissions['/openlayers']], input_type: 'Bswitch'},
     markers:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-markers'},
-    tms: {permissions: [Permissions['/leaflet']], input_type: 'app-tms'}
+    tms: {permissions: [Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-tms'}
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService) {}

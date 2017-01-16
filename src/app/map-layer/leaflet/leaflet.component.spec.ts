@@ -6,7 +6,7 @@ import {QueryParamsHelperService} from "../query-params-helper.service";
 import {CalcService} from "../calc-service";
 import {Params, Router, NavigationExtras} from "@angular/router";
 
-describe('LeafletComponent', () => {
+fdescribe('LeafletComponent', () => {
   let component: LeafletComponent;
   let fixture: ComponentFixture<LeafletComponent>;
   let queryParamsHelperService:QueryParamsHelperService;
@@ -55,11 +55,12 @@ describe('LeafletComponent', () => {
 
     it('setTmsLayers should to have been call if: not layers on map or anyTmsChanges is "true"', ()=>{
       let anyTmsChangesRes:boolean = false;
-      let getLayersArray:Array<any> = [1,2,3];
-      let params:Params = {};
+      let noTileLayerRes:boolean = false;
+      spyOn(component,'noTileLayer').and.callFake(() => noTileLayerRes)
       spyOn(queryParamsHelperService, 'anyTmsChanges').and.callFake(() => anyTmsChangesRes);
-      spyOn(component, 'getLayersArray').and.callFake(() => getLayersArray);
       spyOn(component, 'setTmsLayers');
+
+      let params:Params = {};
       component.queryParams(params);
       expect(component.setTmsLayers).not.toHaveBeenCalled();
       anyTmsChangesRes = true;
@@ -279,6 +280,7 @@ describe('LeafletComponent', () => {
     let fake_parmas_tms_array:Array<Object> = [];
     let fake_map_tms_array:Array<string> = [];
 
+    spyOn(component, 'noTileLayer').and.callFake(() => false);
     spyOn(queryParamsHelperService, 'queryTms').and.callFake(() => fake_parmas_tms_array);
     spyOn(component, 'getMapTmsUrls').and.callFake(() => fake_map_tms_array);
 
@@ -313,18 +315,25 @@ describe('LeafletComponent', () => {
     expect(fake_map.addTo).toHaveBeenCalledTimes(3);
   });
 
-  it('removeTmsLayersViaUrl should loop on map_tms_array and remove layer if layer not exist on params', ()=>{
+  it('removeTmsLayersViaUrl should loop on map_tms_array and remove layer that not exist on params and call addBaseLayer if no noTileLayer eq "true"', ()=>{
     let map_tms_array = ['tms_url1', 'tms_url2', 'tms_url3'];
     let tmsUrlExistOnMapRes:boolean = true;
+    let noTileLayerRes:boolean = false;
 
+    spyOn(component, 'addBaseLayer').and.callFake(() => noTileLayerRes)
+    spyOn(component, 'noTileLayer').and.callFake(() => noTileLayerRes)
     spyOn(component, 'tmsUrlExistOnParams').and.callFake(() => tmsUrlExistOnMapRes);
     spyOn(component.map, 'removeLayer');
 
     component.removeTmsLayersViaUrl(map_tms_array);
     expect(component.map.removeLayer).toHaveBeenCalledTimes(0);
+    expect(component.addBaseLayer).not.toHaveBeenCalled();
+
     tmsUrlExistOnMapRes = false;
+    noTileLayerRes = true;
     component.removeTmsLayersViaUrl(map_tms_array);
     expect(component.map.removeLayer).toHaveBeenCalledTimes(3);
+    expect(component.addBaseLayer).toHaveBeenCalled();
 
   });
 

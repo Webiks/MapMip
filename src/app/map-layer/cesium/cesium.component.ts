@@ -33,7 +33,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
 
   ngOnInit() {
     this.initializeMap();
-    this.queryParamsSubscriber = this.activatedRoute.queryParams.subscribe(this.queryParams);
+    this.queryParamsSubscriber = this.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     this.generalCanDeactivateService.onLeave =  Observable.create((observer:Observer<boolean>) => this.onLeave(observer)) ;
     this.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
     this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/cesium", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd);
@@ -46,14 +46,14 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   };
 
   onLeave(observer:Observer<boolean>):void{
-    this.viewer.camera.moveEnd.removeEventListener(this.moveEnd);
+    this.viewer.camera.moveEnd.removeEventListener(this.moveEnd.bind(this));
     this.queryParamsSubscriber.unsubscribe();
     this.flyToCenterAndGetBounds().subscribe((bool:boolean) => {
       observer.next(bool);
     })
   };
 
-  queryParams: (Params) => void = (params:Params):void => {
+  queryParams(params:Params):void {
     this.prevParams = this.currentParams;
     this.currentParams = params;
 
@@ -77,7 +77,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     Cesium.BingMapsApi.defaultKey = 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq';
     this.viewer = new Cesium.Viewer('cesiumContainer');
     window['viewer'] = this.viewer;
-    this.viewer.camera.moveEnd.addEventListener(this.moveEnd);
+    this.viewer.camera.moveEnd.addEventListener(this.moveEnd.bind(this));
   }
 
   anyParamChanges(params:Params):boolean {
@@ -218,7 +218,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   }
 
 
-  moveEnd: () => Promise<boolean> = ():Promise<boolean> => {
+  moveEnd(e):Promise<boolean> {
     if(!this.anyParamChanges(this.currentParams)) return;
 
     let center: {lat:number, lng:number} = this.getCenter();

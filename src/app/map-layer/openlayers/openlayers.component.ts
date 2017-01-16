@@ -34,11 +34,11 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
 
   ngOnInit() {
     this.initializeMap();
-    this.activatedRoute.queryParams.subscribe(this.queryParams);
+    this.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     this.generalCanDeactivateService.onLeave =  Observable.create((observer:Observer<boolean>) => this.onLeave(observer)) ;
 
     this.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
-    this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/openlayers", false) && !this.router.isActive("/leaflet", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd);
+    this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/openlayers", false) && !this.router.isActive("/leaflet", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
 
   }
 
@@ -54,16 +54,21 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     }
   };
 
-  setQueryBoundsOnNavigationEnd: (NavigationEnd) => void = (event:NavigationEnd):void => {
+  setQueryBoundsOnNavigationEnd(event:NavigationEnd):void {
     let urlTree:UrlTree = this.router.parseUrl(event.url);
     urlTree.queryParams['bounds'] = this.getBounds().toString();
     this.router.navigateByUrl(urlTree.toString());
   };
 
 
-  queryParams: (Params) => void = (params:Params):void => {
+  queryParams(params:Params):void {
     this.prevParams = this.currentParams;
     this.currentParams = params;
+
+    //layers
+    if(this.queryParamsHelperService.anyTmsChanges(this.prevParams, this.currentParams) || this.noTileLayer()) {
+      this.setTmsLayers(params);
+    }
 
     //view
     if(this.queryParamsHelperService.hasQueryBounds(params)) {
@@ -78,10 +83,36 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     if(params_changes && map_changes) {
       this.setMarkersChanges(params);
     }
-  };
+  }
 
-  initializeMap():void {
+  noTileLayer():boolean {
+    return _.isEmpty(this.getMapXYZLayers())
+  }
+
+  setTmsLayers(params:Params) {
+    let params_tms_array:Array<string> = this.queryParamsHelperService.queryTms(params);
+    let map_tms_array:Array<string> = this.getMapTmsUrls();
+
+    if(_.isEmpty(params_tms_array) && _.isEmpty(map_tms_array) ) {
+      this.addBaseLayer();
+    } else {
+      this.addTmsLayersViaUrl(params_tms_array);
+      this.removeTmsLayersViaUrl(map_tms_array);
+    }
+  }
+
+  addBaseLayer():void {
+
     const extent = this.transformExtent([-180.0, -90.0, 180.0, 90.0]);
+
+    let source:ol.source.XYZ = new ol.source.XYZ(<any>{
+      url: 'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+      // url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png'
+    });
+
+    let layer = new ol.layer.Tile(<any>{
+      source:source,
+    });
 
     const osm_layer =  new ol.layer.Tile(<olx.layer.TileOptions>{
       source: new ol.source.OSM()
@@ -93,20 +124,69 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
       extent: extent,
       source: new ol.source.BingMaps(<any>{
         key: "Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq",
-        imagerySet: "Aerial"//,
-        // projection: this.projection
+        imagerySet: "Aerial"
       })
     });
+    layer.setZIndex(0);
+    this.map.addLayer(layer);
+  }
+
+  addTmsLayersViaUrl(params_tms_array:Array<string>) {
+    params_tms_array.forEach( (tms_url:string) => {
+      if(!this.tmsUrlExistOnMap(tms_url)) {
+        console.log("layer added = ", tms_url);
+        let layer = new ol.layer.Tile(<olx.layer.TileOptions>{
+          source: new ol.source.XYZ(<olx.source.XYZOptions> {
+            url: tms_url.split("{s}").join("{a-c}")
+          })
+        });
+        layer.setZIndex(0);
+        this.map.addLayer(layer);
+      }
+    })
+  }
+
+  removeTmsLayersViaUrl(map_tms_array:Array<string>) {
+    map_tms_array.forEach( (tms_url:string) => {
+      if(!this.tmsUrlExistOnParams(tms_url)) {
+        let layer = this.getMapXYZLayers().find((layer:ol.layer.Layer) => layer['jc'] == tms_url);
+        console.log("layer removed = ", layer["jc"]);
+        this.map.removeLayer(layer)
+        if(this.noTileLayer()) this.addBaseLayer();
+      }
+    })
+  }
+  getMapXYZLayers() {
+    return this.LayersArray.filter( (layer: ol.layer.Layer) => {
+      if(layer instanceof ol.layer.Tile) {
+        let source:ol.source.Source = layer.getSource();
+        return source instanceof ol.source.XYZ
+      }
+    })
+  }
+  getMapTmsUrls():Array<string> {
+    return this.getMapXYZLayers().map((layer:ol.layer.Tile) => {layer.getSource()['jc']});
+  }
+
+  tmsUrlExistOnMap(url:string):boolean {
+    let urls = this.getMapTmsUrls();
+    return !_.isNil(urls.find((_url:string) => _url == url));
+  }
+
+  tmsUrlExistOnParams(url:string):boolean {
+    let params_tms_urls = this.queryParamsHelperService.queryTms(this.currentParams);
+    return !_.isNil(params_tms_urls.find(_url => _url == url));
+  }
+
+
+  initializeMap():void {
 
     this.map = new ol.Map(<any>{
       target: 'ol',
-      extent: extent,
       projection: new ol.proj.Projection(<any>{code:"EPSG:4326", extent: [-180.0000, -90.0000, 180.0000, 90.0000]}),
-      layers: [
-        bingLayer
-      ]
     });
-    this.moveEndEvent = this.map.on('moveend', this.moveEnd);
+
+    this.moveEndEvent = this.map.on('moveend', this.moveEnd.bind(this));
   }
 
   addIcon(lnglat:[number, number]){
@@ -126,12 +206,13 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
         anchorYUnits: 'pixels',
         opacity: 0.75,
         src: '/assets/Leaflet/images/marker-icon.png'
-      })
+      }),
     });
     let vectorLayer = new ol.layer.Vector(<any>{
       source: vectorSource,
       style: iconStyle
     });
+    vectorLayer.setZIndex(200)
     this.map.addLayer(vectorLayer);
   }
 
@@ -183,7 +264,7 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     return !_.isEqual(arrayP, array);
   }
 
-  moveEnd: (event) => Promise<boolean> = (event):Promise<boolean> => {
+  moveEnd(event):Promise<boolean> {
     let centerCord:ol.Coordinate = ol.proj.transform(event.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
 
     let lng = centerCord[0];
@@ -191,7 +272,9 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     let zoom:number = event.map.getView().getZoom();
     let heading:number = 360 - this.calcService.toDegrees(event.map.getView().getRotation());
     let markers = this.currentParams['markers'];
-    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, zoom, heading, markers});
+    let tms = this.currentParams['tms'];
+
+    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, zoom, heading, markers, tms});
     return this.router.navigate([], navigationExtras);
 
   };
@@ -219,10 +302,10 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
   getMarkersPosition(): Array<[number,number]>{
     return this.LayersArray.filter( (layer) => {
       let geom;
-      if(layer.getSource().getFeatures) geom = layer.getSource().getFeatures()[0].getGeometry();
+      if(layer.getSource && layer.getSource().getFeatures) geom = layer.getSource().getFeatures()[0].getGeometry();
       return geom instanceof ol.geom.Point;
     }) . map(layer => {
-      let cord= layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
+      let cord = layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
       cord = ol.proj.transform(cord, 'EPSG:3857', 'EPSG:4326');
       return this.calcService.toFixes7Obj(cord);
     });
