@@ -28,6 +28,8 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   public currentParams:Params = {};
   public queryParamsSubscriber;
   public go_north:boolean = false;
+  public layers = [];
+  moveEndListenerEvent:any;
 
   constructor(private queryParamsHelperService:QueryParamsHelperService, private activatedRoute:ActivatedRoute, private generalCanDeactivateService:GeneralCanDeactivateService, private router:Router, private calcService:CalcService) {window['current'] = this;}
 
@@ -46,7 +48,9 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   };
 
   onLeave(observer:Observer<boolean>):void{
-    this.viewer.camera.moveEnd.removeEventListener(this.moveEnd.bind(this));
+    this.viewer.camera.moveEnd._listeners.pop()
+    // this.viewer.camera.moveEnd.removeEventListener(this.moveEndListenerEvent);
+
     this.queryParamsSubscriber.unsubscribe();
     this.flyToCenterAndGetBounds().subscribe((bool:boolean) => {
       observer.next(bool);
@@ -56,6 +60,11 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   queryParams(params:Params):void {
     this.prevParams = this.currentParams;
     this.currentParams = params;
+
+    //layers
+    if(this.queryParamsHelperService.anyLayersChanges(this.prevParams, this.currentParams)) {
+      this.setLayersChanges(params);
+    }
 
     //view
     if(this.queryParamsHelperService.hasQueryBounds(params)) {
@@ -74,10 +83,194 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   };
 
   initializeMap():void {
-    Cesium.BingMapsApi.defaultKey = 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq';
-    this.viewer = new Cesium.Viewer('cesiumContainer');
-    window['viewer'] = this.viewer;
-    this.viewer.camera.moveEnd.addEventListener(this.moveEnd.bind(this));
+    // Cesium.BingMapsApi.defaultKey = 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq';
+    // var mapbox = new Cesium.MapboxImageryProvider({
+    //   mapId: 'mapbox.streets',
+    //   accessToken: 'thisIsMyAccessToken'
+    // });
+    // let mapbox = new Cesium.MapboxImageryProvider({
+
+    //   url: 'https://api.mapbox.com/styles/v1/',
+    //   mapId: 'idanbarak/cixg4xdev00ms2qo9e4h5ywsb/tiles/256',
+    //   // accessToken: 'pk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw',
+    //   // accessToken: 'aaaapk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw',
+    //   // format: "empty",
+    //   proxy: {
+    //     getURL : (url) => {
+    //       return url.replace(".png", "");
+    //     }
+    //   }
+    // });
+
+    var osm = new Cesium.createOpenStreetMapImageryProvider({
+        url: 'https://{s}.tile.openstreetmap.org/'
+    });
+
+    this.viewer = new Cesium.Viewer('cesiumContainer', {
+      // imageryProvider : mapbox,
+      baseLayerPicker : false
+    });
+
+    this.moveEndListenerEvent = this.viewer.camera.moveEnd.addEventListener(this.moveEnd.bind(this));
+  }
+
+  addBaseLayer():void {
+    let bing_layer = this.getBingLayer({url:'https://dev.virtualearth.net' ,key:'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq', style:'Aerial'});
+    this.viewer.imageryLayers.addImageryProvider(bing_layer);
+  }
+
+  getBingLayer(layer_obj){
+    return new Cesium.BingMapsImageryProvider({
+      url: layer_obj['url'],
+      key: layer_obj['key'],
+      mapStyle: layer_obj['style'],
+    });
+  }
+
+  getMapboxLayer(layer_obj){
+    return new Cesium.MapboxImageryProvider({
+      url: layer_obj['url'],
+      mapId: layer_obj['mapid'],
+      accessToken: layer_obj['access_token'],
+      format: layer_obj['format'] ? layer_obj['format'] : undefined,
+      proxy: {
+        getURL : (url:string) => this.parseMapBoxUrl(layer_obj, url)
+      }
+    });
+  }
+
+  getTmsLayer(layer_obj){
+    return new Cesium.createTileMapServiceImageryProvider({
+      url: layer_obj['url']
+    });
+  }
+
+  getLayerFromLayerObj(layer_obj:{source:string}) {
+    switch (layer_obj.source) {
+      case 'mapbox':
+        return this.getMapboxLayer(layer_obj);
+      case 'openstreetmap':
+        return this.getOpenstreetmapLayer(layer_obj)
+      case 'bing':
+        return this.getBingLayer(layer_obj);
+      case 'tms':
+        return this.getTmsLayer(layer_obj)
+      default:
+        return new Cesium.UrlTemplateImageryProvider({
+          url: decodeURIComponent(layer_obj['url'])
+        });
+    }
+  }
+
+  getOpenstreetmapLayer(layer_obj){
+    return new Cesium.createOpenStreetMapImageryProvider({
+      url:layer_obj['url'],
+      format:layer_obj['format'],
+      proxy: {
+        getURL : (url:string) => this.parseMapBoxUrl(layer_obj, url)
+      }
+    })
+  }
+
+  setLayersChanges(params:Params) {
+    let params_tms_array = this.queryParamsHelperService.queryLayers(params);
+    let imageryLayers = this.viewer.imageryLayers._layers
+
+    this.addLayersViaUrl(params_tms_array);
+    this.removeLayersViaUrl(imageryLayers);
+  }
+
+  getMapLayersUrls():Array<string>  {
+    return this.viewer.imageryLayers._layers.map(i => i.imageryProvider._url)
+  }
+
+  addLayersViaUrl(params_layers_array:Array<Object>) {
+    params_layers_array.forEach( (layer_obj:{source:string}) => {
+      if(!this.layerExistOnMap(layer_obj)){
+        let layer = this.getLayerFromLayerObj(layer_obj);
+        this.viewer.imageryLayers.addImageryProvider(layer);
+      }
+    })
+  }
+
+  removeLayersViaUrl(map_imageryLayers) {
+    map_imageryLayers.forEach( (imageryLayer) => {
+      if(!this.layerExistOnParams(imageryLayer.imageryProvider)) {
+        this.viewer.imageryLayers.remove(imageryLayer);
+      }
+    });
+    if(this.noTileLayer()) this.addBaseLayer();
+  }
+
+  noTileLayer():boolean{
+    return _.isEmpty(this.viewer.imageryLayers._layers)
+  }
+
+  layerExistOnMap(layer_obj):boolean {
+    let imageryProviders = this.viewer.imageryLayers._layers.map(i => i.imageryProvider);
+
+    switch (layer_obj.source) {
+      case 'mapbox':
+        let mapbox_imageryProviders = imageryProviders.filter(ip => ip instanceof Cesium.MapboxImageryProvider);
+        let mapbox_layer = mapbox_imageryProviders.find(mapboxImageryProvider => {
+
+          let url_mapbox = layer_obj['url'] == mapboxImageryProvider._url;
+          let access_token_mapbox = layer_obj['access_token'] == mapboxImageryProvider._accessToken;
+          let mapid_mapbox = layer_obj['mapid'] == mapboxImageryProvider._mapId;
+
+          return url_mapbox && access_token_mapbox && mapid_mapbox
+        });
+        return !_.isNil(mapbox_layer);
+
+      case "bing":
+        let bing_imageryProviders = imageryProviders.filter(ip => ip instanceof Cesium.BingMapsImageryProvider);
+
+        let bing_layer = bing_imageryProviders.find(bingImageryProvider => {
+          let source_bing = bingImageryProvider instanceof Cesium.BingMapsImageryProvider;
+          let style_bing = layer_obj['style'] == bingImageryProvider._mapStyle;
+          let key_bing = layer_obj['key'] == bingImageryProvider._key;
+          let url_bing = layer_obj['url'] == bingImageryProvider._url;
+          return source_bing && style_bing && key_bing && url_bing;
+        });
+        return !_.isNil(bing_layer);
+
+      default:
+        let TemplateimageryProviders = imageryProviders.filter(ip => ip instanceof Cesium.UrlTemplateImageryProvider);
+
+        let openstreetmap_layer = TemplateimageryProviders.find(TimageryProvider => {
+          let url_openstreetmap = TimageryProvider._url.includes(layer_obj['url']);
+          return url_openstreetmap
+        });
+        return !_.isNil(openstreetmap_layer);
+    }
+
+  }
+
+  layerExistOnParams(imageryProvider):boolean {
+
+    let params_layers_urls = this.queryParamsHelperService.queryLayers(this.currentParams);
+
+    let layer_obj_exist = params_layers_urls.find( (layer_obj:{source:string}) => {
+      switch (layer_obj.source) {
+
+        case "mapbox":
+          let source = imageryProvider instanceof Cesium.MapboxImageryProvider;
+          let url = layer_obj['url'] == imageryProvider._url;
+          let access_token = layer_obj['access_token'] == imageryProvider._accessToken;
+          let mapid = layer_obj['mapid'] == imageryProvider._mapId;
+          return source && url && access_token && mapid;
+        case "bing":
+          let source_bing = imageryProvider instanceof Cesium.BingMapsImageryProvider;
+          let style_bing = layer_obj['style'] == imageryProvider._mapStyle;
+          let key_bing = layer_obj['key'] == imageryProvider._key;
+          let url_bing = layer_obj['url'] == imageryProvider._url;
+          return source_bing && style_bing && key_bing && url_bing;
+        default:
+          let url_e = imageryProvider._url ? imageryProvider._url.includes(layer_obj['url']) : true;
+          return url_e;
+      }
+    });
+    return !_.isNil(layer_obj_exist);
   }
 
   anyParamChanges(params:Params):boolean {
@@ -88,7 +281,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     let headingRadiansP:number  = this.queryParamsHelperService.queryHeading(params) % 360;
     let pitchRadiansP:number    = this.queryParamsHelperService.queryPitch(params) % 360;
     let rollRadiansP:number     = this.queryParamsHelperService.queryRoll(params) % 360;
-    let mode3dP:number             = this.queryParamsHelperService.queryMode3d(params);
+    let mode3dP:number          = this.queryParamsHelperService.queryMode3d(params);
     let rotateP:number          = this.queryParamsHelperService.queryRotate(params);
 
     let arrayP:Array<number> = [longitudeP, latitudeP, heightP, headingRadiansP, pitchRadiansP, rollRadiansP, mode3dP, rotateP];
@@ -100,8 +293,13 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     let pitchRadians:number     = +Cesium.Math.toDegrees(this.viewer.camera.pitch) % 360;
     let rollRadians:number      = +Cesium.Math.toDegrees(this.viewer.camera.roll) % 360;
     let mode3d:number           = this.viewer.scene.mode == Cesium.SceneMode.SCENE3D ? 1 : 0;
-    let rotate:number           = this.viewer.scene.mapMode2D == Cesium.MapMode2D.INFINITE_SCROLL ? 0 : 1;
+    let rotate:number;
 
+    if(this.viewer.scene.mode == Cesium.SceneMode.SCENE3D || this.viewer.scene._mapMode2D == 1){
+      rotate = NaN;
+    } else {
+      rotate = 1
+    }
     let array = [longitude, latitude, height, headingRadians, pitchRadians, rollRadians, mode3d, rotate];
 
     arrayP = this.calcService.toFixes7Obj(arrayP);
@@ -141,7 +339,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     let pitchRadians     = Cesium.Math.toRadians(this.queryParamsHelperService.queryPitch(params));
     let rollRadians      = Cesium.Math.toRadians(this.queryParamsHelperService.queryRoll(params));
     let mode3d:number    =  this.queryParamsHelperService.queryMode3d(params);
-    let rotate:number    =  this.queryParamsHelperService.queryRotate(params) == 0 ? 1 : 0;
+    let rotate:number    =  isNaN(this.queryParamsHelperService.queryRotate(params)) ? 1 : 0;
 
     this.viewer.scene.mode = mode3d == 0 ? Cesium.SceneMode.SCENE2D : Cesium.SceneMode.SCENE3D;
     this.viewer.scene._mapMode2D = rotate;
@@ -218,7 +416,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   }
 
 
-  moveEnd(e):Promise<boolean> {
+  moveEnd(e?):Promise<boolean> {
     if(!this.anyParamChanges(this.currentParams)) return;
 
     let center: {lat:number, lng:number} = this.getCenter();
@@ -232,10 +430,11 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     let roll:number = +Cesium.Math.toDegrees(this.viewer.camera.roll);//.toFixed(7);
     let mode3d:number = this.viewer.scene.mode == Cesium.SceneMode.SCENE2D ? 0 : 1;
     let markers = this.currentParams['markers'];
-    let rotate = this.viewer.scene._mapMode2D == 0 ? 1 : 0;
+    let layers = this.currentParams['layers'];
+    let rotate = this.currentParams['rotate'];
 
-    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, rotate});
-
+    rotate = this.viewer.scene.mode != Cesium.SceneMode.SCENE2D || rotate != 1 ? undefined : 1;
+    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, rotate, layers});
     return this.router.navigate([], navigationExtras);
 
   };
@@ -247,7 +446,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   }
 
   flyToCenterAndGetBounds() {
-    this.viewer.scene._mapMode2D == Cesium.MapMode2D.ROTATE
+    this.viewer.scene._mapMode2D == 0
 
     const headingDeg = Cesium.Math.toDegrees(this.viewer.camera.heading);
     const pitchDeg = Cesium.Math.toDegrees(this.viewer.camera.pitch);
@@ -323,7 +522,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     let current_mapMode2D:number = this.viewer.scene.mapMode2D;
 
     this.viewer.scene.mode = Cesium.SceneMode.SCENE2D;
-    this.viewer.scene._mapMode2D = Cesium.MapMode2D.ROTATE;
+    this.viewer.scene._mapMode2D = 0;
 
     this.viewer.camera.setView({
       orientation: {
@@ -379,6 +578,13 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
       }
     });
 
+  }
+
+
+  parseMapBoxUrl(layer_obj, url:string):string {
+    if(_.isEmpty(layer_obj.format)) url = url.replace(".png", "");
+    if(_.isEmpty(layer_obj.mapid)) url = url.replace("undefined/", "");
+    return url;
   }
 
 

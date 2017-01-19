@@ -7,6 +7,8 @@ declare let rison;
 @Injectable()
 export class QueryParamsHelperService {
 
+  private _yaya = "shshsh";
+
   constructor(private calcService:CalcService) {}
 
   queryBounds(params:Params):[number, number, number, number] {
@@ -44,7 +46,6 @@ export class QueryParamsHelperService {
     return +params['mode3d'] == 0 ? 0 : 1;
   }
   queryRotate(params:Params):number {
-    if(isNaN(+params['rotate'])) return 0;
     return +params['rotate']  ;
   }
 
@@ -56,29 +57,34 @@ export class QueryParamsHelperService {
     return marker_str_to_array_fixed7;
   }
 
-  anyTmsChanges(prev:Params, current:Params):boolean{
-    let currentTms = this.queryTms(current);
-    let prevTms = this.queryTms(prev);
+  anyLayersChanges(prev:Params, current:Params):boolean{
+    let currentTms = this.queryLayers(current);
+    let prevTms = this.queryLayers(prev);
     return !_.isEqual(prevTms, currentTms);
   }
 
-  queryTms(params:Params):Array<string>{
-    return this.queryTmsStrings(params);
+  queryLayers(params:Params):Array<Object>{
+    let decode_array = this.queryLayersStrings(params);
+    decode_array.forEach(layer_obj => {
+      _.forEach(layer_obj, (val, key, obj) => {obj[key] = decodeURIComponent(val)});
+    });
+    return decode_array;
   }
 
-  queryTmsStrings(params:Params):Array<string>{
-    let decode_tms_array:Array<Object> = this.queryTmsStringToObjects(params);
-    return decode_tms_array.map( tms_obj => this.tmsObjecttToUrl(tms_obj));
+  queryLayersStrings(params:Params):Array<Object>{
+    // let decode_tms_array:Array<Object> = this.queryTmsStringToObjects(params);
+    // return decode_tms_array.map( tms_obj => this.tmsObjecttToUrl(tms_obj));
+    return this.queryLayersStringToObjects(params);
   }
 
-  queryTmsStringToObjects(params:Params):Array<Object>{
-    let tms_to_decode:string = params['tms'];
+  queryLayersStringToObjects(params:Params):Array<Object>{
+    let tms_to_decode:string = params['layers'];
     if(_.isEmpty(tms_to_decode) ) tms_to_decode = '';
     tms_to_decode = tms_to_decode.split(" ").join("");
     return rison.decode_array(tms_to_decode);
   }
 
-  queryTmsObjectToString(tms_obj):string{
+  queryLayersObjectToString(tms_obj):string{
     if(_.isEmpty(tms_obj)) return "";
     return rison.encode_array(tms_obj);
   }
@@ -133,9 +139,9 @@ export class QueryParamsHelperService {
     queryObj.heading = queryObj.heading % 360  == 0 ? undefined : queryObj.heading;
     queryObj.pitch   = queryObj.pitch == -90 ? undefined : queryObj.pitch;
     queryObj.mode3d  = queryObj.mode3d == 0 ? queryObj.mode3d : undefined;
-    queryObj.rotate  = queryObj.rotate == 1 ? 1 : undefined;
+    // queryObj.rotate  = queryObj.rotate == 1 ? 1 : undefined;
     queryObj.markers = _.isEmpty(queryObj.markers) ? undefined : queryObj.markers;
-    queryObj.tms     = _.isEmpty(queryObj.tms) ? undefined : queryObj.tms;
+    queryObj.layers     = _.isEmpty(queryObj.layers) ? undefined : queryObj.layers;
 
     return <NavigationExtras> {
       queryParams: queryObj

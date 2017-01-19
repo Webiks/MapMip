@@ -6,7 +6,7 @@ import {Params} from "@angular/router";
 import any = jasmine.any;
 import {CalcService} from "./calc-service";
 
-fdescribe('QueryParamsHelperService', () => {
+describe('QueryParamsHelperService', () => {
 
   let queryParamsHelperService:QueryParamsHelperService;
   let params:Params = {};
@@ -130,7 +130,7 @@ fdescribe('QueryParamsHelperService', () => {
     expect(result).toBeTruthy();
   });
 
-  fit('tmsObjecttToUrl should get object and parse him to url', ()=>{
+  it('tmsObjecttToUrl should get object and parse him to url', ()=>{
     let url_obj = {
       url: 'the_tms_of_url',
       p1: 'p1_value',
@@ -140,20 +140,20 @@ fdescribe('QueryParamsHelperService', () => {
     expect(url_string).toEqual(`${url_obj.url}?p1=${url_obj.p1}&p2=${url_obj.p2}`);
   });
 
-  it('queryTms should return array of strings with tms urls', () => {
+  it('queryLayers should return array of strings with tms urls', () => {
     let params:Params = {};
 
-    let tms_array:Array<string> = queryParamsHelperService.queryTms(params);
-    expect(tms_array.length).toEqual(0);
+    let layers_array:Array<Object> = queryParamsHelperService.queryLayers(params);
+    expect(layers_array.length).toEqual(0);
 
     params = {
-      tms: '(url: tms_url1, q1: a, q2: b), (url: tms_url2, q3: c, q4: d)'
+      tms: '(url: layer_url1, q1: a, q2: b), (url: layer_url2, q3: c, q4: d)'
     };
 
-    tms_array = queryParamsHelperService.queryTms(params);
-    expect(tms_array.length).toEqual(2);
-    expect(tms_array[0]).toEqual("tms_url1?q1=a&q2=b");
-    expect(tms_array[1]).toEqual("tms_url2?q3=c&q4=d");
+    layers_array = queryParamsHelperService.queryLayers(params);
+    expect(layers_array.length).toEqual(2);
+    expect(layers_array [0]).toEqual("layer_url1?q1=a&q2=b");
+    expect(layers_array [1]).toEqual("layer_url2?q3=c&q4=d");
   });
 
   it('anyTmsChanges should return boolean of compere between prev and current params["tms"] ', () => {
@@ -163,7 +163,7 @@ fdescribe('QueryParamsHelperService', () => {
     let p_params:Params = {
       tms: 'tms_url1, tms_url2 , tms_url3'
     };
-    let anyTmsChanges:boolean = queryParamsHelperService.anyTmsChanges(p_params,c_params);
+    let anyTmsChanges:boolean = queryParamsHelperService.anyLayersChanges(p_params,c_params);
     expect(anyTmsChanges).toBeTruthy();
   });
 

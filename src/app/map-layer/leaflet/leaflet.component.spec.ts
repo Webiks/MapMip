@@ -6,7 +6,7 @@ import {QueryParamsHelperService} from "../query-params-helper.service";
 import {CalcService} from "../calc-service";
 import {Params, Router, NavigationExtras} from "@angular/router";
 
-fdescribe('LeafletComponent', () => {
+describe('LeafletComponent', () => {
   let component: LeafletComponent;
   let fixture: ComponentFixture<LeafletComponent>;
   let queryParamsHelperService:QueryParamsHelperService;
@@ -53,7 +53,7 @@ fdescribe('LeafletComponent', () => {
       expect(component.currentParams).toEqual(newParams);
     });
 
-    it('setTmsLayers should to have been call if: not layers on map or anyTmsChanges is "true"', ()=>{
+    it('setTmsLayers should to have been call if: noTileLayerRes is "true" or anyTmsChanges is "true"', ()=>{
       let anyTmsChangesRes:boolean = false;
       let noTileLayerRes:boolean = false;
       spyOn(component,'noTileLayer').and.callFake(() => noTileLayerRes)
@@ -317,19 +317,23 @@ fdescribe('LeafletComponent', () => {
 
   it('removeTmsLayersViaUrl should loop on map_tms_array and remove layer that not exist on params and call addBaseLayer if no noTileLayer eq "true"', ()=>{
     let map_tms_array = ['tms_url1', 'tms_url2', 'tms_url3'];
-    let tmsUrlExistOnMapRes:boolean = true;
+    let map_layers_array = [{_url: 'tms_url1'}, {_url: 'tms_url2'}, {_url: 'tms_url3'}];
+
+    let tmsUrlExistOnParamsRes:boolean = true;
     let noTileLayerRes:boolean = false;
 
-    spyOn(component, 'addBaseLayer').and.callFake(() => noTileLayerRes)
+    spyOn(component, 'addBaseLayer');
+    spyOn(component, 'getLayersArray').and.callFake(() => map_layers_array);
+
     spyOn(component, 'noTileLayer').and.callFake(() => noTileLayerRes)
-    spyOn(component, 'tmsUrlExistOnParams').and.callFake(() => tmsUrlExistOnMapRes);
+    spyOn(component, 'tmsUrlExistOnParams').and.callFake(() => tmsUrlExistOnParamsRes);
     spyOn(component.map, 'removeLayer');
 
     component.removeTmsLayersViaUrl(map_tms_array);
     expect(component.map.removeLayer).toHaveBeenCalledTimes(0);
     expect(component.addBaseLayer).not.toHaveBeenCalled();
 
-    tmsUrlExistOnMapRes = false;
+    tmsUrlExistOnParamsRes = false;
     noTileLayerRes = true;
     component.removeTmsLayersViaUrl(map_tms_array);
     expect(component.map.removeLayer).toHaveBeenCalledTimes(3);

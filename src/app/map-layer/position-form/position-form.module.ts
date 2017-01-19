@@ -5,7 +5,7 @@ import {Ng2BootstrapModule} from "ng2-bootstrap";
 import {PositionFormComponent} from "./position-form.component";
 import { MarkersComponent } from './markers/markers.component';
 import { JWBootstrapSwitchModule } from 'jw-bootstrap-switch-ng2';
-import { TmsComponent } from './tms/tms.component';
+import {LayersComponent} from "./layers/layers.component";
 
 @NgModule({
   imports: [
@@ -14,7 +14,7 @@ import { TmsComponent } from './tms/tms.component';
     Ng2BootstrapModule,
     JWBootstrapSwitchModule
   ],
-  declarations: [PositionFormComponent, MarkersComponent, TmsComponent],
+  declarations: [PositionFormComponent, MarkersComponent, LayersComponent],
   exports: [PositionFormComponent]
 })
 export class PositionFormModule { }

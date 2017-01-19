@@ -154,18 +154,19 @@ describe('OpenlayersComponent', () => {
 
     });
 
-    it('setTmsLayers should to have been call if: not layers on map or anyTmsChanges is "true"', ()=>{
-      let anyTmsChangesRes:boolean = false;
-      let getLayersArray:Array<any> = [1,2,3];
+    it('setTmsLayers should to have been call if: noTileLayerRes is "true" or anyTmsChanges is "true"', ()=>{
       let params:Params = {};
-      let map_layers = component.map.getLayers();
+      let anyTmsChangesRes:boolean = false;
+      let noTileLayerRes:boolean = false;
 
+      spyOn(component,'noTileLayer').and.callFake(() => noTileLayerRes)
       spyOn(queryParamsHelperService, 'anyTmsChanges').and.callFake(() => anyTmsChangesRes);
-      spyOn(map_layers, 'getArray').and.callFake(() => getLayersArray);
+
       spyOn(component, 'setTmsLayers');
       component.queryParams(params);
-      expect(component.setTmsLayers).not.toHaveBeenCalled();
+      expect(component.setTmsLayers).toHaveBeenCalledTimes(0);
       anyTmsChangesRes = true;
+      noTileLayerRes = true;
       component.queryParams(params);
       expect(component.setTmsLayers).toHaveBeenCalledWith(params);
     });
@@ -241,7 +242,7 @@ describe('OpenlayersComponent', () => {
   it('moveEnd: should get lat,lng and zoom parameters from "event" and markers from currentParams', () => {
     spyOn(router, 'navigate');
     spyOn(ol.proj, 'transform').and.returnValue([2,1]);
-    component.currentParams = {markers: '(1,2,3)'};
+    component.currentParams = {markers: '(1,2,3)', tms: 'tms_strings', rotate: '0'};
 
     let event = {
       map: {
@@ -261,7 +262,12 @@ describe('OpenlayersComponent', () => {
     };
 
     component.moveEnd(event);
-    let navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)', tms:undefined});
+    let navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)', tms:'tms_strings', rotate: 0});
+    expect(router.navigate).toHaveBeenCalledWith([], navigationExtras);
+
+    component.currentParams['rotate'] = '1';
+    component.moveEnd(event);
+    navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)', tms:'tms_strings', rotate: undefined});
     expect(router.navigate).toHaveBeenCalledWith([], navigationExtras);
   });
 
@@ -385,5 +391,64 @@ describe('OpenlayersComponent', () => {
     expect(component.addTmsLayersViaUrl).toHaveBeenCalledWith(fake_parmas_tms_array);
     expect(component.removeTmsLayersViaUrl).toHaveBeenCalledWith(fake_map_tms_array);
   });
+
+
+  it('addTmsLayersViaUrl should loop on params_tms_array and add layer if layer not exist on map', ()=>{
+    let params_tms_array = ['tms_url1', 'tms_url2', 'tms_url3'];
+    let tmsUrlExistOnMapRes:boolean = true;
+
+    spyOn(component, 'tmsUrlExistOnMap').and.callFake(() => tmsUrlExistOnMapRes);
+    spyOn(component.map, 'addLayer');
+
+
+    component.addTmsLayersViaUrl(params_tms_array);
+    expect(component.map.addLayer).toHaveBeenCalledTimes(0);
+
+    tmsUrlExistOnMapRes = false;
+    component.addTmsLayersViaUrl(params_tms_array);
+    expect(component.map.addLayer).toHaveBeenCalledTimes(3);
+  });
+
+  it('removeTmsLayersViaUrl should loop on map_tms_array and remove layer that not exist on params and call addBaseLayer if no noTileLayer eq "true"', ()=>{
+    let map_tms_array = ['tms_url1', 'tms_url2', 'tms_url3'];
+    let map_layers_array = [{jc: 'tms_url1'}, {jc: 'tms_url2'}, {jc:'tms_url3'}];
+
+    let tmsUrlExistOnParamsRes:boolean = true;
+    let noTileLayerRes:boolean = false;
+
+    spyOn(component, 'addBaseLayer');
+    spyOn(component, 'noTileLayer').and.callFake(() => noTileLayerRes);
+    spyOn(component, 'tmsUrlExistOnParams').and.callFake(() => tmsUrlExistOnParamsRes);
+    spyOn(component.map, 'removeLayer');
+    spyOn(component,'getMapXYZLayers').and.callFake(()=> map_layers_array);
+
+    component.removeTmsLayersViaUrl(map_tms_array);
+    expect(component.map.removeLayer).not.toHaveBeenCalled();
+    expect(component.addBaseLayer).not.toHaveBeenCalled();
+
+    tmsUrlExistOnParamsRes = false;
+    noTileLayerRes = true;
+
+    component.removeTmsLayersViaUrl(map_tms_array);
+    expect(component.map.removeLayer).toHaveBeenCalledTimes(3);
+    expect(component.addBaseLayer).toHaveBeenCalled();
+
+  });
+
+  it('tmsUrlExistOnMap should get _url and return if one of map urls equal to _url' , ()=>{
+    spyOn(component, 'getMapTmsUrls').and.callFake(() => ["url1", "url2", "url3"]);
+    expect(component.tmsUrlExistOnMap("url1")).toBeTruthy();
+    expect(component.tmsUrlExistOnMap("url2")).toBeTruthy();
+    expect(component.tmsUrlExistOnMap("url3")).toBeTruthy();
+    expect(component.tmsUrlExistOnMap("url4")).toBeFalsy();
+  });
+  it('tmsUrlExistOnParams should get _url and return if one of params urls equal to _url' , ()=>{
+    spyOn(queryParamsHelperService, 'queryTms').and.callFake(() => ["url4", "url5", "url6"]);
+    expect(component.tmsUrlExistOnParams("url4")).toBeTruthy();
+    expect(component.tmsUrlExistOnParams("url5")).toBeTruthy();
+    expect(component.tmsUrlExistOnParams("url6")).toBeTruthy();
+    expect(component.tmsUrlExistOnParams("url7")).toBeFalsy();
+  })
+
 
 });

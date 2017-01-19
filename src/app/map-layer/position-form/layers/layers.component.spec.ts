@@ -1,29 +1,25 @@
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
-
-import { TmsComponent } from './tms.component';
+import { LayersComponent } from './layers.component';
 import {QueryParamsHelperService} from "../../query-params-helper.service";
 import {CalcService} from "../../calc-service";
 import {Ng2BootstrapModule} from "ng2-bootstrap";
-import {element} from "protractor";
 
-describe('TmsComponent', () => {
-  let component: TmsComponent;
-  let fixture: ComponentFixture<TmsComponent>;
+describe('LayersComponent', () => {
+  let component: LayersComponent;
+  let fixture: ComponentFixture<LayersComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports:[Ng2BootstrapModule],
-      declarations: [ TmsComponent ],
+      declarations: [ LayersComponent ],
       providers:[QueryParamsHelperService, CalcService]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TmsComponent);
+    fixture = TestBed.createComponent(LayersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -12,6 +12,7 @@ import {MapLayerChild} from "../map-layer-child.interface";
 import {CalcService} from "../calc-service";
 import {Observable, Observer} from "rxjs";
 import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
+import {AjaxService} from "../ajax.service";
 
 @Component({
   host: host,
@@ -29,8 +30,9 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
   public prevParams:Params = {};
   public go_north:boolean = false;
   public andRotation: (boolean) => void;
+  public DragRotateInteractions: ol.interaction.DragRotate;
 
-  constructor(private activatedRoute:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService, private router:Router, private calcService:CalcService, private generalCanDeactivateService:GeneralCanDeactivateService) { window['current'] = this}
+  constructor(private activatedRoute:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService, private router:Router, private calcService:CalcService, private generalCanDeactivateService:GeneralCanDeactivateService, private ajaxService:AjaxService) { window['current'] = this;window['ol'] = ol}
 
   ngOnInit() {
     this.initializeMap();
@@ -66,8 +68,8 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     this.currentParams = params;
 
     //layers
-    if(this.queryParamsHelperService.anyTmsChanges(this.prevParams, this.currentParams) || this.noTileLayer()) {
-      this.setTmsLayers(params);
+    if(this.queryParamsHelperService.anyLayersChanges(this.prevParams, this.currentParams) || this.noTileLayer()) {
+      this.setLayersChanges(params);
     }
 
     //view
@@ -86,106 +88,131 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
   }
 
   noTileLayer():boolean {
-    return _.isEmpty(this.getMapXYZLayers())
+    return _.isEmpty(this.getTileLayersArray())
   }
 
-  setTmsLayers(params:Params) {
-    let params_tms_array:Array<string> = this.queryParamsHelperService.queryTms(params);
-    let map_tms_array:Array<string> = this.getMapTmsUrls();
+  setLayersChanges(params:Params) {
+    let params_layers_array:Array<Object> = this.queryParamsHelperService.queryLayers(params);
+    let map_layers_array:Array<Object> = this.getTileLayersArray();
 
-    if(_.isEmpty(params_tms_array) && _.isEmpty(map_tms_array) ) {
+    if(_.isEmpty(params_layers_array) && _.isEmpty(map_layers_array) ) {
       this.addBaseLayer();
     } else {
-      this.addTmsLayersViaUrl(params_tms_array);
-      this.removeTmsLayersViaUrl(map_tms_array);
+      this.addLayersViaUrl(params_layers_array);
+      this.removeLayersViaUrl(map_layers_array);
     }
   }
 
   addBaseLayer():void {
-
-    const extent = this.transformExtent([-180.0, -90.0, 180.0, 90.0]);
-
-    let source:ol.source.XYZ = new ol.source.XYZ(<any>{
-      url: 'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-      // url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png'
-    });
-
-    let layer = new ol.layer.Tile(<any>{
-      source:source,
-    });
-
-    const osm_layer =  new ol.layer.Tile(<olx.layer.TileOptions>{
-      source: new ol.source.OSM()
-    });
-
-    const bingLayer  = new ol.layer.Tile(<any>{
-      name: "bing",
-      visible: true,
-      extent: extent,
-      source: new ol.source.BingMaps(<any>{
-        key: "Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq",
-        imagerySet: "Aerial"
-      })
-    });
-    layer.setZIndex(0);
-    this.map.addLayer(layer);
+    let bing_layer = this.getBingLayer({key:'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq', style:'Aerial'});
+    this.map.addLayer(bing_layer);
   }
 
-  addTmsLayersViaUrl(params_tms_array:Array<string>) {
-    params_tms_array.forEach( (tms_url:string) => {
-      if(!this.tmsUrlExistOnMap(tms_url)) {
-        console.log("layer added = ", tms_url);
-        let layer = new ol.layer.Tile(<olx.layer.TileOptions>{
+  addLayersViaUrl(params_layers_array:Array<Object>) {
+    let map_tile_layers = this.getTileLayersArray();
+    params_layers_array.forEach( (layer_obj:{source:string}) => {
+      if(!this.layerExistOnMap(map_tile_layers, layer_obj)) {
+        let layer = this.getLayerFromLayerObj(layer_obj);
+        this.map.addLayer(layer);
+        if(layer_obj.source == 'tms') this.setTmsOptions(layer_obj['url'], layer);
+      }
+    });
+  }
+
+  getLayerFromLayerObj(layer_obj:{source:string}) {
+    switch (layer_obj.source){
+      case "mapbox":
+        return this.getMapboxLayer(layer_obj);
+      case "bing":
+        return this.getBingLayer(layer_obj);
+      case "tms":
+        return this.getTmsLayer(layer_obj);
+      default:
+        return new ol.layer.Tile(<olx.layer.TileOptions>{
           source: new ol.source.XYZ(<olx.source.XYZOptions> {
-            url: tms_url.split("{s}").join("{a-c}")
+            url: `${layer_obj['url']}/{z}/{x}/{y}.png`
           })
         });
-        layer.setZIndex(0);
-        this.map.addLayer(layer);
-      }
-    })
+    }
+  }
+  parseMapboxUrl(mapbox_obj):string {
+    return `${mapbox_obj['url']}${mapbox_obj['mapid']}/{z}/{x}/{y}${mapbox_obj['format'] ? '.' + mapbox_obj['format'] : ''}?access_token=${mapbox_obj['access_token']}`
   }
 
-  removeTmsLayersViaUrl(map_tms_array:Array<string>) {
-    map_tms_array.forEach( (tms_url:string) => {
-      if(!this.tmsUrlExistOnParams(tms_url)) {
-        let layer = this.getMapXYZLayers().find((layer:ol.layer.Layer) => layer['jc'] == tms_url);
-        console.log("layer removed = ", layer["jc"]);
-        this.map.removeLayer(layer)
-        if(this.noTileLayer()) this.addBaseLayer();
-      }
-    })
-  }
-  getMapXYZLayers() {
-    return this.LayersArray.filter( (layer: ol.layer.Layer) => {
-      if(layer instanceof ol.layer.Tile) {
-        let source:ol.source.Source = layer.getSource();
-        return source instanceof ol.source.XYZ
-      }
-    })
-  }
-  getMapTmsUrls():Array<string> {
-    return this.getMapXYZLayers().map((layer:ol.layer.Tile) => {layer.getSource()['jc']});
+  parseTmsUrl(layer_obj):string {
+    return `${layer_obj['url']}/{z}/{x}/{-y}.png`
   }
 
-  tmsUrlExistOnMap(url:string):boolean {
-    let urls = this.getMapTmsUrls();
-    return !_.isNil(urls.find((_url:string) => _url == url));
+  setTmsOptions(url, layer) {
+    this.ajaxService.getTmsmapresource(url).subscribe(
+      Tmsmapresource => {
+        let BoundingBox = [Tmsmapresource.TileMap.BoundingBox[0].$.minx, Tmsmapresource.TileMap.BoundingBox[0].$.miny, Tmsmapresource.TileMap.BoundingBox[0].$.maxx, Tmsmapresource.TileMap.BoundingBox[0].$.maxy];
+        BoundingBox.forEach((val, index) => {BoundingBox[index] = Number(val)});
+        let extent:ol.Extent = this.transformExtent(<ol.Extent>BoundingBox);
+        let minZoom = parseInt(Tmsmapresource.TileMap.TileSets[0].TileSet[0].$.order);
+        let maxZoom = parseInt(Tmsmapresource.TileMap.TileSets[0].TileSet[Tmsmapresource.TileMap.TileSets[0].TileSet.length - 1].$.order);
+        layer.setExtent(extent);
+        layer.setSource(new ol.source.XYZ(<any>{
+          url: layer.getSource().jc,
+          minZoom,
+          maxZoom,
+        }));
+
+      });
   }
 
-  tmsUrlExistOnParams(url:string):boolean {
-    let params_tms_urls = this.queryParamsHelperService.queryTms(this.currentParams);
-    return !_.isNil(params_tms_urls.find(_url => _url == url));
+  removeLayersViaUrl(map_layers_array:Array<Object>) {
+    let params_layers_urls = this.queryParamsHelperService.queryLayers(this.currentParams);
+
+    map_layers_array.forEach( (layer:ol.layer.Tile) => {
+        if(!this.layerExistOnParams(params_layers_urls, layer)){
+          this.map.removeLayer(layer);
+      }
+    });
+
+    if(this.noTileLayer())  this.addBaseLayer();
+
+
+  }
+
+  getTileLayersArray() {
+    return this.LayersArray.filter( (layer: ol.layer.Layer) => layer instanceof ol.layer.Tile);
+  }
+
+  layerExistOnMap(map_tile_layers, layer_obj:{source:string}):boolean {
+    let _layer:ol.layer.Layer  = this.getLayerFromLayerObj(layer_obj);
+    let exist_on_map = map_tile_layers.find((layer) => {
+      return this.layersEqual(_layer, layer);
+    });
+    return !_.isNil(exist_on_map);
+  }
+
+  layerExistOnParams(params_tile_layers, _layer):boolean {
+    let exist_on_params = params_tile_layers.find((layer_obj:{source:string}) => {
+      let layer: ol.layer.Layer = this.getLayerFromLayerObj(layer_obj);
+      return this.layersEqual(_layer, layer);
+    });
+    return !_.isNil(exist_on_params);
+  }
+
+  layersEqual(layer_a, layer_b):boolean {
+    let source = layer_a.getSource();
+    let _source = layer_b.getSource();
+    let equal_source = source instanceof _source.constructor;
+    let api_key = _source['c'] == source['c'];
+    let url = _source['jc'] == source['jc'];
+    let style = _source['o'] == source['o'];
+    return equal_source && api_key && url && style
   }
 
 
   initializeMap():void {
-
     this.map = new ol.Map(<any>{
       target: 'ol',
       projection: new ol.proj.Projection(<any>{code:"EPSG:4326", extent: [-180.0000, -90.0000, 180.0000, 90.0000]}),
     });
-
+    this.DragRotateInteractions = this.map.getInteractions().getArray().find( i => i instanceof ol.interaction.DragRotate);
+    // this.DragRotateInteractions.setActive(false)
     this.moveEndEvent = this.map.on('moveend', this.moveEnd.bind(this));
   }
 
@@ -217,11 +244,45 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
   }
 
   setMapView(params:Params):void {
+    let rotate:boolean = isNaN(this.queryParamsHelperService.queryRotate(params)) ? true : false;
+
     this.map.setView(new ol.View(<olx.ViewOptions>{
       center: ol.proj.fromLonLat([this.queryParamsHelperService.queryLng(params),this.queryParamsHelperService.queryLat(params)]),
       zoom: this.queryParamsHelperService.queryZoom(params),
       rotation: this.calcService.toRadians(360 - this.queryParamsHelperService.queryHeading(params))
-    }))
+    }));
+
+    this.DragRotateInteractions.setActive(rotate)
+  }
+
+  getBingLayer(bing_obj):ol.layer.Tile {
+    return new ol.layer.Tile(<any>{
+      source: new ol.source.BingMaps(<any>{
+        key: bing_obj['key'],
+        imagerySet: bing_obj['style']
+      })
+    });
+  }
+
+  getMapboxLayer(layer_obj){
+    let mapbox_url:string = this.parseMapboxUrl(layer_obj);
+
+    return new ol.layer.Tile(<olx.layer.TileOptions>{
+      source: new ol.source.XYZ(<olx.source.XYZOptions> {
+        url: mapbox_url
+      })
+    });
+
+  }
+
+  getTmsLayer(layer_obj){
+    let tms_url:string = this.parseTmsUrl(layer_obj);
+
+    return new ol.layer.Tile(<olx.layer.TileOptions>{
+      source: new ol.source.XYZ(<olx.source.XYZOptions> {
+        url: tms_url
+      })
+    });
   }
 
   setMapBounds(params:Params):void {
@@ -237,26 +298,28 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     let latitudeP:number  = this.queryParamsHelperService.queryLat(params);
     let zoomP:number      = this.queryParamsHelperService.queryZoom(params);
     let headingP:number   = 360 - this.queryParamsHelperService.queryHeading(params);
+    let rotateP:number    = isNaN(this.queryParamsHelperService.queryRotate(params)) ? 1 : 0;
 
-    let arrayP = [longitudeP, latitudeP, zoomP, headingP];
+    let arrayP = [longitudeP, latitudeP, zoomP, headingP, rotateP];
 
     let longitude:number;
     let latitude:number;
     let zoom:number;
     let heading:number;
+    let rotate:number;
 
     try{
       longitude = this.map.getView().getCenter()[0];
       latitude  = this.map.getView().getCenter()[1];
       zoom      = this.map.getView().getZoom();
       heading   = this.calcService.toDegrees(this.map.getView().getRotation());
-
+      rotate    = this.DragRotateInteractions.getActive() ? 1 : 0;
     } catch (e) {
 
       return true;
     }
 
-    let array = [longitude, latitude, zoom, heading];
+    let array = [longitude, latitude, zoom, heading, rotate];
 
     arrayP = this.calcService.toFixes7Obj(arrayP) ;
     array = this.calcService.toFixes7Obj(array) ;
@@ -272,9 +335,11 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     let zoom:number = event.map.getView().getZoom();
     let heading:number = 360 - this.calcService.toDegrees(event.map.getView().getRotation());
     let markers = this.currentParams['markers'];
-    let tms = this.currentParams['tms'];
+    let layers = this.currentParams['layers'];
+    let rotate = this.currentParams['rotate'];
+    rotate = rotate == 0 ? 0 : undefined;
 
-    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, zoom, heading, markers, tms});
+    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, zoom, heading, markers, layers,rotate});
     return this.router.navigate([], navigationExtras);
 
   };

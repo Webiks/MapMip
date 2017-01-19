@@ -24,7 +24,7 @@ export class PositionFormComponent implements OnInit {
     mode3d:{val?: boolean, permissions: number[], input_type?:string},
     rotate:{val?: boolean, permissions: number[], input_type?:string},
     markers:{val?: string, permissions: number[], input_type?:string},
-    tms: {val?: string, permissions: number[], input_type?:string}
+    layers: {val?: string, permissions: number[], input_type?:string}
   } = {
     lng:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
     lat:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
@@ -34,13 +34,13 @@ export class PositionFormComponent implements OnInit {
     roll:{permissions: [Permissions['/cesium']]},
     height:{permissions: [Permissions['/cesium']]},
     mode3d:{permissions: [Permissions['/cesium']], input_type: 'Bswitch'},
-    rotate:{permissions: [Permissions['/cesium?mode3d=0'], Permissions['/openlayers']], input_type: 'Bswitch'},
+    rotate:{permissions: [Permissions['/openlayers']], input_type: 'Bswitch'},
     markers:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-markers'},
-    tms: {permissions: [Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-tms'}
+    layers: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-layers'}
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService) {}
-
+  // Permissions['/cesium?mode3d=0']
 
   submitMarkers($event: {hide:boolean, smModal:ModalDirective, parsed_markers:string}) {
     this.params.markers.val = $event.parsed_markers;
@@ -50,11 +50,11 @@ export class PositionFormComponent implements OnInit {
     });
   }
 
-  submitTms($event: {hide:boolean, modal:ModalDirective, parsed_tms:string}) {
-    this.params.tms.val = $event.parsed_tms;
+  submitLayers($event: {hide:boolean, modal:ModalDirective, parsed_layer:string}) {
+    this.params.layers.val = $event.parsed_layer;
 
     this.submitForm().then(()=>{
-      if($event.hide || _.isNil(this.params.tms.val)) $event.modal.hide();
+      if($event.hide || _.isNil(this.params.layers.val)) $event.modal.hide();
     });
   }
 
@@ -67,7 +67,11 @@ export class PositionFormComponent implements OnInit {
             obj.val = params['mode3d'] == 0 ? false: true;
             break;
           case "rotate":
-            obj.val = params['rotate'] == 1 ? true : false;
+            if(this.router.isActive("/openlayers", false)) {
+              obj.val = params['rotate'] == 0 ? false : true;
+            } else {
+              obj.val = params['rotate'] == 1 ? true : false;
+            }
             break;
           default:
             obj.val = params[key] || undefined;
@@ -86,7 +90,11 @@ export class PositionFormComponent implements OnInit {
             val = obj.val == false ? 0 : 1;
             break;
           case 'rotate':
-            val = obj.val == true ? 1 : 0;
+            if(this.router.isActive("/openlayers", false)) {
+              val = obj.val == false ? 0 : undefined;
+            } else {
+              val = obj.val == true ? 1 : undefined;
+            }
             break;
         }
         queryParams[key] = val;

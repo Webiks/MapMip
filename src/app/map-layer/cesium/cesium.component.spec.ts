@@ -8,7 +8,7 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {Router, NavigationEnd, Params, NavigationExtras} from "@angular/router";
 import {Observer, Observable} from "rxjs";
 
-describe('CesiumComponent', () => {
+fdescribe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
   let router:Router;
@@ -52,7 +52,7 @@ describe('CesiumComponent', () => {
     spyOn(observer, 'next');
 
     component.onLeave(observer);
-    expect(component.viewer.camera.moveEnd.removeEventListener).toHaveBeenCalledWith(component.moveEnd);
+    expect(component.viewer.camera.moveEnd.removeEventListener).toHaveBeenCalled();
     expect(component.queryParamsSubscriber.unsubscribe).toHaveBeenCalled();
     expect(component.flyToCenterAndGetBounds).toHaveBeenCalled();
     expect(observer.next).toHaveBeenCalledWith(bool_result);
@@ -149,6 +149,7 @@ describe('CesiumComponent', () => {
 
 
   it("anyParamChanges should get params and check if there's any changes between params and map" , () => {
+
     let params:Params = {
       lng: component.getCenter().lng,
       lat: component.getCenter().lat,
@@ -157,8 +158,9 @@ describe('CesiumComponent', () => {
       pitch: Cesium.Math.toDegrees(component.viewer.camera.pitch) % 360,
       roll: Cesium.Math.toDegrees(component.viewer.camera.roll) % 360,
       mode3d: component.viewer.scene.mode == Cesium.SceneMode.SCENE3D ? 1 : 0,
-      rotate: component.viewer.scene.mapMode2D == Cesium.MapMode2D.INFINITE_SCROLL ? 0 : 1
+      rotate: component.viewer.scene.mapMode2D == Cesium.MapMode2D.INFINITE_SCROLL ? undefined : 1
     };
+
     expect(component.anyParamChanges(params)).toBeFalsy();
     params['lng'] = component.getCenter().lng + 2;
     expect(component.anyParamChanges(params)).toBeTruthy();
@@ -212,7 +214,7 @@ describe('CesiumComponent', () => {
       pitch:4,
       roll: 5,
       height:6,
-      rotate: 0,
+      rotate: undefined,
       mode3d: 1
     };
 
@@ -301,6 +303,10 @@ describe('CesiumComponent', () => {
     spyOn(component, 'anyParamChanges').and.callFake(() => resultAnyParamsChange);
     component.moveEnd();
     expect(router.navigate).not.toHaveBeenCalled();
+
+    component.currentParams['tms'] = "(url:'fake_url')";
+    component.currentParams['markers'] = "(1,2,3)";
+
     resultAnyParamsChange = true;
     component.moveEnd();
     let center: {lat:number, lng:number} = component.getCenter();
@@ -314,9 +320,10 @@ describe('CesiumComponent', () => {
     let roll:number = +Cesium.Math.toDegrees(component.viewer.camera.roll);//.toFixed(7);
     let mode3d:number = component.viewer.scene.mode == Cesium.SceneMode.SCENE2D ? 0 : 1;
     let markers = component.currentParams['markers'];
-    let rotate = component.viewer.scene._mapMode2D == 0 ? 1 : 0;
+    let tms = component.currentParams['tms'];
+    let rotate = component.viewer.scene._mapMode2D == Cesium.MapMode2D.ROTATE ? 1 : undefined;
 
-    let navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, rotate});
+    let navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, tms, rotate});
     expect(router.navigate).toHaveBeenCalledWith([], navigationExtras);
   });
 
@@ -361,5 +368,36 @@ describe('CesiumComponent', () => {
       });
     });
   });
+
+  it('setTmsLayers: should call addTmsLayersViaUrl and removeTmsLayersViaUrl', () => {
+    let params:Params = {};
+    let fake_parmas_tms_array:Array<Object> = [];
+    let fake_map_tms_array:Array<string> = [];
+
+    spyOn(queryParamsHelperService, 'queryTms').and.callFake(() => fake_parmas_tms_array);
+    spyOn(component, 'getMapTmsUrls').and.callFake(() => fake_map_tms_array);
+
+    spyOn(component, 'addTmsLayersViaUrl');
+    spyOn(component, 'removeTmsLayersViaUrl');
+    component.setTmsLayers(params);
+    expect(component.addTmsLayersViaUrl).toHaveBeenCalledWith(fake_parmas_tms_array);
+    expect(component.removeTmsLayersViaUrl).toHaveBeenCalledWith(fake_map_tms_array);
+  });
+
+  it('tmsUrlExistOnMap should get _url and return if one of map urls equal to _url' , ()=>{
+    spyOn(component, 'getMapTmsUrls').and.callFake(() => ["url1", "url2", "url3"]);
+    expect(component.tmsUrlExistOnMap("url1")).toBeTruthy();
+    expect(component.tmsUrlExistOnMap("url2")).toBeTruthy();
+    expect(component.tmsUrlExistOnMap("url3")).toBeTruthy();
+    expect(component.tmsUrlExistOnMap("url4")).toBeFalsy();
+  });
+
+  it('tmsUrlExistOnParams should get _url and return if one of params urls equal to _url' , ()=>{
+    spyOn(queryParamsHelperService, 'queryTms').and.callFake(() => ["url4", "url5", "url6"]);
+    expect(component.tmsUrlExistOnParams("url4")).toBeTruthy();
+    expect(component.tmsUrlExistOnParams("url5")).toBeTruthy();
+    expect(component.tmsUrlExistOnParams("url6")).toBeTruthy();
+    expect(component.tmsUrlExistOnParams("url7")).toBeFalsy();
+  })
 
 });

@@ -10,6 +10,8 @@ import * as _ from 'lodash'
 import * as L from 'leaflet';
 import "leaflet-bing-layer/leaflet-bing-layer";
 import {CalcService} from "../calc-service";
+import {AjaxService} from "../ajax.service";
+import {Observable} from "rxjs";
 
 @Component({
   host: host,
@@ -26,7 +28,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   public prevParams:Params = {};
 
 
-  constructor(private router:Router, private activatedRoute:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService, private calcService:CalcService) {window['current'] = this;}
+  constructor(private router:Router, private activatedRoute:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService, private calcService:CalcService, private ajaxService:AjaxService) {window['current'] = this;}
 
   ngOnInit() {
     this.initializeMap();
@@ -43,9 +45,11 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   queryParams(params:Params):void {
     this.prevParams = this.currentParams;
     this.currentParams = params;
+
+
     //layers
-    if(this.queryParamsHelperService.anyTmsChanges(this.prevParams, this.currentParams) || this.noTileLayer()) {
-      this.setTmsLayers(params);
+    if(this.queryParamsHelperService.anyLayersChanges(this.prevParams, this.currentParams) || this.noTileLayer()) {
+      this.setLayersChanges(params);
     }
 
     //view
@@ -70,45 +74,65 @@ export class LeafletComponent implements OnInit, MapLayerChild {
 
 
   noTileLayer():boolean {
-    return _.isNil(this.getLayersArray().find((l) => {
-      return l['_url'];
-    }))
+    return _.isEmpty(this.getTileLayersArray());
   }
 
 
-  setTmsLayers(params:Params) {
-    let params_tms_array:Array<string> = this.queryParamsHelperService.queryTms(params);
-    let map_tms_array:Array<string> = this.getMapTmsUrls();
+  setLayersChanges(params:Params) {
+    let params_tms_array:Array<Object> = this.queryParamsHelperService.queryLayers(params);
+    let map_tile_layers_array:Array<Object> = this.getTileLayersArray();
 
-    if(_.isEmpty(params_tms_array) && _.isEmpty(map_tms_array)) {
+    if(_.isEmpty(params_tms_array) && _.isEmpty(map_tile_layers_array)) {
       this.addBaseLayer();
     } else {
-      this.addTmsLayersViaUrl(params_tms_array);
-      this.removeTmsLayersViaUrl(map_tms_array);
+      this.addLayersViaUrl(params_tms_array);
+      this.removeLayersViaUrl(map_tile_layers_array);
     }
   }
   addBaseLayer():void {
-    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
+    this.getBingLayer({key: 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq', style:'Aerial'}).addTo(this.map);
   }
 
-  addTmsLayersViaUrl(params_tms_array:Array<string>) {
-    params_tms_array.forEach( (tms_url:string) => {
-      if(!this.tmsUrlExistOnMap(tms_url)) {
-        console.log("layer added = ", tms_url);
-        L.tileLayer(tms_url).addTo(this.map);
+  addLayersViaUrl(params_layers_array:Array<Object>) {
+    let map_tile_layers = this.getTileLayersArray();
+    params_layers_array.forEach( (layer_obj:{source:string}) => {
+      if(!this.layerExistOnMap(map_tile_layers, layer_obj)) {
+        let layer = this.getLayerFromLayerObj(layer_obj);
+
+        if(layer_obj.source == 'tms'){
+          this.setTmsOptions(layer_obj['url'], layer);
+        } else {
+          layer.addTo(this.map)
+        }
       }
     })
   }
 
-  removeTmsLayersViaUrl(map_tms_array:Array<string>) {
-    map_tms_array.forEach( (tms_url:string) => {
-      if(!this.tmsUrlExistOnParams(tms_url)) {
-        let layer = this.getLayersArray().find((l:L.Layer) => l['_url'] == tms_url);
-        console.log("layer removed = ", layer["_url"]);
+  getLayerFromLayerObj(layer_obj:{source:string}):L.TileLayer {
+      switch (layer_obj.source){
+        case "mapbox":
+          let mapbox_url:string = this.parseMapboxUrl(layer_obj);
+          return L.tileLayer(mapbox_url);
+        case "bing":
+          return this.getBingLayer(layer_obj);
+        case "tms":
+          return this.getTmsLayer(layer_obj);
+        default :
+          return L.tileLayer(`${layer_obj['url']}/{z}/{x}/{y}.png`);
+      }
+  }
+
+  removeLayersViaUrl(map_tile_layers_array:Array<Object>) {
+    let params_layers_urls = this.queryParamsHelperService.queryLayers(this.currentParams);
+
+    map_tile_layers_array.forEach( (layer:L.TileLayer) => {
+      if(!this.layerExistOnParams(params_layers_urls, layer)){
         this.map.removeLayer(layer);
-        if(this.noTileLayer()) this.addBaseLayer();
       }
-    })
+    });
+
+    if(this.noTileLayer())  this.addBaseLayer();
+
   }
 
   initializeMap():void {
@@ -121,20 +145,16 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     let lng: number  = event.target.getCenter().lng;
     let lat: number  = event.target.getCenter().lat;
     let zoom:number  = event.target.getZoom();
-    // let lng: number  = this.map.getCenter().lng;
-    // let lat: number  = this.map.getCenter().lat;
-    // let zoom:number  = this.map.getZoom();
     let markers      = this.currentParams['markers'];
-    let tms          = this.currentParams['tms'];
+    let layers          = this.currentParams['layers'];
 
-    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, zoom, markers, tms});
+    let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery({lng, lat, zoom, markers, layers});
 
     return this.router.navigate([], navigationExtras);
   };
 
 
   setMapView(params:Params):void {
-
     let longitude:number = this.queryParamsHelperService.queryLng(params);
     let latitude:number = this.queryParamsHelperService.queryLat(params);
     let zoom:number = this.queryParamsHelperService.queryZoom(params);
@@ -207,24 +227,25 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   }
 
 
-  getMapTmsUrls():Array<string> {
-    let TmsUrls:Array<string> = [];
-    this.map.eachLayer( (layer:L.TileLayer) => {
-      if(layer.getTileSize){
-        TmsUrls.push(layer['_url']);
-      }
+  getTileLayersArray():Array<Object> {
+    return this.getLayersArray().filter((layer:L.TileLayer) => !_.isNil(layer.getTileSize));
+  }
+
+  layerExistOnMap(map_tile_layers, layer_obj):boolean {
+    let _layer: L.TileLayer  = this.getLayerFromLayerObj(layer_obj);
+
+    let exist_on_map = map_tile_layers.find((layer) => {
+      return _.isEqual(_layer['_url'], layer['_url']) && _.isEqual(_layer['options'], layer['options']);
     });
-    return TmsUrls;
+    return !_.isNil(exist_on_map);
   }
 
-  tmsUrlExistOnMap(url:string):boolean {
-    let urls = this.getMapTmsUrls();
-    return !_.isNil(urls.find((_url:string) => _url == url));
-  }
-
-  tmsUrlExistOnParams(url:string):boolean {
-    let params_tms_urls = this.queryParamsHelperService.queryTms(this.currentParams);
-    return !_.isNil(params_tms_urls.find(_url => _url == url));
+  layerExistOnParams(params_tile_layers, layer):boolean {
+    let exist_on_params = params_tile_layers.find((layer_obj:{source:string}) => {
+      let _layer: L.TileLayer  = this.getLayerFromLayerObj(layer_obj);
+      return _.isEqual(_layer['_url'], layer['_url']) && _.isEqual(_layer['options'], layer['options']);
+    });
+    return !_.isNil(exist_on_params);
   }
 
   setMarkersChanges(params:Params):void {
@@ -266,6 +287,32 @@ export class LeafletComponent implements OnInit, MapLayerChild {
         this.map.removeLayer(marker_to_remove)
       }
     })
+  }
+
+  parseMapboxUrl(mapbox_obj):string {
+    return `${mapbox_obj['url']}${mapbox_obj['mapid']}/{z}/{x}/{y}${mapbox_obj['format'] ? '.' + mapbox_obj['format'] : ''}?access_token=${mapbox_obj['access_token']}`
+  }
+
+  getBingLayer(bing_obj):L.TileLayer {
+    return L.tileLayer['bing']({bingMapsKey: bing_obj['key'], imagerySet:bing_obj['style']});
+  }
+
+  getTmsLayer(tms_obj) {
+    let tms_layer = L.tileLayer(`${tms_obj['url']}/{z}/{x}/{y}.png`, {tms:true});
+    return tms_layer;
+  }
+
+  setTmsOptions(url, tms_layer) {
+    this.ajaxService.getTmsmapresource(url).subscribe(
+      Tmsmapresource => {
+        let bounds = L.latLngBounds(L.latLng(Tmsmapresource['TileMap'].BoundingBox[0].$.miny, Tmsmapresource['TileMap'].BoundingBox[0].$.minx), L.latLng(Tmsmapresource['TileMap'].BoundingBox[0].$.maxy, Tmsmapresource['TileMap'].BoundingBox[0].$.maxx));
+        let minZoom = Tmsmapresource.TileMap.TileSets[0].TileSet[0].$.order;
+        let maxZoom = Tmsmapresource.TileMap.TileSets[0].TileSet[Tmsmapresource.TileMap.TileSets[0].TileSet.length - 1].$.order;
+        tms_layer.options.bounds = bounds;
+        tms_layer.options.maxZoom = maxZoom;
+        tms_layer.options.minZoom = minZoom;
+        tms_layer.addTo(this.map);
+    });
   }
 
   markerExistOnMap(markerPosition) {

@@ -11,6 +11,8 @@ import {CalcService} from "./calc-service";
 import { JWBootstrapSwitchModule } from 'jw-bootstrap-switch-ng2';
 import {Ng2BootstrapModule} from "ng2-bootstrap";
 import {PositionFormModule} from "./position-form/position-form.module";
+import {AjaxService} from "./ajax.service";
+import {HttpModule} from "@angular/http";
 
 @NgModule({
   imports: [
@@ -19,10 +21,11 @@ import {PositionFormModule} from "./position-form/position-form.module";
     FormsModule,
     Ng2BootstrapModule,
     JWBootstrapSwitchModule,
-    PositionFormModule
+    PositionFormModule,
+    HttpModule
   ],
   declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent],
   exports: [MapLayerComponent],
-  providers:[QueryParamsHelperService, CalcService]
+  providers:[QueryParamsHelperService, CalcService, AjaxService]
 })
 export class MapLayerModule { }
