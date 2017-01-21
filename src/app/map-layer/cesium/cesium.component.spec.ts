@@ -8,7 +8,7 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {Router, NavigationEnd, Params, NavigationExtras} from "@angular/router";
 import {Observer, Observable} from "rxjs";
 
-fdescribe('CesiumComponent', () => {
+describe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
   let router:Router;

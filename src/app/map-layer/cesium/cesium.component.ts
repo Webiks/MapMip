@@ -180,11 +180,9 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     this.removeLayersViaUrl(imageryLayers);
   }
 
-  getMapLayersUrls():Array<string>  {
-    return this.viewer.imageryLayers._layers.map(i => i.imageryProvider._url)
-  }
-
   addLayersViaUrl(params_layers_array:Array<Object>) {
+    // let map_tile_layers = this.viewer.imageryLayers._layers;
+
     params_layers_array.forEach( (layer_obj:{source:string}) => {
       if(!this.layerExistOnMap(layer_obj)){
         let layer = this.getLayerFromLayerObj(layer_obj);
