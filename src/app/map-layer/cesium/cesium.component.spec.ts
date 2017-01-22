@@ -8,7 +8,7 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {Router, NavigationEnd, Params, NavigationExtras} from "@angular/router";
 import {Observer, Observable} from "rxjs";
 
-describe('CesiumComponent', () => {
+fdescribe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
   let router:Router;
@@ -82,6 +82,22 @@ describe('CesiumComponent', () => {
       expect(component.prevParams).toEqual(currentParams);
       expect(component.currentParams).toEqual(newParams);
     });
+
+    it('setLayersChanges should to have been call if: noTileLayerRes is "true" or anyLayersChanges is "true"', ()=>{
+      let anyLayersChangesRes:boolean = false;
+      let noTileLayerRes:boolean = false;
+      spyOn(component,'noTileLayer').and.callFake(() => noTileLayerRes)
+      spyOn(queryParamsHelperService, 'anyLayersChanges').and.callFake(() => anyLayersChangesRes);
+      spyOn(component, 'setLayersChanges');
+
+      let params:Params = {};
+      component.queryParams(params);
+      expect(component.setLayersChanges).not.toHaveBeenCalled();
+      anyLayersChangesRes = true;
+      component.queryParams(params);
+      expect(component.setLayersChanges).toHaveBeenCalledWith(params);
+    });
+
 
     it('params with "bounds" should make setMapBounds to have been call', () => {
       spyOn(component, 'setMapBounds');
@@ -368,36 +384,80 @@ describe('CesiumComponent', () => {
       });
     });
   });
+  it('addBaseLayer should get bing layer and add layer to viewer imageryProviders', ()=> {
+    let fake_base_layer = {name:'bing_base_layer'};
+    spyOn(component, 'getBingLayer').and.callFake(() => fake_base_layer);
+    spyOn(component.viewer.imageryLayers, 'addImageryProvider');
+    component.addBaseLayer();
+    expect(component.viewer.imageryLayers.addImageryProvider).toHaveBeenCalledWith(fake_base_layer)
+  });
+  it('getBingLayer should return BingImageryProvider with mapStyle key and url', ()=>{
+    let layer_obj = {url:'fake_url', style:'fake_style', key:'fake_key'};
+    let bing_layer = component.getBingLayer(layer_obj);
+    expect(bing_layer instanceof Cesium.BingMapsImageryProvider).toBeTruthy();
+  });
+  it('should getLayerFromLayerObj call the right get Layer functions via layer_obj.source', () => {
+    let layer_obj:{source:string} = {};
+    spyOn(component, 'getMapboxLayer');
+    spyOn(component, 'getOpenstreetmapLayer');
+    spyOn(component, 'getBingLayer');
+    spyOn(component, 'getTmsLayer');
+    spyOn(component, 'getUrlTemplateLayer');
+    layer_obj.source = "mapbox";
+    component.getLayerFromLayerObj(layer_obj);
+    expect(component.getMapboxLayer).toHaveBeenCalledWith(layer_obj);
+    layer_obj.source = "bing";
+    component.getLayerFromLayerObj(layer_obj);
+    expect(component.getBingLayer).toHaveBeenCalledWith(layer_obj);
+    layer_obj.source = "openstreetmap";
+    component.getLayerFromLayerObj(layer_obj);
+    expect(component.getOpenstreetmapLayer).toHaveBeenCalledWith(layer_obj);
+    layer_obj.source = "tms";
+    component.getLayerFromLayerObj(layer_obj);
+    expect(component.getTmsLayer).toHaveBeenCalledWith(layer_obj);
+    layer_obj.source = "default";
+    component.getLayerFromLayerObj(layer_obj);
+    expect(component.getUrlTemplateLayer).toHaveBeenCalledWith(layer_obj);
+  });
 
-  it('setTmsLayers: should call addTmsLayersViaUrl and removeTmsLayersViaUrl', () => {
+
+  fit('setTmsLayers: should call addTmsLayersViaUrl and removeTmsLayersViaUrl and addBaseLayer if no tile layers in map', () => {
     let params:Params = {};
-    let fake_parmas_tms_array:Array<Object> = [];
-    let fake_map_tms_array:Array<string> = [];
+    let fake_parmas_layers_array:Array<Object> = [1,2,3];
+    let fake_map_layers_array:Array<Object> = [4,5,6];
+    let noTileLayerRes:boolean = false;
 
-    spyOn(queryParamsHelperService, 'queryTms').and.callFake(() => fake_parmas_tms_array);
-    spyOn(component, 'getMapTmsUrls').and.callFake(() => fake_map_tms_array);
+    spyOn(queryParamsHelperService, 'queryLayers').and.callFake(() => fake_parmas_layers_array);
+    component.viewer.imageryLayers._layers = fake_map_layers_array;
+    spyOn(component, 'addLayersViaUrl');
+    spyOn(component, 'removeLayersViaUrl');
+    spyOn(component, 'addBaseLayer');
+    spyOn(component, 'noTileLayer').and.callFake(() => noTileLayerRes);
 
-    spyOn(component, 'addTmsLayersViaUrl');
-    spyOn(component, 'removeTmsLayersViaUrl');
-    component.setTmsLayers(params);
-    expect(component.addTmsLayersViaUrl).toHaveBeenCalledWith(fake_parmas_tms_array);
-    expect(component.removeTmsLayersViaUrl).toHaveBeenCalledWith(fake_map_tms_array);
+    component.setLayersChanges(params);
+    expect(component.addLayersViaUrl).toHaveBeenCalledWith(fake_parmas_layers_array);
+    expect(component.removeLayersViaUrl).toHaveBeenCalledWith(fake_map_layers_array);
+    expect(component.addBaseLayer).not.toHaveBeenCalled();
+    noTileLayerRes = true;
+    component.setLayersChanges(params);
+    expect(component.addBaseLayer).toHaveBeenCalled();
+
   });
 
-  it('tmsUrlExistOnMap should get _url and return if one of map urls equal to _url' , ()=>{
-    spyOn(component, 'getMapTmsUrls').and.callFake(() => ["url1", "url2", "url3"]);
-    expect(component.tmsUrlExistOnMap("url1")).toBeTruthy();
-    expect(component.tmsUrlExistOnMap("url2")).toBeTruthy();
-    expect(component.tmsUrlExistOnMap("url3")).toBeTruthy();
-    expect(component.tmsUrlExistOnMap("url4")).toBeFalsy();
-  });
-
-  it('tmsUrlExistOnParams should get _url and return if one of params urls equal to _url' , ()=>{
-    spyOn(queryParamsHelperService, 'queryTms').and.callFake(() => ["url4", "url5", "url6"]);
-    expect(component.tmsUrlExistOnParams("url4")).toBeTruthy();
-    expect(component.tmsUrlExistOnParams("url5")).toBeTruthy();
-    expect(component.tmsUrlExistOnParams("url6")).toBeTruthy();
-    expect(component.tmsUrlExistOnParams("url7")).toBeFalsy();
-  })
+  // it('tmsUrlExistOnMap should get _url and return if one of map urls equal to _url' , ()=>{
+  //   spyOn(component, 'getMapTmsUrls').and.callFake(() => ["url1", "url2", "url3"]);
+  //   expect(component.tmsUrlExistOnMap("url1")).toBeTruthy();
+  //   expect(component.tmsUrlExistOnMap("url2")).toBeTruthy();
+  //   expect(component.tmsUrlExistOnMap("url3")).toBeTruthy();
+  //   expect(component.tmsUrlExistOnMap("url4")).toBeFalsy();
+  // });
+  //
+  // it('tmsUrlExistOnParams should get _url and return if one of params urls equal to _url' , ()=>{
+  //   spyOn(queryParamsHelperService, 'queryTms').and.callFake(() => ["url4", "url5", "url6"]);
+  //   expect(component.tmsUrlExistOnParams("url4")).toBeTruthy();
+  //   expect(component.tmsUrlExistOnParams("url5")).toBeTruthy();
+  //   expect(component.tmsUrlExistOnParams("url6")).toBeTruthy();
+  //   expect(component.tmsUrlExistOnParams("url7")).toBeFalsy();
+  // })
 
 });

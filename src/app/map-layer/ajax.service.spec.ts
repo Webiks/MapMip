@@ -8,7 +8,7 @@ import * as xml2js from 'xml2js';
 let ajaxService:AjaxService;
 let http:Http;
 
-fdescribe('AjaxService', () => {
+describe('AjaxService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [AjaxService],

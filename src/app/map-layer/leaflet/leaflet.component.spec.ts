@@ -53,19 +53,19 @@ describe('LeafletComponent', () => {
       expect(component.currentParams).toEqual(newParams);
     });
 
-    it('setTmsLayers should to have been call if: noTileLayerRes is "true" or anyTmsChanges is "true"', ()=>{
-      let anyTmsChangesRes:boolean = false;
+    it('setLayersChanges should to have been call if: noTileLayerRes is "true" or anyTmsChanges is "true"', ()=>{
+      let anyLayersChangesRes:boolean = false;
       let noTileLayerRes:boolean = false;
-      spyOn(component,'noTileLayer').and.callFake(() => noTileLayerRes)
-      spyOn(queryParamsHelperService, 'anyTmsChanges').and.callFake(() => anyTmsChangesRes);
-      spyOn(component, 'setTmsLayers');
+      spyOn(component,'noTileLayer').and.callFake(() => noTileLayerRes);
+      spyOn(queryParamsHelperService, 'anyLayersChanges').and.callFake(() => anyLayersChangesRes);
+      spyOn(component, 'setLayersChanges');
 
       let params:Params = {};
       component.queryParams(params);
-      expect(component.setTmsLayers).not.toHaveBeenCalled();
-      anyTmsChangesRes = true;
+      expect(component.setLayersChanges).not.toHaveBeenCalled();
+      anyLayersChangesRes = true;
       component.queryParams(params);
-      expect(component.setTmsLayers).toHaveBeenCalledWith(params);
+      expect(component.setLayersChanges).toHaveBeenCalledWith(params);
     });
 
     it('params with "bounds" should make setMapBounds to have been call', () => {

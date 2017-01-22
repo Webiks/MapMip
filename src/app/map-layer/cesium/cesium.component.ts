@@ -47,10 +47,8 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     this.router.navigateByUrl(urlTree.toString());
   };
 
-  onLeave(observer:Observer<boolean>):void{
-    this.viewer.camera.moveEnd._listeners.pop()
-    // this.viewer.camera.moveEnd.removeEventListener(this.moveEndListenerEvent);
-
+  onLeave(observer:Observer<boolean>):void {
+    this.viewer.camera.moveEnd._listeners.pop();
     this.queryParamsSubscriber.unsubscribe();
     this.flyToCenterAndGetBounds().subscribe((bool:boolean) => {
       observer.next(bool);
@@ -83,15 +81,9 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   };
 
   initializeMap():void {
-    var osm = new Cesium.createOpenStreetMapImageryProvider({
-        url: 'https://{s}.tile.openstreetmap.org/'
-    });
-
     this.viewer = new Cesium.Viewer('cesiumContainer', {
-      // imageryProvider : mapbox,
       baseLayerPicker : false
     });
-
     this.moveEndListenerEvent = this.viewer.camera.moveEnd.addEventListener(this.moveEnd.bind(this));
   }
 
@@ -100,6 +92,20 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     this.viewer.imageryLayers.addImageryProvider(bing_layer);
   }
 
+  getLayerFromLayerObj(layer_obj:{source:string}) {
+    switch (layer_obj.source) {
+      case 'mapbox':
+        return this.getMapboxLayer(layer_obj);
+      case 'openstreetmap':
+        return this.getOpenstreetmapLayer(layer_obj)
+      case 'bing':
+        return this.getBingLayer(layer_obj);
+      case 'tms':
+        return this.getTmsLayer(layer_obj);
+      default:
+        return this.getUrlTemplateLayer(layer_obj);
+    }
+  }
   getBingLayer(layer_obj){
     return new Cesium.BingMapsImageryProvider({
       url: layer_obj['url'],
@@ -125,21 +131,6 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
       url: layer_obj['url'],
       fileExtension: layer_obj['format']
     });
-  }
-
-  getLayerFromLayerObj(layer_obj:{source:string}) {
-    switch (layer_obj.source) {
-      case 'mapbox':
-        return this.getMapboxLayer(layer_obj);
-      case 'openstreetmap':
-        return this.getOpenstreetmapLayer(layer_obj)
-      case 'bing':
-        return this.getBingLayer(layer_obj);
-      case 'tms':
-        return this.getTmsLayer(layer_obj);
-      default:
-        return this.getUrlTemplateLayer(layer_obj);
-    }
   }
 
   getOpenstreetmapLayer(layer_obj){
