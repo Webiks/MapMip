@@ -68,7 +68,7 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     this.currentParams = params;
 
     //layers
-    if(this.queryParamsHelperService.anyLayersChanges(this.prevParams, this.currentParams) || this.noTileLayer()) {
+    if(this.queryParamsHelperService.anyLayersChanges(this.prevParams, this.currentParams)) {
       this.setLayersChanges(params);
     }
 
@@ -95,12 +95,10 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     let params_layers_array:Array<Object> = this.queryParamsHelperService.queryLayers(params);
     let map_layers_array:Array<Object> = this.getTileLayersArray();
 
-    if(_.isEmpty(params_layers_array) && _.isEmpty(map_layers_array) ) {
-      this.addBaseLayer();
-    } else {
-      this.addLayersViaUrl(params_layers_array);
-      this.removeLayersViaUrl(map_layers_array);
-    }
+    this.addLayersViaUrl(params_layers_array);
+    this.removeLayersViaUrl(map_layers_array);
+
+    if(this.noTileLayer())  this.addBaseLayer();
   }
 
   addBaseLayer():void {
@@ -123,24 +121,27 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     switch (layer_obj.source){
       case "mapbox":
         return this.getMapboxLayer(layer_obj);
+      case "openstreetmap":
+        return this.getOpenstreetmapLayer(layer_obj);
       case "bing":
         return this.getBingLayer(layer_obj);
       case "tms":
         return this.getTmsLayer(layer_obj);
       default:
-        return new ol.layer.Tile(<olx.layer.TileOptions>{
-          source: new ol.source.XYZ(<olx.source.XYZOptions> {
-            url: `${layer_obj['url']}/{z}/{x}/{y}.png`
-          })
-        });
+        return this.getDefaultLayer(layer_obj);
+
     }
   }
+
   parseMapboxUrl(mapbox_obj):string {
-    return `${mapbox_obj['url']}${mapbox_obj['mapid']}/{z}/{x}/{y}${mapbox_obj['format'] ? '.' + mapbox_obj['format'] : ''}?access_token=${mapbox_obj['access_token']}`
+    return `${mapbox_obj['url']}${mapbox_obj['mapid'] ? mapbox_obj['mapid'] + '/' : ""}{z}/{x}/{y}${mapbox_obj['format'] ? '.' + mapbox_obj['format'] : ''}?access_token=${mapbox_obj['access_token']}`
+  }
+  parseOpenstreetmapUrl(osm_obj) {
+    return `${osm_obj['url']}/{z}/{x}/{y}${osm_obj['format'] ? '.' + osm_obj['format'] : ""}`;
   }
 
   parseTmsUrl(layer_obj):string {
-    return `${layer_obj['url']}/{z}/{x}/{-y}.png`
+    return `${layer_obj['url']}/{z}/{x}/{-y}${layer_obj['format'] ? '.' + layer_obj['format'] : ""}`;
   }
 
   setTmsOptions(url, layer) {
@@ -169,9 +170,6 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
           this.map.removeLayer(layer);
       }
     });
-
-    if(this.noTileLayer())  this.addBaseLayer();
-
 
   }
 
@@ -214,6 +212,7 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     this.DragRotateInteractions = this.map.getInteractions().getArray().find( i => i instanceof ol.interaction.DragRotate);
     // this.DragRotateInteractions.setActive(false)
     this.moveEndEvent = this.map.on('moveend', this.moveEnd.bind(this));
+    if(this.noTileLayer())  this.addBaseLayer();
   }
 
   addIcon(lnglat:[number, number]){
@@ -255,6 +254,27 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     this.DragRotateInteractions.setActive(rotate)
   }
 
+  getMapboxLayer(layer_obj){
+    let mapbox_url:string = this.parseMapboxUrl(layer_obj);
+
+    return new ol.layer.Tile(<olx.layer.TileOptions>{
+      source: new ol.source.XYZ(<olx.source.XYZOptions> {
+        url: mapbox_url
+      })
+    });
+  }
+
+  getOpenstreetmapLayer(oms_layer){
+    let osm_url:string = this.parseOpenstreetmapUrl(oms_layer);
+
+    return new ol.layer.Tile(<olx.layer.TileOptions>{
+      source: new ol.source.XYZ(<olx.source.XYZOptions> {
+        url: osm_url
+      })
+    });
+
+  }
+
   getBingLayer(bing_obj):ol.layer.Tile {
     return new ol.layer.Tile(<any>{
       source: new ol.source.BingMaps(<any>{
@@ -264,23 +284,19 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     });
   }
 
-  getMapboxLayer(layer_obj){
-    let mapbox_url:string = this.parseMapboxUrl(layer_obj);
-
-    return new ol.layer.Tile(<olx.layer.TileOptions>{
-      source: new ol.source.XYZ(<olx.source.XYZOptions> {
-        url: mapbox_url
-      })
-    });
-
-  }
-
   getTmsLayer(layer_obj){
     let tms_url:string = this.parseTmsUrl(layer_obj);
-
     return new ol.layer.Tile(<olx.layer.TileOptions>{
       source: new ol.source.XYZ(<olx.source.XYZOptions> {
         url: tms_url
+      })
+    });
+  }
+
+  getDefaultLayer(default_obj) {
+    return new ol.layer.Tile(<olx.layer.TileOptions>{
+      source: new ol.source.XYZ(<olx.source.XYZOptions> {
+        url: `${default_obj['url']}`
       })
     });
   }

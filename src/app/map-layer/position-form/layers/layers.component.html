@@ -13,9 +13,11 @@
       <div class="modal-body">
 
         <div class="body-header">
+
           <button class="btn btn-default mapbox-btn" type="button" (click)="mapboxModal.show()">
             <img src="http://2rct3i2488gxf9jvb1lqhek9-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/mapbox-logo-256.png"/>
           </button>
+
           <button class="btn btn-default mapbox-btn" type="button" (click)="osmModal.show()">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Openstreetmap_logo.svg/256px-Openstreetmap_logo.svg.png"/>
           </button>
@@ -23,7 +25,6 @@
           <button class="btn btn-default" type="button" (click)="tmsModal.show()">
             TMS
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/GDALLogoColor.svg/150px-GDALLogoColor.svg.png"/>
-            <!--https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/GDALLogoColor.svg/150px-GDALLogoColor.svg.png-->
           </button>
 
 
@@ -32,15 +33,15 @@
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Bing_logo_(2013).svg/2000px-Bing_logo_(2013).svg.png"/>
           </button>
 
-          <!--<button class="btn btn-default" type="button" (click)="defaultModal.show()">-->
-            <!--Default-->
-          <!--</button>-->
+          <button class="btn btn-default" type="button" (click)="defaultModal.show()">
+            Default
+          </button>
         </div>
 
         <ul class="list-group" *ngIf="layersArray.length > 0">
           <li class="list-group-item" *ngFor="let layer_item of layersArray; let i = index" [class.show-params]="layer_item.expand">
             <div class="li-row">
-              <img [src]="source_images[layer_item.layer_obj.source]"/>
+              <img *ngIf="source_images[layer_item.layer_obj.source]" [src]="source_images[layer_item.layer_obj.source]"/>
               <button class="btn btn-default glyphicon glyphicon-chevron-right" type="button" (click)="expandParams(layer_item)" [disabled]="Object.keys(layer_item.layer_obj).length < 2"></button>
               <span class="url">{{layer_item.layer_obj.url}}</span>
               <button class="btn btn-info glyphicon glyphicon-pencil" type="button" (click)="editModal(layer_item, i)"></button>
@@ -53,10 +54,10 @@
               <table class="table table-bordered">
                 <tbody>
                 <template ngFor let-key [ngForOf]="Object.keys(layer_item.layer_obj)">
-                    <tr *ngIf="key != 'url' && key != 'source'">
-                      <th>{{key}}</th>
-                      <td>{{layer_item.layer_obj[key]}}</td>
-                    </tr>
+                  <tr *ngIf="key != 'url' && key != 'source'">
+                    <th>{{key}}</th>
+                    <td>{{layer_item.layer_obj[key]}}</td>
+                  </tr>
                 </template>
                 </tbody>
               </table>
@@ -137,36 +138,36 @@
 </div>
 
 
-<div [config]="{backdrop: false}" bsModal #addQueryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="initAddQuery()">
-  <div class="modal-dialog modal-sm add-query">
-    <form class="modal-content" (ngSubmit)="submitQuery(add_query.query_obj)">
-      <div class="modal-header">
-        <button type="button" class="close" aria-label="Close" (click)="addQueryModal.hide()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group query-group">
-          <div class="label-input">
-            <label>key:</label>
-            <input class="form-control" [disabled]="add_query.on_edit" [(ngModel)]="add_query.query_obj.key" (ngModelChange)="add_query.error = false" [ngModelOptions]="{standalone: true}"/>
-          </div>
-          <div class="label-input">
-            <label>value:</label>
-            <input class="form-control" [(ngModel)]="add_query.query_obj.val" [ngModelOptions]="{standalone: true}"/>
-          </div>
-          <p class="text-danger error" [@error]="add_query.error" *ngIf="add_query.error">Existing key try again</p>
+<!--<div [config]="{backdrop: false}" bsModal #addQueryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="initAddQuery()">-->
+<!--<div class="modal-dialog modal-sm add-query">-->
+<!--<form class="modal-content" (ngSubmit)="submitQuery(add_query.query_obj)">-->
+<!--<div class="modal-header">-->
+<!--<button type="button" class="close" aria-label="Close" (click)="addQueryModal.hide()">-->
+<!--<span aria-hidden="true">&times;</span>-->
+<!--</button>-->
+<!--</div>-->
+<!--<div class="modal-body">-->
+<!--<div class="form-group query-group">-->
+<!--<div class="label-input">-->
+<!--<label>key:</label>-->
+<!--<input class="form-control" [disabled]="add_query.on_edit" [(ngModel)]="add_query.query_obj.key" (ngModelChange)="add_query.error = false" [ngModelOptions]="{standalone: true}"/>-->
+<!--</div>-->
+<!--<div class="label-input">-->
+<!--<label>value:</label>-->
+<!--<input class="form-control" [(ngModel)]="add_query.query_obj.val" [ngModelOptions]="{standalone: true}"/>-->
+<!--</div>-->
+<!--<p class="text-danger error" [@error]="add_query.error" *ngIf="add_query.error">Existing key try again</p>-->
 
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-default" (click)="addQueryModal.hide()" type="button">Cancel</button>
-        <button class="btn btn-default" type="submit">{{add_query.on_edit ? 'Save' : 'Add'}}</button>
-      </div>
+<!--</div>-->
+<!--</div>-->
+<!--<div class="modal-footer">-->
+<!--<button class="btn btn-default" (click)="addQueryModal.hide()" type="button">Cancel</button>-->
+<!--<button class="btn btn-default" type="submit">{{add_query.on_edit ? 'Save' : 'Add'}}</button>-->
+<!--</div>-->
 
-    </form>
-  </div>
-</div>
+<!--</form>-->
+<!--</div>-->
+<!--</div>-->
 
 
 
@@ -267,6 +268,14 @@
           <label>Url:</label>
           <input class="form-control" [(ngModel)]="addObject.tms.obj.url" [ngModelOptions]="{standalone: true}"/>
         </div>
+
+        <div class="form-group">
+          <div class="checkbox">
+            <label><input type="checkbox" value="" [(ngModel)]="addObject.tms.required.format"[ngModelOptions]="{standalone: true}"><b>Format:</b></label>
+          </div>
+          <input class="form-control" [disabled]="!addObject.tms.required.format" [(ngModel)]="addObject.tms.obj.format" class="form-control" [ngModelOptions]="{standalone: true}"/>
+        </div>
+
       </div>
 
       <div class="modal-footer">
@@ -314,16 +323,6 @@
           </ul>
 
         </div>
-
-
-        <!--<div class="btn-group" dropdown dropdown-append-to-body2>-->
-          <!--<label>Style:</label>-->
-          <!--<button id="btn-append-to-body2" type="button" class="btn btn-primary" dropdownToggle>-->
-            <!--{{addObject.bing.obj.style}}<span class="caret"></span>-->
-          <!--</button>-->
-        <!--</div>-->
-
-
       </div>
       <div class="modal-footer">
         <button class="btn btn-default" (click)="bingModal.hide()" type="button">Cancel</button>
@@ -336,29 +335,58 @@
 
 
 
-<!--<div [config]="{backdrop: false}" bsModal #defaultModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="addObject.default.init()">-->
-  <!--<div class="modal-dialog modal-sm">-->
-    <!--<form class="modal-content" (submit)="submitAddLayer(addObject.default.obj)">-->
+<div [config]="{backdrop: false}" bsModal #defaultModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="addObject.default.init()">
+  <div class="modal-dialog modal-sm">
+    <form class="modal-content" (submit)="submitAddLayer(addObject.default.obj)">
 
-      <!--<div class="modal-header">-->
-        <!--<button type="button" class="close" aria-label="Close" (click)="defaultModal.hide()">-->
-          <!--<span aria-hidden="true">&times;</span>-->
-        <!--</button>-->
-      <!--</div>-->
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="defaultModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
 
-      <!--<div class="modal-body">-->
-        <!--<div class="form-group">-->
-          <!--<label>Url:</label>-->
-          <!--<input class="form-control" [(ngModel)]="addObject.default.obj.url" [ngModelOptions]="{standalone: true}"/>-->
-        <!--</div>-->
-      <!--</div>-->
+        <div class="form-group">
+          <button class="btn btn-default glyphicon glyphicon-plus-sign tms-btn" type="button" (click)="addQueryModal.show()"></button>
+        </div>
+      </div>
 
-      <!--<div class="modal-footer">-->
-        <!--<button class="btn btn-default" (click)="defaultModal.hide()" type="button">Cancel</button>-->
-        <!--<button class="btn btn-default" type="submit">{{addObject.tms.onEdit() ? 'Save' : 'Add'}}</button>-->
-      <!--</div>-->
+      <div class="modal-body default-modal-body">
+        <template  ngFor let-key [ngForOf]="Object.keys(addObject.default.obj)">
+          <div class="form-group" *ngIf="key != 'source'">
+            <button *ngIf="key != 'url'" class="btn btn-default glyphicon glyphicon-remove" (click)="deleteKey(addObject.default.obj, key)"></button>
+            <label>{{key}}</label>
 
-    <!--</form>-->
-  <!--</div>-->
-<!--</div>-->
+            <input class="form-control" [(ngModel)]="addObject.default.obj[key]" [ngModelOptions]="{standalone: true}"/>
+          </div>
+        </template>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-default glyphicon glyphicon-exclamation-sign pull-left"></button>
+        <button class="btn btn-default" (click)="defaultModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" type="submit">{{addObject.tms.onEdit() ? 'Save' : 'Add'}}</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+<div [config]="{backdrop: false}" bsModal #addQueryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="input_key.value = ''">
+  <div class="modal-dialog modal-sm">
+    <form class="modal-content" (submit)="input_key.value ? addObject.default.obj[input_key.value] = '' : false ; addQueryModal.hide();">
+
+      <div class="modal-body add-query">
+        <div class="form-group">
+          <label>Key</label>
+          <div class="add-query-control">
+            <input class="form-control" #input_key/>
+            <button class="btn btn-default glyphicon glyphicon-ok" type="submit"></button>
+            <button class="btn btn-default glyphicon glyphicon-remove" type="button" (click)="addQueryModal.hide()"></button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
 

@@ -35,10 +35,11 @@ export class LayersComponent implements OnInit, OnChanges {
   @ViewChild('tmsModal') public tmsModal:ModalDirective;
   @ViewChild('bingModal') public bingModal:ModalDirective;
   @ViewChild('osmModal') public osmModal:ModalDirective;
+  @ViewChild('defaultModal') public defaultModal:ModalDirective;
 
   @Input('layersString') public layersString:string;
-
   @Output() submitLayersEmitter = new EventEmitter();
+
   public layersArray:Array<Object> = [];
   Object:any = Object;
 
@@ -131,18 +132,22 @@ public source_images = {
     tms: {
       obj: {
         source:'tms',
+        format:'',
         url:''
       },
       required: {
+        format: false,
       },
       edit_index: -1,
       modal: 'tmsModal',
       init() {
         this.obj = {
           source:'tms',
+          format:'',
           url: ''
         };
         this.required = {
+          format: false,
         };
         this.edit_index = -1;
       },
@@ -182,32 +187,29 @@ public source_images = {
       }
     },
 
-    //
-    // default: {
-    //   obj: {
-    //     url:'',
-    //   },
-    //   edit_index: -1,
-    //   modal: 'defaultModal',
-    //   init() {
-    //     this.obj = {
-    //       url: ''
-    //     };
-    //     this.edit_index = -1;
-    //   },
-    //   onEdit():boolean {
-    //     return this.edit_index != -1
-    //   }
-    // },
-    //
 
-
-
-
-
-
-
-
+    default: {
+      obj: {
+        source:'default',
+        url:''
+      },
+      edit_index: -1,
+      modal: 'defaultModal',
+      required: {
+      },
+      init() {
+        this.obj = {
+          source:'default',
+          url: ''
+        };
+        this.required= {
+        },
+        this.edit_index = -1;
+      },
+      onEdit():boolean {
+        return this.edit_index != -1
+      }
+    },
 
     layer_obj:{
       url: '',
@@ -264,13 +266,14 @@ public source_images = {
 
   submitAddLayer(layer_obj){
     let add_obj = this.addObject[layer_obj.source];
+    if(layer_obj.source == "default") delete layer_obj.source;
 
-    _.forEach(layer_obj, (val, key, obj) => {
+      _.forEach(layer_obj, (val, key, obj) => {
         if (!_.isNil(add_obj.required[key]) && !add_obj.required[key]) {
           delete obj[key]
         }
       }
-    )
+    );
 
     if(add_obj.onEdit()) {
       this.layersArray[add_obj.edit_index]['layer_obj'] = layer_obj;

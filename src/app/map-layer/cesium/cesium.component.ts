@@ -62,7 +62,7 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     this.currentParams = params;
 
     //layers
-    if(this.queryParamsHelperService.anyLayersChanges(this.prevParams, this.currentParams)) {
+    if(this.queryParamsHelperService.anyLayersChanges(this.prevParams, this.currentParams) || this.noTileLayer()) {
       this.setLayersChanges(params);
     }
 
@@ -83,25 +83,6 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   };
 
   initializeMap():void {
-    // Cesium.BingMapsApi.defaultKey = 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq';
-    // var mapbox = new Cesium.MapboxImageryProvider({
-    //   mapId: 'mapbox.streets',
-    //   accessToken: 'thisIsMyAccessToken'
-    // });
-    // let mapbox = new Cesium.MapboxImageryProvider({
-
-    //   url: 'https://api.mapbox.com/styles/v1/',
-    //   mapId: 'idanbarak/cixg4xdev00ms2qo9e4h5ywsb/tiles/256',
-    //   // accessToken: 'pk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw',
-    //   // accessToken: 'aaaapk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw',
-    //   // format: "empty",
-    //   proxy: {
-    //     getURL : (url) => {
-    //       return url.replace(".png", "");
-    //     }
-    //   }
-    // });
-
     var osm = new Cesium.createOpenStreetMapImageryProvider({
         url: 'https://{s}.tile.openstreetmap.org/'
     });
@@ -141,7 +122,8 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
 
   getTmsLayer(layer_obj){
     return new Cesium.createTileMapServiceImageryProvider({
-      url: layer_obj['url']
+      url: layer_obj['url'],
+      fileExtension: layer_obj['format']
     });
   }
 
@@ -154,11 +136,9 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
       case 'bing':
         return this.getBingLayer(layer_obj);
       case 'tms':
-        return this.getTmsLayer(layer_obj)
+        return this.getTmsLayer(layer_obj);
       default:
-        return new Cesium.UrlTemplateImageryProvider({
-          url: decodeURIComponent(layer_obj['url'])
-        });
+        return this.getUrlTemplateLayer(layer_obj);
     }
   }
 
@@ -172,17 +152,24 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     })
   }
 
+  getUrlTemplateLayer(default_obj){
+    return new Cesium.UrlTemplateImageryProvider({
+      url: this.queryParamsHelperService.layerObjecttToUrl(default_obj)
+    });
+  }
+
   setLayersChanges(params:Params) {
     let params_tms_array = this.queryParamsHelperService.queryLayers(params);
-    let imageryLayers = this.viewer.imageryLayers._layers
+    let imageryLayers = this.viewer.imageryLayers._layers;
 
     this.addLayersViaUrl(params_tms_array);
     this.removeLayersViaUrl(imageryLayers);
+
+    if(this.noTileLayer()) this.addBaseLayer();
+
   }
 
   addLayersViaUrl(params_layers_array:Array<Object>) {
-    // let map_tile_layers = this.viewer.imageryLayers._layers;
-
     params_layers_array.forEach( (layer_obj:{source:string}) => {
       if(!this.layerExistOnMap(layer_obj)){
         let layer = this.getLayerFromLayerObj(layer_obj);
@@ -197,7 +184,6 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
         this.viewer.imageryLayers.remove(imageryLayer);
       }
     });
-    if(this.noTileLayer()) this.addBaseLayer();
   }
 
   noTileLayer():boolean{
@@ -205,70 +191,35 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   }
 
   layerExistOnMap(layer_obj):boolean {
-    let imageryProviders = this.viewer.imageryLayers._layers.map(i => i.imageryProvider);
+    let map_imagery_providers = this.viewer.imageryLayers._layers.map(l => l._imageryProvider);
+    let _imageryProvider = this.getLayerFromLayerObj(layer_obj);
 
-    switch (layer_obj.source) {
-      case 'mapbox':
-        let mapbox_imageryProviders = imageryProviders.filter(ip => ip instanceof Cesium.MapboxImageryProvider);
-        let mapbox_layer = mapbox_imageryProviders.find(mapboxImageryProvider => {
+    let exist_on_map = map_imagery_providers.find( imageryProvider => {
+      return this.imageryProvidersEqual(imageryProvider, _imageryProvider)
+    });
 
-          let url_mapbox = layer_obj['url'] == mapboxImageryProvider._url;
-          let access_token_mapbox = layer_obj['access_token'] == mapboxImageryProvider._accessToken;
-          let mapid_mapbox = layer_obj['mapid'] == mapboxImageryProvider._mapId;
-
-          return url_mapbox && access_token_mapbox && mapid_mapbox
-        });
-        return !_.isNil(mapbox_layer);
-
-      case "bing":
-        let bing_imageryProviders = imageryProviders.filter(ip => ip instanceof Cesium.BingMapsImageryProvider);
-
-        let bing_layer = bing_imageryProviders.find(bingImageryProvider => {
-          let source_bing = bingImageryProvider instanceof Cesium.BingMapsImageryProvider;
-          let style_bing = layer_obj['style'] == bingImageryProvider._mapStyle;
-          let key_bing = layer_obj['key'] == bingImageryProvider._key;
-          let url_bing = layer_obj['url'] == bingImageryProvider._url;
-          return source_bing && style_bing && key_bing && url_bing;
-        });
-        return !_.isNil(bing_layer);
-
-      default:
-        let TemplateimageryProviders = imageryProviders.filter(ip => ip instanceof Cesium.UrlTemplateImageryProvider);
-
-        let openstreetmap_layer = TemplateimageryProviders.find(TimageryProvider => {
-          let url_openstreetmap = TimageryProvider._url.includes(layer_obj['url']);
-          return url_openstreetmap
-        });
-        return !_.isNil(openstreetmap_layer);
-    }
-
+    return !_.isNil(exist_on_map);
   }
 
   layerExistOnParams(imageryProvider):boolean {
 
-    let params_layers_urls = this.queryParamsHelperService.queryLayers(this.currentParams);
+    let params_layers = this.queryParamsHelperService.queryLayers(this.currentParams);
 
-    let layer_obj_exist = params_layers_urls.find( (layer_obj:{source:string}) => {
-      switch (layer_obj.source) {
-
-        case "mapbox":
-          let source = imageryProvider instanceof Cesium.MapboxImageryProvider;
-          let url = layer_obj['url'] == imageryProvider._url;
-          let access_token = layer_obj['access_token'] == imageryProvider._accessToken;
-          let mapid = layer_obj['mapid'] == imageryProvider._mapId;
-          return source && url && access_token && mapid;
-        case "bing":
-          let source_bing = imageryProvider instanceof Cesium.BingMapsImageryProvider;
-          let style_bing = layer_obj['style'] == imageryProvider._mapStyle;
-          let key_bing = layer_obj['key'] == imageryProvider._key;
-          let url_bing = layer_obj['url'] == imageryProvider._url;
-          return source_bing && style_bing && key_bing && url_bing;
-        default:
-          let url_e = imageryProvider._url ? imageryProvider._url.includes(layer_obj['url']) : true;
-          return url_e;
-      }
+    let exist_on_params = params_layers.find( (layer_obj:{source:string}) => {
+      let _imageryProvider = this.getLayerFromLayerObj(layer_obj);
+      return this.imageryProvidersEqual(imageryProvider, _imageryProvider)
     });
-    return !_.isNil(layer_obj_exist);
+
+    return !_.isNil(exist_on_params);
+  }
+
+  imageryProvidersEqual(imageryProvider, _imageryProvider):boolean {
+    return imageryProvider instanceof _imageryProvider.constructor
+      && imageryProvider['_url'] == _imageryProvider['_url']
+      && imageryProvider['_accessToken'] == _imageryProvider['_accessToken'] // MapboxImageryProvider
+      && imageryProvider['_mapId'] == _imageryProvider['_mapId'] // MapboxImageryProvider
+      && imageryProvider['_mapStyle'] == _imageryProvider['_mapStyle'] // BingImageryProvider
+      && imageryProvider['_key'] == _imageryProvider['_key']; // BingImageryProvider
   }
 
   anyParamChanges(params:Params):boolean {

@@ -3,6 +3,7 @@ import {Router, ActivatedRoute, Params, NavigationExtras, NavigationEnd, UrlTree
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/filter';
 import {QueryParamsHelperService} from "../query-params-helper.service";
 import {host, animations} from "../map-layer.component";
 import {MapLayerChild} from "../map-layer-child.interface";
@@ -11,7 +12,8 @@ import * as L from 'leaflet';
 import "leaflet-bing-layer/leaflet-bing-layer";
 import {CalcService} from "../calc-service";
 import {AjaxService} from "../ajax.service";
-import {Observable} from "rxjs";
+import {Observable, Observer} from "rxjs";
+import {clearInterval} from "timers";
 
 @Component({
   host: host,
@@ -46,9 +48,8 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     this.prevParams = this.currentParams;
     this.currentParams = params;
 
-
     //layers
-    if(this.queryParamsHelperService.anyLayersChanges(this.prevParams, this.currentParams) || this.noTileLayer()) {
+    if(this.queryParamsHelperService.anyLayersChanges(this.prevParams, this.currentParams)) {
       this.setLayersChanges(params);
     }
 
@@ -62,7 +63,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     }
 
     //markers
-    let params_changes:boolean = this.queryParamsHelperService.anyMarkersParamsChanges(this.prevParams, params);
+    let params_changes:boolean = this.queryParamsHelperService.anyMarkersParamsChanges(this.prevParams, this.currentParams);
     let map_changes:boolean = this.anyMarkersMapChanges(params);
 
     if(params_changes && map_changes) {
@@ -73,10 +74,11 @@ export class LeafletComponent implements OnInit, MapLayerChild {
 
   initializeMap():void {
     this.map = L.map('leafletContainer');
-    this.map.on('moveend', this.moveEnd);
+    this.map.on('moveend', this.moveEnd.bind(this));
+    if(this.noTileLayer())  this.addBaseLayer();
   }
 
-  moveEnd: (event) => Promise<boolean> = (event):Promise<boolean> => {
+  moveEnd(event):Promise<boolean> {
     if(!this.anyParamChanges(this.currentParams)) return;
     let lng: number  = event.target.getCenter().lng;
     let lat: number  = event.target.getCenter().lat;
@@ -166,6 +168,15 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     });
   }
 
+  removeMarkersViaUrl(map_markers_positions:Array<[number, number]>) {
+    map_markers_positions.forEach((markerPos) => {
+      if(!this.markerExistOnParams(markerPos)) {
+        let marker_to_remove:L.Marker = this.getMarkerViaPosition(markerPos);
+        this.map.removeLayer(marker_to_remove)
+      }
+    })
+  }
+
   getBaseMarker(marker:[number, number]){
     let icon = L.icon(<L.IconOptions>{
       iconUrl: '/assets/Leaflet/images/marker-icon.png',
@@ -175,17 +186,14 @@ export class LeafletComponent implements OnInit, MapLayerChild {
 
   }
 
-  removeMarkersViaUrl(map_markers_positions:Array<[number, number]>) {
-    map_markers_positions.forEach((markerPos) => {
-      if(!this.markerExistOnParams(markerPos)) {
-        let marker_to_remove = this.getMarkerLayersArray().find(
-          (layer:L.Marker) => {
-            let currentM = [layer.getLatLng().lng, layer.getLatLng().lat];
-            return _.isEqual(currentM, markerPos);
-          });
-        this.map.removeLayer(marker_to_remove)
-      }
-    })
+
+
+  getMarkerViaPosition(markerPos) {
+    return this.getMarkerLayersArray().find(
+      (layer:L.Marker) => {
+        let currentM = [layer.getLatLng().lng, layer.getLatLng().lat];
+        return _.isEqual(currentM, markerPos);
+      });
   }
 
   getMarkerLayersArray():Array<L.Marker>{
@@ -226,13 +234,11 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     let params_tms_array:Array<Object> = this.queryParamsHelperService.queryLayers(params);
     let map_tile_layers_array:Array<Object> = this.getTileLayersArray();
 
-    if(_.isEmpty(params_tms_array) && _.isEmpty(map_tile_layers_array)) {
-      this.addBaseLayer();
-    } else {
-      this.addLayersViaUrl(params_tms_array);
-      this.removeLayersViaUrl(map_tile_layers_array);
-    }
+    this.addLayersViaUrl(params_tms_array);
+    this.removeLayersViaUrl(map_tile_layers_array);
+    if(this.noTileLayer())  this.addBaseLayer();
   }
+
   addBaseLayer():void {
     this.getBingLayer({key: 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq', style:'Aerial'}).addTo(this.map);
   }
@@ -257,12 +263,14 @@ export class LeafletComponent implements OnInit, MapLayerChild {
       case "mapbox":
         let mapbox_url:string = this.parseMapboxUrl(layer_obj);
         return L.tileLayer(mapbox_url);
+      case "openstreetmap":
+        return this.getOpenstreetmapLayer(layer_obj);
       case "bing":
         return this.getBingLayer(layer_obj);
       case "tms":
         return this.getTmsLayer(layer_obj);
       default :
-        return L.tileLayer(`${layer_obj['url']}/{z}/{x}/{y}.png`);
+        return this.getDefaultLayer(layer_obj);
     }
   }
 
@@ -274,9 +282,6 @@ export class LeafletComponent implements OnInit, MapLayerChild {
         this.map.removeLayer(layer);
       }
     });
-
-    if(this.noTileLayer())  this.addBaseLayer();
-
   }
 
   getTileLayersArray():Array<Object> {
@@ -287,7 +292,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     let _layer: L.TileLayer  = this.getLayerFromLayerObj(layer_obj);
 
     let exist_on_map = map_tile_layers.find((layer) => {
-      return _.isEqual(_layer['_url'], layer['_url']) && _.isEqual(_layer['options'], layer['options']);
+      return this.layersEqual(layer, _layer);
     });
     return !_.isNil(exist_on_map);
   }
@@ -295,9 +300,13 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   layerExistOnParams(params_tile_layers, layer):boolean {
     let exist_on_params = params_tile_layers.find((layer_obj:{source:string}) => {
       let _layer: L.TileLayer  = this.getLayerFromLayerObj(layer_obj);
-      return _.isEqual(_layer['_url'], layer['_url']) && _.isEqual(_layer['options'], layer['options']);
+      return this.layersEqual(layer, _layer);
     });
     return !_.isNil(exist_on_params);
+  }
+
+  layersEqual(layer, _layer):boolean {
+    return _.isEqual(_layer['_url'], layer['_url']) && _.isEqual(_layer['options'], layer['options']);
   }
 
   getLayersArray():Array<L.Layer> {
@@ -308,16 +317,31 @@ export class LeafletComponent implements OnInit, MapLayerChild {
 
 
   parseMapboxUrl(mapbox_obj):string {
-    return `${mapbox_obj['url']}${mapbox_obj['mapid']}/{z}/{x}/{y}${mapbox_obj['format'] ? '.' + mapbox_obj['format'] : ''}?access_token=${mapbox_obj['access_token']}`
+    return `${mapbox_obj['url']}${mapbox_obj['mapid'] ? mapbox_obj['mapid'] + '/' : ""}{z}/{x}/{y}${mapbox_obj['format'] ? '.' + mapbox_obj['format'] : ''}?access_token=${mapbox_obj['access_token']}`
   }
-
+  getOpenstreetmapLayer(osm_obj){
+    let osm_url = this.parseOpenstreetmapUrl(osm_obj);
+    return L.tileLayer(osm_url);
+  }
   getBingLayer(bing_obj):L.TileLayer {
     return L.tileLayer['bing']({bingMapsKey: bing_obj['key'], imagerySet:bing_obj['style']});
   }
 
   getTmsLayer(tms_obj) {
-    let tms_layer = L.tileLayer(`${tms_obj['url']}/{z}/{x}/{y}.png`, {tms:true});
-    return tms_layer;
+    let tms_url = this.parseTmsUrl(tms_obj);
+    return L.tileLayer(tms_url, {tms:true});
+  }
+
+  getDefaultLayer(default_obj) {
+    return L.tileLayer(this.queryParamsHelperService.layerObjecttToUrl(default_obj));
+  }
+
+  parseTmsUrl(osm_obj){
+    return `${osm_obj['url']}/{z}/{x}/{y}${osm_obj['format'] ? '.' + osm_obj['format'] : ''}`
+  }
+
+  parseOpenstreetmapUrl(osm_obj){
+    return `${osm_obj['url']}/{z}/{x}/{y}${osm_obj['format'] ? '.' + osm_obj['format'] : ''}`
   }
 
   setTmsOptions(url, tms_layer) {
@@ -332,5 +356,6 @@ export class LeafletComponent implements OnInit, MapLayerChild {
         tms_layer.addTo(this.map);
       });
   }
+
 }
 

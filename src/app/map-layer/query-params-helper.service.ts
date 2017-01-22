@@ -7,8 +7,6 @@ declare let rison;
 @Injectable()
 export class QueryParamsHelperService {
 
-  private _yaya = "shshsh";
-
   constructor(private calcService:CalcService) {}
 
   queryBounds(params:Params):[number, number, number, number] {
@@ -58,9 +56,9 @@ export class QueryParamsHelperService {
   }
 
   anyLayersChanges(prev:Params, current:Params):boolean{
-    let currentTms = this.queryLayers(current);
-    let prevTms = this.queryLayers(prev);
-    return !_.isEqual(prevTms, currentTms);
+    let currentLayers = this.queryLayers(current);
+    let prevLayers  = this.queryLayers(prev);
+    return !_.isEqual(currentLayers, prevLayers);
   }
 
   queryLayers(params:Params):Array<Object>{
@@ -78,10 +76,10 @@ export class QueryParamsHelperService {
   }
 
   queryLayersStringToObjects(params:Params):Array<Object>{
-    let tms_to_decode:string = params['layers'];
-    if(_.isEmpty(tms_to_decode) ) tms_to_decode = '';
-    tms_to_decode = tms_to_decode.split(" ").join("");
-    return rison.decode_array(tms_to_decode);
+    let layer_to_decode:string = params['layers'];
+    if(_.isEmpty(layer_to_decode) ) layer_to_decode = '';
+    layer_to_decode = layer_to_decode.split(" ").join("");
+    return rison.decode_array(layer_to_decode);
   }
 
   queryLayersObjectToString(tms_obj):string{
@@ -89,8 +87,8 @@ export class QueryParamsHelperService {
     return rison.encode_array(tms_obj);
   }
 
-  tmsObjecttToUrl(tms_obj):string {
-    let obj = _.cloneDeep(tms_obj);
+  layerObjecttToUrl(layer_obj):string {
+    let obj = _.cloneDeep(layer_obj);
     let url = obj.url;
     delete obj.url;
     Object.keys(obj).forEach( (val,index,array) => {
