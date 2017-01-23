@@ -3,7 +3,7 @@
 import { TestBed, async, inject } from '@angular/core/testing';
 import {CalcService} from "./calc-service";
 
-fdescribe('CalcServiceService', () => {
+describe('CalcServiceService', () => {
   let calcService:CalcService;
 
   beforeEach(() => {
@@ -48,7 +48,7 @@ fdescribe('CalcServiceService', () => {
     expect(convertedObj.b).toEqual(9.9876543);
   });
 
-  fit("getParsedSubdomainsFromUrl should get url and parse subdomain of it", ()=>{
+  it("getParsedSubdomainsFromUrl should get url and parse subdomain of it", ()=>{
     let osm_url = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
     let result = calcService.getParsedUrlWithSubdomain(osm_url);
     expect(result).toEqual("http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png");

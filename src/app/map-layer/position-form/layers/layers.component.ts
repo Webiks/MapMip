@@ -273,8 +273,8 @@ public source_images = {
     this[add_obj.modal].hide();
   }
 
-  expandParams(tms_item) {
-    tms_item.expand = !tms_item.expand;
+  expandParams(layer_item) {
+    layer_item.expand = !layer_item.expand;
   }
 
   initLayersArray(){

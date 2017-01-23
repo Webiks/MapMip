@@ -8,6 +8,10 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {Observer, Observable} from "rxjs";
 import {NavigationEnd, Router, Params, NavigationExtras} from "@angular/router";
 import * as ol from 'openlayers';
+import {AjaxService} from "../ajax.service";
+import {HttpModule} from "@angular/http";
+import {OpenlayersMarkers} from "./openlayers.component.markers";
+import {OpenlayersLayers} from "./openlayers.component.layers";
 
 describe('OpenlayersComponent', () => {
   let component: OpenlayersComponent;
@@ -18,9 +22,9 @@ describe('OpenlayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, HttpModule],
       declarations: [ OpenlayersComponent ],
-      providers: [QueryParamsHelperService, CalcService,GeneralCanDeactivateService]
+      providers: [QueryParamsHelperService, CalcService,GeneralCanDeactivateService, AjaxService]
     })
       .compileComponents();
   }));
@@ -83,6 +87,10 @@ describe('OpenlayersComponent', () => {
   });
 
   describe('queryParams: ',() => {
+    let markers:OpenlayersMarkers;
+    beforeEach(()=>{
+      markers = component.markers
+    });
     it('should save currentParmas with the newParmas and prevParams with currentParams', ()=>{
       let currentParams:Params = {
         yaya: 'tata'
@@ -95,6 +103,9 @@ describe('OpenlayersComponent', () => {
       expect(component.prevParams).toEqual(currentParams);
       expect(component.currentParams).toEqual(newParams);
     });
+
+
+
 
     it('params with "bounds" should make setMapBounds to have been call', () => {
       spyOn(component, 'setMapBounds');
@@ -126,9 +137,9 @@ describe('OpenlayersComponent', () => {
     it('setMarkersChanges: should have been call only when both params_changes and map_changes are "true" ', () => {
       let params_changes:boolean = true;
       let map_changes:boolean = true;
-      spyOn(component, 'anyMarkersMapChanges').and.callFake(() => map_changes);
+      spyOn(markers, 'anyMarkersMapChanges').and.callFake(() => map_changes);
       spyOn(queryParamsHelperService, 'anyMarkersParamsChanges').and.callFake(() => params_changes);
-      spyOn(component, 'setMarkersChanges');
+      spyOn(markers, 'setMarkersChanges');
 
       let params:Params = {
         lat:'1.123',
@@ -140,35 +151,33 @@ describe('OpenlayersComponent', () => {
       params_changes = true;
       map_changes = false;
       component.queryParams(params);
-      expect(component.setMarkersChanges).not.toHaveBeenCalledWith(params);
+      expect(component.markers.setMarkersChanges).not.toHaveBeenCalledWith(params);
 
       params_changes = false;
       map_changes = true;
       component.queryParams(params);
-      expect(component.setMarkersChanges).not.toHaveBeenCalledWith(params);
+      expect(component.markers.setMarkersChanges).not.toHaveBeenCalledWith(params);
 
       params_changes = true;
       map_changes = true;
       component.queryParams(params);
-      expect(component.setMarkersChanges).toHaveBeenCalledWith(params);
+      expect(component.markers.setMarkersChanges).toHaveBeenCalledWith(params);
 
     });
 
-    it('setTmsLayers should to have been call if: noTileLayerRes is "true" or anyTmsChanges is "true"', ()=>{
-      let params:Params = {};
-      let anyTmsChangesRes:boolean = false;
+    it('setLayersChanges should to have been call if: noTileLayerRes is "true" or anyTmsChanges is "true"', ()=>{
+      let anyLayersChangesRes:boolean = false;
       let noTileLayerRes:boolean = false;
+      spyOn(component.layers,'noTileLayer').and.callFake(() => noTileLayerRes);
+      spyOn(queryParamsHelperService, 'anyLayersChanges').and.callFake(() => anyLayersChangesRes);
+      spyOn(component.layers, 'setLayersChanges');
 
-      spyOn(component,'noTileLayer').and.callFake(() => noTileLayerRes)
-      spyOn(queryParamsHelperService, 'anyTmsChanges').and.callFake(() => anyTmsChangesRes);
-
-      spyOn(component, 'setTmsLayers');
+      let params:Params = {};
       component.queryParams(params);
-      expect(component.setTmsLayers).toHaveBeenCalledTimes(0);
-      anyTmsChangesRes = true;
-      noTileLayerRes = true;
+      expect(component.layers.setLayersChanges).not.toHaveBeenCalled();
+      anyLayersChangesRes = true;
       component.queryParams(params);
-      expect(component.setTmsLayers).toHaveBeenCalledWith(params);
+      expect(component.layers.setLayersChanges).toHaveBeenCalledWith(params);
     });
 
   });
@@ -242,7 +251,7 @@ describe('OpenlayersComponent', () => {
   it('moveEnd: should get lat,lng and zoom parameters from "event" and markers from currentParams', () => {
     spyOn(router, 'navigate');
     spyOn(ol.proj, 'transform').and.returnValue([2,1]);
-    component.currentParams = {markers: '(1,2,3)', tms: 'tms_strings', rotate: '0'};
+    component.currentParams = {markers: '(1,2,3)', layers: 'tms_strings', rotate: '0'};
 
     let event = {
       map: {
@@ -262,12 +271,12 @@ describe('OpenlayersComponent', () => {
     };
 
     component.moveEnd(event);
-    let navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)', tms:'tms_strings', rotate: 0});
+    let navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)', layers:'tms_strings', rotate: 0});
     expect(router.navigate).toHaveBeenCalledWith([], navigationExtras);
 
     component.currentParams['rotate'] = '1';
     component.moveEnd(event);
-    navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)', tms:'tms_strings', rotate: undefined});
+    navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)', layers:'tms_strings', rotate: undefined});
     expect(router.navigate).toHaveBeenCalledWith([], navigationExtras);
   });
 
@@ -290,165 +299,244 @@ describe('OpenlayersComponent', () => {
     expect(bounds_with_rotation_0).toEqual(bounds_with_rotation_90);
   });
 
-  it('anyMarkersMapChanges: should get params and compere between markers on params and markers on map', ()=>{
-    let params_markers = [1,2,3];
-    let map_markers = [1,2,3,4];
-    spyOn(component, 'getMarkersPosition').and.callFake(()=>params_markers);
-    spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(()=>map_markers);
-    expect(component.anyMarkersMapChanges({})).toBeTruthy();
-    params_markers = [1,2,3,4,5];
-    map_markers    = [1,2,3,4,5];
-    expect(component.anyMarkersMapChanges({})).toBeFalsy();
+  describe("markers", ()=>{
+    let markers:OpenlayersMarkers;
+
+    beforeEach(()=>{
+      markers = component.markers
+    });
+
+    it('anyMarkersMapChanges: should get params and compere between markers on params and markers on map', ()=>{
+      let params_markers = [1,2,3];
+      let map_markers = [1,2,3,4];
+      spyOn(markers, 'getMarkersPosition').and.callFake(()=>params_markers);
+      spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(()=>map_markers);
+      expect(markers.anyMarkersMapChanges({})).toBeTruthy();
+      params_markers = [1,2,3,4,5];
+      map_markers    = [1,2,3,4,5];
+      expect(markers.anyMarkersMapChanges({})).toBeFalsy();
+    });
+
+    it('getMarkersPosition should return positions array ( [lng, lat], [lng, lat],...)', ()=>{
+      markers.addIcon([30,20]);
+      markers.addIcon([50,40]);
+      expect(markers.getMarkersPosition().length).toEqual(2);
+      expect(markers.getMarkersPosition()[0]).toEqual([30,20]);
+      expect(markers.getMarkersPosition()[1]).toEqual([50,40]);
+    });
+
+    it('setMarkersChanges: should call addMarkersViaUrl with params_markers_position and call removeMarkersViaUrl with map_markers_positions', ()=>{
+      let params_markers_position:Array<[number, number]> = [[1,2], [4,5]];
+      let map_markers_positions:Array<[number, number]> = [[6,7], [8,9]];
+
+      spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(() => params_markers_position);
+      spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers_positions);
+
+      spyOn(markers, 'addMarkersViaUrl');
+      spyOn(markers, 'removeMarkersViaUrl');
+      markers.setMarkersChanges({});
+      expect(markers.addMarkersViaUrl).toHaveBeenCalledWith(params_markers_position);
+      expect(markers.removeMarkersViaUrl).toHaveBeenCalledWith(map_markers_positions);
+    });
+
+
+    it('addMarkersViaUrl: should get positions array from params. for each position create marker if not exists on map', ()=>{
+      let params_markers_position:Array<[number, number]> = [[1,2], [3,4]];
+      markers.addMarkersViaUrl(params_markers_position);
+      let position_of_map_markers = markers.getMarkersPosition();
+      expect(position_of_map_markers).toEqual(params_markers_position);
+    });
+
+    it('removeMarkersViaUrl: addMarkersViaUrl: should get positions array from map. for each position remvoe marker if not exists on params', ()=>{
+      markers.addIcon([1,2]);
+      markers.addIcon([3,4]);
+
+      let position_of_map_markers = markers.getMarkersPosition(); // [[1,2],[3,4]]
+      expect(markers.getMarkersPosition()).toEqual([[1,2],[3,4]]);
+
+      component.currentParams = {markers: '(1,2)'}; // (3,4) should be removed
+      markers.removeMarkersViaUrl(position_of_map_markers);
+
+      expect(markers.getMarkersPosition()).toEqual([[1,2]]);
+    });
+
+    it('markerExistOnMap: should get one position and return if there is marker on map with that position', ()=>{
+      markers.addIcon([1,2]);
+      expect(markers.markerExistOnMap([1,2])).toBeTruthy();
+      expect(markers.markerExistOnMap([3,4])).toBeFalsy();
+    });
+
+
+    it('markerExistOnParams: should get one position and return if there is marker on params with that position', ()=>{
+      component.currentParams = {
+        markers: '(1,2),(3,4)'
+      };
+      expect(markers.markerExistOnParams([1,2])).toBeTruthy();
+      expect(markers.markerExistOnParams([3,4])).toBeTruthy();
+      expect(markers.markerExistOnParams([5,6])).toBeFalsy();
+    });
   });
 
-  it('getMarkersPosition should return positions array ( [lng, lat], [lng, lat],...)', ()=>{
-    component.addIcon([30,20]);
-    component.addIcon([50,40]);
-    expect(component.getMarkersPosition().length).toEqual(2);
-    expect(component.getMarkersPosition()[0]).toEqual([30,20]);
-    expect(component.getMarkersPosition()[1]).toEqual([50,40]);
-  });
+  describe("layers", ()=>{
+    let layers:OpenlayersLayers;
 
-  it('setMarkersChanges: should call addMarkersViaUrl with params_markers_position and call removeMarkersViaUrl with map_markers_positions', ()=>{
-    let params_markers_position:Array<[number, number]> = [[1,2], [4,5]];
-    let map_markers_positions:Array<[number, number]> = [[6,7], [8,9]];
+    beforeEach(()=>{
+      layers = component.layers;
+    });
 
-    spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(() => params_markers_position);
-    spyOn(component, 'getMarkersPosition').and.callFake(() => map_markers_positions);
-
-    spyOn(component, 'addMarkersViaUrl');
-    spyOn(component, 'removeMarkersViaUrl');
-    component.setMarkersChanges({});
-    expect(component.addMarkersViaUrl).toHaveBeenCalledWith(params_markers_position);
-    expect(component.removeMarkersViaUrl).toHaveBeenCalledWith(map_markers_positions);
-  });
+    it('addBaseLayer should get bing layer and add layer to viewer imageryProviders', ()=> {
+      let fake_layer = {};
+      spyOn(layers, "getBingLayer").and.callFake(() => fake_layer);
+      spyOn(component.map, 'addLayer');
+      layers.addBaseLayer();
+      expect(layers.getBingLayer).toHaveBeenCalled();
+      expect(component.map.addLayer).toHaveBeenCalledWith(fake_layer);
+    });
 
 
-  it('addMarkersViaUrl: should get positions array from params. for each position create marker if not exists on map', ()=>{
-    let params_markers_position:Array<[number, number]> = [[1,2], [3,4]];
-    component.addMarkersViaUrl(params_markers_position);
-    let position_of_map_markers = component.getMarkersPosition();
-    expect(position_of_map_markers).toEqual(params_markers_position);
-  });
+    it('getBingLayer should return BingImageryProvider with mapStyle key and url', ()=>{
+      let bing_obj = {key:'fake_key', style:'fake_style'};
+      let bing_layer = layers.getBingLayer(bing_obj);
 
-  it('removeMarkersViaUrl: addMarkersViaUrl: should get positions array from map. for each position remvoe marker if not exists on params', ()=>{
-    component.addIcon([1,2]);
-    component.addIcon([3,4]);
-
-    let position_of_map_markers = component.getMarkersPosition(); // [[1,2],[3,4]]
-    expect(component.getMarkersPosition()).toEqual([[1,2],[3,4]]);
-
-    component.currentParams = {markers: '(1,2)'}; // (3,4) should be removed
-    component.removeMarkersViaUrl(position_of_map_markers);
-
-    expect(component.getMarkersPosition()).toEqual([[1,2]]);
-  });
-
-  it('markerExistOnMap: should get one position and return if there is marker on map with that position', ()=>{
-    component.addIcon([1,2]);
-    expect(component.markerExistOnMap([1,2])).toBeTruthy();
-    expect(component.markerExistOnMap([3,4])).toBeFalsy();
-  });
+      expect(bing_layer instanceof ol.layer.Tile).toBeTruthy();
+      expect(bing_layer.getSource() instanceof ol.source.BingMaps).toBeTruthy();
+    });
 
 
-  it('markerExistOnParams: should get one position and return if there is marker on params with that position', ()=>{
-    component.currentParams = {
-      markers: '(1,2),(3,4)'
-    };
-    expect(component.markerExistOnParams([1,2])).toBeTruthy();
-    expect(component.markerExistOnParams([3,4])).toBeTruthy();
-    expect(component.markerExistOnParams([5,6])).toBeFalsy();
-  });
-  // getBounds():[number, number, number, number] {
-  //   let current_rotation:number = this.map.getView().getRotation();
-  //   this.map.getView().setRotation(0);
-  //   let bounds:ol.Extent = this.map.getView().calculateExtent(this.map.getSize());
-  //   this.map.getView().setRotation(current_rotation);
-  //   let t_bounds:ol.Extent = ol.proj.transformExtent(bounds, 'EPSG:3857', 'EPSG:4326');
-  //   let saved_bounds:[number, number, number, number] = t_bounds;
-  //   return saved_bounds;
-  // }
+    it('should getLayerFromLayerObj call the right get Layer functions via layer_obj.source', () => {
+      let layer_obj:{source:string} = {};
+      spyOn(layers, 'getMapboxLayer');
+      spyOn(layers, 'getOpenstreetmapLayer');
+      spyOn(layers, 'getBingLayer');
+      spyOn(layers, 'getTmsLayer');
+      spyOn(layers, 'getDefaultLayer');
+      layer_obj.source = "mapbox";
+      layers.getLayerFromLayerObj(layer_obj);
+      expect(layers.getMapboxLayer).toHaveBeenCalledWith(layer_obj);
+      layer_obj.source = "bing";
+      layers.getLayerFromLayerObj(layer_obj);
+      expect(layers.getBingLayer).toHaveBeenCalledWith(layer_obj);
+      layer_obj.source = "openstreetmap";
+      layers.getLayerFromLayerObj(layer_obj);
+      expect(layers.getOpenstreetmapLayer).toHaveBeenCalledWith(layer_obj);
+      layer_obj.source = "tms";
+      layers.getLayerFromLayerObj(layer_obj);
+      expect(layers.getTmsLayer).toHaveBeenCalledWith(layer_obj);
+      layer_obj.source = "default";
+      layers.getLayerFromLayerObj(layer_obj);
+      expect(layers.getDefaultLayer).toHaveBeenCalledWith(layer_obj);
+    });
 
 
-  it('setTmsLayers: should call addBaseLayer when tms_array empty, else call addTmsLayersViaUrl and removeTmsLayersViaUrl', ()=>{
-    let params:Params = {};
-    let fake_parmas_tms_array:Array<Object> = [];
-    let fake_map_tms_array:Array<string> = [];
+    it('setLayersChanges: should call addTmsLayersViaUrl and removeTmsLayersViaUrl and addBaseLayer if no tile layers in map', () => {
+      let params:Params = {};
+      let fake_parmas_layers_array:Array<Object> = [1,2,3];
+      let fake_map_layers_array:Array<Object> = [4,5,6];
+      let noTileLayerRes:boolean = false;
 
-    spyOn(queryParamsHelperService, 'queryTms').and.callFake(() => fake_parmas_tms_array);
-    spyOn(component, 'getMapTmsUrls').and.callFake(() => fake_map_tms_array);
+      spyOn(queryParamsHelperService, 'queryLayers').and.callFake(() => fake_parmas_layers_array);
+      spyOn(layers, 'getTileLayersArray').and.callFake(() => fake_map_layers_array);
 
-    spyOn(component, 'addBaseLayer');
-    spyOn(component, 'addTmsLayersViaUrl');
-    spyOn(component, 'removeTmsLayersViaUrl');
-    component.setTmsLayers(params);
-    expect(component.addBaseLayer).toHaveBeenCalled();
-    expect(component.addTmsLayersViaUrl).not.toHaveBeenCalled();
-    expect(component.removeTmsLayersViaUrl).not.toHaveBeenCalled();
-    fake_parmas_tms_array = [{url:'tms1'}, {url:'tms2'}];
-    fake_map_tms_array = ['mapurl1','mapurl2'];
-    component.setTmsLayers(params);
-    expect(component.addTmsLayersViaUrl).toHaveBeenCalledWith(fake_parmas_tms_array);
-    expect(component.removeTmsLayersViaUrl).toHaveBeenCalledWith(fake_map_tms_array);
-  });
+      spyOn(layers, 'addLayersViaUrl');
+      spyOn(layers, 'removeLayersViaUrl');
+      spyOn(layers, 'addBaseLayer');
+      spyOn(layers, 'noTileLayer').and.callFake(() => noTileLayerRes);
+
+      layers.setLayersChanges(params);
+      expect(layers.addLayersViaUrl).toHaveBeenCalledWith(fake_parmas_layers_array);
+      expect(layers.removeLayersViaUrl).toHaveBeenCalledWith(fake_map_layers_array);
+      expect(layers.addBaseLayer).not.toHaveBeenCalled();
+      noTileLayerRes = true;
+      layers.setLayersChanges(params);
+      expect(layers.addBaseLayer).toHaveBeenCalled();
+    });
+
+    it('addLayersViaUrl should add layers that exists on params but not exists on map', ()=>{
+      let layer_a = {url:'layer_a_url', source:'mapbox'};
+      let layer_b = {url:'layer_b_url', source:'bing'};
+      let params_layers = [layer_a,layer_b];
+
+      spyOn(layers, 'layerExistOnMap').and.callFake((layer) => _.isEqual(layer, layer_a)); // layer_b return false
+      spyOn(layers, 'getLayerFromLayerObj').and.callFake(() => layer_b);
+      spyOn(component.map, 'addLayer');
+
+      layers.addLayersViaUrl(params_layers);
+      expect(component.map.addLayer).toHaveBeenCalledWith(layer_b);
+    });
+
+    it('removeLayersViaUrl should remove layers that exists on map but not exists on params', ()=>{
+      let layer_a = {url:'layer_a_url'};
+      let layer_b = {url:'layer_b_url'};
+      let map_layers = [layer_a, layer_b];
+
+      spyOn(layers, 'layerExistOnParams').and.callFake( ([], layer) => _.isEqual(layer, layer_b)); // layer_a return false
+      spyOn(layers, 'getLayerFromLayerObj').and.callFake(() => layer_a);
+      spyOn(component.map, 'removeLayer');
+
+      layers.removeLayersViaUrl(map_layers);
+
+      expect(component.map.removeLayer).toHaveBeenCalledTimes(1);
+      expect(component.map.removeLayer).toHaveBeenCalledWith(layer_a);
+    });
+
+    it('noTileLayer should return true if getTileLayersArray array is empty', ()=>{
+      let getTileLayersArrayRes = [1,2,3];
+      spyOn(layers, "getTileLayersArray").and.callFake(() => getTileLayersArrayRes);
+      expect(layers.noTileLayer()).toBeFalsy();
+      getTileLayersArrayRes = [];
+      expect(layers.noTileLayer()).toBeTruthy();
+    });
+
+    it('parseMapBoxUrl should check if format or mapid are empty and remove them from url', ()=>{
+      let layer_obj = { url:'mapbox_url',access_token:'Hiyush'}; //empty format empty mapid
+      expect(layers.parseMapboxUrl(layer_obj)).toEqual(`mapbox_url{z}/{x}/{y}?access_token=Hiyush`)
+    });
+
+    it('layersEqual should compere 2 layers and return if they are equals', () => {
+      let source = {c:'c',jc:"jc", o: "o"};
+      let _source = {c:'c',jc:"jc", o: "o1"};
+
+      let layer  = {getSource: () => new Object(source)};
+      let _layer = {getSource: () => new Object(_source)};
+
+      expect(layers.layersEqual(layer, _layer)).toBeFalsy();
+
+      _source.o = "o";
+
+      expect(layers.layersEqual(layer, _layer)).toBeTruthy();
+    });
 
 
-  it('addTmsLayersViaUrl should loop on params_tms_array and add layer if layer not exist on map', ()=>{
-    let params_tms_array = ['tms_url1', 'tms_url2', 'tms_url3'];
-    let tmsUrlExistOnMapRes:boolean = true;
+    it('layerExistOnMap should get layer_obj and return  return if exist of map' , ()=>{
+      let layer_obj_a = {source:'default', url:'fake_url_a'};
+      let layer_obj_b = {source:'openstreetmap', url:'fake_url_b'};
+      let layer_obj_c = {source:'mapbox', url:'fake_url_c'};
 
-    spyOn(component, 'tmsUrlExistOnMap').and.callFake(() => tmsUrlExistOnMapRes);
-    spyOn(component.map, 'addLayer');
+      let map_tile_layers = [
+        layers.getLayerFromLayerObj(layer_obj_a),
+        layers.getLayerFromLayerObj(layer_obj_b)
+      ];
+
+      expect(layers.layerExistOnMap(map_tile_layers, layer_obj_a)).toBeTruthy();
+      expect(layers.layerExistOnMap(map_tile_layers, layer_obj_b)).toBeTruthy();
+      expect(layers.layerExistOnMap(map_tile_layers, layer_obj_c)).toBeFalsy();
+
+    });
+
+    it('layerExistOnParams should get imageryProvider and return if exist of params' , ()=>{
+      let layer_obj_a = {source:'default', url:'fake_url_a'};
+      let layer_obj_b = {source:'openstreetmap', url:'fake_url_b'};
+      let layer_obj_c = {source:'mapbox', url:'fake_url_c'};
+
+      let params_layer_array            = [layer_obj_a,layer_obj_b];
+      let layer_to_check:ol.layer.Layer  = layers.getLayerFromLayerObj(layer_obj_a);
+      expect(layers.layerExistOnParams(params_layer_array, layer_to_check)).toBeTruthy();
+      layer_to_check = layers.getLayerFromLayerObj(layer_obj_b);
+      expect(layers.layerExistOnParams(params_layer_array, layer_to_check)).toBeTruthy();
+      layer_to_check = layers.getLayerFromLayerObj(layer_obj_c);
+      expect(layers.layerExistOnParams(params_layer_array, layer_to_check)).toBeFalsy();
+    });
 
 
-    component.addTmsLayersViaUrl(params_tms_array);
-    expect(component.map.addLayer).toHaveBeenCalledTimes(0);
-
-    tmsUrlExistOnMapRes = false;
-    component.addTmsLayersViaUrl(params_tms_array);
-    expect(component.map.addLayer).toHaveBeenCalledTimes(3);
-  });
-
-  it('removeTmsLayersViaUrl should loop on map_tms_array and remove layer that not exist on params and call addBaseLayer if no noTileLayer eq "true"', ()=>{
-    let map_tms_array = ['tms_url1', 'tms_url2', 'tms_url3'];
-    let map_layers_array = [{jc: 'tms_url1'}, {jc: 'tms_url2'}, {jc:'tms_url3'}];
-
-    let tmsUrlExistOnParamsRes:boolean = true;
-    let noTileLayerRes:boolean = false;
-
-    spyOn(component, 'addBaseLayer');
-    spyOn(component, 'noTileLayer').and.callFake(() => noTileLayerRes);
-    spyOn(component, 'tmsUrlExistOnParams').and.callFake(() => tmsUrlExistOnParamsRes);
-    spyOn(component.map, 'removeLayer');
-    spyOn(component,'getMapXYZLayers').and.callFake(()=> map_layers_array);
-
-    component.removeTmsLayersViaUrl(map_tms_array);
-    expect(component.map.removeLayer).not.toHaveBeenCalled();
-    expect(component.addBaseLayer).not.toHaveBeenCalled();
-
-    tmsUrlExistOnParamsRes = false;
-    noTileLayerRes = true;
-
-    component.removeTmsLayersViaUrl(map_tms_array);
-    expect(component.map.removeLayer).toHaveBeenCalledTimes(3);
-    expect(component.addBaseLayer).toHaveBeenCalled();
-
-  });
-
-  it('tmsUrlExistOnMap should get _url and return if one of map urls equal to _url' , ()=>{
-    spyOn(component, 'getMapTmsUrls').and.callFake(() => ["url1", "url2", "url3"]);
-    expect(component.tmsUrlExistOnMap("url1")).toBeTruthy();
-    expect(component.tmsUrlExistOnMap("url2")).toBeTruthy();
-    expect(component.tmsUrlExistOnMap("url3")).toBeTruthy();
-    expect(component.tmsUrlExistOnMap("url4")).toBeFalsy();
-  });
-  it('tmsUrlExistOnParams should get _url and return if one of params urls equal to _url' , ()=>{
-    spyOn(queryParamsHelperService, 'queryTms').and.callFake(() => ["url4", "url5", "url6"]);
-    expect(component.tmsUrlExistOnParams("url4")).toBeTruthy();
-    expect(component.tmsUrlExistOnParams("url5")).toBeTruthy();
-    expect(component.tmsUrlExistOnParams("url6")).toBeTruthy();
-    expect(component.tmsUrlExistOnParams("url7")).toBeFalsy();
   })
-
-
 });

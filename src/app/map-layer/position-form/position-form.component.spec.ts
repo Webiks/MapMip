@@ -9,6 +9,8 @@ import {Permissions} from "./permissions.enum";
 import {PositionFormModule} from "./position-form.module";
 import {CalcService} from "../calc-service";
 import {ModalDirective} from "ng2-bootstrap";
+import {HttpModule} from "@angular/http";
+import {AjaxService} from "../ajax.service";
 
 describe('PositionFormComponent', () => {
   let component: PositionFormComponent;
@@ -21,9 +23,10 @@ describe('PositionFormComponent', () => {
     TestBed.configureTestingModule({
       imports:[
         PositionFormModule,
-        RouterTestingModule
+        RouterTestingModule,
+        HttpModule
       ],
-      providers:[QueryParamsHelperService,CalcService]
+      providers:[QueryParamsHelperService,CalcService, AjaxService]
     })
     .compileComponents();
   }));
@@ -124,8 +127,8 @@ describe('PositionFormComponent', () => {
 
     expect(form_groups.length).toEqual(3);
 
-    let lat = form_groups[0];
-    let lng = form_groups[1];
+    let lng = form_groups[0];
+    let lat = form_groups[1];
     let zoom = form_groups[2];
 
     expect(lat.querySelector("span").textContent).toEqual("lat");
@@ -194,7 +197,7 @@ describe('PositionFormComponent', () => {
     component.params.mode3d.val = true;
     component.params.rotate.val = false;
     component.params.markers.val = '(1,2,3)';
-    component.params.tms.val = "(url: 'url_tms')";
+    component.params.layers.val = "(url: 'url_tms')";
     component.submitForm();
     fixture.detectChanges();
 
@@ -209,7 +212,7 @@ describe('PositionFormComponent', () => {
       mode3d:undefined, //undefined when default (1)
       rotate: undefined,//undefined when default (0)
       markers: '(1,2,3)',
-      tms: "(url: 'url_tms')"
+      layers: "(url: 'url_tms')"
     };
     expect(router.navigate).toHaveBeenCalledWith([], {queryParams: queryParams});
 

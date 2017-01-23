@@ -136,36 +136,34 @@ describe('QueryParamsHelperService', () => {
       p1: 'p1_value',
       p2: 'p2_value'
     };
-    let url_string:string = queryParamsHelperService.tmsObjecttToUrl(url_obj);
+    let url_string:string = queryParamsHelperService.layerObjecttToUrl(url_obj);
     expect(url_string).toEqual(`${url_obj.url}?p1=${url_obj.p1}&p2=${url_obj.p2}`);
   });
 
-  it('queryLayers should return array of strings with tms urls', () => {
+  it('queryLayers should return array of strings with layers urls', () => {
     let params:Params = {};
 
     let layers_array:Array<Object> = queryParamsHelperService.queryLayers(params);
     expect(layers_array.length).toEqual(0);
 
     params = {
-      tms: '(url: layer_url1, q1: a, q2: b), (url: layer_url2, q3: c, q4: d)'
+      layers: '(url: layer_url1, q1: a, q2: b), (url: layer_url2, q3: c, q4: d)'
     };
 
     layers_array = queryParamsHelperService.queryLayers(params);
     expect(layers_array.length).toEqual(2);
-    expect(layers_array [0]).toEqual("layer_url1?q1=a&q2=b");
-    expect(layers_array [1]).toEqual("layer_url2?q3=c&q4=d");
   });
 
-  it('anyTmsChanges should return boolean of compere between prev and current params["tms"] ', () => {
-    let c_params:Params = {
-      tms: 'tms_url1, tms_url2 , tms_url3 , tms_url4'
-    };
-    let p_params:Params = {
-      tms: 'tms_url1, tms_url2 , tms_url3'
-    };
-    let anyTmsChanges:boolean = queryParamsHelperService.anyLayersChanges(p_params,c_params);
-    expect(anyTmsChanges).toBeTruthy();
-  });
+  // it('anyLayersChanges should return boolean of compere between prev and current params["layers"] ', () => {
+  //   let c_params:Params = {
+  //     layers: [{url: 'tms_url1'},{url: 'tms_url2'}]
+  //   };
+  //   let p_params:Params = {
+  //     layers: [{url: 'tms_url1'},{url: 'tms_url3'}]
+  //   };
+  //   let anyLayersChanges:boolean = queryParamsHelperService.anyLayersChanges(p_params,c_params);
+  //   expect(anyLayersChanges).toBeTruthy();
+  // });
 
 
 });

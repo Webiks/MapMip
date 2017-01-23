@@ -4,6 +4,8 @@ import { LayersComponent } from './layers.component';
 import {QueryParamsHelperService} from "../../query-params-helper.service";
 import {CalcService} from "../../calc-service";
 import {Ng2BootstrapModule} from "ng2-bootstrap";
+import {HttpModule} from "@angular/http";
+import {AjaxService} from "../../ajax.service";
 
 describe('LayersComponent', () => {
   let component: LayersComponent;
@@ -11,9 +13,9 @@ describe('LayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[Ng2BootstrapModule],
+      imports:[Ng2BootstrapModule, HttpModule],
       declarations: [ LayersComponent ],
-      providers:[QueryParamsHelperService, CalcService]
+      providers:[QueryParamsHelperService, CalcService, AjaxService]
     })
     .compileComponents();
   }));
@@ -38,12 +40,12 @@ describe('LayersComponent', () => {
   //   expect(fake_input_element.focus).toHaveBeenCalled();
   // });
 
-  it('removeTms should rmv tms element from tmsArray by getting the index of item', ()=>{
-    component.tmsArray = [1,2,3,4];
-    spyOn(component.tmsArray, 'splice');
-    component.removeTms(2);
-    expect(component.tmsArray.splice).toHaveBeenCalledWith(2, 1);
-  });
+  // it('removeTms should rmv tms element from tmsArray by getting the index of item', ()=>{
+  //   component.tmsArray = [1,2,3,4];
+  //   spyOn(component.tmsArray, 'splice');
+  //   component.removeTms(2);
+  //   expect(component.tmsArray.splice).toHaveBeenCalledWith(2, 1);
+  // });
 
   it('delete key should rmv key from object by getting the object and the key', ()=>{
     let obj =  {key1: 'val1', key2: 'val2'};
