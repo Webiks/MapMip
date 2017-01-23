@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
+
 @Injectable()
 export class CalcService{
 
@@ -20,6 +21,17 @@ export class CalcService{
       obj[key] = +(+val).toFixed(7)
     });
     return obj;
+  }
+
+  getParsedUrlWithSubdomain(url:string):string {
+    if(!url.includes("{s}")) return url;
+
+    let cesium_imagery_provider = new Cesium.UrlTemplateImageryProvider({
+      url
+    });
+    let subdomains_array = cesium_imagery_provider._subdomains;
+    let parsed_subdomains = `{${_.isEmpty(subdomains_array ) ? "" : subdomains_array [0] + "-" + subdomains_array [subdomains_array .length - 1]}}`;
+    return url.replace("{s}", parsed_subdomains);
   }
 
 }

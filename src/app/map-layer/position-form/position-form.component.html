@@ -16,7 +16,7 @@
       </div>
 
       <div class="form-group col-md-1" *ngIf="params[key].input_type == 'app-layers'">
-        <app-layers [layersString]="params[key].val" (submitLayersEmitter)="submitLayers($event)"></app-layers>
+        <app-layers [layersString]="params.layers.val" (submitLayersEmitter)="submitLayers($event)"></app-layers>
       </div>
 
 

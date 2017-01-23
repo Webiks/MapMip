@@ -7,8 +7,13 @@ import {CalcService} from "../calc-service";
 import {RouterTestingModule} from "@angular/router/testing";
 import {Router, NavigationEnd, Params, NavigationExtras} from "@angular/router";
 import {Observer, Observable} from "rxjs";
+import * as _ from 'lodash';
+import {Layers} from "./cesium.component.layers";
+import {Markers} from "./cesium.component.markers";
 
-fdescribe('CesiumComponent', () => {
+
+
+describe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
   let router:Router;
@@ -46,13 +51,13 @@ fdescribe('CesiumComponent', () => {
     let bool_result:boolean = true
     let fake_obs = { subscribe: callback => callback(bool_result) };
 
-    spyOn(component.viewer.camera.moveEnd, 'removeEventListener');
+    spyOn(component.viewer.camera.moveEnd._listeners, 'pop');
     spyOn(component.queryParamsSubscriber, 'unsubscribe');
     spyOn(component, 'flyToCenterAndGetBounds').and.returnValue(fake_obs);
     spyOn(observer, 'next');
 
     component.onLeave(observer);
-    expect(component.viewer.camera.moveEnd.removeEventListener).toHaveBeenCalled();
+    expect(component.viewer.camera.moveEnd._listeners.pop).toHaveBeenCalled();
     expect(component.queryParamsSubscriber.unsubscribe).toHaveBeenCalled();
     expect(component.flyToCenterAndGetBounds).toHaveBeenCalled();
     expect(observer.next).toHaveBeenCalledWith(bool_result);
@@ -86,16 +91,16 @@ fdescribe('CesiumComponent', () => {
     it('setLayersChanges should to have been call if: noTileLayerRes is "true" or anyLayersChanges is "true"', ()=>{
       let anyLayersChangesRes:boolean = false;
       let noTileLayerRes:boolean = false;
-      spyOn(component,'noTileLayer').and.callFake(() => noTileLayerRes)
+      spyOn(component.layers,'noTileLayer').and.callFake(() => noTileLayerRes)
       spyOn(queryParamsHelperService, 'anyLayersChanges').and.callFake(() => anyLayersChangesRes);
-      spyOn(component, 'setLayersChanges');
+      spyOn(component.layers, 'setLayersChanges');
 
       let params:Params = {};
       component.queryParams(params);
-      expect(component.setLayersChanges).not.toHaveBeenCalled();
+      expect(component.layers.setLayersChanges).not.toHaveBeenCalled();
       anyLayersChangesRes = true;
       component.queryParams(params);
-      expect(component.setLayersChanges).toHaveBeenCalledWith(params);
+      expect(component.layers.setLayersChanges).toHaveBeenCalledWith(params);
     });
 
 
@@ -130,9 +135,9 @@ fdescribe('CesiumComponent', () => {
       let params_changes:boolean = true;
       let map_changes:boolean = true;
 
-      spyOn(component, 'anyMarkersMapChanges').and.callFake(() => map_changes);
+      spyOn(component.markers, 'anyMarkersMapChanges').and.callFake(() => map_changes);
       spyOn(queryParamsHelperService, 'anyMarkersParamsChanges').and.callFake(() => params_changes);
-      spyOn(component, 'setMarkersChanges');
+      spyOn(component.markers, 'setMarkersChanges');
 
       let params:Params = {
         lat:'1.123',
@@ -143,17 +148,17 @@ fdescribe('CesiumComponent', () => {
       params_changes = true;
       map_changes = false;
       component.queryParams(params);
-      expect(component.setMarkersChanges).not.toHaveBeenCalledWith(params);
+      expect(component.markers.setMarkersChanges).not.toHaveBeenCalledWith(params);
 
       params_changes = false;
       map_changes = true;
       component.queryParams(params);
-      expect(component.setMarkersChanges).not.toHaveBeenCalledWith(params);
+      expect(component.markers.setMarkersChanges).not.toHaveBeenCalledWith(params);
 
       params_changes = true;
       map_changes = true;
       component.queryParams(params);
-      expect(component.setMarkersChanges).toHaveBeenCalledWith(params);
+      expect(component.markers.setMarkersChanges).toHaveBeenCalledWith(params);
 
     })
   });
@@ -182,44 +187,6 @@ fdescribe('CesiumComponent', () => {
     expect(component.anyParamChanges(params)).toBeTruthy();
   });
 
-  it('anyMarkersMapChanges: should get params and compere between markers on params and markers on map', ()=>{
-    let marker1 = [30,20,10];
-    let marker2 = [60,50,40];
-    let marker1_cartesian = Cesium.Cartesian3.fromDegrees(...marker1);
-    let marker2_cartesian = Cesium.Cartesian3.fromDegrees(...marker2);
-
-    let params_markers = [marker1, marker2];
-    let map_markers = [marker1_cartesian, marker2_cartesian];
-
-    spyOn(queryParamsHelperService, 'queryMarkers').and.callFake(() => params_markers);
-    spyOn(component, 'getMarkersPosition').and.callFake(() => map_markers);
-
-    expect(component.anyMarkersMapChanges({})).toBeFalsy();
-    params_markers[0] = [31,20,10];
-    expect(component.anyMarkersMapChanges({})).toBeTruthy();
-
-    expect(queryParamsHelperService.queryMarkers).toHaveBeenCalledTimes(2);
-    expect(component.getMarkersPosition).toHaveBeenCalledTimes(2);
-  });
-
-  it('getMarkersPosition should return positions array ( [lng, lat], [lng, lat],...)', ()=>{
-    component.viewer.entities.add({
-      position : Cesium.Cartesian3.fromDegrees(...[1,2,3]),
-      billboard: {
-        image: "/assets/Leaflet/images/marker-icon.png"
-      }
-    });
-    component.viewer.entities.add({
-      position : Cesium.Cartesian3.fromDegrees(...[4,5,6]),
-      billboard: {
-        image: "/assets/Leaflet/images/marker-icon.png"
-      }
-    });
-    expect(component.getMarkersPosition().length).toEqual(2);
-    expect(component.getMarkersPosition()[0]).toEqual(Cesium.Cartesian3.fromDegrees(...[1,2,3]));
-    expect(component.getMarkersPosition()[1]).toEqual(Cesium.Cartesian3.fromDegrees(...[4,5,6]));
-  });
-
   it('setMapView should get params and use them to set rotate, set mode and call map.setView with params values',()=>{
     spyOn(component.viewer.camera, 'setView');
 
@@ -246,71 +213,6 @@ fdescribe('CesiumComponent', () => {
     expect(component.viewer.scene.mapMode2D).toEqual(Cesium.MapMode2D.INFINITE_SCROLL);
   });
 
-  it('setMarkersChanges: should call addMarkersViaUrl with params_markers_position and call removeMarkersViaUrl with map_markers_positions', ()=>{
-    let params_markers_position:Array<[number, number]> = [[1,2,3], [4,5,6]];
-    let map_markers_positions:Array<[number, number]> = [[6,7,8], [5,4,3]];
-
-    spyOn(queryParamsHelperService, 'queryMarkers').and.callFake(() => params_markers_position);
-    spyOn(component, 'getMarkersPosition').and.callFake(() => map_markers_positions);
-
-    spyOn(component, 'addMarkersViaUrl');
-    spyOn(component, 'removeMarkersViaUrl');
-    component.setMarkersChanges({});
-    expect(component.addMarkersViaUrl).toHaveBeenCalledWith(params_markers_position);
-    expect(component.removeMarkersViaUrl).toHaveBeenCalledWith(map_markers_positions);
-  });
-
-
-  it('addMarkersViaUrl: should get positions array from params. for each position create marker if not exists on map', ()=>{
-    let params_markers_position:Array<[number, number]> = [[1,2,3], [4,5,6]];
-    component.addMarkersViaUrl(params_markers_position);
-    let position_of_map_markers = component.getMarkersPosition();
-    expect(position_of_map_markers).toEqual([Cesium.Cartesian3.fromDegrees(...[1,2,3]),Cesium.Cartesian3.fromDegrees(...[4,5,6])]);
-  });
-
-  it('removeMarkersViaUrl: addMarkersViaUrl: should get positions array from map. for each position remvoe marker if not exists on params', ()=>{
-    component.viewer.entities.add({
-      position : Cesium.Cartesian3.fromDegrees(...[1,2,3]),
-      billboard: {
-        image: "/assets/Leaflet/images/marker-icon.png"
-      }
-    });
-    component.viewer.entities.add({
-      position : Cesium.Cartesian3.fromDegrees(...[4,5,6]),
-      billboard: {
-        image: "/assets/Leaflet/images/marker-icon.png"
-      }
-    });
-    let position_of_map_markers = component.getMarkersPosition();
-
-    expect(component.getMarkersPosition()).toEqual([Cesium.Cartesian3.fromDegrees(...[1,2,3]),Cesium.Cartesian3.fromDegrees(...[4,5,6])]);
-
-    component.currentParams = {markers: '(1,2,3)'}; // (3,4) should be removed
-    component.removeMarkersViaUrl(position_of_map_markers);
-
-    expect(component.getMarkersPosition()).toEqual([Cesium.Cartesian3.fromDegrees(...[1,2,3])]);
-  });
-
-  it('markerExistOnMap: should get one position and return if there is marker on map with that position', ()=>{
-    component.viewer.entities.add({
-      position : Cesium.Cartesian3.fromDegrees(...[1,2,3]),
-      billboard: {
-        image: "/assets/Leaflet/images/marker-icon.png"
-      }
-    });
-    expect(component.markerExistOnMap([1,2,3])).toBeTruthy();
-    expect(component.markerExistOnMap([4,5,6])).toBeFalsy();
-  });
-
-  it('markerExistOnParams: should get one position and return if there is marker on params with that position', () => {
-    component.currentParams = {
-      markers: '(1,2,3),(4,5,6)'
-    };
-    expect(component.markerExistOnParams(Cesium.Cartesian3.fromDegrees(...[1,2,3]))).toBeTruthy();
-    expect(component.markerExistOnParams(Cesium.Cartesian3.fromDegrees(...[4,5,6]))).toBeTruthy();
-    expect(component.markerExistOnParams(Cesium.Cartesian3.fromDegrees(...[7,8,9]))).toBeFalsy();
-  });
-
 
   it('moveEnd: should get lat,lng and zoom parameters from "event" and markers from currentParams', () => {
 
@@ -320,7 +222,7 @@ fdescribe('CesiumComponent', () => {
     component.moveEnd();
     expect(router.navigate).not.toHaveBeenCalled();
 
-    component.currentParams['tms'] = "(url:'fake_url')";
+    component.currentParams['layers'] = "(url:'fake_url')";
     component.currentParams['markers'] = "(1,2,3)";
 
     resultAnyParamsChange = true;
@@ -336,10 +238,10 @@ fdescribe('CesiumComponent', () => {
     let roll:number = +Cesium.Math.toDegrees(component.viewer.camera.roll);//.toFixed(7);
     let mode3d:number = component.viewer.scene.mode == Cesium.SceneMode.SCENE2D ? 0 : 1;
     let markers = component.currentParams['markers'];
-    let tms = component.currentParams['tms'];
+    let layers = component.currentParams['layers'];
     let rotate = component.viewer.scene._mapMode2D == Cesium.MapMode2D.ROTATE ? 1 : undefined;
 
-    let navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, tms, rotate});
+    let navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, layers, rotate});
     expect(router.navigate).toHaveBeenCalledWith([], navigationExtras);
   });
 
@@ -384,80 +286,270 @@ fdescribe('CesiumComponent', () => {
       });
     });
   });
-  it('addBaseLayer should get bing layer and add layer to viewer imageryProviders', ()=> {
-    let fake_base_layer = {name:'bing_base_layer'};
-    spyOn(component, 'getBingLayer').and.callFake(() => fake_base_layer);
-    spyOn(component.viewer.imageryLayers, 'addImageryProvider');
-    component.addBaseLayer();
-    expect(component.viewer.imageryLayers.addImageryProvider).toHaveBeenCalledWith(fake_base_layer)
+
+
+  describe('markers', ()=> {
+    let markers:Markers;
+
+    beforeEach(()=>{
+      markers = component.markers;
+    });
+
+    it('setMarkersChanges: should call addMarkersViaUrl with params_markers_position and call removeMarkersViaUrl with map_markers_positions', ()=>{
+      let params_markers_position:Array<[number, number]> = [[1,2,3], [4,5,6]];
+      let map_markers_positions:Array<[number, number]> = [[6,7,8], [5,4,3]];
+
+      spyOn(queryParamsHelperService, 'queryMarkers').and.callFake(() => params_markers_position);
+      spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers_positions);
+
+      spyOn(markers, 'addMarkersViaUrl');
+      spyOn(markers, 'removeMarkersViaUrl');
+      markers.setMarkersChanges({});
+      expect(markers.addMarkersViaUrl).toHaveBeenCalledWith(params_markers_position);
+      expect(markers.removeMarkersViaUrl).toHaveBeenCalledWith(map_markers_positions);
+    });
+
+
+    it('addMarkersViaUrl: should get positions array from params. for each position create marker if not exists on map', ()=>{
+      let params_markers_position:Array<[number, number]> = [[1,2,3], [4,5,6]];
+      markers.addMarkersViaUrl(params_markers_position);
+      let position_of_map_markers = markers.getMarkersPosition();
+      expect(position_of_map_markers).toEqual([Cesium.Cartesian3.fromDegrees(...[1,2,3]),Cesium.Cartesian3.fromDegrees(...[4,5,6])]);
+    });
+
+    it('removeMarkersViaUrl: addMarkersViaUrl: should get positions array from map. for each position remvoe marker if not exists on params', ()=>{
+      component.viewer.entities.add({
+        position : Cesium.Cartesian3.fromDegrees(...[1,2,3]),
+        billboard: {
+          image: "/assets/Leaflet/images/marker-icon.png"
+        }
+      });
+      component.viewer.entities.add({
+        position : Cesium.Cartesian3.fromDegrees(...[4,5,6]),
+        billboard: {
+          image: "/assets/Leaflet/images/marker-icon.png"
+        }
+      });
+      let position_of_map_markers = markers.getMarkersPosition();
+
+      expect(markers.getMarkersPosition()).toEqual([Cesium.Cartesian3.fromDegrees(...[1,2,3]),Cesium.Cartesian3.fromDegrees(...[4,5,6])]);
+
+      component.currentParams = {markers: '(1,2,3)'}; // (3,4) should be removed
+      markers.removeMarkersViaUrl(position_of_map_markers);
+
+      expect(markers.getMarkersPosition()).toEqual([Cesium.Cartesian3.fromDegrees(...[1,2,3])]);
+    });
+
+    it('markerExistOnMap: should get one position and return if there is marker on map with that position', ()=>{
+      component.viewer.entities.add({
+        position : Cesium.Cartesian3.fromDegrees(...[1,2,3]),
+        billboard: {
+          image: "/assets/Leaflet/images/marker-icon.png"
+        }
+      });
+      expect(markers.markerExistOnMap([1,2,3])).toBeTruthy();
+      expect(markers.markerExistOnMap([4,5,6])).toBeFalsy();
+    });
+
+    it('markerExistOnParams: should get one position and return if there is marker on params with that position', () => {
+      component.currentParams = {
+        markers: '(1,2,3),(4,5,6)'
+      };
+      expect(markers.markerExistOnParams(Cesium.Cartesian3.fromDegrees(...[1,2,3]))).toBeTruthy();
+      expect(markers.markerExistOnParams(Cesium.Cartesian3.fromDegrees(...[4,5,6]))).toBeTruthy();
+      expect(markers.markerExistOnParams(Cesium.Cartesian3.fromDegrees(...[7,8,9]))).toBeFalsy();
+    });
+
+    it('anyMarkersMapChanges: should get params and compere between markers on params and markers on map', ()=>{
+      let marker1 = [30,20,10];
+      let marker2 = [60,50,40];
+      let marker1_cartesian = Cesium.Cartesian3.fromDegrees(...marker1);
+      let marker2_cartesian = Cesium.Cartesian3.fromDegrees(...marker2);
+
+      let params_markers = [marker1, marker2];
+      let map_markers = [marker1_cartesian, marker2_cartesian];
+
+      spyOn(queryParamsHelperService, 'queryMarkers').and.callFake(() => params_markers);
+      spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers);
+
+      expect(markers.anyMarkersMapChanges({})).toBeFalsy();
+      params_markers[0] = [31,20,10];
+      expect(markers.anyMarkersMapChanges({})).toBeTruthy();
+
+      expect(queryParamsHelperService.queryMarkers).toHaveBeenCalledTimes(2);
+      expect(markers.getMarkersPosition).toHaveBeenCalledTimes(2);
+    });
+
+    it('getMarkersPosition should return positions array ( [lng, lat], [lng, lat],...)', ()=>{
+      component.viewer.entities.add({
+        position : Cesium.Cartesian3.fromDegrees(...[1,2,3]),
+        billboard: {
+          image: "/assets/Leaflet/images/marker-icon.png"
+        }
+      });
+      component.viewer.entities.add({
+        position : Cesium.Cartesian3.fromDegrees(...[4,5,6]),
+        billboard: {
+          image: "/assets/Leaflet/images/marker-icon.png"
+        }
+      });
+      expect(markers.getMarkersPosition().length).toEqual(2);
+      expect(markers.getMarkersPosition()[0]).toEqual(Cesium.Cartesian3.fromDegrees(...[1,2,3]));
+      expect(markers.getMarkersPosition()[1]).toEqual(Cesium.Cartesian3.fromDegrees(...[4,5,6]));
+    });
+
   });
-  it('getBingLayer should return BingImageryProvider with mapStyle key and url', ()=>{
-    let layer_obj = {url:'fake_url', style:'fake_style', key:'fake_key'};
-    let bing_layer = component.getBingLayer(layer_obj);
-    expect(bing_layer instanceof Cesium.BingMapsImageryProvider).toBeTruthy();
-  });
-  it('should getLayerFromLayerObj call the right get Layer functions via layer_obj.source', () => {
-    let layer_obj:{source:string} = {};
-    spyOn(component, 'getMapboxLayer');
-    spyOn(component, 'getOpenstreetmapLayer');
-    spyOn(component, 'getBingLayer');
-    spyOn(component, 'getTmsLayer');
-    spyOn(component, 'getUrlTemplateLayer');
-    layer_obj.source = "mapbox";
-    component.getLayerFromLayerObj(layer_obj);
-    expect(component.getMapboxLayer).toHaveBeenCalledWith(layer_obj);
-    layer_obj.source = "bing";
-    component.getLayerFromLayerObj(layer_obj);
-    expect(component.getBingLayer).toHaveBeenCalledWith(layer_obj);
-    layer_obj.source = "openstreetmap";
-    component.getLayerFromLayerObj(layer_obj);
-    expect(component.getOpenstreetmapLayer).toHaveBeenCalledWith(layer_obj);
-    layer_obj.source = "tms";
-    component.getLayerFromLayerObj(layer_obj);
-    expect(component.getTmsLayer).toHaveBeenCalledWith(layer_obj);
-    layer_obj.source = "default";
-    component.getLayerFromLayerObj(layer_obj);
-    expect(component.getUrlTemplateLayer).toHaveBeenCalledWith(layer_obj);
-  });
 
 
-  fit('setTmsLayers: should call addTmsLayersViaUrl and removeTmsLayersViaUrl and addBaseLayer if no tile layers in map', () => {
-    let params:Params = {};
-    let fake_parmas_layers_array:Array<Object> = [1,2,3];
-    let fake_map_layers_array:Array<Object> = [4,5,6];
-    let noTileLayerRes:boolean = false;
 
-    spyOn(queryParamsHelperService, 'queryLayers').and.callFake(() => fake_parmas_layers_array);
-    component.viewer.imageryLayers._layers = fake_map_layers_array;
-    spyOn(component, 'addLayersViaUrl');
-    spyOn(component, 'removeLayersViaUrl');
-    spyOn(component, 'addBaseLayer');
-    spyOn(component, 'noTileLayer').and.callFake(() => noTileLayerRes);
 
-    component.setLayersChanges(params);
-    expect(component.addLayersViaUrl).toHaveBeenCalledWith(fake_parmas_layers_array);
-    expect(component.removeLayersViaUrl).toHaveBeenCalledWith(fake_map_layers_array);
-    expect(component.addBaseLayer).not.toHaveBeenCalled();
-    noTileLayerRes = true;
-    component.setLayersChanges(params);
-    expect(component.addBaseLayer).toHaveBeenCalled();
 
-  });
 
-  // it('tmsUrlExistOnMap should get _url and return if one of map urls equal to _url' , ()=>{
-  //   spyOn(component, 'getMapTmsUrls').and.callFake(() => ["url1", "url2", "url3"]);
-  //   expect(component.tmsUrlExistOnMap("url1")).toBeTruthy();
-  //   expect(component.tmsUrlExistOnMap("url2")).toBeTruthy();
-  //   expect(component.tmsUrlExistOnMap("url3")).toBeTruthy();
-  //   expect(component.tmsUrlExistOnMap("url4")).toBeFalsy();
-  // });
-  //
-  // it('tmsUrlExistOnParams should get _url and return if one of params urls equal to _url' , ()=>{
-  //   spyOn(queryParamsHelperService, 'queryTms').and.callFake(() => ["url4", "url5", "url6"]);
-  //   expect(component.tmsUrlExistOnParams("url4")).toBeTruthy();
-  //   expect(component.tmsUrlExistOnParams("url5")).toBeTruthy();
-  //   expect(component.tmsUrlExistOnParams("url6")).toBeTruthy();
-  //   expect(component.tmsUrlExistOnParams("url7")).toBeFalsy();
-  // })
+
+
+  describe("layers", () => {
+    let layers:Layers;
+
+    beforeEach(()=>{
+      layers = component.layers;
+    });
+
+    it('addBaseLayer should get bing layer and add layer to viewer imageryProviders', ()=> {
+      let fake_base_layer = {name:'bing_base_layer'};
+      spyOn(layers, 'getBingLayer').and.callFake(() => fake_base_layer);
+      spyOn(component.viewer.imageryLayers, 'addImageryProvider');
+      layers.addBaseLayer();
+      expect(component.viewer.imageryLayers.addImageryProvider).toHaveBeenCalledWith(fake_base_layer)
+    });
+    it('getBingLayer should return BingImageryProvider with mapStyle key and url', ()=>{
+      let layer_obj = {url:'fake_url', style:'fake_style', key:'fake_key'};
+      let bing_layer = layers.getBingLayer(layer_obj);
+      expect(bing_layer instanceof Cesium.BingMapsImageryProvider).toBeTruthy();
+    });
+    it('should getLayerFromLayerObj call the right get Layer functions via layer_obj.source', () => {
+      let layer_obj:{source:string} = {};
+      spyOn(layers, 'getMapboxLayer');
+      spyOn(layers, 'getOpenstreetmapLayer');
+      spyOn(layers, 'getBingLayer');
+      spyOn(layers, 'getTmsLayer');
+      spyOn(layers, 'getUrlTemplateLayer');
+      layer_obj.source = "mapbox";
+      layers.getLayerFromLayerObj(layer_obj);
+      expect(layers.getMapboxLayer).toHaveBeenCalledWith(layer_obj);
+      layer_obj.source = "bing";
+      layers.getLayerFromLayerObj(layer_obj);
+      expect(layers.getBingLayer).toHaveBeenCalledWith(layer_obj);
+      layer_obj.source = "openstreetmap";
+      layers.getLayerFromLayerObj(layer_obj);
+      expect(layers.getOpenstreetmapLayer).toHaveBeenCalledWith(layer_obj);
+      layer_obj.source = "tms";
+      layers.getLayerFromLayerObj(layer_obj);
+      expect(layers.getTmsLayer).toHaveBeenCalledWith(layer_obj);
+      layer_obj.source = "default";
+      layers.getLayerFromLayerObj(layer_obj);
+      expect(layers.getUrlTemplateLayer).toHaveBeenCalledWith(layer_obj);
+    });
+
+
+    it('setLayersChanges: should call addTmsLayersViaUrl and removeTmsLayersViaUrl and addBaseLayer if no tile layers in map', () => {
+      let params:Params = {};
+      let fake_parmas_layers_array:Array<Object> = [1,2,3];
+      let fake_map_layers_array:Array<Object> = [4,5,6];
+      let noTileLayerRes:boolean = false;
+
+      spyOn(queryParamsHelperService, 'queryLayers').and.callFake(() => fake_parmas_layers_array);
+      component.viewer.imageryLayers._layers = fake_map_layers_array;
+      spyOn(layers, 'addLayersViaUrl');
+      spyOn(layers, 'removeLayersViaUrl');
+      spyOn(layers, 'addBaseLayer');
+      spyOn(layers, 'noTileLayer').and.callFake(() => noTileLayerRes);
+
+      layers.setLayersChanges(params);
+      expect(layers.addLayersViaUrl).toHaveBeenCalledWith(fake_parmas_layers_array);
+      expect(layers.removeLayersViaUrl).toHaveBeenCalledWith(fake_map_layers_array);
+      expect(layers.addBaseLayer).not.toHaveBeenCalled();
+      noTileLayerRes = true;
+      layers.setLayersChanges(params);
+      expect(layers.addBaseLayer).toHaveBeenCalled();
+
+    });
+    it('addLayersViaUrl should add layers that exists on params but not exists on map', ()=>{
+      let layer_a = {url:'layer_a_url', source:'mapbox'};
+      let layer_b = {url:'layer_b_url', source:'bing'};
+      let params_layers = [layer_a,layer_b];
+
+      spyOn(layers, 'layerExistOnMap').and.callFake((layer) => _.isEqual(layer, layer_a)); // layer_b return false
+      spyOn(layers, 'getLayerFromLayerObj').and.callFake(() => layer_b);
+      spyOn(component.viewer.imageryLayers, 'addImageryProvider');
+
+      layers.addLayersViaUrl(params_layers);
+
+      expect(component.viewer.imageryLayers.addImageryProvider).toHaveBeenCalledTimes(1);
+      expect(component.viewer.imageryLayers.addImageryProvider).toHaveBeenCalledWith(layer_b);
+    });
+    it('removeLayersViaUrl should remove layers that exists on map but not exists on params', ()=>{
+      let layer_a = {imageryProvider: {url:'layer_a_url'}};
+      let layer_b = {imageryProvider: {url:'layer_b_url'}};
+      let map_layers = [layer_a, layer_b];
+
+      spyOn(layers, 'layerExistOnParams').and.callFake( imageryProvider => _.isEqual(imageryProvider, layer_a.imageryProvider) ); // layer_a return false
+      spyOn(layers, 'getLayerFromLayerObj').and.callFake(() => layer_a);
+      spyOn(component.viewer.imageryLayers, 'remove');
+
+      layers.removeLayersViaUrl(map_layers);
+
+      expect(component.viewer.imageryLayers.remove).toHaveBeenCalledTimes(1);
+      expect(component.viewer.imageryLayers.remove).toHaveBeenCalledWith(layer_b);
+    });
+
+    it('no tile layer should return true if _layers array is empty', ()=>{
+      component.viewer.imageryLayers._layers = [1,2,3];
+      expect(layers.noTileLayer()).toBeFalsy();
+      component.viewer.imageryLayers._layers = [];
+      expect(layers.noTileLayer()).toBeTruthy();
+    });
+
+    it('parseMapBoxUrl should check if format or mapid are empty and remove them from url', ()=>{
+      let layer_obj = {source:'mapbox', url:'mapbox_url'}; //empty format empty mapid
+      let mapbox_url = 'mapbox_url/undefined/{z}/{x}/{y}.png'; //'undefined/'(miss mapid) and '.png'(default format) ;
+      let fix_url = layers.parseMapBoxUrl(layer_obj, mapbox_url);
+      expect(fix_url).toEqual("mapbox_url/{z}/{x}/{y}")
+    });
+
+    it('imageryProvidersEqual should compere 2 imageryProviders and return if they are equals', () => {
+      let imagery_a = {_url: 'a'};
+      let imagery_b = {_url: 'b'};
+      expect(layers.imageryProvidersEqual(imagery_a, imagery_b)).toBeFalsy();
+      imagery_b._url = "a";
+      expect(layers.imageryProvidersEqual(imagery_a, imagery_b)).toBeTruthy();
+    });
+
+
+    it('layerExistOnMap should get layer_obj and return  return if exist of map' , ()=>{
+      let layer_obj_a = {source:'default', url:'fake_url_a'};
+      let layer_obj_b = {source:'openstreetmap', url:'fake_url_b'};
+      let layer_obj_c = {source:'mapbox', url:'fake_url_c'};
+
+      let map_imagery_providers = [layers.getLayerFromLayerObj(layer_obj_a), layers.getLayerFromLayerObj(layer_obj_b)];
+      spyOn(component.viewer.imageryLayers._layers, 'map').and.callFake(() => map_imagery_providers);
+
+      expect(layers.layerExistOnMap(layer_obj_a)).toBeTruthy();
+      expect(layers.layerExistOnMap(layer_obj_b)).toBeTruthy();
+      expect(layers.layerExistOnMap(layer_obj_c)).toBeFalsy();
+
+    });
+
+    it('layerExistOnParams should get imageryProvider and return if exist of params' , ()=>{
+      let layer_obj = {source:'default', url:'fake_url'};
+      let imageryProvider = layers.getLayerFromLayerObj(layer_obj);
+      let params_layers_obj = [layer_obj];
+
+      spyOn(queryParamsHelperService, 'queryLayers').and.callFake(() => params_layers_obj);
+      expect(layers.layerExistOnParams(imageryProvider)).toBeTruthy();
+      layer_obj.url = 'fake_other_url';
+      expect(layers.layerExistOnParams(imageryProvider)).toBeFalsy();
+    })
+
+  })
 
 });

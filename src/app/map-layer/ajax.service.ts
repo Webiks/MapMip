@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Http} from "@angular/http";
+import {Http, Response} from "@angular/http";
 import * as xml2js from 'xml2js';
 import {Observable} from 'rxjs';
 
@@ -16,6 +16,10 @@ export class AjaxService {
         });
       });
     })
+  }
+
+  getLayerExam():Observable<any>{
+    return this.http.get("/assets/layers_exam.json").map( (res:Response) => res.json());
   }
 
 }

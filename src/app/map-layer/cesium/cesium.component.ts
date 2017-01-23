@@ -12,6 +12,8 @@ import {MapLayerChild} from "../map-layer-child.interface";
 import "cesium/Build/Cesium/Cesium.js";
 import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
 import {CalcService} from "../calc-service";
+import {Layers} from "./cesium.component.layers";
+import {Markers} from "./cesium.component.markers";
 
 @Component({
   host: host,
@@ -28,10 +30,12 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   public currentParams:Params = {};
   public queryParamsSubscriber;
   public go_north:boolean = false;
-  public layers = [];
-  moveEndListenerEvent:any;
 
-  constructor(private queryParamsHelperService:QueryParamsHelperService, private activatedRoute:ActivatedRoute, private generalCanDeactivateService:GeneralCanDeactivateService, private router:Router, private calcService:CalcService) {window['current'] = this;}
+  public layers:Layers = new Layers(this);
+  public markers:Markers = new Markers(this);
+
+
+  constructor(public queryParamsHelperService:QueryParamsHelperService, private activatedRoute:ActivatedRoute, private generalCanDeactivateService:GeneralCanDeactivateService, private router:Router, public calcService:CalcService) {window['current'] = this;}
 
   ngOnInit() {
     this.initializeMap();
@@ -60,8 +64,8 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     this.currentParams = params;
 
     //layers
-    if(this.queryParamsHelperService.anyLayersChanges(this.prevParams, this.currentParams) || this.noTileLayer()) {
-      this.setLayersChanges(params);
+    if(this.queryParamsHelperService.anyLayersChanges(this.prevParams, this.currentParams) || this.layers.noTileLayer()) {
+      this.layers.setLayersChanges(params);
     }
 
     //view
@@ -72,11 +76,11 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     }
 
     //markers
-    let params_changes:boolean = this.queryParamsHelperService.anyMarkersParamsChanges(this.prevParams, params);
-    let map_changes:boolean = this.anyMarkersMapChanges(params);
+    let params_changes:boolean = this.queryParamsHelperService.anyMarkersParamsChanges(this.prevParams, this.currentParams);
+    let map_changes:boolean = this.markers.anyMarkersMapChanges(params);
 
     if(params_changes && map_changes) {
-      this.setMarkersChanges(params);
+      this.markers.setMarkersChanges(params);
     }
   };
 
@@ -84,134 +88,9 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     this.viewer = new Cesium.Viewer('cesiumContainer', {
       baseLayerPicker : false
     });
-    this.moveEndListenerEvent = this.viewer.camera.moveEnd.addEventListener(this.moveEnd.bind(this));
+    this.viewer.camera.moveEnd.addEventListener(this.moveEnd.bind(this));
   }
 
-  addBaseLayer():void {
-    let bing_layer = this.getBingLayer({url:'https://dev.virtualearth.net' ,key:'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq', style:'Aerial'});
-    this.viewer.imageryLayers.addImageryProvider(bing_layer);
-  }
-
-  getLayerFromLayerObj(layer_obj:{source:string}) {
-    switch (layer_obj.source) {
-      case 'mapbox':
-        return this.getMapboxLayer(layer_obj);
-      case 'openstreetmap':
-        return this.getOpenstreetmapLayer(layer_obj)
-      case 'bing':
-        return this.getBingLayer(layer_obj);
-      case 'tms':
-        return this.getTmsLayer(layer_obj);
-      default:
-        return this.getUrlTemplateLayer(layer_obj);
-    }
-  }
-  getBingLayer(layer_obj){
-    return new Cesium.BingMapsImageryProvider({
-      url: layer_obj['url'],
-      key: layer_obj['key'],
-      mapStyle: layer_obj['style'],
-    });
-  }
-
-  getMapboxLayer(layer_obj){
-    return new Cesium.MapboxImageryProvider({
-      url: layer_obj['url'],
-      mapId: layer_obj['mapid'],
-      accessToken: layer_obj['access_token'],
-      format: layer_obj['format'] ? layer_obj['format'] : undefined,
-      proxy: {
-        getURL : (url:string) => this.parseMapBoxUrl(layer_obj, url)
-      }
-    });
-  }
-
-  getTmsLayer(layer_obj){
-    return new Cesium.createTileMapServiceImageryProvider({
-      url: layer_obj['url'],
-      fileExtension: layer_obj['format']
-    });
-  }
-
-  getOpenstreetmapLayer(layer_obj){
-    return new Cesium.createOpenStreetMapImageryProvider({
-      url:layer_obj['url'],
-      format:layer_obj['format'],
-      proxy: {
-        getURL : (url:string) => this.parseMapBoxUrl(layer_obj, url)
-      }
-    })
-  }
-
-  getUrlTemplateLayer(default_obj){
-    return new Cesium.UrlTemplateImageryProvider({
-      url: this.queryParamsHelperService.layerObjecttToUrl(default_obj)
-    });
-  }
-
-  setLayersChanges(params:Params) {
-    let params_tms_array = this.queryParamsHelperService.queryLayers(params);
-    let imageryLayers = this.viewer.imageryLayers._layers;
-
-    this.addLayersViaUrl(params_tms_array);
-    this.removeLayersViaUrl(imageryLayers);
-
-    if(this.noTileLayer()) this.addBaseLayer();
-
-  }
-
-  addLayersViaUrl(params_layers_array:Array<Object>) {
-    params_layers_array.forEach( (layer_obj:{source:string}) => {
-      if(!this.layerExistOnMap(layer_obj)){
-        let layer = this.getLayerFromLayerObj(layer_obj);
-        this.viewer.imageryLayers.addImageryProvider(layer);
-      }
-    })
-  }
-
-  removeLayersViaUrl(map_imageryLayers) {
-    map_imageryLayers.forEach( (imageryLayer) => {
-      if(!this.layerExistOnParams(imageryLayer.imageryProvider)) {
-        this.viewer.imageryLayers.remove(imageryLayer);
-      }
-    });
-  }
-
-  noTileLayer():boolean{
-    return _.isEmpty(this.viewer.imageryLayers._layers)
-  }
-
-  layerExistOnMap(layer_obj):boolean {
-    let map_imagery_providers = this.viewer.imageryLayers._layers.map(l => l._imageryProvider);
-    let _imageryProvider = this.getLayerFromLayerObj(layer_obj);
-
-    let exist_on_map = map_imagery_providers.find( imageryProvider => {
-      return this.imageryProvidersEqual(imageryProvider, _imageryProvider)
-    });
-
-    return !_.isNil(exist_on_map);
-  }
-
-  layerExistOnParams(imageryProvider):boolean {
-
-    let params_layers = this.queryParamsHelperService.queryLayers(this.currentParams);
-
-    let exist_on_params = params_layers.find( (layer_obj:{source:string}) => {
-      let _imageryProvider = this.getLayerFromLayerObj(layer_obj);
-      return this.imageryProvidersEqual(imageryProvider, _imageryProvider)
-    });
-
-    return !_.isNil(exist_on_params);
-  }
-
-  imageryProvidersEqual(imageryProvider, _imageryProvider):boolean {
-    return imageryProvider instanceof _imageryProvider.constructor
-      && imageryProvider['_url'] == _imageryProvider['_url']
-      && imageryProvider['_accessToken'] == _imageryProvider['_accessToken'] // MapboxImageryProvider
-      && imageryProvider['_mapId'] == _imageryProvider['_mapId'] // MapboxImageryProvider
-      && imageryProvider['_mapStyle'] == _imageryProvider['_mapStyle'] // BingImageryProvider
-      && imageryProvider['_key'] == _imageryProvider['_key']; // BingImageryProvider
-  }
 
   anyParamChanges(params:Params):boolean {
 
@@ -248,28 +127,6 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     return !_.isEqual(arrayP, array)
   }
 
-  anyMarkersMapChanges(params:Params): boolean{
-
-    let queryMarkersCartographicDegreesPositions:Array<[number, number, number]> = this.queryParamsHelperService.queryMarkers(params);
-    let mapMarkerCartesienPositions = this.getMarkersPosition();
-    let queryMarkersCartesienPositions = queryMarkersCartographicDegreesPositions.map((marker) => Cesium.Cartesian3.fromDegrees(...marker));
-
-    mapMarkerCartesienPositions    =  mapMarkerCartesienPositions.map( mapMarkerCartesienPosition => this.calcService.toFixes7Obj(mapMarkerCartesienPosition));
-    queryMarkersCartesienPositions =  queryMarkersCartesienPositions.map( queryMarkerCartesienPosition => this.calcService.toFixes7Obj(queryMarkerCartesienPosition));
-
-    return !_.isEqual(mapMarkerCartesienPositions, queryMarkersCartesienPositions ) ;
-  }
-
-
-
-  getMarkersPosition() {
-    let points = this.viewer.entities.values.filter( (one) => one.billboard );
-    let cartesianPositions = points.map( (entity) => {
-      return entity.position.getValue();
-    });
-    return cartesianPositions;
-  }
-
   setMapView(params:Params):void {
 
     let longitude:number = this.queryParamsHelperService.queryLng(params) || this.getCenter().lng;
@@ -298,61 +155,6 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     });
 
 
-  }
-
-  setMarkersChanges(params:Params):void {
-    let params_markers_position:Array<[number, number, number]> = this.queryParamsHelperService.queryMarkers(params);
-    let map_markers_positions:Array<[number, number, number]> = this.getMarkersPosition();
-
-    this.addMarkersViaUrl(params_markers_position);
-    this.removeMarkersViaUrl(map_markers_positions);
-  }
-
-
-  addMarkersViaUrl(params_markers_position) {
-    params_markers_position.forEach( (marker) => {
-      if(!this.markerExistOnMap(marker)) {
-        this.viewer.entities.add({
-          position : Cesium.Cartesian3.fromDegrees(...marker),
-          billboard: {
-            image: "/assets/Leaflet/images/marker-icon.png"
-          }
-        });
-      }
-    });
-  }
-
-  removeMarkersViaUrl(map_markers_positions) {
-    map_markers_positions.forEach((cartesianPosition) => {
-      if(!this.markerExistOnParams(cartesianPosition)) {
-        let entity_to_remove = this.viewer.entities.values.find((entity) => {
-          let position = this.calcService.toFixes7Obj(entity.position.getValue());
-          cartesianPosition = this.calcService.toFixes7Obj(cartesianPosition);
-          return _.isEqual(position, cartesianPosition);
-        });
-        this.viewer.entities.remove(entity_to_remove)
-      }
-    })
-  }
-
-  markerExistOnMap(markerPosition:[number,number, number]):boolean {
-    let current_marker_radian_position = Cesium.Cartesian3.fromDegrees(...markerPosition);
-    let markers_map_positions = this.getMarkersPosition();
-    let exist_point = markers_map_positions .find((positionArray) => _.isEqual(positionArray, current_marker_radian_position));
-    return !_.isEmpty(exist_point);
-  }
-
-  markerExistOnParams(markerPosition:{x:number,y:number,z:number}) {
-
-    let markers_params_positions = this.queryParamsHelperService.queryMarkers(this.currentParams);
-
-    let exist_point = markers_params_positions.find((positionArray) => {
-      let positionCartesian = Cesium.Cartesian3.fromDegrees(...positionArray);
-      positionCartesian = this.calcService.toFixes7Obj(positionCartesian);
-      markerPosition = this.calcService.toFixes7Obj(markerPosition );
-      return _.isEqual(positionCartesian, markerPosition)
-    });
-    return !_.isEmpty(exist_point);
   }
 
 
@@ -519,13 +321,5 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     });
 
   }
-
-
-  parseMapBoxUrl(layer_obj, url:string):string {
-    if(_.isEmpty(layer_obj.format)) url = url.replace(".png", "");
-    if(_.isEmpty(layer_obj.mapid)) url = url.replace("undefined/", "");
-    return url;
-  }
-
 
 }

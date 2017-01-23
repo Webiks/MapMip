@@ -296,7 +296,7 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
   getDefaultLayer(default_obj) {
     return new ol.layer.Tile(<olx.layer.TileOptions>{
       source: new ol.source.XYZ(<olx.source.XYZOptions> {
-        url: `${default_obj['url']}`
+        url: `${this.calcService.getParsedUrlWithSubdomain(default_obj['url'])}`
       })
     });
   }

@@ -72,7 +72,7 @@
             Examples <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
-            <li *ngFor="let example of examples">
+            <li *ngFor="let example of examples$ | async">
               <a class="dropdown-item" (click)="layersArray.push({layer_obj:example.layer_obj})">{{example.name}}</a>
             </li>
           </ul>
@@ -351,8 +351,8 @@
 
       <div class="modal-body default-modal-body">
         <template  ngFor let-key [ngForOf]="Object.keys(addObject.default.obj)">
-          <div class="form-group" *ngIf="key != 'source'">
-            <button *ngIf="key != 'url'" class="btn btn-default glyphicon glyphicon-remove" (click)="deleteKey(addObject.default.obj, key)"></button>
+          <div class="form-group">
+            <button *ngIf="key != 'url'" class="glyphicon glyphicon-remove" (click)="deleteKey(addObject.default.obj, key)"></button>
             <label>{{key}}</label>
 
             <input class="form-control" [(ngModel)]="addObject.default.obj[key]" [ngModelOptions]="{standalone: true}"/>
@@ -363,7 +363,7 @@
       <div class="modal-footer">
         <button class="btn btn-default glyphicon glyphicon-exclamation-sign pull-left"></button>
         <button class="btn btn-default" (click)="defaultModal.hide()" type="button">Cancel</button>
-        <button class="btn btn-default" type="submit">{{addObject.tms.onEdit() ? 'Save' : 'Add'}}</button>
+        <button class="btn btn-default" type="submit">{{addObject.default.onEdit() ? 'Save' : 'Add'}}</button>
       </div>
 
     </form>

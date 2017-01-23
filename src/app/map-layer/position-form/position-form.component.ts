@@ -34,13 +34,13 @@ export class PositionFormComponent implements OnInit {
     roll:{permissions: [Permissions['/cesium']]},
     height:{permissions: [Permissions['/cesium']]},
     mode3d:{permissions: [Permissions['/cesium']], input_type: 'Bswitch'},
-    rotate:{permissions: [Permissions['/openlayers']], input_type: 'Bswitch'},
+    rotate:{permissions: [Permissions['/openlayers'], Permissions['/cesium?mode3d=0']], input_type: 'Bswitch'},
     markers:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-markers'},
     layers: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-layers'}
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService) {}
-  // Permissions['/cesium?mode3d=0']
+  //
 
   submitMarkers($event: {hide:boolean, smModal:ModalDirective, parsed_markers:string}) {
     this.params.markers.val = $event.parsed_markers;

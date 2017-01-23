@@ -5,6 +5,8 @@ import {
 import {ModalDirective} from "ng2-bootstrap";
 import {QueryParamsHelperService} from "../../query-params-helper.service";
 import * as _ from 'lodash';
+import {AjaxService} from "../../ajax.service";
+import {Observable} from "rxjs";
 
 @Component({
   animations: [
@@ -42,21 +44,7 @@ export class LayersComponent implements OnInit, OnChanges {
 
   public layersArray:Array<Object> = [];
   Object:any = Object;
-
-  public examples = [
-    {name: 'Urban-Outdoors Wellington NZ V1', layer_obj: {source: 'mapbox', url: 'https://api.mapbox.com/styles/v1/',mapid:'idanbarak/cixg4xdev00ms2qo9e4h5ywsb/tiles/256', access_token: 'pk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw'}},
-    {name: 'Urban Navigation - Day Use', layer_obj: {source: 'mapbox',url: 'https://api.mapbox.com/styles/v1/', mapid: "idanbarak/ciy1nhhwo00e72sl5a7oc6gm4/tiles/256", access_token:'pk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw'}},
-    {name: 'Applicative light', layer_obj: {source: 'mapbox',url: 'https://api.mapbox.com/styles/v1/', mapid: "idanbarak/ciy1n0v3400ef2sqde5a354fo/tiles/256", access_token:'pk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw'}},
-    {name: 'Applicative Dark', layer_obj: {source: 'mapbox',url: 'https://api.mapbox.com/styles/v1/', mapid: "idanbarak/ciy1n4ktd00cy2sn0qv3f2ogy/tiles/256", access_token:'pk.eyJ1IjoiaWRhbmJhcmFrIiwiYSI6ImNpdmptNWVrZzAwOTkydGw1NmIxcHM2ZnoifQ.FZxE5OXjfpd6I3fuimotRw'}},
-    {name: 'Mapbox base', layer_obj: {source: 'mapbox', url: 'https://a.tiles.mapbox.com/v4/',mapid:'mapbox.streets', format: 'png', access_token: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA'}},
-    {name: 'Openstreetmap base', layer_obj: {source:"openstreetmap",url: 'http://a.tile.openstreetmap.org', format: 'png'}},
-    {name: 'Bing labels', layer_obj: {source: 'bing', url: 'https://dev.virtualearth.net', style:'AerialWithLabels', key: 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq'}}
-
-  ];
-
-// {name: 'wmflabs', layer_obj: {url: 'http://{s}.tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png'}},
-// {name: 'thunderforest', layer_obj: {url: 'https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png'}},
-// {name: 'OpenCycleMap', layer_obj: {url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'}},
+  public examples$:Observable<any>;
 
 public source_images = {
     mapbox: 'http://2rct3i2488gxf9jvb1lqhek9-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/mapbox-logo-256.png',
@@ -72,6 +60,7 @@ public source_images = {
       obj: {
           source:'mapbox',
           format: '',
+          access_token: '',
           mapid: '',
           url:'https://api.mapbox.com/v4/'
       },
@@ -87,6 +76,7 @@ public source_images = {
           source:'mapbox',
           format: '',
           url: 'https://api.mapbox.com/v4/',
+          access_token: '',
           mapid: ''
         };
         this.required = {
@@ -100,7 +90,6 @@ public source_images = {
         return this.edit_index != -1
       }
     },
-
     openstreetmap: {
       obj: {
         source:'openstreetmap',
@@ -127,8 +116,6 @@ public source_images = {
         return this.edit_index != -1
       }
     },
-
-
     tms: {
       obj: {
         source:'tms',
@@ -155,10 +142,6 @@ public source_images = {
         return this.edit_index != -1
       }
     },
-
-
-
-
     bing: {
       obj: {
         source:'bing',
@@ -190,7 +173,6 @@ public source_images = {
 
     default: {
       obj: {
-        source:'default',
         url:''
       },
       edit_index: -1,
@@ -199,7 +181,6 @@ public source_images = {
       },
       init() {
         this.obj = {
-          source:'default',
           url: ''
         };
         this.required= {
@@ -236,7 +217,13 @@ public source_images = {
   };
 
 
-  constructor(private queryParamsHelperService:QueryParamsHelperService) {}
+  constructor(private queryParamsHelperService:QueryParamsHelperService, private ajaxService:AjaxService) {
+    this.examples$ = ajaxService.getLayerExam();
+    // this.examples$ = new Observable<any>(obs => {
+    //   obs.next([{name: 'yaya', url: 'tata'}]);
+    // });
+
+  }
 
   submitLayers(hide:boolean=false) {
     let modal = this.layersModal;
@@ -257,7 +244,8 @@ public source_images = {
   }
 
   editModal(layer_item, index:number) {
-    let add_obj = this.addObject[layer_item.layer_obj.source];
+    let source = layer_item.layer_obj.source ? layer_item.layer_obj.source : "default";
+    let add_obj = this.addObject[source];
     add_obj.obj = _.cloneDeep(layer_item.layer_obj);
     add_obj.edit_index = index;
     _.forEach(add_obj.required, (val, key, obj) => {obj[key] = !_.isEmpty(add_obj.obj[key])})
@@ -265,7 +253,8 @@ public source_images = {
   }
 
   submitAddLayer(layer_obj){
-    let add_obj = this.addObject[layer_obj.source];
+    let source = layer_obj.source ? layer_obj.source : "default";
+    let add_obj = this.addObject[source];
     if(layer_obj.source == "default") delete layer_obj.source;
 
       _.forEach(layer_obj, (val, key, obj) => {
