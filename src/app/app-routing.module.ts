@@ -1,28 +1,20 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {AppComponent} from "./app.component";
-import {LeafletComponent} from "./leaflet/leaflet.component";
-import {OpenlayersComponent} from "./openlayers/openlayers.component";
+import {MapLayerModule} from "./map-layer/map-layer.module";
+
 
 const appRoutes:Routes = [
   {
     path: '',
-    children:
-      [
-        {
-          path:'leaflet',
-          component:LeafletComponent
-        },
-        {
-          path:'openlayers',
-          component:OpenlayersComponent
-        }
-      ]
+    loadChildren: '../app/map-layer/map-layer.module#MapLayerModule'
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(appRoutes)],
+  imports: [
+    RouterModule.forRoot(appRoutes, {useHash:true}) ,
+    MapLayerModule
+  ],
   exports: [RouterModule]
 })
 
