@@ -2,3 +2,15 @@ div.container {
   position: relative;
   width: 85%;
 }
+
+
+
+.url-tooltip {
+  div.tooltip-inner{
+    max-width: none !important;
+  }
+}
+
+body .mapsCont .cursor-marker{
+  cursor: url('/assets/Leaflet/images/marker-icon.cur'), default;
+}

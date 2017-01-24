@@ -29,10 +29,17 @@
   </div>
 
   <div class="form-group col-md-1">
-    <button class="btn btn-default" (click)="markerCenter()" type="button">
+    <button class="btn btn-default glyphicon glyphicon-record center-btn" (click)="markerCenter()" type="button">
+    </button>
+  </div>
+
+  <div class="form-group col-md-1">
+    <button class="btn btn-default picked-button" [class.picked]="positionFormService.onPicked" (click)="togglePicked()" type="button">
       <img style="height: 19px" src="/assets/Leaflet/images/marker-icon.png"/>
     </button>
   </div>
+
+
 
   <input type="submit" class="btn btn-info" value="Save" style="display: none;">
 </form>

@@ -41,7 +41,6 @@ export class LayersComponent implements OnInit, OnChanges {
 
   @Input('layersString') public layersString:string;
   @Output() submitLayersEmitter = new EventEmitter();
-
   public layersArray:Array<Object> = [];
   Object:any = Object;
   public examples$:Observable<any>;

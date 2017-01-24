@@ -1,4 +1,4 @@
-<button class="btn btn-primary layer-btn" (click)="layersModal.show()" type="button">Layer</button>
+<button class="btn btn-primary layer-btn" (click)="layersModal.show()" type="button">Layers</button>
 
 
 <div [config]="{backdrop: false}" bsModal #layersModal="bs-modal" class="modal fade layers-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" (onShow)="initLayersArray()" aria-hidden="true">
@@ -87,20 +87,6 @@
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div [config]="{backdrop: false}" bsModal #addModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="addObject.edit_index = -1;addObject.layer_obj = {}">
   <div class="modal-dialog modal-sm add-tms">
     <form class="modal-content" (ngSubmit)="submitAddLayer(addObject.layer_obj)">
@@ -136,41 +122,6 @@
 
   </div>
 </div>
-
-
-<!--<div [config]="{backdrop: false}" bsModal #addQueryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="initAddQuery()">-->
-<!--<div class="modal-dialog modal-sm add-query">-->
-<!--<form class="modal-content" (ngSubmit)="submitQuery(add_query.query_obj)">-->
-<!--<div class="modal-header">-->
-<!--<button type="button" class="close" aria-label="Close" (click)="addQueryModal.hide()">-->
-<!--<span aria-hidden="true">&times;</span>-->
-<!--</button>-->
-<!--</div>-->
-<!--<div class="modal-body">-->
-<!--<div class="form-group query-group">-->
-<!--<div class="label-input">-->
-<!--<label>key:</label>-->
-<!--<input class="form-control" [disabled]="add_query.on_edit" [(ngModel)]="add_query.query_obj.key" (ngModelChange)="add_query.error = false" [ngModelOptions]="{standalone: true}"/>-->
-<!--</div>-->
-<!--<div class="label-input">-->
-<!--<label>value:</label>-->
-<!--<input class="form-control" [(ngModel)]="add_query.query_obj.val" [ngModelOptions]="{standalone: true}"/>-->
-<!--</div>-->
-<!--<p class="text-danger error" [@error]="add_query.error" *ngIf="add_query.error">Existing key try again</p>-->
-
-<!--</div>-->
-<!--</div>-->
-<!--<div class="modal-footer">-->
-<!--<button class="btn btn-default" (click)="addQueryModal.hide()" type="button">Cancel</button>-->
-<!--<button class="btn btn-default" type="submit">{{add_query.on_edit ? 'Save' : 'Add'}}</button>-->
-<!--</div>-->
-
-<!--</form>-->
-<!--</div>-->
-<!--</div>-->
-
-
-
 
 <div [config]="{backdrop: false}" bsModal #mapboxModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="addObject.mapbox.init()">
   <div class="modal-dialog modal-sm">
@@ -361,7 +312,7 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-default glyphicon glyphicon-exclamation-sign pull-left"></button>
+        <span class="glyphicon glyphicon-exclamation-sign pull-left" [tooltip]="queryParamsHelperService.layerObjecttToUrl(addObject.default.obj)" tooltipClass="url-tooltip"></span>
         <button class="btn btn-default" (click)="defaultModal.hide()" type="button">Cancel</button>
         <button class="btn btn-default" type="submit">{{addObject.default.onEdit() ? 'Save' : 'Add'}}</button>
       </div>

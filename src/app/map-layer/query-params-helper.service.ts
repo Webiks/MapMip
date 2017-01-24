@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Params, NavigationExtras} from "@angular/router";
+import {Params, NavigationExtras, Router, UrlTree} from "@angular/router";
 import * as _ from 'lodash';
 import {CalcService} from "./calc-service";
 declare let rison;
@@ -7,7 +7,7 @@ declare let rison;
 @Injectable()
 export class QueryParamsHelperService {
 
-  constructor(private calcService:CalcService) {}
+  constructor(private calcService:CalcService, private router:Router) {}
 
   queryBounds(params:Params):[number, number, number, number] {
     let boundsString = params['bounds'];
@@ -45,6 +45,14 @@ export class QueryParamsHelperService {
   }
   queryRotate(params:Params):number {
     return +params['rotate']  ;
+  }
+
+  addMarker(marker_position:[number, number]){
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    let markers_array:Array<[number, number]> = this.markersStrToArray(urlTree.queryParams['markers']);
+    markers_array.push(marker_position);
+    urlTree.queryParams['markers'] = this.markersArrayToStr(markers_array);
+    this.router.navigateByUrl(urlTree.toString())
   }
 
   queryMarkers(params:Params):Array<[number, number, number]>{

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Router, ActivatedRoute, Params, NavigationExtras, NavigationEnd, UrlTree} from "@angular/router";
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
@@ -14,6 +14,7 @@ import {CalcService} from "../calc-service";
 import {AjaxService} from "../ajax.service";
 import {LeafletLayers} from "./leaflet.component.layers";
 import {LeafletMarkers} from "./leaflet.component.markers";
+import {PositionFormService} from "../position-form/position-form.service";
 
 @Component({
   host: host,
@@ -28,10 +29,10 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   private _map;
   public currentParams:Params = {};
   public prevParams:Params = {};
-  public layers:LeafletLayers = new LeafletLayers(this);
-  public markers:LeafletMarkers = new LeafletMarkers(this);
+  public layers:LeafletLayers;
+  public markers:LeafletMarkers;
 
-  constructor(private router:Router, private activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public calcService:CalcService, public ajaxService:AjaxService) {window['current'] = this;}
+  constructor(private router:Router, private activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public calcService:CalcService, public ajaxService:AjaxService, public positionFormService:PositionFormService) {window['current'] = this;}
 
   ngOnInit() {
     this.initializeMap();
@@ -76,6 +77,8 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   initializeMap():void {
     this.map = L.map('leafletContainer');
     this.map.on('moveend', this.moveEnd.bind(this));
+    this.layers = new LeafletLayers(this);
+    this.markers = new LeafletMarkers(this);
     if(this.layers.noTileLayer())  this.layers.addBaseLayer();
   }
 
