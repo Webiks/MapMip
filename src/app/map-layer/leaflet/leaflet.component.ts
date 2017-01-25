@@ -39,7 +39,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
     this.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/leaflet", false) && !this.router.isActive("/openlayers", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
     this.positionFormService.markerPickerEmitter.subscribe(this.markers.toggleMarkerPicker.bind(this.markers));
-    if(this.positionFormService.onPicked) this.markers.toggleMarkerPicker(true);
+    if(this.positionFormService.onPicked) this.markers.toggleMarkerPicker.bind(this.markers)(true);
   }
 
   setQueryBoundsOnNavigationEnd(event:NavigationEnd):void {
