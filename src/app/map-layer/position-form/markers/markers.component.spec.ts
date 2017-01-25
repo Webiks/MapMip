@@ -291,4 +291,22 @@ describe('MarkersComponent', () => {
     expect(positionFormService.markerPickerEmitter.emit).toHaveBeenCalledWith(true);
   })
 
+  describe("Remove all markers ",()=>{
+    it("removeAllMarkers Should remove all markers", ()=>{
+      component.removeAllMarkers();
+      expect(component.edited_markers_array).toEqual([]);
+    });
+
+    it("click on removeAllMarkers button should call removeAllMarkers()",()=>{
+      let removeAll_button = element.querySelector("button.glyphicon.glyphicon-trash.btn.btn-danger.pull-right");
+      spyOn(component, 'removeAllMarkers');
+      removeAll_button.click();
+      fixture.detectChanges();
+      expect(component.removeAllMarkers).toHaveBeenCalled();
+
+
+    })
+
+    })
+
 });

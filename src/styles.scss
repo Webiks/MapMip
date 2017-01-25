@@ -13,4 +13,7 @@ div.container {
 
 body .mapsCont .cursor-marker{
   cursor: url('/assets/Leaflet/images/marker-icon.cur'), default;
+  &.forbidden-position{
+    cursor: not-allowed;
+  }
 }

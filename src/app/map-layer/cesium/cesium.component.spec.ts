@@ -11,10 +11,11 @@ import * as _ from 'lodash';
 import {Layers} from "./cesium.component.layers";
 import {Markers} from "./cesium.component.markers";
 import {PositionFormService} from "../position-form/position-form.service";
+import layers = L.control.layers;
 
 
 
-describe('CesiumComponent', () => {
+fdescribe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
   let router:Router;
@@ -289,7 +290,7 @@ describe('CesiumComponent', () => {
   });
 
 
-  describe('markers', () => {
+  fdescribe('markers', () => {
     let markers:Markers;
 
     beforeEach(()=>{
@@ -400,24 +401,47 @@ describe('CesiumComponent', () => {
     });
 
     it("toggleMarkerPicker should get checked variable and invoke different functions accordingly", ()=>{
-      spyOn(markers.leftClickHandler ,'setInputAction');
+      spyOn(markers.cesiumHandler ,'setInputAction');
       markers.toggleMarkerPicker(true);
-      expect(markers.leftClickHandler.setInputAction).toHaveBeenCalled();
-      spyOn(markers.leftClickHandler ,'removeInputAction');
+      expect(markers.cesiumHandler.setInputAction).toHaveBeenCalledTimes(2);
+      spyOn(markers.cesiumHandler ,'removeInputAction');
       markers.toggleMarkerPicker(false);
-      expect(markers.leftClickHandler.removeInputAction).toHaveBeenCalledWith(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+      expect(markers.cesiumHandler.removeInputAction).toHaveBeenCalledWith(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+      expect(markers.cesiumHandler.removeInputAction).toHaveBeenCalledWith(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     });
 
     it("leftClickInputAction get event with cartesian2 position (x,y),should: convert position to cartesian3, next convert cartesian3 position to cartographic final convert lat,lng from radian to degrees and send to addMarker", () => {
+      spyOn(queryParamsHelperService, 'addMarker');
+      markers.marker_picker.not_allowed = true;
+      expect(queryParamsHelperService.addMarker).not.toHaveBeenCalled();
+
+      markers.marker_picker.not_allowed = false;
       let event:{position: {x: number, y: number}} = {position: {x:0, y:0}};
       let radian_30 = Cesium.Math.toRadians(30);
       let deg_30 = Cesium.Math.toDegrees(radian_30);
 
-      spyOn(queryParamsHelperService, 'addMarker');
       spyOn(Cesium.Cartographic, 'fromCartesian').and.callFake(():{lat:number, lng:number} => new Object({latitude:radian_30 , longitude: radian_30}));
       markers.leftClickInputAction(event);
       expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith([deg_30, deg_30]);
+    });
+
+   fit("mouseMoveInputAction", () => {
+      let pickEllipsoidRes = undefined;
+      let event:{endPosition: {x:number, y:number}, startPosition: {x:number, y:number}} = {};
+      spyOn(component.viewer.camera,'pickEllipsoid').and.callFake(() => pickEllipsoidRes);
+      markers.mouseMoveInputAction(event);
+      expect(component.viewer.camera.pickEllipsoid).toHaveBeenCalled();
+      expect(markers.marker_picker.not_allowed).toBeTruthy();
+      pickEllipsoidRes = {x:0,y:0,z:0};
+      markers.mouseMoveInputAction(event);
+      expect(component.viewer.camera.pickEllipsoid).toHaveBeenCalled();
+      expect(markers.marker_picker.not_allowed).toBeFalsy();
     })
+
+    // mouseMoveInputAction(event:{endPosition: {x:number, y:number}, startPosition: {x:number, y:number}}){
+    //   let positionCartesian3Result = this.cesium.viewer.camera.pickEllipsoid(event.endPosition);
+    //   this.layer_picker.not_allowed = _.isNil(positionCartesian3Result);
+    // }
 
 
 

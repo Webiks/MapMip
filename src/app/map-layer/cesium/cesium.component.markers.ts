@@ -5,19 +5,32 @@ import * as _ from 'lodash';
 
 export class Markers {
 
-  public leftClickHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.cesiumContainer.nativeElement);
+  public cesiumHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.cesiumContainer.nativeElement);
+  // public MouseMoveHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.cesiumContainer.nativeElement);
+
+  public marker_picker = {
+    not_allowed: false
+  };
 
   constructor(private cesium:CesiumComponent){}
 
   toggleMarkerPicker(checked:boolean){
     if(checked){
-      this.leftClickHandler.setInputAction(this.leftClickInputAction.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
+      this.cesiumHandler.setInputAction(this.leftClickInputAction.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
+      this.cesiumHandler.setInputAction(this.mouseMoveInputAction.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     } else {
-      this.leftClickHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+      this.cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+      this.cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     }
   }
 
-  leftClickInputAction(event:{position: {x:number, y:number}}) {
+  mouseMoveInputAction(event:{endPosition: {x:number, y:number}, startPosition: {x:number, y:number}}){
+    let positionCartesian3Result = this.cesium.viewer.camera.pickEllipsoid(event.endPosition);
+    this.marker_picker.not_allowed = _.isNil(positionCartesian3Result);
+  }
+
+  leftClickInputAction(event:{position: {x:number, y:number}}):void {
+    if(this.marker_picker.not_allowed) return;
     let position = event.position;
     let positionCartesian3 = this.cesium.viewer.camera.pickEllipsoid(position);
     let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
@@ -62,11 +75,15 @@ export class Markers {
     });
   }
 
-  addMarker(marker):void{
+  addMarker(marker, selectedColor="red"):void{
+    // let selectedColor = "red";
+    let marker_str = `/assets/Markers/marker-icon-${selectedColor}.png`;
+    console.log("marker_str ",marker_str)
     this.cesium.viewer.entities.add({
       position : Cesium.Cartesian3.fromDegrees(...marker),
       billboard: {
-        image: "/assets/Leaflet/images/marker-icon.png",
+         image: marker_str,
+        //image:"/assets/markers/location-icon-vector-google_places_pin_icon_coloring_book_colouring-1969px.png",
         horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
         verticalOrigin:Cesium.VerticalOrigin.TOP
       }
@@ -86,7 +103,7 @@ export class Markers {
     })
   }
 
-  markerExistOnMap(markerPosition:[number,number, number]):boolean {
+  markerExistOnMap(markerPosition):boolean {
     let current_marker_radian_position = Cesium.Cartesian3.fromDegrees(...markerPosition);
     let markers_map_positions = this.getMarkersPosition();
     let exist_point = markers_map_positions .find((positionArray) => _.isEqual(positionArray, current_marker_radian_position));

@@ -27,7 +27,7 @@ import {PositionFormService} from "../position-form/position-form.service";
 export class CesiumComponent implements OnInit,OnDestroy, MapLayerChild  {
 
   ngOnDestroy(): void {
-    this.markers.leftClickHandler.destroy();
+    this.markers.cesiumHandler.destroy();
   }
 
   @ViewChild('cesiumContainer') public cesiumContainer:ElementRef;
@@ -39,7 +39,7 @@ export class CesiumComponent implements OnInit,OnDestroy, MapLayerChild  {
   public go_north:boolean = false;
   public layers:Layers;
   public markers:Markers;
-
+  not_allowed = true;
   constructor(public queryParamsHelperService:QueryParamsHelperService, private activatedRoute:ActivatedRoute, private generalCanDeactivateService:GeneralCanDeactivateService, private router:Router, public calcService:CalcService, public positionFormService:PositionFormService) {window['current'] = this;}
 
   ngOnInit() {
