@@ -69,7 +69,9 @@ export class Markers {
     this.cesium.viewer.entities.add({
       position : Cesium.Cartesian3.fromDegrees(...marker),
       billboard: {
-        image: "/assets/Leaflet/images/marker-icon.png"
+        image: "/assets/Leaflet/images/marker-icon.png",
+        horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+        verticalOrigin:Cesium.VerticalOrigin.TOP
       }
     });
   }

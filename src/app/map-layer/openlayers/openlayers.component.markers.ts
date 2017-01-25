@@ -92,20 +92,14 @@ export class OpenlayersMarkers {
 
   addIcon(lnglat:[number, number]){
     let iconFeature = new ol.Feature({
-      geometry: new ol.geom.Point(ol.proj.transform(lnglat, 'EPSG:4326', 'EPSG:3857')),
-      name: 'Null Island',
-      population: 4000,
-      rainfall: 500
+      geometry: new ol.geom.Point(ol.proj.transform(lnglat, 'EPSG:4326', 'EPSG:3857'))
     });
     let vectorSource = new ol.source.Vector(<any>{
       features: [iconFeature]
     });
     let iconStyle = new ol.style.Style(<any>{
       image: new ol.style.Icon(<any>{
-        anchor: [0.5, 46],
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'pixels',
-        opacity: 0.75,
+        anchor: [0, 0],
         src: '/assets/Leaflet/images/marker-icon.png'
       }),
     });

@@ -14,7 +14,7 @@ describe('NavbarComponent', () => {
       declarations: [ NavbarComponent ],
       imports:[RouterTestingModule]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
