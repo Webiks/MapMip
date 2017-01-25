@@ -1,10 +1,26 @@
 import {OpenlayersComponent} from "./openlayers.component";
 import {Params} from "@angular/router";
 import * as _ from 'lodash';
+import * as ol from "openlayers";
 
 export class OpenlayersMarkers {
 
+  public leftClickHandler;
+
   constructor(private openlayers:OpenlayersComponent){}
+
+  toggleMarkerPicker(checked:boolean){
+    if(checked){
+      this.leftClickHandler = this.openlayers.map.on("click", this.leftClickInputAction.bind(this));
+    } else {
+      this.openlayers.map.unByKey(this.leftClickHandler );
+    }
+  }
+
+  leftClickInputAction(event:{coordinate:[number, number]}) {
+    let trans_cord:ol.Coordinate = ol.proj.toLonLat(event.coordinate);
+    this.openlayers.queryParamsHelperService.addMarker(trans_cord);
+  }
 
   anyMarkersMapChanges(params:Params):boolean {
     let queryMarkersPositions:Array<[number, number]> = this.openlayers.queryParamsHelperService.queryMarkersNoHeight(params);

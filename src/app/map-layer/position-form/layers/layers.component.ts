@@ -41,12 +41,11 @@ export class LayersComponent implements OnInit, OnChanges {
 
   @Input('layersString') public layersString:string;
   @Output() submitLayersEmitter = new EventEmitter();
-
   public layersArray:Array<Object> = [];
   Object:any = Object;
   public examples$:Observable<any>;
 
-public source_images = {
+  public source_images = {
     mapbox: 'http://2rct3i2488gxf9jvb1lqhek9-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/mapbox-logo-256.png',
     bing: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Bing_logo_(2013).svg/2000px-Bing_logo_(2013).svg.png',
     tms: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/GDALLogoColor.svg/150px-GDALLogoColor.svg.png',
@@ -219,10 +218,6 @@ public source_images = {
 
   constructor(private queryParamsHelperService:QueryParamsHelperService, private ajaxService:AjaxService) {
     this.examples$ = ajaxService.getLayerExam();
-    // this.examples$ = new Observable<any>(obs => {
-    //   obs.next([{name: 'yaya', url: 'tata'}]);
-    // });
-
   }
 
   submitLayers(hide:boolean=false) {

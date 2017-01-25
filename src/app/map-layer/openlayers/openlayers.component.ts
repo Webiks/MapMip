@@ -1,4 +1,4 @@
-import {Component, OnInit, style, state, animate, transition, trigger, OnDestroy} from '@angular/core';
+import {Component, OnInit, style, state, animate, transition, trigger, OnDestroy, ViewChild} from '@angular/core';
 import * as ol from 'openlayers';
 import {
   ActivatedRoute, Params, Router, NavigationExtras, NavigationEnd, UrlTree, CanDeactivate,
@@ -15,6 +15,7 @@ import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
 import {AjaxService} from "../ajax.service";
 import {OpenlayersLayers} from "./openlayers.component.layers";
 import {OpenlayersMarkers} from "./openlayers.component.markers";
+import {PositionFormService} from "../position-form/position-form.service";
 
 @Component({
   host: host,
@@ -33,10 +34,10 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
   public go_north:boolean = false;
   public andRotation: (boolean) => void;
   public DragRotateInteractions: ol.interaction.DragRotate;
-  public layers:OpenlayersLayers = new OpenlayersLayers(this);
-  public markers:OpenlayersMarkers = new OpenlayersMarkers(this);
+  public layers:OpenlayersLayers;
+  public markers:OpenlayersMarkers;
 
-  constructor(private activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, private router:Router, public calcService:CalcService, private generalCanDeactivateService:GeneralCanDeactivateService, public ajaxService:AjaxService) { window['current'] = this;window['ol'] = ol}
+  constructor(private activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, private router:Router, public calcService:CalcService, private generalCanDeactivateService:GeneralCanDeactivateService, public ajaxService:AjaxService, public positionFormService:PositionFormService) { window['current'] = this;window['ol'] = ol}
 
   ngOnInit() {
     this.initializeMap();
@@ -45,7 +46,8 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
 
     this.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
     this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/openlayers", false) && !this.router.isActive("/leaflet", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
-
+    this.positionFormService.markerPickerEmitter.subscribe(this.markers.toggleMarkerPicker.bind(this));
+    if(this.positionFormService.onPicked) this.markers.toggleMarkerPicker(true);
   }
 
   onLeave(observer:Observer<boolean>):void {
@@ -100,6 +102,8 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
     this.DragRotateInteractions = this.map.getInteractions().getArray().find( i => i instanceof ol.interaction.DragRotate);
     // this.DragRotateInteractions.setActive(false)
     this.moveEndEvent = this.map.on('moveend', this.moveEnd.bind(this));
+    this.layers = new OpenlayersLayers(this);
+    this.markers = new OpenlayersMarkers(this);
     if(this.layers.noTileLayer())  this.layers.addBaseLayer();
   }
 

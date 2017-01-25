@@ -4,7 +4,28 @@ import * as _ from 'lodash';
 
 
 export class Markers {
+
+  public leftClickHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.cesiumContainer.nativeElement);
+
   constructor(private cesium:CesiumComponent){}
+
+  toggleMarkerPicker(checked:boolean){
+    if(checked){
+      this.leftClickHandler.setInputAction(this.leftClickInputAction.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    } else {
+      this.leftClickHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    }
+  }
+
+  leftClickInputAction(event:{position: {x:number, y:number}}) {
+    let position = event.position;
+    let positionCartesian3 = this.cesium.viewer.camera.pickEllipsoid(position);
+    let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
+    let lngDeg:number = Cesium.Math.toDegrees(positionCartographic.longitude);
+    let latDeg:number = Cesium.Math.toDegrees(positionCartographic.latitude);
+    let marker_position: [number, number] = [lngDeg, latDeg];
+    this.cesium.queryParamsHelperService.addMarker(marker_position);
+  }
 
   anyMarkersMapChanges(params:Params): boolean{
     let queryMarkersCartographicDegreesPositions:Array<[number, number, number]> = this.cesium.queryParamsHelperService.queryMarkers(params);

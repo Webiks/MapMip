@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef, OnDestroy} from '@angular/core';
 import {Observable, Observer} from "rxjs";
 import {QueryParamsHelperService} from "../query-params-helper.service";
 import {
@@ -14,6 +14,7 @@ import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
 import {CalcService} from "../calc-service";
 import {Layers} from "./cesium.component.layers";
 import {Markers} from "./cesium.component.markers";
+import {PositionFormService} from "../position-form/position-form.service";
 
 @Component({
   host: host,
@@ -23,19 +24,23 @@ import {Markers} from "./cesium.component.markers";
   animations:animations
 })
 
-export class CesiumComponent implements OnInit, MapLayerChild  {
+export class CesiumComponent implements OnInit,OnDestroy, MapLayerChild  {
+
+  ngOnDestroy(): void {
+    this.markers.leftClickHandler.destroy();
+  }
+
+  @ViewChild('cesiumContainer') public cesiumContainer:ElementRef;
 
   public viewer:any;
   public prevParams:Params = {};
   public currentParams:Params = {};
   public queryParamsSubscriber;
   public go_north:boolean = false;
+  public layers:Layers;
+  public markers:Markers;
 
-  public layers:Layers = new Layers(this);
-  public markers:Markers = new Markers(this);
-
-
-  constructor(public queryParamsHelperService:QueryParamsHelperService, private activatedRoute:ActivatedRoute, private generalCanDeactivateService:GeneralCanDeactivateService, private router:Router, public calcService:CalcService) {window['current'] = this;}
+  constructor(public queryParamsHelperService:QueryParamsHelperService, private activatedRoute:ActivatedRoute, private generalCanDeactivateService:GeneralCanDeactivateService, private router:Router, public calcService:CalcService, public positionFormService:PositionFormService) {window['current'] = this;}
 
   ngOnInit() {
     this.initializeMap();
@@ -43,6 +48,8 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
     this.generalCanDeactivateService.onLeave =  Observable.create((observer:Observer<boolean>) => this.onLeave(observer)) ;
     this.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
     this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/cesium", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd);
+    this.positionFormService.markerPickerEmitter.subscribe(this.markers.toggleMarkerPicker.bind(this.markers));
+    if(this.positionFormService.onPicked) this.markers.toggleMarkerPicker(true);
   };
 
   setQueryBoundsOnNavigationEnd: (NavigationEnd) => void = (event:NavigationEnd):void => {
@@ -85,10 +92,13 @@ export class CesiumComponent implements OnInit, MapLayerChild  {
   };
 
   initializeMap():void {
-    this.viewer = new Cesium.Viewer('cesiumContainer', {
+    this.viewer = new Cesium.Viewer(this.cesiumContainer.nativeElement , {
       baseLayerPicker : false
     });
     this.viewer.camera.moveEnd.addEventListener(this.moveEnd.bind(this));
+    this.markers = new Markers(this);
+    this.layers = new Layers(this);
+
   }
 
 

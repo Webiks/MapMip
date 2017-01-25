@@ -5,6 +5,7 @@ import { QueryParamsHelperService } from './query-params-helper.service';
 import {Params} from "@angular/router";
 import any = jasmine.any;
 import {CalcService} from "./calc-service";
+import {RouterTestingModule} from "@angular/router/testing";
 
 describe('QueryParamsHelperService', () => {
 
@@ -13,6 +14,7 @@ describe('QueryParamsHelperService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports:[RouterTestingModule],
       providers: [QueryParamsHelperService, CalcService]
     });
   });

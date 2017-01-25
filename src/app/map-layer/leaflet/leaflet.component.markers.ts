@@ -6,6 +6,20 @@ export class LeafletMarkers {
 
   constructor(private leaflet:LeafletComponent){}
 
+
+  toggleMarkerPicker(checked:boolean){
+    if(checked){
+      this.leaflet.map.on("click", this.leftClickInputAction.bind(this));
+    } else {
+      this.leaflet.map.off("click");
+    }
+  }
+
+  leftClickInputAction(event:{latlng: L.LatLng}) {
+    let marker_position: [number, number] = [event.latlng.lng, event.latlng.lat];
+    this.leaflet.queryParamsHelperService.addMarker(marker_position);
+  }
+
   anyMarkersMapChanges(params:Params): boolean{
     let queryMarkersPositions:Array<[number, number]> = this.leaflet.queryParamsHelperService.queryMarkersNoHeight(params);
     let mapMarkerPositions:Array<[number, number]> = this.getMarkersPosition();

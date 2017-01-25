@@ -12,6 +12,7 @@ import {AjaxService} from "../ajax.service";
 import {HttpModule} from "@angular/http";
 import {OpenlayersMarkers} from "./openlayers.component.markers";
 import {OpenlayersLayers} from "./openlayers.component.layers";
+import {PositionFormService} from "../position-form/position-form.service";
 
 describe('OpenlayersComponent', () => {
   let component: OpenlayersComponent;
@@ -24,7 +25,7 @@ describe('OpenlayersComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, HttpModule],
       declarations: [ OpenlayersComponent ],
-      providers: [QueryParamsHelperService, CalcService,GeneralCanDeactivateService, AjaxService]
+      providers: [QueryParamsHelperService, CalcService,GeneralCanDeactivateService, AjaxService, PositionFormService]
     })
       .compileComponents();
   }));
@@ -375,6 +376,31 @@ describe('OpenlayersComponent', () => {
       expect(markers.markerExistOnParams([3,4])).toBeTruthy();
       expect(markers.markerExistOnParams([5,6])).toBeFalsy();
     });
+
+
+
+    it("toggleMarkerPicker should get checked variable and invoke different functions accordingly", ()=>{
+      spyOn(component.map,'on').and.callFake(() => "fakeLeftClickHandlerRes");
+      spyOn(component.map,'unByKey');
+
+      markers.toggleMarkerPicker(true);
+      expect(component.map.on).toHaveBeenCalled();
+      expect(markers.leftClickHandler).toEqual("fakeLeftClickHandlerRes");
+
+      markers.toggleMarkerPicker(false);
+      expect(component.map.unByKey).toHaveBeenCalledWith(markers.leftClickHandler);
+    });
+
+     it("leftClickInputAction should get event with coordinates and should convert toLonLat, and call addMarker with latlng", () => {
+       let event:{coordinate:[number,number]} = {coordinate:[30,30]} ;
+       spyOn(component.queryParamsHelperService,'addMarker')
+       spyOn(ol.proj,'toLonLat').and.callFake((coordinate:[number,number]) => coordinate);
+       markers.leftClickInputAction(event);
+       expect(component.queryParamsHelperService.addMarker).toHaveBeenCalledWith(event.coordinate);
+     });
+
+
+
   });
 
   describe("layers", ()=>{

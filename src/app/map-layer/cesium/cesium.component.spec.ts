@@ -5,11 +5,12 @@ import {QueryParamsHelperService} from "../query-params-helper.service";
 import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
 import {CalcService} from "../calc-service";
 import {RouterTestingModule} from "@angular/router/testing";
-import {Router, NavigationEnd, Params, NavigationExtras} from "@angular/router";
+import {Router, NavigationEnd, Params, NavigationExtras, ActivatedRoute} from "@angular/router";
 import {Observer, Observable} from "rxjs";
 import * as _ from 'lodash';
 import {Layers} from "./cesium.component.layers";
 import {Markers} from "./cesium.component.markers";
+import {PositionFormService} from "../position-form/position-form.service";
 
 
 
@@ -24,7 +25,7 @@ describe('CesiumComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [ CesiumComponent ],
-      providers:[QueryParamsHelperService, GeneralCanDeactivateService, CalcService]
+      providers:[QueryParamsHelperService, GeneralCanDeactivateService, CalcService, PositionFormService]
     })
     .compileComponents();
   }));
@@ -288,7 +289,7 @@ describe('CesiumComponent', () => {
   });
 
 
-  describe('markers', ()=> {
+  describe('markers', () => {
     let markers:Markers;
 
     beforeEach(()=>{
@@ -397,6 +398,28 @@ describe('CesiumComponent', () => {
       expect(markers.getMarkersPosition()[0]).toEqual(Cesium.Cartesian3.fromDegrees(...[1,2,3]));
       expect(markers.getMarkersPosition()[1]).toEqual(Cesium.Cartesian3.fromDegrees(...[4,5,6]));
     });
+
+    it("toggleMarkerPicker should get checked variable and invoke different functions accordingly", ()=>{
+      spyOn(markers.leftClickHandler ,'setInputAction');
+      markers.toggleMarkerPicker(true);
+      expect(markers.leftClickHandler.setInputAction).toHaveBeenCalled();
+      spyOn(markers.leftClickHandler ,'removeInputAction');
+      markers.toggleMarkerPicker(false);
+      expect(markers.leftClickHandler.removeInputAction).toHaveBeenCalledWith(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    });
+
+    it("leftClickInputAction get event with cartesian2 position (x,y),should: convert position to cartesian3, next convert cartesian3 position to cartographic final convert lat,lng from radian to degrees and send to addMarker", () => {
+      let event:{position: {x: number, y: number}} = {position: {x:0, y:0}};
+      let radian_30 = Cesium.Math.toRadians(30);
+      let deg_30 = Cesium.Math.toDegrees(radian_30);
+
+      spyOn(queryParamsHelperService, 'addMarker');
+      spyOn(Cesium.Cartographic, 'fromCartesian').and.callFake(():{lat:number, lng:number} => new Object({latitude:radian_30 , longitude: radian_30}));
+      markers.leftClickInputAction(event);
+      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith([deg_30, deg_30]);
+    })
+
+
 
   });
 

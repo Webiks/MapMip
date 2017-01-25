@@ -9,6 +9,7 @@ import {LeafletLayers} from "./leaflet.component.layers";
 import {AjaxService} from "../ajax.service";
 import {HttpModule} from "@angular/http";
 import {LeafletMarkers} from "./leaflet.component.markers";
+import {PositionFormService} from "../position-form/position-form.service";
 
 describe('LeafletComponent', () => {
   let component: LeafletComponent;
@@ -27,7 +28,7 @@ describe('LeafletComponent', () => {
         HttpModule
       ],
       declarations: [ LeafletComponent ],
-      providers: [QueryParamsHelperService, CalcService, AjaxService]
+      providers: [QueryParamsHelperService, CalcService, AjaxService, PositionFormService]
     })
       .compileComponents();
   }));
@@ -283,6 +284,28 @@ describe('LeafletComponent', () => {
       expect(markers.markerExistOnParams([3,4])).toBeTruthy();
       expect(markers.markerExistOnParams([5,6])).toBeFalsy();
     });
+
+
+    it("toggleMarkerPicker should get checked variable and invoke different functions accordingly", ()=>{
+      spyOn(component.map,'on');
+      spyOn(component.map,'off');
+
+      markers.toggleMarkerPicker(true);
+      expect(component.map.on).toHaveBeenCalled();
+      markers.toggleMarkerPicker(false);
+      expect(component.map.off).toHaveBeenCalledWith('click');
+    });
+
+    it("leftClickInputAction should get event with latlng, and call addMarker with latlng", () => {
+      spyOn(queryParamsHelperService,'addMarker');
+      let event:{latlng: L.LatLng} = {latlng: new L.latLng(30,30)};
+      markers.leftClickInputAction(event);
+      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith([30,30]);
+    })
+
+
+
+
   });
 
   describe("layers", () => {

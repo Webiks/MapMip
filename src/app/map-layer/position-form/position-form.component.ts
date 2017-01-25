@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Output} from '@angular/core';
 import {Router, ActivatedRoute, Params, UrlTree, NavigationExtras} from "@angular/router";
 import {ModalDirective} from "ng2-bootstrap";
 import {QueryParamsHelperService} from "../query-params-helper.service";
 import * as _ from 'lodash';
 import {Permissions} from "./permissions.enum";
+import {PositionFormService} from "./position-form.service";
 
 @Component({
   selector: 'app-position-form',
@@ -39,8 +40,8 @@ export class PositionFormComponent implements OnInit {
     layers: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-layers'}
   };
 
-  constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService) {}
-  //
+  constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService) {}
+
 
   submitMarkers($event: {hide:boolean, smModal:ModalDirective, parsed_markers:string}) {
     this.params.markers.val = $event.parsed_markers;
@@ -125,16 +126,17 @@ export class PositionFormComponent implements OnInit {
 
 
   markerCenter() {
-    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
-    let markers_array:Array<[number, number]> = this.queryParamsHelperService.markersStrToArray(urlTree.queryParams['markers']);
-    let center_marker:[number, number] = [+urlTree.queryParams['lng'] , +urlTree.queryParams['lat']];
-    markers_array.push(center_marker);
-    urlTree.queryParams['markers'] = this.queryParamsHelperService.markersArrayToStr(markers_array);
-    this.router.navigateByUrl(urlTree.toString())
+    let center_marker_position:[number, number] = [this.params.lng.val , this.params.lat.val];
+    this.queryParamsHelperService.addMarker(center_marker_position);
   }
 
   keys(obj) {
     return Object.keys(obj);
+  }
+
+  togglePicked(){
+    this.positionFormService.onPicked = !this.positionFormService.onPicked;
+    this.positionFormService.markerPickerEmitter.emit(this.positionFormService.onPicked);
   }
 
 }
