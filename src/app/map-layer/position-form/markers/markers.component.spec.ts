@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed, inject} from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
@@ -9,11 +9,14 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {QueryParamsHelperService} from "../../query-params-helper.service";
 import {CalcService} from "../../calc-service";
 import {Params} from "@angular/router";
+import {PositionFormService} from "../position-form.service";
 
 describe('MarkersComponent', () => {
   let component: MarkersComponent;
   let fixture: ComponentFixture<MarkersComponent>;
   let element:any;
+  let queryParamsHelperService:QueryParamsHelperService;
+  let positionFormService:PositionFormService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports:[
@@ -25,12 +28,13 @@ describe('MarkersComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(inject([QueryParamsHelperService, PositionFormService], (_queryParamsHelperService:QueryParamsHelperService, _positionFormService:PositionFormService) => {
     fixture = TestBed.createComponent(MarkersComponent);
     component = fixture.componentInstance;
     element = fixture.nativeElement;
     fixture.detectChanges();
-
+    queryParamsHelperService =_queryParamsHelperService;
+    positionFormService = _positionFormService;
     component.edited_markers_array = [
       {str: '1,2,3',disabled:true},
       {str: '4,5',disabled:false},
@@ -42,7 +46,7 @@ describe('MarkersComponent', () => {
       {str: '4,5',disabled:true}
     ];
 
-  });
+  }));
   describe('<= Testing Instance =>', () => {
 
     it('should component be defined', () => {
@@ -260,6 +264,31 @@ describe('MarkersComponent', () => {
 
     })
 
+  });
+  describe("markerCenter", ()=>{
+    it('should create marker with the of the current center lng,lat ', () => {
+      component.lng = 2;
+      component.lat = 1;
+      spyOn(queryParamsHelperService, 'addMarker');
+      component.markerCenter();
+      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith([2,1]);
+    });
+
+    it('markerCenter btn should call markerCenter function by click', ()=>{
+      spyOn(component, 'markerCenter');
+      let center_button = element.querySelector("button.center-btn");
+      center_button.click();
+      fixture.detectChanges();
+      expect(component.markerCenter).toHaveBeenCalled();
+    });
+  });
+
+  it("togglePicked should toggle onPicked and send event with the new value", () => {
+    spyOn(positionFormService.markerPickerEmitter,'emit');
+    positionFormService.onPicked = false;
+    component.togglePicked();
+    expect(positionFormService.onPicked).toBeTruthy();
+    expect(positionFormService.markerPickerEmitter.emit).toHaveBeenCalledWith(true);
   })
 
 });

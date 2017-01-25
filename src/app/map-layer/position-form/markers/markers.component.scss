@@ -1,0 +1,11 @@
+$base-color :#277fca;
+
+button.center-btn{
+  color: $base-color;
+}
+
+button.picked-button{
+  &.picked{
+    background: rgba(50, 134, 203, 0.35);
+  }
+}

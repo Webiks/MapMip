@@ -125,18 +125,9 @@ export class PositionFormComponent implements OnInit {
   }
 
 
-  markerCenter() {
-    let center_marker_position:[number, number] = [this.params.lng.val , this.params.lat.val];
-    this.queryParamsHelperService.addMarker(center_marker_position);
-  }
 
   keys(obj) {
     return Object.keys(obj);
-  }
-
-  togglePicked(){
-    this.positionFormService.onPicked = !this.positionFormService.onPicked;
-    this.positionFormService.markerPickerEmitter.emit(this.positionFormService.onPicked);
   }
 
 }

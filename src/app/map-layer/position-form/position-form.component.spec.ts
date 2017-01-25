@@ -26,7 +26,7 @@ describe('PositionFormComponent', () => {
   let router:Router;
   let current_state:string = '/cesium';
   let queryParamsHelperService:QueryParamsHelperService;
-  let positionFormService: PositionFormService;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports:[
@@ -39,14 +39,13 @@ describe('PositionFormComponent', () => {
     .compileComponents();
   }));
 
-  beforeEach(inject([Router, QueryParamsHelperService,PositionFormService], (_router:Router, _queryParamsHelperService:QueryParamsHelperService,_positionFormService:PositionFormService) => {
+  beforeEach(inject([Router, QueryParamsHelperService], (_router:Router, _queryParamsHelperService:QueryParamsHelperService) => {
     fixture = TestBed.createComponent(PositionFormComponent);
     component = fixture.componentInstance;
     element   = fixture.nativeElement;
     fixture.detectChanges();
     router = _router;
     queryParamsHelperService = _queryParamsHelperService;
-    positionFormService = _positionFormService;
 
     spyOn(router, 'isActive').and.callFake((url) => {
       return current_state.includes(url)
@@ -149,24 +148,6 @@ describe('PositionFormComponent', () => {
     expect(+zoom.querySelector("input").attributes['ng-reflect-model'].value).toEqual(10);
   });
 
-  describe("markerCenter", ()=>{
-    it('should create marker with the of the current center lng,lat ', () => {
-      component.params.lng.val = 2;
-      component.params.lat.val = 1;
-      spyOn(queryParamsHelperService, 'addMarker');
-      component.markerCenter();
-      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith([2,1]);
-    });
-
-    it('markerCenter btn should call markerCenter function by click', ()=>{
-      spyOn(component, 'markerCenter');
-      let center_button = element.querySelector("button.center-btn");
-      center_button.click();
-      fixture.detectChanges();
-      expect(component.markerCenter).toHaveBeenCalled();
-    });
-  });
-
 
   it('submitMarkers should: put the correct value on markers, call submitForm and hide modal if need', async(() => {
 
@@ -243,11 +224,5 @@ describe('PositionFormComponent', () => {
     fixture.detectChanges();
     expect(router.navigate).toHaveBeenCalledWith([], {queryParams: queryParams});
   });
-  it("togglePicked should toggle onPicked and send event with the new value", () => {
-    spyOn(positionFormService.markerPickerEmitter,'emit');
-    positionFormService.onPicked = false;
-    component.togglePicked();
-    expect(positionFormService.onPicked).toBeTruthy();
-    expect(positionFormService.markerPickerEmitter.emit).toHaveBeenCalledWith(true);
-  })
+
 });
