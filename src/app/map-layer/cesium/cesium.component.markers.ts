@@ -7,10 +7,7 @@ export class Markers {
 
   public leftClickHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.cesiumContainer.nativeElement);
 
-  constructor(private cesium:CesiumComponent){
-    cesium.positionFormService.markerPickerEmitter.subscribe(this.toggleMarkerPicker.bind(this));
-    if(cesium.positionFormService.onPicked) this.toggleMarkerPicker(true);
-  }
+  constructor(private cesium:CesiumComponent){}
 
   toggleMarkerPicker(checked:boolean){
     if(checked){

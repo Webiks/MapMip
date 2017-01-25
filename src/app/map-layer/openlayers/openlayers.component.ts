@@ -46,6 +46,8 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
 
     this.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
     this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/openlayers", false) && !this.router.isActive("/leaflet", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
+    this.positionFormService.markerPickerEmitter.subscribe(this.markers.toggleMarkerPicker.bind(this));
+    if(this.positionFormService.onPicked) this.markers.toggleMarkerPicker(true);
   }
 
   onLeave(observer:Observer<boolean>):void {

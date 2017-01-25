@@ -6,6 +6,8 @@ import {CalcService} from "../../calc-service";
 import {Ng2BootstrapModule} from "ng2-bootstrap";
 import {HttpModule} from "@angular/http";
 import {AjaxService} from "../../ajax.service";
+import {RouterTestingModule} from "@angular/router/testing";
+import {fake_Ajax_Service} from "../position-form.component.spec";
 
 describe('LayersComponent', () => {
   let component: LayersComponent;
@@ -13,9 +15,9 @@ describe('LayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[Ng2BootstrapModule, HttpModule],
+      imports:[RouterTestingModule, Ng2BootstrapModule, HttpModule],
       declarations: [ LayersComponent ],
-      providers:[QueryParamsHelperService, CalcService, AjaxService]
+      providers:[QueryParamsHelperService, CalcService, {provide: AjaxService, useValue: fake_Ajax_Service}]
     })
     .compileComponents();
   }));

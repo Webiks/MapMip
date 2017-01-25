@@ -4,10 +4,7 @@ import * as _ from 'lodash'
 
 export class LeafletMarkers {
 
-  constructor(private leaflet:LeafletComponent){
-    leaflet.positionFormService.markerPickerEmitter.subscribe(this.toggleMarkerPicker.bind(this));
-    if(leaflet.positionFormService.onPicked) this.toggleMarkerPicker(true);
-  }
+  constructor(private leaflet:LeafletComponent){}
 
 
   toggleMarkerPicker(checked:boolean){

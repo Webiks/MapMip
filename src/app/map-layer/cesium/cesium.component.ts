@@ -48,6 +48,8 @@ export class CesiumComponent implements OnInit,OnDestroy, MapLayerChild  {
     this.generalCanDeactivateService.onLeave =  Observable.create((observer:Observer<boolean>) => this.onLeave(observer)) ;
     this.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
     this.router.events.filter(event => event instanceof NavigationEnd && !this.router.isActive("/cesium", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd);
+    this.positionFormService.markerPickerEmitter.subscribe(this.markers.toggleMarkerPicker.bind(this.markers));
+    if(this.positionFormService.onPicked) this.markers.toggleMarkerPicker(true);
   };
 
   setQueryBoundsOnNavigationEnd: (NavigationEnd) => void = (event:NavigationEnd):void => {

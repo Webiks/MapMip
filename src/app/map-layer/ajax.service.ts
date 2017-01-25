@@ -18,7 +18,7 @@ export class AjaxService {
     })
   }
 
-  getLayerExam():Observable<any>{
+  getLayerExam():Observable<any> {
     return this.http.get("/assets/layers_exam.json").map( (res:Response) => res.json());
   }
 

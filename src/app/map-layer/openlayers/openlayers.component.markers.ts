@@ -7,10 +7,7 @@ export class OpenlayersMarkers {
 
   public leftClickHandler;
 
-  constructor(private openlayers:OpenlayersComponent){
-    openlayers.positionFormService.markerPickerEmitter.subscribe(this.toggleMarkerPicker.bind(this));
-    if(openlayers.positionFormService.onPicked) this.toggleMarkerPicker(true);
-  }
+  constructor(private openlayers:OpenlayersComponent){}
 
   toggleMarkerPicker(checked:boolean){
     if(checked){
@@ -21,7 +18,6 @@ export class OpenlayersMarkers {
   }
 
   leftClickInputAction(event:{coordinate:[number, number]}) {
-    console.log("click openlayers");
     let trans_cord:ol.Coordinate = ol.proj.toLonLat(event.coordinate);
     this.openlayers.queryParamsHelperService.addMarker(trans_cord);
   }

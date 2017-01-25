@@ -1,6 +1,5 @@
 /* tslint:disable:no-unused-variable */
 import {async, ComponentFixture, TestBed, inject, fakeAsync, tick} from '@angular/core/testing';
-
 import {PositionFormComponent} from './position-form.component';
 import {RouterTestingModule} from "@angular/router/testing";
 import {Router} from "@angular/router";
@@ -11,6 +10,14 @@ import {CalcService} from "../calc-service";
 import {ModalDirective} from "ng2-bootstrap";
 import {HttpModule} from "@angular/http";
 import {AjaxService} from "../ajax.service";
+import {Observable} from "rxjs";
+import {PositionFormService} from "./position-form.service";
+
+export let fake_Ajax_Service = {
+  getLayerExam():Observable<any>{
+    return Observable.of([{name:"exap1"}, {name:"exap2"}]);
+  }
+};
 
 describe('PositionFormComponent', () => {
   let component: PositionFormComponent;
@@ -18,7 +25,8 @@ describe('PositionFormComponent', () => {
   let element: any;
   let router:Router;
   let current_state:string = '/cesium';
-
+  let queryParamsHelperService:QueryParamsHelperService;
+  let positionFormService: PositionFormService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports:[
@@ -26,17 +34,19 @@ describe('PositionFormComponent', () => {
         RouterTestingModule,
         HttpModule
       ],
-      providers:[QueryParamsHelperService,CalcService, AjaxService]
+      providers:[QueryParamsHelperService,CalcService, {provide: AjaxService, useValue: fake_Ajax_Service}]
     })
     .compileComponents();
   }));
 
-  beforeEach(inject([Router], (_router:Router) => {
+  beforeEach(inject([Router, QueryParamsHelperService,PositionFormService], (_router:Router, _queryParamsHelperService:QueryParamsHelperService,_positionFormService:PositionFormService) => {
     fixture = TestBed.createComponent(PositionFormComponent);
     component = fixture.componentInstance;
-    element = fixture.nativeElement;
+    element   = fixture.nativeElement;
     fixture.detectChanges();
     router = _router;
+    queryParamsHelperService = _queryParamsHelperService;
+    positionFormService = _positionFormService;
 
     spyOn(router, 'isActive').and.callFake((url) => {
       return current_state.includes(url)
@@ -139,17 +149,22 @@ describe('PositionFormComponent', () => {
     expect(+zoom.querySelector("input").attributes['ng-reflect-model'].value).toEqual(10);
   });
 
-  it('markerCenter should create marker with the of the current center lng,lat ', () => {
-    spyOn(router, 'navigateByUrl');
-    current_state = '/leaflet?lng=2&lat=1';
-    component.markerCenter();
-    let markers:string = encodeURIComponent("(2,1)");
-    expect(router.navigateByUrl).toHaveBeenCalledWith(`/leaflet?lng=2&lat=1&markers=${markers}`);
+  describe("markerCenter", ()=>{
+    it('should create marker with the of the current center lng,lat ', () => {
+      component.params.lng.val = 2;
+      component.params.lat.val = 1;
+      spyOn(queryParamsHelperService, 'addMarker');
+      component.markerCenter();
+      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith([2,1]);
+    });
 
-    current_state = '/leaflet?lng=7&lat=8&markers=(1,2,3),(4,5,6)';
-    component.markerCenter();
-    markers = encodeURIComponent("(1,2,3),(4,5,6),(7,8)");
-    expect(router.navigateByUrl).toHaveBeenCalledWith(`/leaflet?lng=7&lat=8&markers=${markers}`);
+    it('markerCenter btn should call markerCenter function by click', ()=>{
+      spyOn(component, 'markerCenter');
+      let center_button = element.querySelector("button.center-btn");
+      center_button.click();
+      fixture.detectChanges();
+      expect(component.markerCenter).toHaveBeenCalled();
+    });
   });
 
 
@@ -228,5 +243,11 @@ describe('PositionFormComponent', () => {
     fixture.detectChanges();
     expect(router.navigate).toHaveBeenCalledWith([], {queryParams: queryParams});
   });
-
+  it("togglePicked should toggle onPicked and send event with the new value", () => {
+    spyOn(positionFormService.markerPickerEmitter,'emit');
+    positionFormService.onPicked = false;
+    component.togglePicked();
+    expect(positionFormService.onPicked).toBeTruthy();
+    expect(positionFormService.markerPickerEmitter.emit).toHaveBeenCalledWith(true);
+  })
 });
