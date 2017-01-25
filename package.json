@@ -20,15 +20,6 @@
     "@angular/platform-browser": "2.2.3",
     "@angular/platform-browser-dynamic": "2.2.3",
     "@angular/router": "3.2.3",
-<<<<<<< HEAD
-    "@types/leaflet": "^1.0.38",
-    "@types/openlayers": "^3.18.40",
-    "bootstrap": "^3.3.7",
-    "core-js": "^2.4.1",
-    "leaflet": "^1.0.2",
-    "ng2-bootstrap": "^1.1.16",
-    "openlayers": "^3.20.0",
-=======
     "@types/es6-promise": "0.0.32",
     "@types/leaflet": "^1.0.38",
     "@types/lodash": "^4.14.43",
@@ -45,7 +36,6 @@
     "ng2-bootstrap": "^1.1.16",
     "openlayers": "^3.20.0",
     "rison": "^0.1.1",
->>>>>>> 6a261f02ba3cb165e014668f097ee4d404839aaa
     "rxjs": "5.0.0-beta.12",
     "ts-helpers": "^1.1.1",
     "xml2js": "^0.4.17",
