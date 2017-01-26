@@ -1,18 +1,29 @@
 import {Params} from "@angular/router";
 import {CesiumComponent} from "./cesium.component";
 import * as _ from 'lodash';
+import {SafeStyle} from "@angular/platform-browser";
 
+const DEFAULT_MARKER_COLOR = "blue";
 
 export class Markers {
 
   public cesiumHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.cesiumContainer.nativeElement);
-  // public MouseMoveHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.cesiumContainer.nativeElement);
 
   public marker_picker = {
     not_allowed: false
   };
 
   constructor(private cesium:CesiumComponent){}
+
+  getCursorStyle(): void | SafeStyle {
+    if(this.cesium.positionFormService.onPicked) {
+      if(this.marker_picker.not_allowed) {
+        return "not-allowed";
+      } else {
+        return this.cesium.positionFormService.getMarkerCursorStyle();
+      }
+    }
+  }
 
   toggleMarkerPicker(checked:boolean){
     if(checked){
@@ -31,59 +42,63 @@ export class Markers {
 
   leftClickInputAction(event:{position: {x:number, y:number}}):void {
     if(this.marker_picker.not_allowed) return;
-    let position = event.position;
-    let positionCartesian3 = this.cesium.viewer.camera.pickEllipsoid(position);
+    let positionCartesian3 = this.cesium.viewer.camera.pickEllipsoid(event.position);
     let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
     let lngDeg:number = Cesium.Math.toDegrees(positionCartographic.longitude);
     let latDeg:number = Cesium.Math.toDegrees(positionCartographic.latitude);
-    let marker_position: [number, number] = [lngDeg, latDeg];
-    this.cesium.queryParamsHelperService.addMarker(marker_position);
+    let position: [number, number] = [lngDeg, latDeg];
+    let color:string = this.cesium.positionFormService.getSelectedColor();
+    let marker_picker = {position};
+    if(color != "blue") marker_picker['color'] = color;
+    this.cesium.queryParamsHelperService.addMarker(marker_picker);
   }
 
   anyMarkersMapChanges(params:Params): boolean{
-    let queryMarkersCartographicDegreesPositions:Array<[number, number, number]> = this.cesium.queryParamsHelperService.queryMarkers(params);
+    let queryMarkersCartographicDegreesPositions:Array<any> = this.cesium.queryParamsHelperService.queryMarkers(params);
     let mapMarkerCartesienPositions = this.getMarkersPosition();
-    let queryMarkersCartesienPositions = queryMarkersCartographicDegreesPositions.map((marker) => Cesium.Cartesian3.fromDegrees(...marker));
-    mapMarkerCartesienPositions    =  mapMarkerCartesienPositions.map( mapMarkerCartesienPosition => this.cesium.calcService.toFixes7Obj(mapMarkerCartesienPosition));
-    queryMarkersCartesienPositions =  queryMarkersCartesienPositions.map( queryMarkerCartesienPosition => this.cesium.calcService.toFixes7Obj(queryMarkerCartesienPosition));
-    return !_.isEqual(mapMarkerCartesienPositions, queryMarkersCartesienPositions ) ;
+
+    queryMarkersCartographicDegreesPositions.forEach((paramMarkerObj) => {
+      paramMarkerObj.position = this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramMarkerObj.position));
+    });
+
+    return !_.isEqual(mapMarkerCartesienPositions, queryMarkersCartographicDegreesPositions);
   }
 
 
   getMarkersPosition() {
     let points = this.cesium.viewer.entities.values.filter( (one) => one.billboard );
+
     let cartesianPositions = points.map( (entity) => {
-      return entity.position.getValue();
+      let position = this.cesium.calcService.toFixes7Obj(entity.position.getValue());
+      let color:string = this.getColorFromBillboardEntity(entity);
+      return {position,color}
     });
+
     return cartesianPositions;
   }
 
 
   setMarkersChanges(params:Params):void {
-    let params_markers_position:Array<[number, number, number]> = this.cesium.queryParamsHelperService.queryMarkers(params);
-    let map_markers_positions:Array<[number, number, number]> = this.getMarkersPosition();
+    let params_markers:Array<any> = this.cesium.queryParamsHelperService.queryMarkers(params);
+    let map_markers:Array<any> = this.getMarkersPosition();
 
-    this.addMarkersViaUrl(params_markers_position);
-    this.removeMarkersViaUrl(map_markers_positions);
+    this.addMarkersViaUrl(params_markers);
+    this.removeMarkersViaUrl(map_markers);
   }
 
-  addMarkersViaUrl(params_markers_position) {
-    params_markers_position.forEach( (marker) => {
+  addMarkersViaUrl(params_markers) {
+    params_markers.forEach( (marker) => {
       if(!this.markerExistOnMap(marker)) {
         this.addMarker(marker);
       }
     });
   }
 
-  addMarker(marker, selectedColor="red"):void{
-    // let selectedColor = "red";
-    let marker_str = `/assets/Markers/marker-icon-${selectedColor}.png`;
-    console.log("marker_str ",marker_str)
-    this.cesium.viewer.entities.add({
-      position : Cesium.Cartesian3.fromDegrees(...marker),
+  addMarker(marker:{position:any, color:string}):void{
+      this.cesium.viewer.entities.add({
+      position : Cesium.Cartesian3.fromDegrees(...marker.position),
       billboard: {
-         image: marker_str,
-        //image:"/assets/markers/location-icon-vector-google_places_pin_icon_coloring_book_colouring-1969px.png",
+        image: `/assets/Markers/marker-icon-${marker.color ? marker.color : DEFAULT_MARKER_COLOR }.png`,
         horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
         verticalOrigin:Cesium.VerticalOrigin.TOP
       }
@@ -91,37 +106,54 @@ export class Markers {
   }
 
   removeMarkersViaUrl(map_markers_positions) {
-    map_markers_positions.forEach((cartesianPosition) => {
-      if(!this.markerExistOnParams(cartesianPosition)) {
-        let entity_to_remove = this.cesium.viewer.entities.values.find((entity) => {
-          let position = this.cesium.calcService.toFixes7Obj(entity.position.getValue());
-          cartesianPosition = this.cesium.calcService.toFixes7Obj(cartesianPosition);
-          return _.isEqual(position, cartesianPosition);
-        });
-        this.cesium.viewer.entities.remove(entity_to_remove)
+    let markers_params_positions = this.cesium.queryParamsHelperService.queryMarkers(this.cesium.currentParams);
+    map_markers_positions.forEach(mapMarkerObj => {
+      if(!this.markerExistOnParams(markers_params_positions, mapMarkerObj)) {
+        let entity_to_remove = this.getEntityByPositionAndColor(mapMarkerObj);
+        this.cesium.viewer.entities.remove(entity_to_remove);
       }
     })
   }
 
-  markerExistOnMap(markerPosition):boolean {
-    let current_marker_radian_position = Cesium.Cartesian3.fromDegrees(...markerPosition);
-    let markers_map_positions = this.getMarkersPosition();
-    let exist_point = markers_map_positions .find((positionArray) => _.isEqual(positionArray, current_marker_radian_position));
-    return !_.isEmpty(exist_point);
-  }
-
-  markerExistOnParams(markerPosition:{x:number,y:number,z:number}) {
-
-    let markers_params_positions = this.cesium.queryParamsHelperService.queryMarkers(this.cesium.currentParams);
-
-    let exist_point = markers_params_positions.find((positionArray) => {
-      let positionCartesian = Cesium.Cartesian3.fromDegrees(...positionArray);
-      positionCartesian = this.cesium.calcService.toFixes7Obj(positionCartesian);
-      markerPosition = this.cesium.calcService.toFixes7Obj(markerPosition );
-      return _.isEqual(positionCartesian, markerPosition)
+  getEntityByPositionAndColor(mapMarkerObj:{position:any, color:string}){
+    return this.cesium.viewer.entities.values.find( entity => {
+      let e_position = this.cesium.calcService.toFixes7Obj(entity.position.getValue());
+      let e_color:string = this.getColorFromBillboardEntity(entity);
+      mapMarkerObj.position = this.cesium.calcService.toFixes7Obj(mapMarkerObj.position);
+      return _.isEqual(e_position, mapMarkerObj.position) && _.isEqual(e_color, mapMarkerObj.color);
     });
+   }
+
+  getColorFromBillboardEntity(entity):string {
+    return entity.billboard.image.getValue().replace("/assets/Markers/marker-icon-", "").replace(".png","");
+  }
+
+  markerExistOnMap(paramsMarker:{position:any, color:string}):boolean {
+    let current_marker_radian_position = this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramsMarker.position));
+    paramsMarker.color = paramsMarker.color ? paramsMarker.color : "blue";
+    let markers_map_positions = this.getMarkersPosition();
+    let exist_point = markers_map_positions .find(markerObj => _.isEqual(markerObj.position, current_marker_radian_position) && _.isEqual(markerObj.color, paramsMarker.color));
     return !_.isEmpty(exist_point);
   }
+
+  markerExistOnParams(markers_params_positions, mapMarkerObj) {
+    let exist_marker = markers_params_positions.find(paramsMarkerObj => {
+
+      let paramPosition = Cesium.Cartesian3.fromDegrees(...paramsMarkerObj.position);
+      let paramColor = paramsMarkerObj.color ? paramsMarkerObj.color : "blue";
+
+      let mapPosition = mapMarkerObj.position;
+      let mapColor = mapMarkerObj.color;
+
+      paramPosition = this.cesium.calcService.toFixes7Obj(paramPosition);
+      mapPosition = this.cesium.calcService.toFixes7Obj(mapPosition);
+      return _.isEqual(mapPosition, paramPosition) && _.isEqual(paramColor, mapColor)
+    });
+
+    return !_.isNil(exist_marker);
+  }
+
+
 
 
 }

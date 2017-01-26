@@ -1,1 +1,1 @@
-<div [class.cursor-marker]="positionFormService.onPicked" [class.forbidden-position]="positionFormService.onPicked && markers.marker_picker.not_allowed" #cesiumContainer></div>
+<div [style.cursor]="markers.getCursorStyle()" [class.forbidden-position]="positionFormService.onPicked && markers.marker_picker.not_allowed" #cesiumContainer></div>

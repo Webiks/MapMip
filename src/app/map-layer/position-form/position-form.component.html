@@ -11,7 +11,7 @@
         </div>
       </div>
 
-      <div class="form-group col-md-2" *ngIf="params[key].input_type == 'app-markers'">
+      <div class="form-group col-md-3 markers-group" *ngIf="params[key].input_type == 'app-markers'">
         <app-markers [lat]="params.lat.val" [lng]="params.lng.val" (submitMarkersEmitter)="submitMarkers($event)"></app-markers>
       </div>
 

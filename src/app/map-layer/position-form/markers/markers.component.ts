@@ -16,11 +16,27 @@ export class MarkersComponent implements OnInit{
 
   @ViewChild('smModal') public smModal:ModalDirective;
   @ViewChild('addModal') public addModal:ModalDirective;
-  @ViewChild('ul') public ul:ElementRef;
-  public addInput:string = "";
   public lng:number;
   public lat:number;
   @Output() submitMarkersEmitter = new EventEmitter();
+
+  public edit_obj = {
+    marker:{
+      position:'',
+      colorIndex: 0
+    },
+    edit_index: -1,
+    onEdit() {
+      return this.edit_index != -1
+    },
+    init(){
+      this.marker = {
+        position:'',
+        colorIndex: 0
+      };
+      this.edit_index = -1;
+    }
+  };
 
   public markers_array;
   public edited_markers_array;
@@ -29,18 +45,22 @@ export class MarkersComponent implements OnInit{
 
   ngOnInit() {
     this.route.queryParams.subscribe(this.queryParams);
-    this.ul.nativeElement.scrollTop = 500;
   }
 
   queryParams: (Params) => void = (params:Params):void => {
-    let arr = this.queryParamsHelperService.queryMarkers({markers: params['markers']});
-    this.markers_array = arr.map((arr_pos) => {return {str: arr_pos.toString()} });
+    this.markers_array = this.queryParamsHelperService.queryMarkers({markers: params['markers']});
+
+    this.markers_array.forEach(marker => {
+      let color = marker['color'] ? marker['color'] : "blue";
+      marker['colorIndex'] = this.positionFormService.getSelectedColorIndex(color);
+      marker['position'] = marker['position'].toString()
+    });
+
     this.cloneEditedMarkers();
   };
 
   cloneEditedMarkers() {
     this.edited_markers_array = _.cloneDeep(this.markers_array);
-    this.edited_markers_array.forEach( (val) => {val.disabled = true})
   }
 
   rmvMarker(index:number) {
@@ -48,52 +68,61 @@ export class MarkersComponent implements OnInit{
   }
 
   parseMarkers(edited_markers_array) {
-    let markersArrayToStr = edited_markers_array.map((obj) => obj.str);
+    let markersArrayToStr = edited_markers_array.map(marker => {
+      let position = marker.position.split(",");
+      let color = this.positionFormService.getSelectedColor(marker.colorIndex);
+      let map_marker = {position};
+      if(color != 'blue') map_marker['color'] = color;
+      return map_marker;
+    });
     return this.queryParamsHelperService.markersArrayToStr(markersArrayToStr);
   }
 
   canApply():boolean {
-    let array2 = this.markers_array;
-
-    let some = (obj, index) => {
-      let obj2 = array2[index];
-      if(!obj2) return true;
-      return obj.str != obj2.str;
-    };
-
-    let array1res:boolean = this.edited_markers_array.some(some);
-    array2 = this.edited_markers_array;
-    let array2res:boolean = this.markers_array.some(some);
-
-    let regex_is_ok = !this.edited_markers_array.some((obj) => !obj || !this.markerStrRegex(obj.str));
-    return (array1res || array2res) && regex_is_ok;
+    return !_.isEqual(this.edited_markers_array, this.markers_array);
   }
 
   submitMarkers(hide:boolean=false) {
     !this.canApply() ? this.smModal.hide() : this.submitMarkersEmitter.emit({parsed_markers: this.parseMarkers(this.edited_markers_array), smModal:this.smModal, hide:hide})
   }
 
-  submitAddMarkers(markerStr:string) {
+  submitAddMarkers(markerObj) {
+    if(this.edit_obj.onEdit()) {
+      this.edited_markers_array[this.edit_obj.edit_index] = markerObj
+    } else {
+      this.edited_markers_array.push(markerObj)
+    }
     this.addModal.hide();
-    this.edited_markers_array.push({str: markerStr, disabled: true})
   }
 
-  markerStrRegex(markerStr:string):boolean {
-    let a = markerStr.split(",");
-    if(a.length!=3) return false;
+  markerStrRegex(position):boolean {
+    let a = position.split(",");
+    if(a.length != 3 && a.length != 2) return false;
     return !a.some((o) => !o || Number.isNaN(+o))
   }
 
   markerCenter() {
-    let center_marker_position:[number, number] = [this.lng , this.lat];
-    this.queryParamsHelperService.addMarker(center_marker_position);
+    let position:[number, number] = [this.lng , this.lat];
+    let center_marker = {position};
+    if(this.positionFormService.getSelectedColor() != "blue") {
+      center_marker['color'] = this.positionFormService.getSelectedColor();
+    }
+    this.queryParamsHelperService.addMarker(center_marker);
   }
 
   togglePicked(){
     this.positionFormService.onPicked = !this.positionFormService.onPicked;
     this.positionFormService.markerPickerEmitter.emit(this.positionFormService.onPicked);
   }
+
   removeAllMarkers():void{
     this.edited_markers_array = [];
   }
+
+  editMarker(index:number) {
+    this.edit_obj.marker = _.cloneDeep(this.edited_markers_array[index]);
+    this.edit_obj.edit_index = index;
+    this.addModal.show();
+  }
+
 }

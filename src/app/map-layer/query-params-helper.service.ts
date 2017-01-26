@@ -47,20 +47,16 @@ export class QueryParamsHelperService {
     return +params['rotate']  ;
   }
 
-  addMarker(marker_position:[number, number]){
+  addMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
-    let markers_array:Array<[number, number]> = this.markersStrToArray(urlTree.queryParams['markers']);
-    markers_array.push(marker_position);
+    let markers_array:Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
+    markers_array.push(marker);
     urlTree.queryParams['markers'] = this.markersArrayToStr(markers_array);
     this.router.navigateByUrl(urlTree.toString())
   }
 
-  queryMarkers(params:Params):Array<[number, number, number]>{
-    let markersStr = params['markers'];
-    if(!markersStr) return [];
-    let marker_str_to_array = this.markersStrToArray(markersStr);
-    let marker_str_to_array_fixed7 = marker_str_to_array.map( markerPos => this.calcService.toFixes7Obj(markerPos));
-    return marker_str_to_array_fixed7;
+  queryMarkers(params:Params):Array<{postion:[number,number,number],color:string}>{
+    return this.markersStrToArray(params['markers']);
   }
 
   anyLayersChanges(prev:Params, current:Params):boolean{
@@ -110,34 +106,55 @@ export class QueryParamsHelperService {
     return url;
   }
 
-  queryMarkersNoHeight(params:Params):Array<[number, number]> {
-    return this.queryMarkers(params).map((position:[number,number, number]) => <[number, number]> [position[0], position[1]]);
+  queryMarkersNoHeight(params:Params) {
+    return this.queryMarkers(params).map(position =>  [position[0], position[1]]);
   }
 
   markersStrToArray(markersStr:string="") {
-    debugger
     if(_.isEmpty(markersStr)) return [];
-    let markersArrayStr:Array<string> = markersStr.split(" ").join("").split("),(").map((one, index) => index == 0 ? one + ")" : index + 1 === markersStr.split("),(").length ? "(" + one : "(" + one + ")");
-    let markersArrayNum:Array<any> = markersArrayStr.map(one => one.split("(").join("").split(")").join("").split(",").map((strToNum) => isNaN(+strToNum) ? strToNum : +strToNum));
-
-    markersArrayNum.forEach((markerPos, index, array) => {
-      if (_.size(markerPos.filter((i) => !isNaN(i))) === 2) {
-        let color: string | void = markerPos[2];
-        markerPos[2] = 0;
-        if(color) {
-          markerPos.push(color);
+    let markersArrayStr:Array<string> = markersStr.split(" ").join("").split("),(").map(
+      (str, index, array) => {
+        if(index == 0){
+          str = str.replace("(", "")
         }
-        array[index] = markerPos;
-      }
+        if(index == array.length - 1) {
+          str = str.replace(")", "")
+        }
+        return str
+      });
+
+    let markersArrayObject:Array<any> = markersArrayStr.map((one:string) => {
+      let split_array = one.split(",");
+      let position = split_array.filter(i => !isNaN(+i)).map(i => +(+i).toFixed(7));
+      let color:string = split_array.find(i => isNaN(+i));
+      let marker_obj = {position};
+      if(color) marker_obj['color']= color;
+      return marker_obj;
     });
 
-    debugger;
+    // markersArrayObject.forEach( (markerObj, index, array) => {
+    //   if (_.size(markerObj.position) === 2) {
+    //     markerObj.position.push(0);
+    //   }
+    // });
 
-    return markersArrayNum;
+
+    return markersArrayObject;
   }
 
   markersArrayToStr(markersArray:Array<any>):string {
-    return _.size(markersArray) != 0 ? "(" + markersArray.join("),(") + ")" : "";
+    let url_str = "";
+
+    markersArray.forEach( (markersObj, index, array) => {
+      let one_array_str:string = "";
+      one_array_str += markersObj.position;
+      one_array_str = markersObj.color ? one_array_str + "," + markersObj.color: one_array_str;
+      one_array_str = "(" + one_array_str + "),";
+      one_array_str = index == (array.length - 1) ? one_array_str.replace("),", ")") : one_array_str;
+      url_str += one_array_str;
+    });
+
+    return url_str;
   }
 
   anyMarkersParamsChanges(prevParams:Params, currentParams:Params): boolean{

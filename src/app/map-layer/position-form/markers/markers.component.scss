@@ -2,10 +2,66 @@ $base-color :#277fca;
 
 button.center-btn{
   color: $base-color;
+  margin: 0px 10px;
+  top: 0px;
 }
 
-button.picked-button{
-  &.picked{
-    background: rgba(50, 134, 203, 0.35);
+button.top-button{
+  margin: 10px 0;
+}
+
+ul {
+  max-height: 193px;
+  overflow: auto;
+  li.list-group-item {
+    padding: 6px;
+    div.li-row{
+      img{
+        margin: 0 10px;
+      }
+      display: flex;
+      height: 35px;
+      position: relative;
+      input.form-control {
+        width: 75%;
+        height: 100%;
+      }
+      img{
+        height: 100%;
+      }
+      span.position{
+        width: calc(100% - 125px);
+        overflow: hidden;
+        text-align: center;
+        flex-grow: 10;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: 0 10px;
+      }
+      button {
+        flex-grow: 0;
+        opacity: 1;
+        padding: 5px 10px;
+        margin: 0 5px;
+        font-size: 12px;
+        &.glyphicon-chevron-right{
+          transform: rotate(0deg);
+          transition: .2s;
+        }
+        &:disabled{
+          opacity: .5;
+        }
+      }
+
+    }
+  }
+}
+.input-and-picker{
+  display: flex;
+  justify-content: space-around;
+  input,h6{
+    width: 70%;
   }
 }
