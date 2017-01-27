@@ -2,12 +2,19 @@ import {OpenlayersComponent} from "./openlayers.component";
 import {Params} from "@angular/router";
 import * as _ from 'lodash';
 import * as ol from "openlayers";
+import {SafeStyle} from "@angular/platform-browser";
 
 export class OpenlayersMarkers {
 
   public leftClickHandler;
 
   constructor(private openlayers:OpenlayersComponent){}
+
+  getCursorStyle(): void | SafeStyle {
+    if(this.openlayers.positionFormService.onPicked) {
+      return this.openlayers.positionFormService.getMarkerCursorStyle();
+    }
+  }
 
   toggleMarkerPicker(checked:boolean){
     if(checked){
@@ -18,31 +25,34 @@ export class OpenlayersMarkers {
   }
 
   leftClickInputAction(event:{coordinate:[number, number]}) {
-    let trans_cord:ol.Coordinate = ol.proj.toLonLat(event.coordinate);
-    this.openlayers.queryParamsHelperService.addMarker(trans_cord);
+    let position:ol.Coordinate = ol.proj.toLonLat(event.coordinate);
+    let color:string = this.openlayers.positionFormService.getSelectedColor();
+    this.openlayers.queryParamsHelperService.addMarker({position, color});
   }
 
   anyMarkersMapChanges(params:Params):boolean {
-    let queryMarkersPositions:Array<[number, number]> = this.openlayers.queryParamsHelperService.queryMarkersNoHeight(params);
-    let mapMarkerPositions:Array<[number, number]> = this.getMarkersPosition();
+    let queryMarkersPositions:Array<any> = this.openlayers.queryParamsHelperService.queryMarkersNoHeight(params);
+      let mapMarkerPositions:Array<any> = this.getMarkersPosition();
     return !_.isEqual(mapMarkerPositions, queryMarkersPositions);
   }
 
-  getMarkersPosition(): Array<[number,number]>{
+  getMarkersPosition(): Array<any>{
     return this.openlayers.LayersArray.filter( (layer) => {
       let geom;
       if(layer.getSource && layer.getSource().getFeatures) geom = layer.getSource().getFeatures()[0].getGeometry();
       return geom instanceof ol.geom.Point;
     }) . map(layer => {
-      let cord = layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
-      cord = ol.proj.transform(cord, 'EPSG:3857', 'EPSG:4326');
-      return this.openlayers.calcService.toFixes7Obj(cord);
+      let position = layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
+      position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
+      position = this.openlayers.calcService.toFixes7Obj(position);
+      let color:string = this.openlayers.positionFormService.getMarkerColorByUrl(layer.getStyle().getImage().getSrc());
+      return {position, color};
     });
   }
 
   setMarkersChanges(params:Params):void {
-    let params_markers_positions:Array<[number, number]> = this.openlayers.queryParamsHelperService.queryMarkersNoHeight(params);
-    let map_markers_positions:Array<[number, number]> = this.getMarkersPosition();
+    let params_markers_positions:Array<any> = this.openlayers.queryParamsHelperService.queryMarkersNoHeight(params);
+    let map_markers_positions:Array<any> = this.getMarkersPosition();
 
     this.addMarkersViaUrl(params_markers_positions);
     this.removeMarkersViaUrl(map_markers_positions);
@@ -74,7 +84,7 @@ export class OpenlayersMarkers {
     })
   }
 
-  markerExistOnMap(markerPosition:[number, number]):boolean {
+  markerExistOnMap(markerPosition):boolean {
     let markers_map_positions = this.getMarkersPosition();
     let exist_point = markers_map_positions.find((positionArray) => _.isEqual(positionArray, markerPosition));
     return !_.isEmpty(exist_point);
@@ -86,9 +96,9 @@ export class OpenlayersMarkers {
     return !_.isEmpty(exist_point);
   }
 
-  addIcon(lnglat:[number, number]){
+  addIcon(marker){
     let iconFeature = new ol.Feature({
-      geometry: new ol.geom.Point(ol.proj.transform(lnglat, 'EPSG:4326', 'EPSG:3857'))
+      geometry: new ol.geom.Point(ol.proj.transform(marker.position, 'EPSG:4326', 'EPSG:3857'))
     });
     let vectorSource = new ol.source.Vector(<any>{
       features: [iconFeature]
@@ -96,14 +106,14 @@ export class OpenlayersMarkers {
     let iconStyle = new ol.style.Style(<any>{
       image: new ol.style.Icon(<any>{
         anchor: [0, 0],
-        src: '/assets/Leaflet/images/marker-icon.png'
+        src: this.openlayers.positionFormService.getMarkerUrlByColor(marker.color)
       }),
     });
     let vectorLayer = new ol.layer.Vector(<any>{
       source: vectorSource,
       style: iconStyle
     });
-    vectorLayer.setZIndex(200)
+    vectorLayer.setZIndex(200);
     this.openlayers.map.addLayer(vectorLayer);
   }
 

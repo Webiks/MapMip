@@ -47,7 +47,7 @@ export class QueryParamsHelperService {
     return +params['rotate']  ;
   }
 
-  addMarker(marker){
+    addMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let markers_array:Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
     markers_array.push(marker);
@@ -55,7 +55,7 @@ export class QueryParamsHelperService {
     this.router.navigateByUrl(urlTree.toString())
   }
 
-  queryMarkers(params:Params):Array<{postion:[number,number,number],color:string}>{
+  queryMarkers(params:Params):Array<{position:number[],color:string}>{
     return this.markersStrToArray(params['markers']);
   }
 
@@ -74,8 +74,6 @@ export class QueryParamsHelperService {
   }
 
   queryLayersStrings(params:Params):Array<Object>{
-    // let decode_tms_array:Array<Object> = this.queryTmsStringToObjects(params);
-    // return decode_tms_array.map( tms_obj => this.tmsObjecttToUrl(tms_obj));
     return this.queryLayersStringToObjects(params);
   }
 
@@ -107,7 +105,9 @@ export class QueryParamsHelperService {
   }
 
   queryMarkersNoHeight(params:Params) {
-    return this.queryMarkers(params).map(position =>  [position[0], position[1]]);
+    let markers = this.queryMarkers(params);
+    markers.forEach(marker => {marker.position = [marker.position[0], marker.position[1]]});
+    return markers;
   }
 
   markersStrToArray(markersStr:string="") {

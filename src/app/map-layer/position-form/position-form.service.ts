@@ -21,10 +21,13 @@ export class PositionFormService {
   getSelectedColorHEX(index:number=this.selectedColorIndex):string {
     return this.MARKER_COLORS_HEX[index];
   }
-
   getMarkerCursorStyle():SafeStyle {
     return this.domSanitizer.bypassSecurityTrustStyle(`url(/assets/Markers/marker-icon-${this.getSelectedColor()}.cur), default`);
   }
-
-
+  getMarkerUrlByColor(color:string="blue"):string{
+    return `/assets/Markers/marker-icon-${color}.png`
+  }
+  getMarkerColorByUrl(url:string):string{
+    return url.replace("/assets/Markers/marker-icon-", "").replace(".png","");
+  }
 }

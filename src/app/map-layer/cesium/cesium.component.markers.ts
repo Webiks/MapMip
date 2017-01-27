@@ -7,7 +7,7 @@ const DEFAULT_MARKER_COLOR = "blue";
 
 export class Markers {
 
-  public cesiumHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.cesiumContainer.nativeElement);
+  public cesiumHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.container.nativeElement);
 
   public marker_picker = {
     not_allowed: false
@@ -94,11 +94,11 @@ export class Markers {
     });
   }
 
-  addMarker(marker:{position:any, color:string}):void{
+  addMarker(marker:{position:any, color?:string}):void{
       this.cesium.viewer.entities.add({
       position : Cesium.Cartesian3.fromDegrees(...marker.position),
       billboard: {
-        image: `/assets/Markers/marker-icon-${marker.color ? marker.color : DEFAULT_MARKER_COLOR }.png`,
+        image: this.cesium.positionFormService.getMarkerUrlByColor(marker.color),
         horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
         verticalOrigin:Cesium.VerticalOrigin.TOP
       }
@@ -125,7 +125,7 @@ export class Markers {
    }
 
   getColorFromBillboardEntity(entity):string {
-    return entity.billboard.image.getValue().replace("/assets/Markers/marker-icon-", "").replace(".png","");
+    return this.cesium.positionFormService.getMarkerColorByUrl(entity.billboard.image.getValue());
   }
 
   markerExistOnMap(paramsMarker:{position:any, color:string}):boolean {

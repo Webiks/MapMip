@@ -31,6 +31,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   public prevParams:Params = {};
   public layers:LeafletLayers;
   public markers:LeafletMarkers;
+  @ViewChild("container") public container;
 
   constructor(private router:Router, private activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public calcService:CalcService, public ajaxService:AjaxService, public positionFormService:PositionFormService) {window['current'] = this;}
 
@@ -77,7 +78,7 @@ export class LeafletComponent implements OnInit, MapLayerChild {
   }
 
   initializeMap():void {
-    this.map = L.map('leafletContainer');
+    this.map = L.map(this.container.nativeElement);
     this.map.on('moveend', this.moveEnd.bind(this));
     this.layers = new LeafletLayers(this);
     this.markers = new LeafletMarkers(this);

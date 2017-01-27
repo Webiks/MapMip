@@ -36,6 +36,7 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
   public DragRotateInteractions: ol.interaction.DragRotate;
   public layers:OpenlayersLayers;
   public markers:OpenlayersMarkers;
+  @ViewChild("container") public container;
 
   constructor(private activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, private router:Router, public calcService:CalcService, private generalCanDeactivateService:GeneralCanDeactivateService, public ajaxService:AjaxService, public positionFormService:PositionFormService) { window['current'] = this;window['ol'] = ol}
 
@@ -97,11 +98,11 @@ export class OpenlayersComponent implements OnInit, MapLayerChild {
 
   initializeMap():void {
     this.map = new ol.Map(<any>{
-      target: 'ol',
+      target: this.container.nativeElement,
       projection: new ol.proj.Projection(<any>{code:"EPSG:4326", extent: [-180.0000, -90.0000, 180.0000, 90.0000]}),
     });
     this.DragRotateInteractions = this.map.getInteractions().getArray().find( i => i instanceof ol.interaction.DragRotate);
-    // this.DragRotateInteractions.setActive(false)
+
     this.moveEndEvent = this.map.on('moveend', this.moveEnd.bind(this));
     this.layers = new OpenlayersLayers(this);
     this.markers = new OpenlayersMarkers(this);

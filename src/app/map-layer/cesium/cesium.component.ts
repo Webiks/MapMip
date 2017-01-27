@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ElementRef, OnDestroy} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef, OnDestroy, HostListener} from '@angular/core';
 import {Observable, Observer} from "rxjs";
 import {QueryParamsHelperService} from "../query-params-helper.service";
 import {
@@ -26,11 +26,7 @@ import {PositionFormService} from "../position-form/position-form.service";
 
 export class CesiumComponent implements OnInit,OnDestroy, MapLayerChild  {
 
-  ngOnDestroy(): void {
-    this.markers.cesiumHandler.destroy();
-  }
-
-  @ViewChild('cesiumContainer') public cesiumContainer:ElementRef;
+  @ViewChild('container') public container:ElementRef;
 
   public viewer:any;
   public prevParams:Params = {};
@@ -40,7 +36,12 @@ export class CesiumComponent implements OnInit,OnDestroy, MapLayerChild  {
   public layers:Layers;
   public markers:Markers;
   not_allowed = true;
+
   constructor(public queryParamsHelperService:QueryParamsHelperService, private activatedRoute:ActivatedRoute, private generalCanDeactivateService:GeneralCanDeactivateService, private router:Router, public calcService:CalcService, public positionFormService:PositionFormService) {window['current'] = this;}
+
+  ngOnDestroy(): void {
+    this.markers.cesiumHandler.destroy();
+  }
 
   ngOnInit() {
     this.initializeMap();
@@ -92,7 +93,7 @@ export class CesiumComponent implements OnInit,OnDestroy, MapLayerChild  {
   };
 
   initializeMap():void {
-    this.viewer = new Cesium.Viewer(this.cesiumContainer.nativeElement , {
+    this.viewer = new Cesium.Viewer(this.container.nativeElement , {
       baseLayerPicker : false
     });
     this.viewer.camera.moveEnd.addEventListener(this.moveEnd.bind(this));
