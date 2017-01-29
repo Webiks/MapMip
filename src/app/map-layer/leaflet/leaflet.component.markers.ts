@@ -30,6 +30,7 @@ export class LeafletMarkers {
   anyMarkersMapChanges(params:Params): boolean{
     let queryMarkersPositions:Array<any> = this.leaflet.queryParamsHelperService.queryMarkersNoHeight(params);
     let mapMarkerPositions:Array<any> = this.getMarkersPosition();
+    queryMarkersPositions.forEach(Pmarker => {Pmarker.color = Pmarker.color ? Pmarker.color : "blue"});
     return !_.isEqual(mapMarkerPositions, queryMarkersPositions);
   }
 
@@ -46,21 +47,21 @@ export class LeafletMarkers {
     let params_markers_position:Array<any> = this.leaflet.queryParamsHelperService.queryMarkersNoHeight(params);
     let map_markers_positions:Array<any> = this.getMarkersPosition();
 
-    this.addMarkersViaUrl(params_markers_position);
-    this.removeMarkersViaUrl(map_markers_positions);
+    this.addMarkersViaUrl(params_markers_position, map_markers_positions);
+    this.removeMarkersViaUrl(params_markers_position, map_markers_positions);
   }
 
-  addMarkersViaUrl(params_markers_position:Array<[number, number]>) {
+  addMarkersViaUrl(params_markers_position, map_markers_positions) {
     params_markers_position.forEach( marker => {
-      if(!this.markerExistOnMap(marker)) {
+      if(!this.markerExistOnMap(map_markers_positions, marker)) {
         this.getBaseMarker(marker).addTo(this.leaflet.map);
       }
     });
   }
 
-  removeMarkersViaUrl(map_markers_positions:Array<any>) {
+  removeMarkersViaUrl(params_markers_position, map_markers_positions) {
     map_markers_positions.forEach(markerObj => {
-      if(!this.markerExistOnParams(markerObj)) {
+      if(!this.markerExistOnParams(params_markers_position, markerObj)) {
         let marker_to_remove:L.Marker = this.getMarkerViaMarkerObj(markerObj);
         this.leaflet.map.removeLayer(marker_to_remove)
       }
@@ -95,15 +96,17 @@ export class LeafletMarkers {
     return m_layers;
   }
 
-  markerExistOnMap(markerPosition) {
-    let markers_map_positions:Array<any> = this.getMarkersPosition();
-    let exist_point = markers_map_positions.find(positionArray => _.isEqual(positionArray,markerPosition));
+  markerExistOnMap(markers_map_positions, paramMarker) {
+    paramMarker.color = paramMarker.color ? paramMarker.color : "blue";
+    let exist_point = markers_map_positions.find(positionArray => _.isEqual(positionArray, paramMarker));
     return !_.isEmpty(exist_point);
   }
 
-  markerExistOnParams(markerPosition) {
-    let markers_params_positions = this.leaflet.queryParamsHelperService.queryMarkersNoHeight(this.leaflet.currentParams);
-    let exist_point = markers_params_positions.find(positionArray => _.isEqual(positionArray,markerPosition));
+  markerExistOnParams(params_markers_position, mapMarker) {
+    let exist_point = params_markers_position.find(paramMarker => {
+      paramMarker.color = paramMarker.color ? paramMarker.color : "blue";
+      return _.isEqual(paramMarker.position, mapMarker.position)
+    });
     return !_.isEmpty(exist_point);
   }
 

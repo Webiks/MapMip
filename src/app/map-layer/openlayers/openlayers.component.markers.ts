@@ -32,7 +32,8 @@ export class OpenlayersMarkers {
 
   anyMarkersMapChanges(params:Params):boolean {
     let queryMarkersPositions:Array<any> = this.openlayers.queryParamsHelperService.queryMarkersNoHeight(params);
-      let mapMarkerPositions:Array<any> = this.getMarkersPosition();
+    let mapMarkerPositions:Array<any> = this.getMarkersPosition();
+    queryMarkersPositions.forEach(Pmarker => {Pmarker.color = Pmarker.color ? Pmarker.color : "blue"});
     return !_.isEqual(mapMarkerPositions, queryMarkersPositions);
   }
 
@@ -54,47 +55,43 @@ export class OpenlayersMarkers {
     let params_markers_positions:Array<any> = this.openlayers.queryParamsHelperService.queryMarkersNoHeight(params);
     let map_markers_positions:Array<any> = this.getMarkersPosition();
 
-    this.addMarkersViaUrl(params_markers_positions);
-    this.removeMarkersViaUrl(map_markers_positions);
+    this.addMarkersViaUrl(params_markers_positions, map_markers_positions);
+    this.removeMarkersViaUrl(params_markers_positions, map_markers_positions);
   }
 
-  addMarkersViaUrl(params_markers_position:Array<[number, number]>) {
-    params_markers_position.forEach( (marker:[number, number]) => {
-      if(!this.markerExistOnMap(marker)) {
+  addMarkersViaUrl(params_markers_positions, map_markers_positions) {
+    params_markers_positions.forEach( marker => {
+      if(!this.markerExistOnMap(map_markers_positions, marker)) {
         this.addIcon(marker);
       }
     });
   }
 
-  removeMarkersViaUrl(map_markers_positions:Array<[number, number]>) {
-    map_markers_positions.forEach((markerPos) => {
-      if(!this.markerExistOnParams(markerPos)) {
-        let marker_to_remove = this.openlayers.LayersArray.find(
-          layer => {
-            let geom;
-            if (layer.getSource().getFeatures) geom = layer.getSource().getFeatures()[0].getGeometry();
-            if (!(geom instanceof ol.geom.Point)) return false;
-            let cord = layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
-            cord = ol.proj.transform(cord, 'EPSG:3857', 'EPSG:4326');
-            cord = this.openlayers.calcService.toFixes7Obj(cord);
-            return _.isEqual(cord, markerPos);
-          });
-        this.openlayers.map.removeLayer(marker_to_remove)
+  removeMarkersViaUrl(params_markers_positions, map_markers_positions) {
+    map_markers_positions.forEach((mapMarker) => {
+      if(!this.markerExistOnParams(params_markers_positions, mapMarker)) {
+        this.removeIcon(mapMarker);
       }
     })
   }
 
-  markerExistOnMap(markerPosition):boolean {
-    let markers_map_positions = this.getMarkersPosition();
-    let exist_point = markers_map_positions.find((positionArray) => _.isEqual(positionArray, markerPosition));
+  markerExistOnMap(markers_map_positions, paramMarker) {
+    paramMarker.color = paramMarker.color ? paramMarker.color : "blue";
+    let exist_point = markers_map_positions.find(positionArray => _.isEqual(positionArray, paramMarker));
     return !_.isEmpty(exist_point);
   }
 
-  markerExistOnParams(markerPosition) {
-    let markers_params_positions = this.openlayers.queryParamsHelperService.queryMarkersNoHeight(this.openlayers.currentParams);
-    let exist_point = markers_params_positions.find(positionArray => _.isEqual(positionArray , markerPosition));
+  markerExistOnParams(params_markers_position, mapMarker) {
+    let exist_point = params_markers_position.find(paramMarker => {
+      paramMarker.color = paramMarker.color ? paramMarker.color : "blue";
+      return _.isEqual(paramMarker.position, mapMarker.position)
+    });
     return !_.isEmpty(exist_point);
   }
+
+
+
+
 
   addIcon(marker){
     let iconFeature = new ol.Feature({
@@ -115,6 +112,21 @@ export class OpenlayersMarkers {
     });
     vectorLayer.setZIndex(200);
     this.openlayers.map.addLayer(vectorLayer);
+  }
+
+  removeIcon(mapMarker):void{
+    let marker_to_remove = this.openlayers.LayersArray.find(
+      layer => {
+        let geom;
+        if (layer.getSource().getFeatures) geom = layer.getSource().getFeatures()[0].getGeometry();
+        if (!(geom instanceof ol.geom.Point)) return false;
+        let position = layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
+        position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
+        position = this.openlayers.calcService.toFixes7Obj(position);
+        let color:string = this.openlayers.positionFormService.getMarkerColorByUrl(layer.getStyle().getImage().getSrc());
+        return _.isEqual(position, mapMarker.position) && _.isEqual(color, mapMarker.color);
+      });
+    this.openlayers.map.removeLayer(marker_to_remove)
   }
 
 }
