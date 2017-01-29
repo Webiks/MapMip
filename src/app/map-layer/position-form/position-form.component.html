@@ -3,7 +3,7 @@
     <div *ngFor="let key of keys(params)">
       <template [ngIf]="havePermission(params[key])">
 
-        <div class="form-group col-md-2" *ngIf="!params[key].input_type">
+        <div class="form-group col-md-3" *ngIf="!params[key].input_type">
           <div class="input-group">
             <span class="input-group-addon">{{key}}</span>
             <input type="text" class="form-control" [(ngModel)]="params[key].val" name="{{key}}" placeholder="{{key}}">

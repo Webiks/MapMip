@@ -82,16 +82,24 @@ export class Markers {
     let params_markers:Array<any> = this.cesium.queryParamsHelperService.queryMarkers(params);
     let map_markers:Array<any> = this.getMarkersPosition();
 
-    this.addMarkersViaUrl(params_markers);
-    this.removeMarkersViaUrl(map_markers);
+    this.addMarkersViaUrl(params_markers, map_markers);
+    this.removeMarkersViaUrl(params_markers, map_markers);
   }
 
-  addMarkersViaUrl(params_markers) {
+  addMarkersViaUrl(params_markers, map_markers) {
     params_markers.forEach( (marker) => {
-      if(!this.markerExistOnMap(marker)) {
+      if(!this.markerExistOnMap(map_markers, marker)) {
         this.addMarker(marker);
       }
     });
+  }
+
+  removeMarkersViaUrl(params_markers, map_markers) {
+    map_markers.forEach(mapMarkerObj => {
+      if(!this.markerExistOnParams(params_markers, mapMarkerObj)) {
+        this.removeMarker(mapMarkerObj);
+      }
+    })
   }
 
   addMarker(marker:{position:any, color?:string}):void{
@@ -105,14 +113,9 @@ export class Markers {
     });
   }
 
-  removeMarkersViaUrl(map_markers_positions) {
-    let markers_params_positions = this.cesium.queryParamsHelperService.queryMarkers(this.cesium.currentParams);
-    map_markers_positions.forEach(mapMarkerObj => {
-      if(!this.markerExistOnParams(markers_params_positions, mapMarkerObj)) {
-        let entity_to_remove = this.getEntityByPositionAndColor(mapMarkerObj);
-        this.cesium.viewer.entities.remove(entity_to_remove);
-      }
-    })
+  removeMarker(marker:{position:any, color:string}){
+    let entity_to_remove = this.getEntityByPositionAndColor(marker);
+    this.cesium.viewer.entities.remove(entity_to_remove);
   }
 
   getEntityByPositionAndColor(mapMarkerObj:{position:any, color:string}){
@@ -128,11 +131,12 @@ export class Markers {
     return this.cesium.positionFormService.getMarkerColorByUrl(entity.billboard.image.getValue());
   }
 
-  markerExistOnMap(paramsMarker:{position:any, color:string}):boolean {
-    let current_marker_radian_position = this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramsMarker.position));
-    paramsMarker.color = paramsMarker.color ? paramsMarker.color : "blue";
-    let markers_map_positions = this.getMarkersPosition();
-    let exist_point = markers_map_positions .find(markerObj => _.isEqual(markerObj.position, current_marker_radian_position) && _.isEqual(markerObj.color, paramsMarker.color));
+  markerExistOnMap(map_markers, paramsMarker:{position:any, color:string}):boolean {
+    let paramObjToCheck = {
+      position: this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramsMarker.position)),
+      color: paramsMarker.color ? paramsMarker.color : "blue"
+    };
+    let exist_point = map_markers.find(markerObj => _.isEqual(paramObjToCheck, markerObj));
     return !_.isEmpty(exist_point);
   }
 

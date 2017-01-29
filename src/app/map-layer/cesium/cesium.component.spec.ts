@@ -28,7 +28,7 @@ fdescribe('CesiumComponent', () => {
       declarations: [ CesiumComponent ],
       providers:[QueryParamsHelperService, GeneralCanDeactivateService, CalcService, PositionFormService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(inject([Router, QueryParamsHelperService, CalcService],(_router:Router, _queryParamsHelperService:QueryParamsHelperService, _calcService:CalcService) => {
@@ -290,7 +290,7 @@ fdescribe('CesiumComponent', () => {
   });
 
 
-  fdescribe('markers', () => {
+  describe('markers', () => {
     let markers:Markers;
 
     beforeEach(()=>{
@@ -313,53 +313,72 @@ fdescribe('CesiumComponent', () => {
 
 
     it('addMarkersViaUrl: should get positions array from params. for each position create marker if not exists on map', ()=>{
-      let params_markers_position:Array<[number, number]> = [[1,2,3], [4,5,6]];
-      markers.addMarkersViaUrl(params_markers_position);
-      let position_of_map_markers = markers.getMarkersPosition();
-      expect(position_of_map_markers).toEqual([Cesium.Cartesian3.fromDegrees(...[1,2,3]),Cesium.Cartesian3.fromDegrees(...[4,5,6])]);
+      let markers_map_positions = [
+        {position:Cesium.Cartesian3.fromDegrees(...[1,2,3]), color:"red"}
+      ];
+      let markers_params_positions = [
+        {position:[1,2,3],color:"red"},
+        {position:[4,5,6]}
+      ];
+      spyOn(markers,'addMarker');
+      markers.addMarkersViaUrl(markers_params_positions,markers_map_positions);
+      expect(markers.addMarker).toHaveBeenCalledWith(markers_params_positions[1]);
     });
 
-    it('removeMarkersViaUrl: addMarkersViaUrl: should get positions array from map. for each position remvoe marker if not exists on params', ()=>{
-      component.viewer.entities.add({
-        position : Cesium.Cartesian3.fromDegrees(...[1,2,3]),
-        billboard: {
-          image: "/assets/Leaflet/images/marker-icon.png"
-        }
-      });
-      component.viewer.entities.add({
-        position : Cesium.Cartesian3.fromDegrees(...[4,5,6]),
-        billboard: {
-          image: "/assets/Leaflet/images/marker-icon.png"
-        }
-      });
-      let position_of_map_markers = markers.getMarkersPosition();
-
-      expect(markers.getMarkersPosition()).toEqual([Cesium.Cartesian3.fromDegrees(...[1,2,3]),Cesium.Cartesian3.fromDegrees(...[4,5,6])]);
-
-      component.currentParams = {markers: '(1,2,3)'}; // (3,4) should be removed
-      markers.removeMarkersViaUrl(position_of_map_markers);
-
-      expect(markers.getMarkersPosition()).toEqual([Cesium.Cartesian3.fromDegrees(...[1,2,3])]);
+    it('removeMarkersViaUrl should get positions array from map. for each position remvoe marker if not exists on params', ()=>{
+      let markers_map_positions = [
+        {position:Cesium.Cartesian3.fromDegrees(...[1,2,3]), color:"red"},
+        {position:Cesium.Cartesian3.fromDegrees(...[4,5,6]), color:"blue"},
+      ];
+      let markers_params_positions = [
+        {position:[1,2,3],color:"red"},
+      ];
+      spyOn(markers,'removeMarker');
+      markers.removeMarkersViaUrl(markers_params_positions, markers_map_positions);
+      expect(markers.removeMarker).toHaveBeenCalledWith(markers_map_positions[1]);
     });
 
     it('markerExistOnMap: should get one position and return if there is marker on map with that position', ()=>{
-      component.viewer.entities.add({
-        position : Cesium.Cartesian3.fromDegrees(...[1,2,3]),
-        billboard: {
-          image: "/assets/Leaflet/images/marker-icon.png"
-        }
-      });
-      expect(markers.markerExistOnMap([1,2,3])).toBeTruthy();
-      expect(markers.markerExistOnMap([4,5,6])).toBeFalsy();
+      let markers_map_positions = [
+        {position:Cesium.Cartesian3.fromDegrees(...[1,2,3]), color:"red"},
+        {position:Cesium.Cartesian3.fromDegrees(...[4,5,6]), color:"blue"}
+      ];
+      let paramMarkerObj={
+        position:[1,2,3],
+        color: "red"
+      };
+      let blueParamMarkerObj={
+        position:[4,5,6],
+      };
+      let notExistMapMarkerObj={
+        position:[7,8,9],
+        color: "black"
+      };
+      expect(markers.markerExistOnParams(markers_map_positions,paramMarkerObj)).toBeTruthy();
+      expect(markers.markerExistOnParams(markers_map_positions,blueParamMarkerObj)).toBeTruthy();
+      expect(markers.markerExistOnParams(markers_map_positions,notExistMapMarkerObj)).toBeFalsy();
     });
 
     it('markerExistOnParams: should get one position and return if there is marker on params with that position', () => {
-      component.currentParams = {
-        markers: '(1,2,3),(4,5,6)'
+      let markers_params_positions = [
+        {position:[1,2,3],color:"red"},
+        {position:[4,5,6]}
+      ];
+      let mapMarkerObj={
+        position:Cesium.Cartesian3.fromDegrees(...[1,2,3]),
+        color: "red"
       };
-      expect(markers.markerExistOnParams(Cesium.Cartesian3.fromDegrees(...[1,2,3]))).toBeTruthy();
-      expect(markers.markerExistOnParams(Cesium.Cartesian3.fromDegrees(...[4,5,6]))).toBeTruthy();
-      expect(markers.markerExistOnParams(Cesium.Cartesian3.fromDegrees(...[7,8,9]))).toBeFalsy();
+      let blueMapMarkerObj={
+        position:Cesium.Cartesian3.fromDegrees(...[4,5,6]),
+        color: "blue"
+      };
+      let notExistMapMarkerObj={
+        position:Cesium.Cartesian3.fromDegrees(...[7,8,9]),
+        color: "black"
+      };
+      expect(markers.markerExistOnParams(markers_params_positions,mapMarkerObj)).toBeTruthy();
+      expect(markers.markerExistOnParams(markers_params_positions,blueMapMarkerObj)).toBeTruthy();
+      expect(markers.markerExistOnParams(markers_params_positions,notExistMapMarkerObj)).toBeFalsy();
     });
 
     it('anyMarkersMapChanges: should get params and compere between markers on params and markers on map', ()=>{
@@ -422,10 +441,11 @@ fdescribe('CesiumComponent', () => {
 
       spyOn(Cesium.Cartographic, 'fromCartesian').and.callFake(():{lat:number, lng:number} => new Object({latitude:radian_30 , longitude: radian_30}));
       markers.leftClickInputAction(event);
-      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith([deg_30, deg_30]);
+      let position = [deg_30, deg_30];
+      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith({position});
     });
 
-   fit("mouseMoveInputAction", () => {
+    it("mouseMoveInputAction", () => {
       let pickEllipsoidRes = undefined;
       let event:{endPosition: {x:number, y:number}, startPosition: {x:number, y:number}} = {};
       spyOn(component.viewer.camera,'pickEllipsoid').and.callFake(() => pickEllipsoidRes);
@@ -436,22 +456,41 @@ fdescribe('CesiumComponent', () => {
       markers.mouseMoveInputAction(event);
       expect(component.viewer.camera.pickEllipsoid).toHaveBeenCalled();
       expect(markers.marker_picker.not_allowed).toBeFalsy();
-    })
+    });
 
-    // mouseMoveInputAction(event:{endPosition: {x:number, y:number}, startPosition: {x:number, y:number}}){
-    //   let positionCartesian3Result = this.cesium.viewer.camera.pickEllipsoid(event.endPosition);
-    //   this.layer_picker.not_allowed = _.isNil(positionCartesian3Result);
-    // }
+    it(" getColorFromBillboardEntity: should  get Color From Billboard Entity", () => {
+      let entity = {
+        billboard:{
+          image:{
+            getValue: () => "/assets/Markers/marker-icon-red.png"
+          }
+        }
+      };
+      expect(markers.getColorFromBillboardEntity(entity)).toEqual("red");
+    });
 
+    it("should addMarker add billboard marker to entities", () => {
+      let marker = {position:[1,2,3]};
+      spyOn(component.viewer.entities,'add');
+      markers.addMarker(marker);
+      expect(component.viewer.entities).toHaveBeenCalledWith({
+        position: Cesium.Cartesian3.fromDegrees(...marker.position),
+        billboard: {
+          image: component.positionFormService.getMarkerUrlByColor(marker["color"]),
+          horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+          verticalOrigin:Cesium.VerticalOrigin.TOP
+        }
+      });
+    });
 
-
+    it("should removeMarker rmv billboard marker from entities", ()=>{
+      let marker = {position:Cesium.Cartesian3.fromDegrees(...[1,2,3]), color:"blue"};
+      spyOn(markers, "getEntityByPositionAndColor").and.callFake(() => marker);
+      spyOn(component.viewer.entities,'remove');
+      markers.removeMarker(marker);
+      expect(component.viewer.entities.remove).toHaveBeenCalledWith(marker);
+    });
   });
-
-
-
-
-
-
 
 
   describe("layers", () => {
@@ -518,8 +557,8 @@ fdescribe('CesiumComponent', () => {
       noTileLayerRes = true;
       layers.setLayersChanges(params);
       expect(layers.addBaseLayer).toHaveBeenCalled();
-
     });
+
     it('addLayersViaUrl should add layers that exists on params but not exists on map', ()=>{
       let layer_a = {url:'layer_a_url', source:'mapbox'};
       let layer_b = {url:'layer_b_url', source:'bing'};
@@ -534,6 +573,7 @@ fdescribe('CesiumComponent', () => {
       expect(component.viewer.imageryLayers.addImageryProvider).toHaveBeenCalledTimes(1);
       expect(component.viewer.imageryLayers.addImageryProvider).toHaveBeenCalledWith(layer_b);
     });
+
     it('removeLayersViaUrl should remove layers that exists on map but not exists on params', ()=>{
       let layer_a = {imageryProvider: {url:'layer_a_url'}};
       let layer_b = {imageryProvider: {url:'layer_b_url'}};
@@ -576,10 +616,8 @@ fdescribe('CesiumComponent', () => {
       let layer_obj_a = {source:'default', url:'fake_url_a'};
       let layer_obj_b = {source:'openstreetmap', url:'fake_url_b'};
       let layer_obj_c = {source:'mapbox', url:'fake_url_c'};
-
       let map_imagery_providers = [layers.getLayerFromLayerObj(layer_obj_a), layers.getLayerFromLayerObj(layer_obj_b)];
       spyOn(component.viewer.imageryLayers._layers, 'map').and.callFake(() => map_imagery_providers);
-
       expect(layers.layerExistOnMap(layer_obj_a)).toBeTruthy();
       expect(layers.layerExistOnMap(layer_obj_b)).toBeTruthy();
       expect(layers.layerExistOnMap(layer_obj_c)).toBeFalsy();
@@ -590,7 +628,6 @@ fdescribe('CesiumComponent', () => {
       let layer_obj = {source:'default', url:'fake_url'};
       let imageryProvider = layers.getLayerFromLayerObj(layer_obj);
       let params_layers_obj = [layer_obj];
-
       spyOn(queryParamsHelperService, 'queryLayers').and.callFake(() => params_layers_obj);
       expect(layers.layerExistOnParams(imageryProvider)).toBeTruthy();
       layer_obj.url = 'fake_other_url';
