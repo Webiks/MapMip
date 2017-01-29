@@ -59,6 +59,7 @@ export class Markers {
 
     queryMarkersCartographicDegreesPositions.forEach((paramMarkerObj) => {
       paramMarkerObj.position = this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramMarkerObj.position));
+      paramMarkerObj.color = paramMarkerObj.color ? paramMarkerObj.color : "blue";
     });
 
     return !_.isEqual(mapMarkerCartesienPositions, queryMarkersCartographicDegreesPositions);
@@ -131,7 +132,7 @@ export class Markers {
     return this.cesium.positionFormService.getMarkerColorByUrl(entity.billboard.image.getValue());
   }
 
-  markerExistOnMap(map_markers, paramsMarker:{position:any, color:string}):boolean {
+  markerExistOnMap(map_markers, paramsMarker:{position:any, color?:string}):boolean {
     let paramObjToCheck = {
       position: this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramsMarker.position)),
       color: paramsMarker.color ? paramsMarker.color : "blue"
@@ -140,7 +141,7 @@ export class Markers {
     return !_.isEmpty(exist_point);
   }
 
-  markerExistOnParams(markers_params_positions, mapMarkerObj) {
+  markerExistOnParams(markers_params_positions, mapMarkerObj:{position:any, color:string}) {
     let exist_marker = markers_params_positions.find(paramsMarkerObj => {
 
       let paramPosition = Cesium.Cartesian3.fromDegrees(...paramsMarkerObj.position);

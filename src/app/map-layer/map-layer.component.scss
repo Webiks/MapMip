@@ -51,6 +51,7 @@ button.show-tools{
     left: 110px;
     width: 15px;
     top: 15px;
+    transform: rotate(90deg);
     span{
       background:#d9534f;
       &:nth-child(1) , &:nth-child(4){

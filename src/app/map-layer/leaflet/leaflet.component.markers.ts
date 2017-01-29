@@ -74,10 +74,7 @@ export class LeafletMarkers {
       shadowUrl: '/assets/Leaflet/images/marker-shadow.png',
     });
     return L.marker([marker.position[1],marker.position[0]], {icon:icon});
-
   }
-
-
 
   getMarkerViaMarkerObj(markerObj) {
     return this.getMarkerLayersArray().find(
@@ -89,11 +86,7 @@ export class LeafletMarkers {
   }
 
   getMarkerLayersArray():Array<L.Marker>{
-    let m_layers = [];
-    this.leaflet.map.eachLayer((l:L.Marker) => {
-      if(l.getLatLng) m_layers.push(l);
-    });
-    return m_layers;
+    return <Array<L.Marker>> _.filter(this.leaflet.map['_layers'], (l:L.Marker) => l.getLatLng)
   }
 
   markerExistOnMap(markers_map_positions, paramMarker) {
