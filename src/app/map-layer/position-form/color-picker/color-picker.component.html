@@ -1,17 +1,18 @@
 <div class="btn-group picked-group" dropdown>
 
   <button class="btn btn-default picked-button" [class.active]="Active" (click)="togglePickedEmitter.emit()" type="button" [disabled]="disabledAction">
-    <img src="/assets/Markers/marker-icon-{{positionFormService.getSelectedColor(selectedIndex)}}.png"/>
+    <img [src]="getMarkerUrlByColor(selectedColor)"/>
   </button>
 
   <button type="button" class="btn btn-default dropdown-toggle-split" dropdownToggle>
     <span class="caret"></span>
     <span class="sr-only">Split button!</span>
   </button>
+
   <ul class="dropdown-menu" dropdownMenu role="menu" aria-labelledby="split-button">
-    <li *ngFor="let color of positionFormService.MARKER_COLORS; let i =index" role="menuitem">
+    <li *ngFor="let color of markerColors(); let i =index" role="menuitem">
       <a class="dropdown-item" (click)="changeMarkerColor(i)">
-        <img src="/assets/Markers/marker-icon-{{color}}.png"/>
+        <img [src]="getMarkerUrlByColor(color)"/>
       </a>
     </li>
   </ul>

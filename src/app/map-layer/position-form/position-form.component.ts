@@ -1,4 +1,4 @@
-import {Component, OnInit, Output} from '@angular/core';
+import {Component, OnInit, Output, style, state, animate, transition, trigger, HostBinding} from '@angular/core';
 import {Router, ActivatedRoute, Params, UrlTree, NavigationExtras} from "@angular/router";
 import {ModalDirective} from "ng2-bootstrap";
 import {QueryParamsHelperService} from "../query-params-helper.service";
@@ -13,6 +13,9 @@ import {PositionFormService} from "./position-form.service";
 })
 
 export class PositionFormComponent implements OnInit {
+  @HostBinding("style.display") display = "block";
+  @HostBinding("style.height") height = "auto";
+  @HostBinding("style.max-height") maxHeight = "200px";
 
   public params: {
     lng:{val?: number, permissions: number[], input_type?:string},

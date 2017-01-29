@@ -61,7 +61,10 @@ ul {
 .input-and-picker{
   display: flex;
   justify-content: space-around;
-  input,h6{
+  input{
     width: 70%;
   }
+}
+h6{
+  width: 70%;
 }

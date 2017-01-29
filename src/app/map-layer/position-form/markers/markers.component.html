@@ -54,9 +54,9 @@
         <div class="form-group">
           <div class="input-and-picker">
             <input class="form-control text-center" [(ngModel)]="edit_obj.marker.position" [ngModelOptions]="{standalone: true}" [style.border-color]="edit_obj.marker.position && !markerStrRegex(edit_obj.marker.position) ? 'red' : '#66afe9'">
-            <app-color-picker [(selectedIndex)]="edit_obj.marker.colorIndex"></app-color-picker> {{edit_obj.marker.colorIndex}}
+            <app-color-picker [(selectedIndex)]="edit_obj.marker.colorIndex"></app-color-picker>
           </div>
-          <h6 class="modal-subtitle text-info text-center">Number,Number,Number</h6>
+          <h6 class="modal-subtitle text-info text-center">Number,Number,(Number)</h6>
         </div>
       </div>
       <div class="modal-footer">

@@ -1,5 +1,5 @@
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {PositionFormService} from "../position-form.service";
+import {PositionFormService, MARKER_COLORS} from "../position-form.service";
 
 @Component({
   selector: 'app-color-picker',
@@ -23,12 +23,23 @@ export class ColorPickerComponent implements OnInit {
     this._selectedIndex = value;
     this.selectedIndexChange.emit(value);
   }
-
+  get selectedColor():string {
+    return MARKER_COLORS[this.selectedIndex];
+  }
   get selectedIndex():number {
     return this._selectedIndex;
   }
+
   changeMarkerColor(selectedColorIndex){
     this.selectedIndex = selectedColorIndex;
+  }
+
+  markerColors(){
+    return MARKER_COLORS;
+  }
+
+  getMarkerUrlByColor(color:string):string {
+    return this.positionFormService.getMarkerUrlByColor(color);
   }
 
 }
