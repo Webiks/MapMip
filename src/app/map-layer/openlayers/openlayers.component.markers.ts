@@ -84,7 +84,7 @@ export class OpenlayersMarkers {
   markerExistOnParams(params_markers_position, mapMarker) {
     let exist_point = params_markers_position.find(paramMarker => {
       paramMarker.color = paramMarker.color ? paramMarker.color : "blue";
-      return _.isEqual(paramMarker.position, mapMarker.position)
+      return _.isEqual(paramMarker, mapMarker)
     });
     return !_.isEmpty(exist_point);
   }

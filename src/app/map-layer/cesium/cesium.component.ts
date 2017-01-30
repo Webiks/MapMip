@@ -93,6 +93,7 @@ export class CesiumComponent implements OnInit,OnDestroy, MapLayerChild  {
   };
 
   initializeMap():void {
+    Cesium.BingMapsApi.defaultKey = "AnjT_wAj_juA_MsD8NhcEAVSjCYpV-e50lUypkWm1JPxVu0XyVqabsvD3r2DQpX-";
     this.viewer = new Cesium.Viewer(this.container.nativeElement , {
       baseLayerPicker : false
     });

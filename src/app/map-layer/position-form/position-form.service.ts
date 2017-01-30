@@ -30,6 +30,6 @@ export class PositionFormService {
     return `/assets/Markers/marker-icon-${color}.${format}`
   }
   getMarkerColorByUrl(url:string):string{
-    return url.replace("/assets/Markers/marker-icon-", "").replace(".png","");
+    return url.replace(location.origin, "").replace("/assets/Markers/marker-icon-", "").replace(".png","");
   }
 }

@@ -2,10 +2,10 @@ import {Injectable} from '@angular/core';
 import {Params, NavigationExtras, Router, UrlTree} from "@angular/router";
 import * as _ from 'lodash';
 import {CalcService} from "./calc-service";
-declare let rison;
+import * as rison from "rison";
 
 @Injectable()
-export class QueryParamsHelperService {
+export class QueryParamsHelperService{
 
   constructor(private calcService:CalcService, private router:Router) {}
 
@@ -124,7 +124,7 @@ export class QueryParamsHelperService {
       });
 
     let markersArrayObject:Array<any> = markersArrayStr.map((one:string) => {
-      let split_array = one.split(",");
+      let split_array:Array<any> = one.split(",");
       let position = split_array.filter(i => !isNaN(+i)).map(i => +(+i).toFixed(7));
       let color:string = split_array.find(i => isNaN(+i));
       let marker_obj = {position};

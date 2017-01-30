@@ -91,14 +91,14 @@ export class LeafletMarkers {
 
   markerExistOnMap(markers_map_positions, paramMarker) {
     paramMarker.color = paramMarker.color ? paramMarker.color : "blue";
-    let exist_point = markers_map_positions.find(positionArray => _.isEqual(positionArray, paramMarker));
+    let exist_point = markers_map_positions.find(mapMarker => _.isEqual(mapMarker, paramMarker));
     return !_.isEmpty(exist_point);
   }
 
   markerExistOnParams(params_markers_position, mapMarker) {
     let exist_point = params_markers_position.find(paramMarker => {
       paramMarker.color = paramMarker.color ? paramMarker.color : "blue";
-      return _.isEqual(paramMarker.position, mapMarker.position)
+      return _.isEqual(paramMarker, mapMarker)
     });
     return !_.isEmpty(exist_point);
   }

@@ -5,17 +5,16 @@ import {QueryParamsHelperService} from "../query-params-helper.service";
 import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
 import {CalcService} from "../calc-service";
 import {RouterTestingModule} from "@angular/router/testing";
-import {Router, NavigationEnd, Params, NavigationExtras, ActivatedRoute} from "@angular/router";
+import {Router, NavigationEnd, Params, NavigationExtras} from "@angular/router";
 import {Observer, Observable} from "rxjs";
 import * as _ from 'lodash';
 import {Layers} from "./cesium.component.layers";
 import {Markers} from "./cesium.component.markers";
 import {PositionFormService} from "../position-form/position-form.service";
-import layers = L.control.layers;
 
 
 
-fdescribe('CesiumComponent', () => {
+describe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
   let router:Router;
@@ -52,7 +51,7 @@ fdescribe('CesiumComponent', () => {
 
     let observer:Observer<boolean> = <any>{ next(bool:boolean):void {}};
     Observable.create((_observer:Observer<boolean>) => {observer = _observer});
-    let bool_result:boolean = true
+    let bool_result:boolean = true;
     let fake_obs = { subscribe: callback => callback(bool_result) };
 
     spyOn(component.viewer.camera.moveEnd._listeners, 'pop');
@@ -290,8 +289,8 @@ fdescribe('CesiumComponent', () => {
       });
     });
   });
-
-
+  //
+  //
   describe('markers', () => {
     let markers:Markers;
 
@@ -479,7 +478,7 @@ fdescribe('CesiumComponent', () => {
       let marker = {position:[1,2,3]};
       spyOn(component.viewer.entities,'add');
       markers.addMarker(marker);
-      expect(component.viewer.entities).toHaveBeenCalledWith({
+      expect(component.viewer.entities.add).toHaveBeenCalledWith({
         position: Cesium.Cartesian3.fromDegrees(...marker.position),
         billboard: {
           image: component.positionFormService.getMarkerUrlByColor(marker["color"]),

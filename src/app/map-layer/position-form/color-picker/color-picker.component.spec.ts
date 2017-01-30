@@ -42,7 +42,7 @@ describe('ColorPickerComponent', () => {
   it("getMarkerUrlByColor should call positionFormService.getMarkerUrlByColor", ()=>{
     spyOn(positionFormService, 'getMarkerUrlByColor');
     component.getMarkerUrlByColor("red");
-    expect(positionFormService.getMarkerColorByUrl).toHaveBeenCalledWith("red");
+    expect(positionFormService.getMarkerUrlByColor).toHaveBeenCalledWith("red");
   })
 
 

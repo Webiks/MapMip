@@ -50,10 +50,11 @@ export class MarkersComponent implements OnInit{
   queryParams: (Params) => void = (params:Params):void => {
     this.markers_array = this.queryParamsHelperService.queryMarkers({markers: params['markers']});
 
-    this.markers_array.forEach(marker => {
+    this.markers_array = this.markers_array.map(marker => {
       let color = marker['color'] ? marker['color'] : "blue";
-      marker['colorIndex'] = this.positionFormService.getSelectedColorIndex(color);
-      marker['position'] = marker['position'].toString()
+      let colorIndex  = this.positionFormService.getSelectedColorIndex(color);
+      let position = marker['position'].toString()
+      return {position, colorIndex}
     });
 
     this.cloneEditedMarkers();
