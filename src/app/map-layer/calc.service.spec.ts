@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async, inject } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 import {CalcService} from "./calc-service";
 
 describe('CalcServiceService', () => {
@@ -54,20 +54,4 @@ describe('CalcServiceService', () => {
     expect(result).toEqual("http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png");
   });
 
-  // toDegrees(radian:number) {
-  //   let deg:number = Cesium.Math.toDegrees(radian);
-  //   return ((deg % 360) + 360) % 360;
-  // }
-  //
-  // toRadians(degree:number) {
-  //   let pos_degree = ((degree % 360) + 360) % 360;
-  //   return Cesium.Math.toRadians(pos_degree);
-  // }
-  //
-  // toFixes7Obj(obj) {
-  //   _.forEach(obj, (val, key) => {
-  //     obj[key] = +(+val).toFixed(7)
-  //   });
-  //   return obj;
-  // }
 });

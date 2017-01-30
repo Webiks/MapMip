@@ -18,7 +18,7 @@ export class CalcService{
 
   toFixes7Obj(obj) {
     _.forEach(obj, (val, key) => {
-      obj[key] = +(+val).toFixed(7)
+      if(!isNaN(val)) obj[key] = +(+val).toFixed(7)
     });
     return obj;
   }

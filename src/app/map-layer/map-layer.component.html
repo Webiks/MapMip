@@ -1,6 +1,13 @@
-<app-position-form></app-position-form>
+
+<div id="nav-icon3" [class.open]="showTools" (click)="showTools  = !showTools">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<app-position-form *ngIf="showTools"></app-position-form>
 
 <div class="mapsCont" #mapsCont>
   <router-outlet></router-outlet>
 </div>
-

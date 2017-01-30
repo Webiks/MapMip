@@ -313,6 +313,7 @@ export class LayersComponent implements OnInit, OnChanges {
     this.addQueryModal.show();
   }
 
+
   initAddQuery() {
     this.add_query = {
       query_obj:{

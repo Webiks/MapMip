@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused-variable */
-import {async, ComponentFixture, TestBed, inject, fakeAsync, tick} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed, inject} from '@angular/core/testing';
 import {PositionFormComponent} from './position-form.component';
 import {RouterTestingModule} from "@angular/router/testing";
 import {Router} from "@angular/router";
@@ -11,7 +11,6 @@ import {ModalDirective} from "ng2-bootstrap";
 import {HttpModule} from "@angular/http";
 import {AjaxService} from "../ajax.service";
 import {Observable} from "rxjs";
-import {PositionFormService} from "./position-form.service";
 
 export let fake_Ajax_Service = {
   getLayerExam():Observable<any>{

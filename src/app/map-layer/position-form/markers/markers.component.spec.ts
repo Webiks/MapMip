@@ -1,8 +1,5 @@
 /* tslint:disable:no-unused-variable */
 import {async, ComponentFixture, TestBed, inject} from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
-
 import { MarkersComponent } from './markers.component';
 import {PositionFormModule} from "../position-form.module";
 import {RouterTestingModule} from "@angular/router/testing";
@@ -56,114 +53,78 @@ describe('MarkersComponent', () => {
     it('queryParams: should get markers from queryParamsHelperService, convert them to array of objects with str, put the result on markers_array and call cloneEditedMarkers', () => {
       spyOn(component, 'cloneEditedMarkers');
       let params:Params = {
-        markers: '(1,2,3),(4,5),(6,7,8)'
+        markers: '(1,2,3),(4,5,red),(6,7,8,green)'
       };
       component.queryParams(params);
-      expect(component.markers_array).toEqual([{str: '1,2,3'}, {str: '4,5,0'}, {str: '6,7,8'}]);
+      expect(component.markers_array).toEqual([{position: '1,2,3', colorIndex:positionFormService.getSelectedColorIndex("blue")}, {position: '4,5', colorIndex:positionFormService.getSelectedColorIndex("red")}, {position: '6,7,8', colorIndex:positionFormService.getSelectedColorIndex("green")}]);
       expect(component.cloneEditedMarkers).toHaveBeenCalled();
     });
 
-    it('cloneEditedMarkers: should copy markers_array values to edited_markers_array, and add each object key "disabled" with "true" value', ()=>{
-      component.markers_array = [
-        {str: '1,2,3'},
-        {str: '4,5,6'},
-      ];
+    it('cloneEditedMarkers: should copy markers_array values to edited_markers_array', ()=>{
+      component.markers_array = [1,2,3];
       component.cloneEditedMarkers();
-      expect(component.edited_markers_array).toEqual([
-        {str: '1,2,3',disabled:true},
-        {str: '4,5,6',disabled:true}
-      ])
+      expect(component.edited_markers_array).toEqual([1,2,3]);
     });
 
     it('rmvMarker: should get index and remove the object at that index from "edited_markers_array"', ()=>{
       component.edited_markers_array = [
-        {str: '1,2,3',disabled:true},
-        {str: '4,5,6',disabled:true}
+        {position: '1,2,3', colorIndex: 0},
+        {position: '4,5,6'}
       ];
       expect(component.edited_markers_array.length).toEqual(2);
       component.rmvMarker(1);
       expect(component.edited_markers_array.length).toEqual(1);
-      expect(component.edited_markers_array).toEqual([{str: '1,2,3',disabled:true}])
+      expect(component.edited_markers_array).toEqual([{position: '1,2,3', colorIndex: 0}])
     });
 
 
     it('parseMarkers: should get "edited_markers_array",map only str, return the string result from queryParamsHelperService', ()=>{
 
       let edited_markers_array = [
-        {str: '1,2,3',disabled:true},
-        {str: '4,5,0',disabled:true}
+        {position: '1,2', colorIndex: positionFormService.getSelectedColorIndex("blue")},
+        {position: '4,5,6', colorIndex: positionFormService.getSelectedColorIndex("blue")},
+        {position: '7,8', colorIndex: positionFormService.getSelectedColorIndex("green")},
+        {position: '7,8,9', colorIndex: positionFormService.getSelectedColorIndex("green")},
       ];
-
-      let result:string = component.parseMarkers(edited_markers_array);
-      expect(result).toEqual('(1,2,3),(4,5,0)');
+      expect(component.parseMarkers(edited_markers_array)).toEqual('(1,2),(4,5,6),(7,8,green),(7,8,9,green)');
     });
 
-    it('canApply: should compere between markers_array and edited_markers_array by looking for changes of "str" values and check regex validations of each "str" values', ()=> {
+    it('canApply: should compere between markers_array and edited_markers_array by looking for changes', ()=> {
 
       component.edited_markers_array = [
-        {str: '1,2,3',disabled:true},
-        {str: '4,5,0',disabled:false}
+        {position: '1,2,3', colorIndex: 0},
+        {position: '4,5,6', colorIndex: 1}
       ];
 
       component.markers_array = [
-        {str: '1,2,3',disabled:true},
-        {str: '4,5,0',disabled:true}
+        {position: '1,2,3', colorIndex: 0},
+        {position: '4,5,6', colorIndex: 1}
       ];
 
-      let no_difference_cannot_apply:boolean = component.canApply();
-      expect(no_difference_cannot_apply).toBeFalsy();
+      expect(component.canApply()).toBeFalsy();
 
       component.edited_markers_array = [
-        {str: '1,2,3',disabled:true},
-        {str: '4,5,0',disabled:false},
-        {str: '6,7,8',disabled:false}
+        {position: '1,2,3', colorIndex: 1},
+        {position: '4,5,6', colorIndex: 0}
       ];
 
       component.markers_array = [
-        {str: '1,2,3'},
-        {str: '4,5,0'}
+        {position: '1,2,3', colorIndex: 0},
+        {position: '4,5,6', colorIndex: 1}
       ];
-      fixture.detectChanges();
-      let with_difference_can_apply:boolean = component.canApply();
-      expect(with_difference_can_apply).toBeTruthy();
-
-      component.edited_markers_array = [
-        {str: '1,2,3',disabled:true},
-        {str: '4,5,jsjsjsjsjsjsjsjs',disabled:false},
-        {str: '6,7,8',disabled:false}
-      ];
-
-      component.markers_array = [
-        {str: '1,2,3',disabled:true},
-        {str: '4,5',disabled:true}
-      ];
-
-      let with_difference_but_invalid_regex_cannot_apply:boolean = component.canApply();
-      expect(with_difference_but_invalid_regex_cannot_apply).toBeFalsy();
+      expect(component.canApply()).toBeTruthy();
     });
 
 
     it('submitMarkers: should call submitMarkersEmitter.emit if canApply else should call smModal.hide', ()=> {
       spyOn(component.submitMarkersEmitter, 'emit');
-      spyOn(component.smModal, 'hide');
-
-      //cannot apply
-      component.edited_markers_array = [
-        {str: '1,2,3',disabled:false},
-        {str: '4,5,jsjsjsjsjsjsjsjs',disabled:false},
-        {str: '6,7,8',disabled:false}
-      ];
-
-      component.submitMarkers();
-      expect(component.smModal.hide).toHaveBeenCalled();
 
       //can apply
       component.edited_markers_array = [
-        {str: '1,2,3',disabled:true},
-        {str: '4,5,6',disabled:false},
-        {str: '6,7,8',disabled:false}
+        {position: '1,2,3', colorIndex: positionFormService.getSelectedColorIndex("red")},
+        {position: '4,5,6', colorIndex: positionFormService.getSelectedColorIndex("green")},
+        {position: '6,7,8', colorIndex: positionFormService.getSelectedColorIndex("black")}
       ];
-
       component.submitMarkers();
       expect(component.submitMarkersEmitter.emit).toHaveBeenCalled();
 
@@ -181,7 +142,7 @@ describe('MarkersComponent', () => {
       component.submitAddMarkers("11,12,13");
       expect(component.addModal.hide).toHaveBeenCalled();
       expect(component.edited_markers_array.length).toEqual(4)
-      expect(component.edited_markers_array[3]).toEqual({str:'11,12,13', disabled:true});
+      expect(component.edited_markers_array[3]).toEqual('11,12,13');
     });
 
 
@@ -197,6 +158,8 @@ describe('MarkersComponent', () => {
     });
 
   });
+
+
   describe('<= Testing template =>', () => {
 
     it('click cancel button should hide smModal', ()=> {
@@ -225,7 +188,7 @@ describe('MarkersComponent', () => {
       fixture.detectChanges();
       expect(component.submitMarkers).toHaveBeenCalled();
 
-    })
+    });
 
     it('click ok button should call submitMarkers with "true"', ()=> {
       component.edited_markers_array = [
@@ -243,35 +206,16 @@ describe('MarkersComponent', () => {
       expect(component.submitMarkers).toHaveBeenCalledWith(true);
 
     })
-
-    it('should list of markers includes items from "edited_markers_array" "disabled" value should disabled the input', ()=> {
-      component.edited_markers_array = [
-        {str: '1,2,3',disabled:true},
-        {str: '4,5,6',disabled:true},
-        {str: '7,8,9',disabled:false}
-      ];
-
-      fixture.detectChanges();
-      let list_items = element.querySelectorAll(".list-group-item");
-      expect(list_items.length).toEqual(3);
-
-      let first_input = list_items[0].querySelector("input");
-      expect(first_input.attributes['ng-reflect-is-disabled'].value).toEqual("true");
-      let middle_input = list_items[1].querySelector("input");
-      expect(middle_input.attributes['ng-reflect-is-disabled'].value).toEqual("true");
-      let last_input = list_items[2].querySelector("input");
-      expect(last_input.attributes['ng-reflect-is-disabled']).toBeUndefined();
-
-    })
-
   });
+
   describe("markerCenter", ()=>{
     it('should create marker with the of the current center lng,lat ', () => {
       component.lng = 2;
       component.lat = 1;
       spyOn(queryParamsHelperService, 'addMarker');
+      positionFormService.selectedColorIndex = positionFormService.getSelectedColorIndex("red");
       component.markerCenter();
-      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith([2,1]);
+      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith({position: [2,1], color:"red"});
     });
 
     it('markerCenter btn should call markerCenter function by click', ()=>{
@@ -289,6 +233,24 @@ describe('MarkersComponent', () => {
     component.togglePicked();
     expect(positionFormService.onPicked).toBeTruthy();
     expect(positionFormService.markerPickerEmitter.emit).toHaveBeenCalledWith(true);
+  });
+
+  describe("Remove all markers ",()=>{
+    it("removeAllMarkers Should remove all markers", ()=>{
+      component.removeAllMarkers();
+      expect(component.edited_markers_array).toEqual([]);
+    });
+
+    it("click on removeAllMarkers button should call removeAllMarkers()",()=>{
+      let removeAll_button = element.querySelector("button.glyphicon.glyphicon-trash.btn.btn-danger.pull-right");
+      spyOn(component, 'removeAllMarkers');
+      removeAll_button.click();
+      fixture.detectChanges();
+      expect(component.removeAllMarkers).toHaveBeenCalled();
+
+
+    })
+
   })
 
 });

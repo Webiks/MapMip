@@ -1,13 +1,14 @@
-import {Component, OnInit, style, state, animate, transition, trigger, ViewChild, ElementRef} from '@angular/core';
-import {Router, UrlTree} from "@angular/router";
-import {PositionFormService} from "./position-form/position-form.service";
+import {Component, OnInit, style, state, animate, transition, trigger, ViewChild} from '@angular/core';
 
 @Component({
   selector: 'app-map-layer',
   templateUrl: './map-layer.component.html',
   styleUrls: ['./map-layer.component.scss']
 })
+
 export class MapLayerComponent implements OnInit {
+  public showTools:boolean = false;
+
   constructor() {window['CESIUM_BASE_URL'] = 'assets/Cesium';}
 
   ngOnInit() {

@@ -7,3 +7,64 @@
   margin: 20px auto;
   display: block;
 }
+
+button.show-tools{
+  position: absolute;
+  display: none;
+}
+
+
+
+
+#nav-icon3{
+  display: block;
+  left: 25px;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  z-index: 1200;
+  transform: rotate(0deg);
+  transition: .5s ease-in-out;
+  cursor: pointer;
+  span{
+    display: block;
+    position: absolute;
+    height: 4px;
+    width: 100%;
+    background: #5bc0de;
+    border-radius: 9px;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .25s ease-in-out;
+    &:nth-child(1){
+      top: 0px;
+    }
+    &:nth-child(2), &:nth-child(3){
+      top: 10px;
+    }
+    &:nth-child(4){
+      top: 20px;
+    }
+  }
+  &.open{
+    left: 110px;
+    width: 15px;
+    top: 15px;
+    transform: rotate(90deg);
+    span{
+      background:#d9534f;
+      &:nth-child(1) , &:nth-child(4){
+        top: 18px;
+        width: 0%;
+        left: 50%;
+      }
+      &:nth-child(2) {
+        transform: rotate(45deg);
+      }
+      &:nth-child(3) {
+        transform: rotate(-45deg);
+      }
+    }
+  }
+}

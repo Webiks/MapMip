@@ -1,4 +1,7 @@
-import {Component, OnInit, Output} from '@angular/core';
+import {
+  Component, OnInit, style, animate, transition, trigger, HostBinding, Input,
+  OnChanges, SimpleChanges
+} from '@angular/core';
 import {Router, ActivatedRoute, Params, UrlTree, NavigationExtras} from "@angular/router";
 import {ModalDirective} from "ng2-bootstrap";
 import {QueryParamsHelperService} from "../query-params-helper.service";
@@ -6,13 +9,31 @@ import * as _ from 'lodash';
 import {Permissions} from "./permissions.enum";
 import {PositionFormService} from "./position-form.service";
 
+const position_form_animations = [trigger('showTools',
+  [transition(':enter', [
+    style({ maxHeight:'0', opacity: 0}),
+    animate('0.5s', style({ maxHeight: '200px', opacity: 1 }))
+  ]),
+    transition(':leave', [
+      style({ maxHeight:'200px', opacity: 1}),
+      animate('0.5s', style({ maxHeight:'0', opacity: 0 }))
+    ])]
+)];
+
 @Component({
   selector: 'app-position-form',
   templateUrl: './position-form.component.html',
-  styleUrls: ['./position-form.component.scss']
+  styleUrls: ['./position-form.component.scss'],
+  animations: position_form_animations
 })
 
 export class PositionFormComponent implements OnInit {
+
+  @HostBinding("style.display") display = "block";
+  @HostBinding("style.height") height = "auto";
+  @HostBinding("style.max-height") maxHeight = "200px";
+  @HostBinding('@showTools') showTools ="true";
+
 
   public params: {
     lng:{val?: number, permissions: number[], input_type?:string},
@@ -41,7 +62,6 @@ export class PositionFormComponent implements OnInit {
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService) {}
-
 
   submitMarkers($event: {hide:boolean, smModal:ModalDirective, parsed_markers:string}) {
     this.params.markers.val = $event.parsed_markers;
@@ -85,20 +105,20 @@ export class PositionFormComponent implements OnInit {
     let queryParams:{[key: string]: number | string | boolean} = {};
 
     _.forEach(this.params, (obj, key) => {
-        let val = obj.val;
-        switch (key) {
-          case 'mode3d':
-            val = obj.val == false ? 0 : 1;
-            break;
-          case 'rotate':
-            if(this.router.isActive("/openlayers", false)) {
-              val = obj.val == false ? 0 : undefined;
-            } else {
-              val = obj.val == true ? 1 : undefined;
-            }
-            break;
-        }
-        queryParams[key] = val;
+      let val = obj.val;
+      switch (key) {
+        case 'mode3d':
+          val = obj.val == false ? 0 : 1;
+          break;
+        case 'rotate':
+          if(this.router.isActive("/openlayers", false)) {
+            val = obj.val == false ? 0 : undefined;
+          } else {
+            val = obj.val == true ? 1 : undefined;
+          }
+          break;
+      }
+      queryParams[key] = val;
     });
 
     let navigationExtras:NavigationExtras = this.queryParamsHelperService.getQuery(queryParams);
@@ -131,3 +151,5 @@ export class PositionFormComponent implements OnInit {
   }
 
 }
+
+

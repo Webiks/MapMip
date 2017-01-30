@@ -1,0 +1,21 @@
+.picked-group{
+  ul{
+    min-width: inherit;
+    li{
+      a{
+        img{
+          height: 18px;
+        }
+      }
+    }
+  }
+  button.picked-button{
+    img{
+      height: 18px;
+    }
+    &.active{
+      background: rgba(50, 134, 203, 0.35);
+    }
+  }
+}
+

@@ -16,10 +16,7 @@ describe('LeafletComponent', () => {
   let fixture: ComponentFixture<LeafletComponent>;
   let queryParamsHelperService:QueryParamsHelperService;
   let router:Router;
-  let icon_layer = L.icon(<L.IconOptions>{
-    iconUrl: '/assets/Leaflet/images/marker-icon.png',
-    shadowUrl: '/assets/Leaflet/images/marker-shadow.png',
-  });
+  let positionFormService:PositionFormService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,11 +30,12 @@ describe('LeafletComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(inject([QueryParamsHelperService, Router],(_queryParamsHelperService:QueryParamsHelperService, _router:Router) => {
+  beforeEach(inject([QueryParamsHelperService, Router, PositionFormService],(_queryParamsHelperService:QueryParamsHelperService, _router:Router, _positionFormService:PositionFormService) => {
     fixture = TestBed.createComponent(LeafletComponent);
     component = fixture.componentInstance;
     queryParamsHelperService = _queryParamsHelperService;
     router = _router;
+    positionFormService = _positionFormService;
     fixture.detectChanges();
   }));
 
@@ -217,72 +215,77 @@ describe('LeafletComponent', () => {
     });
 
     it('anyMarkersMapChanges: should get params and compere between markers on params and markers on map', ()=>{
-      let params_markers = [1,2,3];
-      let map_markers = [1,2,3,4]
-      spyOn(markers, 'getMarkersPosition').and.callFake(()=>params_markers);
-      spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(()=>map_markers);
+      let params = {};
+      let params_markers = [{position: [30,20], color:"green"}, {position: [60,50]}];
+      let map_markers = [{position: [30,20], color:"green"}, {position: [60,50], color:"blue"}];
+      spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(() => params_markers);
+      spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers);
+      expect(markers.anyMarkersMapChanges(params)).toBeFalsy();
+      params_markers[1]['color'] = "red";
       expect(markers.anyMarkersMapChanges({})).toBeTruthy();
-      params_markers = [1,2,3,4,5];
-      map_markers    = [1,2,3,4,5];
-      expect(markers.anyMarkersMapChanges({})).toBeFalsy();
     });
 
-    it('getMarkersPosition should return positions array ( [lng, lat], [lng, lat],...)', ()=>{
-      L.marker([20,30], {icon:icon_layer}).addTo(component.map);
-      L.marker([40,50], {icon:icon_layer}).addTo(component.map);
+    it('getMarkersPosition should return positions array ( {position,color}, {position,color},...)', ()=>{
+      let marker_a = {position: [20,30], color:"red"};
+      let marker_b = {position: [40,50]};
+      markers.getBaseMarker(marker_a).addTo(component.map);
+      markers.getBaseMarker(marker_b).addTo(component.map);
       expect(markers.getMarkersPosition().length).toEqual(2);
-      expect(markers.getMarkersPosition()[0]).toEqual([30,20]);
-      expect(markers.getMarkersPosition()[1]).toEqual([50,40]);
+      expect(markers.getMarkersPosition()[0]).toEqual({position: [20, 30], color:"red"});
+      expect(markers.getMarkersPosition()[1]).toEqual({position: [40, 50], color:"blue"});
     });
 
     it('setMarkersChanges: should call addMarkersViaUrl with params_markers_position and call removeMarkersViaUrl with map_markers_positions', ()=>{
-      let params_markers_position:Array<[number, number]> = [[1,2], [4,5]];
-      let map_markers_positions:Array<[number, number]> = [[6,7], [8,9]];
-
-      spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(() => params_markers_position);
-      spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers_positions);
-
+      let params_markers = [{position: [30,20], color:"green"}, {position: [60,50]}];
+      let map_markers = [{position: [30,20], color:"green"}, {position: [60,50], color:"blue"}];
+      spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(() => params_markers);
+      spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers);
       spyOn(markers, 'addMarkersViaUrl');
       spyOn(markers, 'removeMarkersViaUrl');
       markers.setMarkersChanges({});
-      expect(markers.addMarkersViaUrl).toHaveBeenCalledWith(params_markers_position);
-      expect(markers.removeMarkersViaUrl).toHaveBeenCalledWith(map_markers_positions);
+      expect(markers.addMarkersViaUrl).toHaveBeenCalledWith(params_markers, map_markers);
+      expect(markers.removeMarkersViaUrl).toHaveBeenCalledWith(params_markers, map_markers);
     });
 
-    it('addMarkersViaUrl: should get positions array from params. for each position create marker if not exists on map', ()=>{
-      let params_markers_position:Array<[number, number]> = [[1,2], [3,4]];
-      markers.addMarkersViaUrl(params_markers_position);
-      let position_of_map_markers = markers.getMarkersPosition();
-      expect(position_of_map_markers).toEqual(params_markers_position);
+    it('addMarkersViaUrl: should get {positions,color} array from params. for each {positions,color} create marker if not exists on map', ()=>{
+      let fake_marker = {addTo: ()=>{}};
+      spyOn(fake_marker, "addTo");
+      spyOn(markers, 'getBaseMarker').and.callFake(() => fake_marker);
+      let params_markers = [{position: [30,20], color:"green"}, {position: [60,50], color:"red"}];
+      let map_markers = [{position: [30,20], color:"green"}];
+      markers.addMarkersViaUrl(params_markers, map_markers);
+      expect(markers.getBaseMarker).toHaveBeenCalledWith({position: [60,50], color:"red"});
+      expect(markers.getBaseMarker).toHaveBeenCalledTimes(1);
+      expect(fake_marker.addTo).toHaveBeenCalledTimes(1);
     });
 
-    it('removeMarkersViaUrl: addMarkersViaUrl: should get positions array from map. for each position remvoe marker if not exists on params', ()=>{
-      L.marker([2,1], {icon:icon_layer}).addTo(component.map);
-      let marker_to_remove = L.marker([4,3], {icon:icon_layer});
-      marker_to_remove.addTo(component.map);
+    it('removeMarkersViaUrl: should get {positions,color} array from map. for each {position,color} remove marker if not exists on params', ()=>{
+      let not_exist_marker = {position: [60,50], color:"red"};
+      spyOn(component.map, "removeLayer");
+      spyOn(markers, 'getMarkerViaMarkerObj').and.callFake(marker => marker);
+      let params_markers = [{position: [30,20], color:"green"}];
+      let map_markers = [{position: [30,20], color:"green"}, not_exist_marker];
+      markers.removeMarkersViaUrl(params_markers, map_markers);
 
-      let position_of_map_markers = markers.getMarkersPosition(); // [[1,2],[3,4]]
-      expect(markers.getMarkersPosition()).toEqual([[1,2],[3,4]]);
-
-      component.currentParams = {markers: '(1,2)'}; // (3,4) should be removed
-      markers.removeMarkersViaUrl(position_of_map_markers);
-
-      expect(markers.getMarkersPosition()).toEqual([[1,2]]);
+      expect(markers.getMarkerViaMarkerObj).toHaveBeenCalledTimes(1);
+      expect(component.map.removeLayer).toHaveBeenCalledWith(not_exist_marker);
+      expect(component.map.removeLayer).toHaveBeenCalledTimes(1);
     });
 
-    it('markerExistOnMap: should get one position and return if there is marker on map with that position', ()=>{
-      L.marker([2,1], {icon:icon_layer}).addTo(component.map);
-      expect(markers.markerExistOnMap([1,2])).toBeTruthy();
-      expect(markers.markerExistOnMap([3,4])).toBeFalsy();
+    it('markerExistOnMap: should get one {position,color} and return if there is marker on map with that {position,color}', ()=>{
+      let existMarkerObj = {position: [60,50]};
+      let notExistMarkerObj = {position: [60,50], color: "red"};
+      let map_markers = [{position: [60,50], color:"blue"}];
+      expect(markers.markerExistOnMap(map_markers, existMarkerObj)).toBeTruthy();
+      expect(markers.markerExistOnMap(map_markers, notExistMarkerObj)).toBeFalsy();
     });
 
     it('markerExistOnParams: should get one position and return if there is marker on params with that position', ()=>{
-      component.currentParams = {
-        markers: '(1,2),(3,4)'
-      };
-      expect(markers.markerExistOnParams([1,2])).toBeTruthy();
-      expect(markers.markerExistOnParams([3,4])).toBeTruthy();
-      expect(markers.markerExistOnParams([5,6])).toBeFalsy();
+      let existMarkerObj = {position: [60,50], color:"blue"};
+      let notExistMarkerObj = {position: [60,50], color:"red"};
+      let params_markers = [{position: [60,50]}];
+      expect(markers.markerExistOnParams(params_markers, existMarkerObj)).toBeTruthy();
+      expect(markers.markerExistOnParams(params_markers, notExistMarkerObj)).toBeFalsy();
     });
 
 
@@ -299,12 +302,10 @@ describe('LeafletComponent', () => {
     it("leftClickInputAction should get event with latlng, and call addMarker with latlng", () => {
       spyOn(queryParamsHelperService,'addMarker');
       let event:{latlng: L.LatLng} = {latlng: new L.latLng(30,30)};
+      positionFormService.selectedColorIndex = positionFormService.getSelectedColorIndex("black");
       markers.leftClickInputAction(event);
-      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith([30,30]);
+      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith({position: [30,30], color: "black"});
     })
-
-
-
 
   });
 

@@ -3,7 +3,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { QueryParamsHelperService } from './query-params-helper.service';
 import {Params} from "@angular/router";
-import any = jasmine.any;
 import {CalcService} from "./calc-service";
 import {RouterTestingModule} from "@angular/router/testing";
 
@@ -82,39 +81,40 @@ describe('QueryParamsHelperService', () => {
   });
 
 
-  it('queryMarkers should return Array of markers with 3 numbers(lng,lat,height), in addition should ignore spaces', () => {
-    params['markers'] = '(1 , 2)  ,  (4 ,5 ,6)  ,  (7 , 8 , 9)';
-    let markersResult = queryParamsHelperService.queryMarkers(params);
-    expect(markersResult).toEqual(jasmine.any(Array));
-    expect(markersResult.length).toEqual(3);
-    expect(markersResult[0]).toEqual([1,2,0]);
-    expect(markersResult[1]).toEqual([4,5,6]);
-    expect(markersResult[2]).toEqual([7,8,9]);
+  it('queryMarkers should call markersStrToArray with markers_str', () => {
+    spyOn(queryParamsHelperService, 'markersStrToArray');
+    let markers = '(1 , 2)  ,  (1,2,3) , (1 ,2 ,green)  , (1 ,2 ,3, yellow)';
+    params['markers'] = markers;
+    queryParamsHelperService.queryMarkers(params);
+    expect(queryParamsHelperService.markersStrToArray).toHaveBeenCalledWith(markers);
   });
 
   it('queryMarkersNoHeight should return Array of markers with only 2 numbers(lng,lat)', () => {
-    params['markers'] = '(1 , 2)  ,  (4 ,5 ,6654654654)  ,  (7 , 8 , 913133131)';
+    params['markers'] = '(1 , 2)  ,  (1,2,3) , (1 ,2 ,green)  , (1 ,2 ,3, yellow)';
     let markersResult = queryParamsHelperService.queryMarkersNoHeight(params);
     expect(markersResult).toEqual(jasmine.any(Array));
-    expect(markersResult.length).toEqual(3);
-    expect(markersResult[0]).toEqual([1,2]);
-    expect(markersResult[1]).toEqual([4,5]);
-    expect(markersResult[2]).toEqual([7,8]);
+    expect(markersResult.length).toEqual(4);
+    expect(markersResult[0]).toEqual({position: [1,2]});
+    expect(markersResult[1]).toEqual({position:[1,2]});
+    expect(markersResult[2]).toEqual({position:[1,2], color:"green"});
+    expect(markersResult[3]).toEqual({position:[1,2], color:"yellow"});
   });
 
-  it('markersStrToArray should get string of markers and parsing them to array of positions', () => {
-    let markerStr:string = '(1 , 2)  ,  (4 ,5 ,6.654654654)  ,  (7 , 8 , 9.13133131)';
-    let markersArray:Array<[number, number, number]> = queryParamsHelperService.markersStrToArray(markerStr);
-    expect(markersArray[0]).toEqual([1,2,0]);
-    expect(markersArray[1]).toEqual([4,5,6.654654654])
-    expect(markersArray[2]).toEqual([7,8,9.13133131])
-
+  it('markersStrToArray should return Array of markers with 3 numbers(lng,lat,height), in addition should ignore spaces', () => {
+    let markerStr:string = '(1 , 2)  ,  (1,2,3) , (1 ,2 ,green)  , (1 ,2 ,3, yellow)';
+    let markersResult = queryParamsHelperService.markersStrToArray(markerStr);
+    expect(markersResult).toEqual(jasmine.any(Array));
+    expect(markersResult.length).toEqual(4);
+    expect(markersResult[0]).toEqual({position: [1,2]});
+    expect(markersResult[1]).toEqual({position:[1,2,3]});
+    expect(markersResult[2]).toEqual({position:[1,2], color:"green"});
+    expect(markersResult[3]).toEqual({position:[1,2,3], color:"yellow"});
   });
 
   it('markersArrayToStr should get array of positions of markers and parsing them to string', () => {
-    let markersArray:Array<[number, number, number]> = [[1,2,0],[4,5,6.654654654], [7,8,9.13133131]];
+    let markersArray = [{position: [1,2]}, {position:[1,2,3]}, {position:[1,2], color:"green"}, {position:[1,2,3], color:"yellow"}];
     let markerStr:string = queryParamsHelperService.markersArrayToStr(markersArray);
-    expect(markerStr).toEqual('(1,2,0),(4,5,6.654654654),(7,8,9.13133131)');
+    expect(markerStr).toEqual("(1,2),(1,2,3),(1,2,green),(1,2,3,yellow)");
   });
 
   it('anyMarkersParamsChanges should return compere markers between two params object', () => {
@@ -124,15 +124,13 @@ describe('QueryParamsHelperService', () => {
     let currentParams:Params = {
       markers: '(1,2,3),(4,5,6),(7,8,9)'
     };
-    let result:boolean = queryParamsHelperService.anyMarkersParamsChanges(prevParams, currentParams);
-    expect(result).toBeFalsy();
-    prevParams['markers']    = '(1,2),(3,4)';
-    currentParams['markers'] = '(1,2,8.666),(3,4)';
-    result= queryParamsHelperService.anyMarkersParamsChanges(prevParams, currentParams);
-    expect(result).toBeTruthy();
+    expect(queryParamsHelperService.anyMarkersParamsChanges(prevParams, currentParams)).toBeFalsy();
+    prevParams['markers']    = '(1,2,red),(3,4)';
+    currentParams['markers'] = '(1,2),(3,4)';
+    expect(queryParamsHelperService.anyMarkersParamsChanges(prevParams, currentParams)).toBeTruthy();
   });
 
-  it('tmsObjecttToUrl should get object and parse him to url', ()=>{
+  it('layerObjecttToUrl should get object and parse him to url', ()=>{
     let url_obj = {
       url: 'the_tms_of_url',
       p1: 'p1_value',
@@ -155,17 +153,6 @@ describe('QueryParamsHelperService', () => {
     layers_array = queryParamsHelperService.queryLayers(params);
     expect(layers_array.length).toEqual(2);
   });
-
-  // it('anyLayersChanges should return boolean of compere between prev and current params["layers"] ', () => {
-  //   let c_params:Params = {
-  //     layers: [{url: 'tms_url1'},{url: 'tms_url2'}]
-  //   };
-  //   let p_params:Params = {
-  //     layers: [{url: 'tms_url1'},{url: 'tms_url3'}]
-  //   };
-  //   let anyLayersChanges:boolean = queryParamsHelperService.anyLayersChanges(p_params,c_params);
-  //   expect(anyLayersChanges).toBeTruthy();
-  // });
 
 
 });

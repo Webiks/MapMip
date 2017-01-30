@@ -7,6 +7,7 @@ import { MarkersComponent } from './markers/markers.component';
 import { JWBootstrapSwitchModule } from 'jw-bootstrap-switch-ng2';
 import {LayersComponent} from "./layers/layers.component";
 import {PositionFormService} from "./position-form.service";
+import { ColorPickerComponent } from './color-picker/color-picker.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,7 @@ import {PositionFormService} from "./position-form.service";
     Ng2BootstrapModule,
     JWBootstrapSwitchModule
   ],
-  declarations: [PositionFormComponent, MarkersComponent, LayersComponent],
+  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent],
   exports: [PositionFormComponent],
   providers:[PositionFormService]
 })
