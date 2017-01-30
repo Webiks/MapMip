@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Params, NavigationExtras, Router, UrlTree} from "@angular/router";
 import * as _ from 'lodash';
 import {CalcService} from "./calc-service";
-import * as rison from "rison";
+declare let rison;
 
 @Injectable()
 export class QueryParamsHelperService{
