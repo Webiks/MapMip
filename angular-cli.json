@@ -23,7 +23,8 @@
         "../node_modules/leaflet/dist/leaflet.css",
         "../node_modules/openlayers/css/ol.css",
         "../node_modules/cesium/Build/Cesium/Widgets/widgets.css",
-        "../node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css"
+        "../node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css",
+        "../node_modules/nouislider/distribute/nouislider.min.css"
       ],
       "scripts": ["../node_modules/rison/js/rison.js"],
       "environments": {

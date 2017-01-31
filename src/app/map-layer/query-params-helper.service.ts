@@ -44,10 +44,12 @@ export class QueryParamsHelperService{
     return +params['mode3d'] == 0 ? 0 : 1;
   }
   queryRotate(params:Params):number {
-    return +params['rotate']  ;
+    return +params['rotate'];
   }
-
-    addMarker(marker){
+  querySize(params:Params):[number,number]{
+    return rison.decode_array(params['size']);
+  }
+  addMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let markers_array:Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
     markers_array.push(marker);
@@ -131,13 +133,6 @@ export class QueryParamsHelperService{
       if(color) marker_obj['color']= color;
       return marker_obj;
     });
-
-    // markersArrayObject.forEach( (markerObj, index, array) => {
-    //   if (_.size(markerObj.position) === 2) {
-    //     markerObj.position.push(0);
-    //   }
-    // });
-
 
     return markersArrayObject;
   }

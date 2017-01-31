@@ -14,8 +14,10 @@ module.exports = function (config) {
     files: [
       { pattern: './src/test.ts', watched: false },
       { pattern: './src/assets/Markers/*.png', watched: false },
+      { pattern: './node_modules/rison/js/*.js', watched: false}
     ],
     proxies: {
+      "/assets/Cesium/": "http://mapmip.webiks.com/assets/Cesium/",
       "/assets/": "/base/src/assets/"
     },
     preprocessors: {

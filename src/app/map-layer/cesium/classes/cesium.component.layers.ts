@@ -1,9 +1,23 @@
-import {CesiumComponent} from "./cesium.component";
+import {CesiumComponent} from "../cesium.component";
 import {Params} from "@angular/router";
 import * as _ from 'lodash';
 
-export class Layers{
-  constructor(private cesium:CesiumComponent) {}
+export class CesiumLayers{
+  public queryParamsSubscriber;
+
+  constructor(private cesium:CesiumComponent) {
+    this.queryParamsSubscriber = cesium.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
+  }
+
+  queryParams(params:Params){
+    if(this.cesium.queryParamsHelperService.anyLayersChanges(this.cesium.prevParams, this.cesium.currentParams) || this.noTileLayer()) {
+      this.setLayersChanges(params);
+    }
+  }
+
+  destroy() {
+    this.queryParamsSubscriber.unsubscribe();
+  }
 
   getLayerFromLayerObj(layer_obj:{source:string}) {
     switch (layer_obj.source) {

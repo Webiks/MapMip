@@ -7,12 +7,14 @@ import {Component, OnInit, style, state, animate, transition, trigger, ViewChild
 })
 
 export class MapLayerComponent implements OnInit {
-  public showTools:boolean = false;
-
-  constructor() {window['CESIUM_BASE_URL'] = 'assets/Cesium';}
+  public showTools:boolean = true;
+  slides = [1,2,3]
+  someRange = 0
+  constructor() {}
 
   ngOnInit() {
   }
+  start(){}
 
 }
 

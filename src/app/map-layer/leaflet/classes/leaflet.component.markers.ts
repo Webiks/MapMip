@@ -1,11 +1,29 @@
-import {LeafletComponent} from "./leaflet.component";
+import {LeafletComponent} from "../leaflet.component";
 import {Params} from "@angular/router";
 import * as _ from 'lodash'
 import {SafeStyle} from "@angular/platform-browser";
 
 export class LeafletMarkers {
+  public queryParamsSubscriber;
 
-  constructor(private leaflet:LeafletComponent){}
+  constructor(private leaflet:LeafletComponent){
+    this.queryParamsSubscriber = leaflet.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
+    leaflet.positionFormService.markerPickerEmitter.subscribe(this.toggleMarkerPicker.bind(this));
+    if(leaflet.positionFormService.onPicked) this.toggleMarkerPicker.bind(this)(true);
+  }
+
+  queryParams(params:Params){
+    let params_changes:boolean = this.leaflet.queryParamsHelperService.anyMarkersParamsChanges(this.leaflet.prevParams, this.leaflet.currentParams);
+    let map_changes:boolean = this.anyMarkersMapChanges(params);
+
+    if(params_changes && map_changes) {
+      this.setMarkersChanges(params);
+    }
+  }
+
+  destroy() {
+    this.queryParamsSubscriber.unsubscribe();
+  }
 
   getCursorStyle(): void | SafeStyle {
     if(this.leaflet.positionFormService.onPicked) {

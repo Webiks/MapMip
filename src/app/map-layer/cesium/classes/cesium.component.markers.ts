@@ -1,19 +1,37 @@
 import {Params} from "@angular/router";
-import {CesiumComponent} from "./cesium.component";
+import {CesiumComponent} from "../cesium.component";
 import * as _ from 'lodash';
 import {SafeStyle} from "@angular/platform-browser";
 
-const DEFAULT_MARKER_COLOR = "blue";
-
-export class Markers {
-
+export class CesiumMarkers {
   public cesiumHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.container.nativeElement);
 
   public marker_picker = {
     not_allowed: false
   };
 
-  constructor(private cesium:CesiumComponent){}
+  queryParamsSubscriber;
+
+  constructor(private cesium:CesiumComponent){
+    this.queryParamsSubscriber = cesium.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
+    cesium.positionFormService.markerPickerEmitter.subscribe(this.toggleMarkerPicker.bind(this));
+    if(cesium.positionFormService.onPicked) this.toggleMarkerPicker.bind(this)(true);
+  }
+
+
+  destroy() {
+    this.queryParamsSubscriber.unsubscribe();
+    this.cesiumHandler.destroy();
+  }
+
+  queryParams(params:Params){
+    let params_changes:boolean = this.cesium.queryParamsHelperService.anyMarkersParamsChanges(this.cesium.prevParams, this.cesium.currentParams);
+    let map_changes:boolean = this.anyMarkersMapChanges(params);
+
+    if(params_changes && map_changes) {
+      this.setMarkersChanges(params);
+    }
+  }
 
   getCursorStyle(): void | SafeStyle {
     if(this.cesium.positionFormService.onPicked) {

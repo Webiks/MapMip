@@ -1,4 +1,4 @@
-import {OpenlayersComponent} from "./openlayers.component";
+import {OpenlayersComponent} from "../openlayers.component";
 import {Params} from "@angular/router";
 import * as _ from 'lodash';
 import * as ol from "openlayers";
@@ -7,8 +7,28 @@ import {SafeStyle} from "@angular/platform-browser";
 export class OpenlayersMarkers {
 
   public leftClickHandler;
+  public queryParamsSubscriber;
 
-  constructor(private openlayers:OpenlayersComponent){}
+  constructor(private openlayers:OpenlayersComponent){
+
+    this.queryParamsSubscriber = openlayers.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
+    openlayers.positionFormService.markerPickerEmitter.subscribe(this.toggleMarkerPicker.bind(this));
+    if(openlayers.positionFormService.onPicked) this.toggleMarkerPicker.bind(this)(true);
+
+  }
+
+
+  queryParams(params:Params):void {
+    let params_changes:boolean = this.openlayers.queryParamsHelperService.anyMarkersParamsChanges(this.openlayers.prevParams, params);
+    let map_changes:boolean = this.anyMarkersMapChanges(params);
+    if(params_changes && map_changes) {
+      this.setMarkersChanges(params);
+    }
+  }
+
+  destroy() {
+    this.queryParamsSubscriber.unsubscribe();
+  }
 
   getCursorStyle(): void | SafeStyle {
     if(this.openlayers.positionFormService.onPicked) {

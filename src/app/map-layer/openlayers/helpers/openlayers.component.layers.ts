@@ -1,10 +1,25 @@
 import {Params} from "@angular/router";
-import {OpenlayersComponent} from "./openlayers.component";
+import {OpenlayersComponent} from "../openlayers.component";
 import * as _ from 'lodash';
+import * as ol from 'openlayers';
 
 export class OpenlayersLayers {
+  public queryParamsSubscriber;
 
-  constructor(private openlayers:OpenlayersComponent){}
+  constructor(private openlayers:OpenlayersComponent){
+    this.queryParamsSubscriber = openlayers.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
+    if(this.noTileLayer())  this.addBaseLayer();
+  }
+
+
+  queryParams(params:Params):void {
+    if(this.openlayers.queryParamsHelperService.anyLayersChanges(this.openlayers.prevParams, this.openlayers.currentParams)) {
+      this.setLayersChanges(params);
+    }
+  }
+  destroy() {
+    this.queryParamsSubscriber.unsubscribe();
+  }
 
   noTileLayer():boolean {
     return _.isEmpty(this.getTileLayersArray())

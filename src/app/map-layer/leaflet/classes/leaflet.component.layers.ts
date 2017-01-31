@@ -1,10 +1,24 @@
-import {LeafletComponent} from "./leaflet.component";
+import {LeafletComponent} from "../leaflet.component";
 import {Params} from "@angular/router";
 import * as _ from 'lodash'
 
 export class LeafletLayers {
-  constructor(private leaflet:LeafletComponent){}
+  public queryParamsSubscriber;
 
+  constructor(private leaflet:LeafletComponent){
+    if(this.noTileLayer())  this.addBaseLayer();
+    this.queryParamsSubscriber = leaflet.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
+  }
+
+  queryParams(params:Params){
+    if(this.leaflet.queryParamsHelperService.anyLayersChanges(this.leaflet.prevParams, this.leaflet.currentParams)) {
+      this.setLayersChanges(params);
+    }
+  }
+
+  destroy() {
+    this.queryParamsSubscriber.unsubscribe();
+  }
 
   setLayersChanges(params:Params) {
     let params_tms_array:Array<Object> = this.leaflet.queryParamsHelperService.queryLayers(params);

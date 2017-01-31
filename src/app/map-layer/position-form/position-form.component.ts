@@ -12,10 +12,10 @@ import {PositionFormService} from "./position-form.service";
 const position_form_animations = [trigger('showTools',
   [transition(':enter', [
     style({ maxHeight:'0', opacity: 0}),
-    animate('0.5s', style({ maxHeight: '200px', opacity: 1 }))
+    animate('0.5s', style({ maxHeight: '500px', opacity: 1 }))
   ]),
     transition(':leave', [
-      style({ maxHeight:'200px', opacity: 1}),
+      style({ maxHeight:'500px', opacity: 1}),
       animate('0.5s', style({ maxHeight:'0', opacity: 0 }))
     ])]
 )];
@@ -31,7 +31,7 @@ export class PositionFormComponent implements OnInit {
 
   @HostBinding("style.display") display = "block";
   @HostBinding("style.height") height = "auto";
-  @HostBinding("style.max-height") maxHeight = "200px";
+  @HostBinding("style.max-height") maxHeight = "500px";
   @HostBinding('@showTools') showTools ="true";
 
 
@@ -46,7 +46,8 @@ export class PositionFormComponent implements OnInit {
     mode3d:{val?: boolean, permissions: number[], input_type?:string},
     rotate:{val?: boolean, permissions: number[], input_type?:string},
     markers:{val?: string, permissions: number[], input_type?:string},
-    layers: {val?: string, permissions: number[], input_type?:string}
+    layers: {val?: string, permissions: number[], input_type?:string},
+    size: {val?: string, permissions: number[], input_type?:string}
   } = {
     lng:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
     lat:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
@@ -58,7 +59,8 @@ export class PositionFormComponent implements OnInit {
     mode3d:{permissions: [Permissions['/cesium']], input_type: 'Bswitch'},
     rotate:{permissions: [Permissions['/openlayers'], Permissions['/cesium?mode3d=0']], input_type: 'Bswitch'},
     markers:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-markers'},
-    layers: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-layers'}
+    layers: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-layers'},
+    size: {permissions: [Permissions['/leaflet']]}
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService) {}
