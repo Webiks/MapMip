@@ -7,7 +7,7 @@ import {Component, OnInit, style, state, animate, transition, trigger, ViewChild
 })
 
 export class MapLayerComponent implements OnInit {
-  public showTools:boolean = true;
+  public showTools:boolean = false;
   slides = [1,2,3]
   someRange = 0
   constructor() {}
