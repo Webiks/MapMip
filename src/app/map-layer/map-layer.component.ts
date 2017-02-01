@@ -31,9 +31,10 @@ export const animations:Array<any> = [
 
 export const host = {
   '[@routeAnimation]': "true",
-  '[style.display]': "'block'",
+  '[style.display]': "'flex'",
   '[style.position]': "'absolute'",
   '[style.width]': "'100%'",
-  '[style.height]': "'100%'"
+  '[style.height]': "'100%'",
+  '[style.justify-content]':"'center'"
 };
 

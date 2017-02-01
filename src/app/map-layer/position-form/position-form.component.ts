@@ -60,10 +60,15 @@ export class PositionFormComponent implements OnInit {
     rotate:{permissions: [Permissions['/openlayers'], Permissions['/cesium?mode3d=0']], input_type: 'Bswitch'},
     markers:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-markers'},
     layers: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-layers'},
-    size: {permissions: []}
+    size: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-map-size' }
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService) {}
+
+  submitSize(sizeArr:[number,number]) {
+    this.params.size.val = sizeArr.toString();
+    this.submitForm();
+  }
 
   submitMarkers($event: {hide:boolean, smModal:ModalDirective, parsed_markers:string}) {
     this.params.markers.val = $event.parsed_markers;

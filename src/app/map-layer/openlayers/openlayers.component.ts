@@ -4,15 +4,14 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParamsHelperService} from "../query-params-helper.service";
 import 'rxjs/add/operator/take';
 import {host, animations} from "../map-layer.component";
-import * as _ from 'lodash';
 import {CalcService} from "../calc-service";
-import {Observable, Observer} from "rxjs";
 import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
 import {AjaxService} from "../ajax.service";
-import {OpenlayersLayers} from "./helpers/openlayers.component.layers";
-import {OpenlayersMarkers} from "./helpers/openlayers.component.markers";
+import {OpenlayersLayers} from "./classes/openlayers.component.layers";
+import {OpenlayersMarkers} from "./classes/openlayers.component.markers";
+import {OpenlayersMapView} from "./classes/openlayers.component.map-view";
+import {OpenLayersMapSize} from "./classes/openlayers.component.map-size";
 import {PositionFormService} from "../position-form/position-form.service";
-import {OpenlayersMapView} from "./helpers/openlayers.component.map-view";
 
 @Component({
   host: host,
@@ -32,6 +31,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
   public markers:OpenlayersMarkers;
   public map_view:OpenlayersMapView;
   public queryParamsSubscriber;
+  public map_size:OpenLayersMapSize;
 
   @ViewChild("container") public container;
 
@@ -70,6 +70,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
 
     this.layers = new OpenlayersLayers(this);
     this.markers = new OpenlayersMarkers(this);
+    this.map_size = new OpenLayersMapSize(this);
     this.map_view = new OpenlayersMapView(this);
 
   }

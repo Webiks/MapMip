@@ -115,9 +115,11 @@ export class CesiumMapView{
     let markers = this.cesium.currentParams['markers'];
     let layers = this.cesium.currentParams['layers'];
     let rotate = this.cesium.currentParams['rotate'];
+    let size = this.cesium.currentParams['size'];
+
 
     rotate = this.cesium.viewer.scene.mode != Cesium.SceneMode.SCENE2D || rotate != 1 ? undefined : 1;
-    let navigationExtras:NavigationExtras = this.cesium.queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, rotate, layers});
+    let navigationExtras:NavigationExtras = this.cesium.queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, rotate, layers, size});
     return this.cesium.router.navigate([], navigationExtras);
 
   };

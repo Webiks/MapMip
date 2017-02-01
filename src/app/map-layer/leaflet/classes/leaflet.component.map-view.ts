@@ -31,9 +31,10 @@ export class LeafletMapView{
     let lat: number  = event.target.getCenter().lat;
     let zoom:number  = event.target.getZoom();
     let markers      = this.leaflet.currentParams['markers'];
-    let layers          = this.leaflet.currentParams['layers'];
+    let layers       = this.leaflet.currentParams['layers'];
+    let size       = this.leaflet.currentParams['size'];
 
-    let navigationExtras:NavigationExtras = this.leaflet.queryParamsHelperService.getQuery({lng, lat, zoom, markers, layers});
+    let navigationExtras:NavigationExtras = this.leaflet.queryParamsHelperService.getQuery({lng, lat, zoom, markers, layers, size});
 
     return this.leaflet.router.navigate([], navigationExtras);
   };

@@ -154,5 +154,11 @@ describe('QueryParamsHelperService', () => {
     expect(layers_array.length).toEqual(2);
   });
 
+  it('querySize should get size from params and return array with [width, height], if size empty should return [100,100]', () => {
+    let params:Params = {size: "20,70"};
+    expect(queryParamsHelperService.querySize(params)).toEqual([20,70]);
+    params = {size: ""};
+    expect(queryParamsHelperService.querySize(params)).toEqual([100,100]);
+  });
 
 });

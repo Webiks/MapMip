@@ -8,15 +8,18 @@ import { JWBootstrapSwitchModule } from 'jw-bootstrap-switch-ng2';
 import {LayersComponent} from "./layers/layers.component";
 import {PositionFormService} from "./position-form.service";
 import { ColorPickerComponent } from './color-picker/color-picker.component';
+import { MapSizeComponent } from './map-size/map-size.component';
+import {ClickOutsideModule} from "ng2-click-outside";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     Ng2BootstrapModule,
-    JWBootstrapSwitchModule
+    JWBootstrapSwitchModule,
+    ClickOutsideModule
   ],
-  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent],
+  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent],
   exports: [PositionFormComponent],
   providers:[PositionFormService]
 })

@@ -14,6 +14,7 @@ import {LeafletLayers} from "./classes/leaflet.component.layers";
 import {LeafletMarkers} from "./classes/leaflet.component.markers";
 import {PositionFormService} from "../position-form/position-form.service";
 import {LeafletMapView} from "./classes/leaflet.component.map-view";
+import {LeafletMapSize} from "./classes/leaflet.component.map-size";
 
 @Component({
   host: host,
@@ -32,8 +33,10 @@ export class LeafletComponent implements OnInit, OnDestroy{
   public layers:LeafletLayers;
   public markers:LeafletMarkers;
   public map_view:LeafletMapView;
+  public map_size:LeafletMapSize;
 
   @ViewChild("container") public container;
+
 
   constructor(public router:Router, public activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public calcService:CalcService, public ajaxService:AjaxService, public positionFormService:PositionFormService) {
     window['current'] = this;
@@ -44,6 +47,7 @@ export class LeafletComponent implements OnInit, OnDestroy{
     this.initializeMap();
     this.layers = new LeafletLayers(this);
     this.markers = new LeafletMarkers(this);
+    this.map_size = new LeafletMapSize(this);
     this.map_view = new LeafletMapView(this);
   }
 

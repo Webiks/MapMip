@@ -13,7 +13,6 @@ import {Ng2BootstrapModule} from "ng2-bootstrap";
 import {PositionFormModule} from "./position-form/position-form.module";
 import {AjaxService} from "./ajax.service";
 import {HttpModule} from "@angular/http";
-import { NouisliderModule } from 'ng2-nouislider';
 
 @NgModule({
   imports: [

@@ -47,7 +47,14 @@ export class QueryParamsHelperService{
     return +params['rotate'];
   }
   querySize(params:Params):[number,number]{
-    return rison.decode_array(params['size']);
+    let size = params['size'];
+    if(_.isEmpty(size)) return [100,100];
+    return size.split(",").map(str => +str);
+  }
+  anySizeChange(prevParams:Params, currentParams:Params) {
+    let prevSize = this.querySize(prevParams);
+    let currentSize = this.querySize(currentParams);
+    return !_.isEqual(prevSize, currentSize);
   }
   addMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
@@ -166,7 +173,8 @@ export class QueryParamsHelperService{
     queryObj.mode3d  = queryObj.mode3d == 0 ? queryObj.mode3d : undefined;
     // queryObj.rotate  = queryObj.rotate == 1 ? 1 : undefined;
     queryObj.markers = _.isEmpty(queryObj.markers) ? undefined : queryObj.markers;
-    queryObj.layers     = _.isEmpty(queryObj.layers) ? undefined : queryObj.layers;
+    queryObj.layers  = _.isEmpty(queryObj.layers) ? undefined : queryObj.layers;
+    queryObj.size    = _.isEqual(queryObj.size, "100,100") ? undefined : queryObj.size;
 
     return <NavigationExtras> {
       queryParams: queryObj

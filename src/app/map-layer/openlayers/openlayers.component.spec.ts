@@ -5,13 +5,9 @@ import {QueryParamsHelperService} from "../query-params-helper.service";
 import {CalcService} from "../calc-service";
 import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
 import {RouterTestingModule} from "@angular/router/testing";
-import {Observer, Observable} from "rxjs";
-import {NavigationEnd, Router, Params, NavigationExtras} from "@angular/router";
-import * as ol from 'openlayers';
+import {Router, Params} from "@angular/router";
 import {AjaxService} from "../ajax.service";
 import {HttpModule} from "@angular/http";
-import {OpenlayersMarkers} from "./helpers/openlayers.component.markers";
-import {OpenlayersLayers} from "./helpers/openlayers.component.layers";
 import {PositionFormService} from "../position-form/position-form.service";
 
 describe('OpenlayersComponent', () => {

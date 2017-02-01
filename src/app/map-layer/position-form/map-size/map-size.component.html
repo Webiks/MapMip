@@ -1,0 +1,17 @@
+
+
+<template #popTemplate>
+  <div style="width: 200px" (clickOutside)="pop.hide()" exclude="#pop">
+    <input type="range" [(ngModel)]="sizeArr[0]" (ngModelChange)="onSizeChange()" name="points" min="0" max="100">
+    <input type="range" [(ngModel)]="sizeArr[1]" (ngModelChange)="onSizeChange()" name="points" min="0" max="100">
+  </div>
+</template>
+
+<button type="button" class="btn btn-success"
+        placement="bottom"
+        id="pop"
+        trigger="blur"
+        #pop="bs-popover"
+        [popover]="popTemplate" popoverTitle="Map size">
+  Size
+</button>
