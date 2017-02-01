@@ -20,7 +20,7 @@ import { NouisliderModule } from 'ng2-nouislider';
     CommonModule,
     MapLayerRouting,
     FormsModule,
-    Ng2BootstrapModule,
+    Ng2BootstrapModule.forRoot(),
     JWBootstrapSwitchModule,
     PositionFormModule,
     HttpModule
