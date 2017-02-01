@@ -3,7 +3,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LayersComponent } from './layers.component';
 import {QueryParamsHelperService} from "../../query-params-helper.service";
 import {CalcService} from "../../calc-service";
-import {Ng2BootstrapModule} from "ng2-bootstrap";
+import {
+  Ng2BootstrapModule, ComponentLoaderFactory, PositioningService, DropdownConfig,
+  TooltipConfig
+} from "ng2-bootstrap";
 import {HttpModule} from "@angular/http";
 import {AjaxService} from "../../ajax.service";
 import {RouterTestingModule} from "@angular/router/testing";
@@ -17,7 +20,7 @@ describe('LayersComponent', () => {
     TestBed.configureTestingModule({
       imports:[RouterTestingModule, Ng2BootstrapModule, HttpModule],
       declarations: [ LayersComponent ],
-      providers:[QueryParamsHelperService, CalcService, {provide: AjaxService, useValue: fake_Ajax_Service}]
+      providers:[QueryParamsHelperService, CalcService, {provide: AjaxService, useValue: fake_Ajax_Service},ComponentLoaderFactory,PositioningService,DropdownConfig,TooltipConfig]
     })
     .compileComponents();
   }));

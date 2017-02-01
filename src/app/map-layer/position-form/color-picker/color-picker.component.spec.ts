@@ -2,6 +2,7 @@
 import {async, ComponentFixture, TestBed, inject} from '@angular/core/testing';
 import { ColorPickerComponent } from './color-picker.component';
 import {PositionFormService, MARKER_COLORS} from "../position-form.service";
+import {DropdownConfig} from "ng2-bootstrap";
 
 describe('ColorPickerComponent', () => {
   let component: ColorPickerComponent;
@@ -11,7 +12,7 @@ describe('ColorPickerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ColorPickerComponent ],
-      providers:[PositionFormService]
+      providers:[PositionFormService,DropdownConfig]
     })
     .compileComponents();
   }));

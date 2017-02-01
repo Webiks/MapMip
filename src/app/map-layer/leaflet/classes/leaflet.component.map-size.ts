@@ -13,6 +13,8 @@ export class LeafletMapSize{
       let sizeArr:[number, number] = this.leaflet.queryParamsHelperService.querySize(params);
       this.leaflet.container.nativeElement.style.width = `${sizeArr[0]}%`;
       this.leaflet.container.nativeElement.style.height = `${sizeArr[1]}%`;
+      let options={options:this.leaflet.map.getZoom}
+      this.leaflet.map.invalidateSize(options)
     }
   }
 

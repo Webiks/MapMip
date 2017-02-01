@@ -7,6 +7,8 @@ import {QueryParamsHelperService} from "../../query-params-helper.service";
 import {CalcService} from "../../calc-service";
 import {Params} from "@angular/router";
 import {PositionFormService} from "../position-form.service";
+import {DropdownConfig, ComponentLoaderFactory, PositioningService} from "ng2-bootstrap";
+
 
 describe('MarkersComponent', () => {
   let component: MarkersComponent;
@@ -20,7 +22,7 @@ describe('MarkersComponent', () => {
         PositionFormModule,
         RouterTestingModule
       ],
-      providers:[QueryParamsHelperService, CalcService]
+      providers:[QueryParamsHelperService, CalcService,DropdownConfig,ComponentLoaderFactory,PositioningService]
     })
       .compileComponents();
   }));

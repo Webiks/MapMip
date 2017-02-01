@@ -8,14 +8,14 @@ import {AjaxService} from "../../ajax.service";
 import {CalcService} from "../../calc-service";
 import {HttpModule} from "@angular/http";
 import {RouterTestingModule} from "@angular/router/testing";
+import {OpenlayersComponent} from "../openlayers.component";
+import {OpenLayersMapSize} from "./openlayers.component.map-size";
 import {GeneralCanDeactivateService} from "../../general-can-deactivate.service";
-import {CesiumComponent} from "../cesium.component";
-import {CesiumMapSize} from "./cesium.component.map-size";
 
 
 describe('OpenLayersComponent', () => {
-  let component: CesiumComponent;
-  let fixture: ComponentFixture<CesiumComponent>;
+  let component: OpenlayersComponent;
+  let fixture: ComponentFixture<OpenlayersComponent>;
   let queryParamsHelperService: QueryParamsHelperService;
 
   beforeEach(async(() => {
@@ -24,20 +24,20 @@ describe('OpenLayersComponent', () => {
         RouterTestingModule,
         HttpModule
       ],
-      declarations: [CesiumComponent],
-      providers:[QueryParamsHelperService, GeneralCanDeactivateService, CalcService, PositionFormService]
+      declarations: [OpenlayersComponent],
+      providers: [QueryParamsHelperService, CalcService, AjaxService, PositionFormService,GeneralCanDeactivateService]
     })
       .compileComponents();
   }));
 
   beforeEach(inject([QueryParamsHelperService], (_queryParamsHelperService: QueryParamsHelperService) => {
-    fixture = TestBed.createComponent(CesiumComponent);
+    fixture = TestBed.createComponent(OpenlayersComponent);
     component = fixture.componentInstance;
     queryParamsHelperService = _queryParamsHelperService;
     fixture.detectChanges();
   }));
   describe("map_size", ()=>{
-    let map_size:CesiumMapSize;
+    let map_size:OpenLayersMapSize;
 
     beforeEach(()=>{
       map_size = component.map_size;

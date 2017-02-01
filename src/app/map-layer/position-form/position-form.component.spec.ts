@@ -7,7 +7,10 @@ import {QueryParamsHelperService} from "../query-params-helper.service";
 import {Permissions} from "./permissions.enum";
 import {PositionFormModule} from "./position-form.module";
 import {CalcService} from "../calc-service";
-import {ModalDirective} from "ng2-bootstrap";
+import {
+  ModalDirective, DropdownConfig, ComponentLoaderFactory, PositioningService, TooltipConfig,
+  PopoverConfig
+} from "ng2-bootstrap";
 import {HttpModule} from "@angular/http";
 import {AjaxService} from "../ajax.service";
 import {Observable} from "rxjs";
@@ -33,9 +36,9 @@ describe('PositionFormComponent', () => {
         RouterTestingModule,
         HttpModule
       ],
-      providers:[QueryParamsHelperService,CalcService, {provide: AjaxService, useValue: fake_Ajax_Service}]
+      providers:[QueryParamsHelperService,CalcService, {provide: AjaxService, useValue: fake_Ajax_Service},DropdownConfig,ComponentLoaderFactory,PositioningService,TooltipConfig,PopoverConfig]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(inject([Router, QueryParamsHelperService], (_router:Router, _queryParamsHelperService:QueryParamsHelperService) => {
@@ -150,31 +153,32 @@ describe('PositionFormComponent', () => {
 
   it('submitMarkers should: put the correct value on markers, call submitForm and hide modal if need', async(() => {
 
-    let mockModal = new ModalDirective(null,null,null);
-    let $event: {hide:boolean, smModal:ModalDirective, parsed_markers:string} = {hide:false, smModal: mockModal, parsed_markers:'(1,2,3),(4,5,6)'}
-    spyOn(component,'submitForm').and.callFake( () => {
-      return{
-        then(callback:() => void) {
-          callback();
-        }
-      };
-    });
-    spyOn($event.smModal, 'hide');
+      let mockModal = <any>{hide: () => undefined};
+      let $event: {hide:boolean, smModal:ModalDirective, parsed_markers:string} = {hide:false, smModal: mockModal, parsed_markers:'(1,2,3),(4,5,6)'}
+      spyOn(component,'submitForm').and.callFake( () => {
+        return{
+          then(callback:() => void) {
+            callback();
+          }
+        };
+      });
+      spyOn($event.smModal, 'hide');
 
-    component.submitMarkers($event);
-    // fixture.whenStable().then(()=>{
-    //
-    // });
-    expect(component.params.markers.val).toEqual('(1,2,3),(4,5,6)');
-    expect($event.smModal.hide).not.toHaveBeenCalled();
+      component.submitMarkers($event);
+      // fixture.whenStable().then(()=>{
+      //
+      // });
+      expect(component.params.markers.val).toEqual('(1,2,3),(4,5,6)');
+      expect($event.smModal.hide).not.toHaveBeenCalled();
 
-    $event.hide = true;
+      $event.hide = true;
 
-    component.submitMarkers($event);
-    expect(component.params.markers.val).toEqual('(1,2,3),(4,5,6)');
-    expect($event.smModal.hide).toHaveBeenCalled();
+      component.submitMarkers($event);
+      expect(component.params.markers.val).toEqual('(1,2,3),(4,5,6)');
+      expect($event.smModal.hide).toHaveBeenCalled();
 
-}));
+    }
+  ));
 
 
   it('submitForm should navigate with the new params values', () => {
@@ -193,21 +197,24 @@ describe('PositionFormComponent', () => {
     component.params.rotate.val = false;
     component.params.markers.val = '(1,2,3)';
     component.params.layers.val = "(url: 'url_tms')";
+    component.params.size.val = "10,10";
+
     component.submitForm();
     fixture.detectChanges();
 
     let queryParams = {
       lng:1,
       lat:2,
-      height:3,
+      zoom:undefined,//no permission on cesium
+      heading:6,
       pitch:4,
       roll:5,
-      heading:6,
-      zoom:undefined, //no permission on cesium
+      height:3,
       mode3d:undefined, //undefined when default (1)
       rotate: undefined,//undefined when default (0)
       markers: '(1,2,3)',
-      layers: "(url: 'url_tms')"
+      layers: "(url: 'url_tms')",
+      size: "10,10"
     };
     expect(router.navigate).toHaveBeenCalledWith([], {queryParams: queryParams});
 
