@@ -121,9 +121,10 @@ export class OpenlayersMapView{
     let layers = this.openlayers.currentParams['layers'];
     let rotate = this.openlayers.currentParams['rotate'];
     let size = this.openlayers.currentParams['size'];
+    let position = this.openlayers.currentParams['position'];
     rotate = rotate == 0 ? 0 : undefined;
 
-    let navigationExtras:NavigationExtras = this.openlayers.queryParamsHelperService.getQuery({lng, lat, zoom, heading, markers, layers,rotate, size});
+    let navigationExtras:NavigationExtras = this.openlayers.queryParamsHelperService.getQuery({lng, lat, zoom, heading, markers, layers,rotate, size, position});
     return this.openlayers.router.navigate([], navigationExtras);
 
   };

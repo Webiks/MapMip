@@ -53,7 +53,7 @@ export class QueryParamsHelperService{
   }
   queryPosition(params:Params):[number,number]{
     let position = params['position'];
-    if(_.isEmpty(position)) return [0,0];
+    if(_.isEmpty(position)) return [50,50];
     return position.split(",").map(str => +str);
   }
   anySizeChange(prevParams:Params, currentParams:Params) {

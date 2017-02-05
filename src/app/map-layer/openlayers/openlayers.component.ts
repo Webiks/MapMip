@@ -12,6 +12,7 @@ import {OpenlayersMarkers} from "./classes/openlayers.component.markers";
 import {OpenlayersMapView} from "./classes/openlayers.component.map-view";
 import {OpenLayersMapSize} from "./classes/openlayers.component.map-size";
 import {PositionFormService} from "../position-form/position-form.service";
+import {OpenlayersMapPosition} from "./classes/openlayers.component.map-position";
 
 @Component({
   host: host,
@@ -32,6 +33,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
   public map_view:OpenlayersMapView;
   public queryParamsSubscriber;
   public map_size:OpenLayersMapSize;
+  public map_position:OpenlayersMapPosition;
 
   @ViewChild("container") public container;
 
@@ -71,8 +73,8 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
     this.layers = new OpenlayersLayers(this);
     this.markers = new OpenlayersMarkers(this);
     this.map_size = new OpenLayersMapSize(this);
+    this.map_position = new OpenlayersMapPosition(this);
     this.map_view = new OpenlayersMapView(this);
-
   }
 
   get LayersArray() {

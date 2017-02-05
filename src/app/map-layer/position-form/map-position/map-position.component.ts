@@ -6,6 +6,7 @@ import {QueryParamsHelperService} from "../../query-params-helper.service";
 import * as _ from "lodash";
 import {Router, UrlTree} from "@angular/router";
 import {PositionFormService} from "../position-form.service";
+
 @Component({
   selector: 'app-map-position',
   templateUrl: './map-position.component.html',

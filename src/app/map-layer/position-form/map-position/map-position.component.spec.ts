@@ -5,7 +5,7 @@ import { DebugElement } from '@angular/core';
 
 import { MapPositionComponent } from './map-position.component';
 
-describe('MapPositionComponent', () => {
+fdescribe('MapPositionComponent', () => {
   let component: MapPositionComponent;
   let fixture: ComponentFixture<MapPositionComponent>;
 
