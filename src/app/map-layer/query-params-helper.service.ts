@@ -51,11 +51,23 @@ export class QueryParamsHelperService{
     if(_.isEmpty(size)) return [100,100];
     return size.split(",").map(str => +str);
   }
+  queryPosition(params:Params):[number,number]{
+    let position = params['position'];
+    if(_.isEmpty(position)) return [0,0];
+    return position.split(",").map(str => +str);
+  }
   anySizeChange(prevParams:Params, currentParams:Params) {
     let prevSize = this.querySize(prevParams);
     let currentSize = this.querySize(currentParams);
     return !_.isEqual(prevSize, currentSize);
   }
+
+  anyPositionChange(prevParams:Params, currentParams:Params){
+    let prevSize = this.queryPosition(prevParams);
+    let currentSize = this.queryPosition(currentParams);
+    return !_.isEqual(prevSize, currentSize);
+  }
+
   addMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let markers_array:Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);

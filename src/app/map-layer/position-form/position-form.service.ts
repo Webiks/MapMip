@@ -11,6 +11,7 @@ export class PositionFormService {
 
   public selectedColorIndex:number = 0;
   public markerPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public mapsCont: any;
 
   constructor(private domSanitizer :DomSanitizer ) { }
 

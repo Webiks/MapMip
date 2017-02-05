@@ -89,7 +89,7 @@ export class LeafletMarkers {
   getBaseMarker(marker){
     let icon = L.icon(<L.IconOptions>{
       iconUrl: this.leaflet.positionFormService.getMarkerUrlByColor(marker.color),
-      shadowUrl: '/assets/Leaflet/images/marker-shadow.png',
+      shadowUrl: '/assets/Markers/marker-shadow.png',
     });
     return L.marker([marker.position[1],marker.position[0]], {icon:icon});
   }

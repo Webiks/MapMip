@@ -9,6 +9,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import {CommonModule} from "@angular/common";
 import {MapLayerModule} from "./map-layer/map-layer.module";
 
+
 @NgModule({
   declarations: [
     AppComponent,

@@ -47,7 +47,8 @@ export class PositionFormComponent implements OnInit {
     rotate:{val?: boolean, permissions: number[], input_type?:string},
     markers:{val?: string, permissions: number[], input_type?:string},
     layers: {val?: string, permissions: number[], input_type?:string},
-    size: {val?: string, permissions: number[], input_type?:string}
+    size: {val?: string, permissions: number[], input_type?:string},
+    position: {val?: string, permissions: number[], input_type?:string}
   } = {
     lng:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
     lat:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
@@ -60,15 +61,12 @@ export class PositionFormComponent implements OnInit {
     rotate:{permissions: [Permissions['/openlayers'], Permissions['/cesium?mode3d=0']], input_type: 'Bswitch'},
     markers:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-markers'},
     layers: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-layers'},
-    size: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-map-size' }
+    size: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-map-size' },
+    position:{permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-map-position' }
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService) {}
 
-  submitSize(sizeArr:[number,number]) {
-    this.params.size.val = sizeArr.toString();
-    this.submitForm();
-  }
 
   submitMarkers($event: {hide:boolean, smModal:ModalDirective, parsed_markers:string}) {
     this.params.markers.val = $event.parsed_markers;

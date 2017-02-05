@@ -21,7 +21,8 @@ export class MapSizeComponent implements OnChanges, OnInit{
 
   onSizeChange(){
     this.sizeChange.emit(this.sizeArr.toString());
-    this.submitSizeEmitter.emit()
+    this.submitSizeEmitter.emit();
+    console.log("submitSizeEmitter")
   }
 
   ngOnChanges(changes: SimpleChanges): void {
