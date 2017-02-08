@@ -19,7 +19,7 @@ export class AjaxService {
   }
 
   getLayerExam():Observable<any> {
-    return this.http.get("/assets/layers_exam.json").map( (res:Response) => res.json());
+    return this.http.get("https://mapmip-6c74a.firebaseio.com/array.json").map( (res:Response) => res.json());
   }
 
 }
