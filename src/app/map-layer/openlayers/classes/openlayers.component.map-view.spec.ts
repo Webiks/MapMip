@@ -210,12 +210,12 @@ describe('OpenlayersComponent', () => {
       };
 
       map_view.moveEnd(event);
-      let navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)', layers:'tms_strings', rotate: 0});
+      let navigationExtras:NavigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)', layers:'tms_strings', rotate: 0,position:undefined});
       expect(router.navigate).toHaveBeenCalledWith([], navigationExtras);
 
       component.currentParams['rotate'] = '1';
       map_view.moveEnd(event);
-      navigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)', layers:'tms_strings', rotate: undefined});
+      navigationExtras = queryParamsHelperService.getQuery({lng: 2, lat: 1, zoom: 10, heading: 0, markers: '(1,2,3)', layers:'tms_strings', rotate: undefined,position:undefined});
       expect(router.navigate).toHaveBeenCalledWith([], navigationExtras);
     });
 

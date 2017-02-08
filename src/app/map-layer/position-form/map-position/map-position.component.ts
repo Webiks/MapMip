@@ -82,43 +82,57 @@ export class MapPositionComponent implements OnChanges{
     this.dragStyle.height = `${sizeArr[1]}%`;
   }
 
-  onResize(event) {
+  onResize() {
     this.popViewStyle.width = `${(this.positionFormService.mapsCont.nativeElement.offsetWidth) / 8}px`;
     this.onPositionChanges()
   }
 
   onMouseDown(event) {
+    if(event.which != 1) return;
     this.drag_obj.posX = event.clientX - event.target.offsetLeft;
     this.drag_obj.posY  = event.clientY - event.target.offsetTop;
     this.mouseDown = true;
   }
 
   onMouseMove = (event) => {
-    if(!this.mouseDown) return;
-
+    if(!this.mouseDown || event.which != 1) return;
     this.dragStyle.left = `${Math.max(0, Math.min(event.clientX - this.drag_obj.posX, this.maxBoundX()))}px`;
     this.dragStyle.top = `${Math.max(0, Math.min(event.clientY - this.drag_obj.posY, this.maxBoundY()))}px`;
+  };
+
+  mouseUp(event):void {
+    if(event.which != 1) return;
+    //click event
+    if(!this.mouseDown && event.target == this.popView.nativeElement) {
+      let left = `${parseFloat(event.offsetX) - (this.drag.nativeElement.clientWidth / 2)}px`;
+      let top = `${parseFloat(event.offsetY) - (this.drag.nativeElement.clientHeight / 2)}px`;
+      this.position = this.convertPixelsToPrecnt(left, top).toString();
+      this.positionChange.emit(this.position);
+      this.submitPositionEmitter.emit();
+      return;
+    }
+
+    //drag event
+    this.mouseDown = false;
     let new_position = this.convertPixelsToPrecnt().toString();
     if(new_position != this.position){
       this.position = new_position;
       this.positionChange.emit(new_position);
       this.submitPositionEmitter.emit();
     }
-  };
-
-  setNewPosition():void {
-    this.mouseDown = false;
-    // let new_position = this.convertPixelsToPrecnt().toString();
-    // if(new_position != this.position){
-    //   this.position = new_position;
-    //   this.positionChange.emit(new_position);
-    //   this.submitPositionEmitter.emit();
-    // }
   }
 
-  convertPixelsToPrecnt():[number, number]{
-    let precent_left = parseFloat(parseFloat(this.dragStyle.left) / this.maxBoundX() * 100+"");
-    let precent_top = parseFloat(parseFloat(this.dragStyle.top)  /  this.maxBoundY() * 100+"");
+  convertPixelsToPrecnt(left:string=this.dragStyle.left, top:string=this.dragStyle.top):[number, number]{
+    let _maxBoundX = this.maxBoundX();
+    if(_maxBoundX == 0) {_maxBoundX= 100;}
+
+    let _maxBoundY = this.maxBoundY();
+    if(_maxBoundY == 0) {_maxBoundY = 100;}
+
+    let precent_left = parseFloat(parseFloat(left) / _maxBoundX * 100+"");
+    let precent_top = parseFloat(parseFloat(top)  /  _maxBoundY * 100+"");
+    precent_left = Math.max(0, Math.min(100, precent_left));
+    precent_top = Math.max(0, Math.min(100, precent_top));
     return [parseInt(precent_left.toString()),parseInt(precent_top.toString())]
   }
 
@@ -134,10 +148,15 @@ export class MapPositionComponent implements OnChanges{
     return parseFloat(this.popViewStyle.height) - pixelHeight;
   }
 
+
   ngOnInit() {
-    let target = window;
-    this.onResize({target});
+    this.onResize();
   }
 
+  centerPosition(){
+    this.position="50,50";
+    this.positionChange.emit( this.position);
+    this.submitPositionEmitter.emit();
+  }
 }
 

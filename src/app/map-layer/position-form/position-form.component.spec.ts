@@ -14,12 +14,29 @@ import {
 import {HttpModule} from "@angular/http";
 import {AjaxService} from "../ajax.service";
 import {Observable} from "rxjs";
+import {MapPositionComponent} from "./map-position/map-position.component";
+import {Component, Input, Output, EventEmitter} from "@angular/core";
+import {MapSizeComponent} from "./map-size/map-size.component";
+import {ColorPickerComponent} from "./color-picker/color-picker.component";
+import {LayersComponent} from "./layers/layers.component";
+import {MarkersComponent} from "./markers/markers.component";
 
 export let fake_Ajax_Service = {
   getLayerExam():Observable<any>{
     return Observable.of([{name:"exap1"}, {name:"exap2"}]);
   }
 };
+
+@Component({
+  selector: 'app-map-position',
+  template: `<h1>שלום לך</h1>`
+})
+class MockMapPositionComponent {
+  @Input() position:string;
+  @Output() positionChange = new EventEmitter();
+  @Output() submitPositionEmitter = new EventEmitter();
+  @Input() size:string;
+}
 
 describe('PositionFormComponent', () => {
   let component: PositionFormComponent;
@@ -37,8 +54,15 @@ describe('PositionFormComponent', () => {
         HttpModule
       ],
       providers:[QueryParamsHelperService,CalcService, {provide: AjaxService, useValue: fake_Ajax_Service},DropdownConfig,ComponentLoaderFactory,PositioningService,TooltipConfig,PopoverConfig]
-    })
-      .compileComponents();
+    });
+
+    TestBed.overrideModule(PositionFormModule, {
+      set: {
+        declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MockMapPositionComponent]
+      }
+    });
+
+    TestBed.compileComponents();
   }));
 
   beforeEach(inject([Router, QueryParamsHelperService], (_router:Router, _queryParamsHelperService:QueryParamsHelperService) => {
@@ -198,6 +222,7 @@ describe('PositionFormComponent', () => {
     component.params.markers.val = '(1,2,3)';
     component.params.layers.val = "(url: 'url_tms')";
     component.params.size.val = "10,10";
+    component.params.position.val = "40,20";
 
     component.submitForm();
     fixture.detectChanges();
@@ -214,7 +239,8 @@ describe('PositionFormComponent', () => {
       rotate: undefined,//undefined when default (0)
       markers: '(1,2,3)',
       layers: "(url: 'url_tms')",
-      size: "10,10"
+      size: "10,10",
+      position: "40,20"
     };
     expect(router.navigate).toHaveBeenCalledWith([], {queryParams: queryParams});
 
