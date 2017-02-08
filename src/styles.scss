@@ -13,3 +13,15 @@ body .mapsCont .cursor-marker{
 [hidden]{
   display: none !important;
 }
+
+app-map-size{
+  .popover-title {
+    color:#5cb85c;
+  }
+}
+
+app-map-position{
+  .popover-title {
+    color:#f0ad4e;
+  }
+}

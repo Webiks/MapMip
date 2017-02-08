@@ -116,10 +116,12 @@ export class CesiumMapView{
     let layers = this.cesium.currentParams['layers'];
     let rotate = this.cesium.currentParams['rotate'];
     let size = this.cesium.currentParams['size'];
+    let position = this.cesium.currentParams['position'];
+
 
 
     rotate = this.cesium.viewer.scene.mode != Cesium.SceneMode.SCENE2D || rotate != 1 ? undefined : 1;
-    let navigationExtras:NavigationExtras = this.cesium.queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, rotate, layers, size});
+    let navigationExtras:NavigationExtras = this.cesium.queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, rotate, layers, size, position});
     return this.cesium.router.navigate([], navigationExtras);
 
   };

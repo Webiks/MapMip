@@ -1,14 +1,39 @@
 .pos-container{
   box-shadow: inset 0px 0px 7px 0px rgba(107, 173, 223, 0.5);
-  padding: 25px 40px 10px 40px;
+  padding: 30px 60px 20px 60px;
   background: rgba(107, 173, 223, 0.005);
   border-radius: 4px;
-  .markers-group{
-    width: 234px;
-    padding: 0 15px;
-  }
-  .b-switch{
-    padding: 0 15px;
-    width: 157px;
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    .input_type {
+      width: 200px;
+      padding: 0 15px;
+    }
+    .markers-group {
+      width: 234px;
+      padding: 0 15px;
+    }
+    .layers-group {
+      width: 69px;
+      margin: 0 15px;
+      padding: 0;
+    }
+    .size-group {
+      width: 53px;
+      margin: 0 15px;
+      padding: 0;
+    }
+    .b-switch {
+      padding: 0 15px;
+      width: 157px;
+      margin-right: 15px;
+    }
+    .position-group {
+      width: 76px;
+      margin: 0 15px;
+      padding: 0;
+
+    }
   }
 }

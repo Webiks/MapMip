@@ -51,11 +51,23 @@ export class QueryParamsHelperService{
     if(_.isEmpty(size)) return [100,100];
     return size.split(",").map(str => +str);
   }
+  queryPosition(params:Params):[number,number]{
+    let position = params['position'];
+    if(_.isEmpty(position)) return [50,50];
+    return position.split(",").map(str => +str);
+  }
   anySizeChange(prevParams:Params, currentParams:Params) {
     let prevSize = this.querySize(prevParams);
     let currentSize = this.querySize(currentParams);
     return !_.isEqual(prevSize, currentSize);
   }
+
+  anyPositionChange(prevParams:Params, currentParams:Params){
+    let prevSize = this.queryPosition(prevParams);
+    let currentSize = this.queryPosition(currentParams);
+    return !_.isEqual(prevSize, currentSize);
+  }
+
   addMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let markers_array:Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
@@ -167,14 +179,15 @@ export class QueryParamsHelperService{
 
 
   getQuery(queryObj):NavigationExtras {
-    queryObj.roll    =  queryObj.roll % 360  == 0 ? undefined : queryObj.roll;
-    queryObj.heading = queryObj.heading % 360  == 0 ? undefined : queryObj.heading;
-    queryObj.pitch   = queryObj.pitch == -90 ? undefined : queryObj.pitch;
-    queryObj.mode3d  = queryObj.mode3d == 0 ? queryObj.mode3d : undefined;
+    queryObj.roll         =  queryObj.roll % 360  == 0 ? undefined : queryObj.roll;
+    queryObj.heading      = queryObj.heading % 360  == 0 ? undefined : queryObj.heading;
+    queryObj.pitch        = queryObj.pitch == -90 ? undefined : queryObj.pitch;
+    queryObj.mode3d       = queryObj.mode3d == 0 ? queryObj.mode3d : undefined;
     // queryObj.rotate  = queryObj.rotate == 1 ? 1 : undefined;
-    queryObj.markers = _.isEmpty(queryObj.markers) ? undefined : queryObj.markers;
-    queryObj.layers  = _.isEmpty(queryObj.layers) ? undefined : queryObj.layers;
-    queryObj.size    = _.isEqual(queryObj.size, "100,100") ? undefined : queryObj.size;
+    queryObj.markers      = _.isEmpty(queryObj.markers) ? undefined : queryObj.markers;
+    queryObj.layers       = _.isEmpty(queryObj.layers) ? undefined : queryObj.layers;
+    queryObj.size         = _.isEqual(queryObj.size, "100,100") ? undefined : queryObj.size;
+    queryObj.position    =  _.isNil(queryObj.size) || _.isEqual(queryObj.position, "50,50")  ? undefined : queryObj.position;
 
     return <NavigationExtras> {
       queryParams: queryObj
