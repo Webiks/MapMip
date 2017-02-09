@@ -36,17 +36,17 @@ export class LeafletLayers {
 
   addLayersViaUrl(params_layers_array:Array<Object>) {
     let map_tile_layers = this.getTileLayersArray();
-    params_layers_array.forEach( (layer_obj:{source:string}) => {
-      if(!this.layerExistOnMap(map_tile_layers, layer_obj)) {
-        let layer:L.TileLayer = this.getLayerFromLayerObj(layer_obj);
-
-        if(layer_obj.source == 'tms'){
-          this.setTmsOptions(layer_obj['url'], layer);
-        } else {
+    params_layers_array.forEach(
+      async (layer_obj:{source:string}) => {
+        if(!this.layerExistOnMap(map_tile_layers, layer_obj)) {
+          let layer:L.TileLayer = this.getLayerFromLayerObj(layer_obj);
+          if(layer_obj.source == 'tms'){
+            await this.setTmsOptions(layer_obj['url'], layer);
+          }
           layer.addTo(this.leaflet.map)
+
         }
-      }
-    })
+      })
   }
 
   getLayerFromLayerObj(layer_obj:{source:string}):L.TileLayer {
@@ -135,18 +135,19 @@ export class LeafletLayers {
     return `${osm_obj['url']}/{z}/{x}/{y}${osm_obj['format'] ? '.' + osm_obj['format'] : ''}`
   }
 
-  setTmsOptions(url, tms_layer) {
-    this.leaflet.ajaxService.getTmsmapresource(url).subscribe(
-      Tmsmapresource => {
-        let bounds = L.latLngBounds(L.latLng(Tmsmapresource['TileMap'].BoundingBox[0].$.miny, Tmsmapresource['TileMap'].BoundingBox[0].$.minx), L.latLng(Tmsmapresource['TileMap'].BoundingBox[0].$.maxy, Tmsmapresource['TileMap'].BoundingBox[0].$.maxx));
-        let minZoom = Tmsmapresource.TileMap.TileSets[0].TileSet[0].$.order;
-        let maxZoom = Tmsmapresource.TileMap.TileSets[0].TileSet[Tmsmapresource.TileMap.TileSets[0].TileSet.length - 1].$.order;
-        tms_layer.options.bounds = bounds;
-        tms_layer.options.maxZoom = maxZoom;
-        tms_layer.options.minZoom = minZoom;
-        tms_layer.addTo(this.leaflet.map);
-      });
+  setTmsOptions(url, layer):Promise<any>{
+    return new Promise(res => {
+      let cesium_tms_layer =  Cesium.createTileMapServiceImageryProvider({url});
+      cesium_tms_layer.readyPromise.then((response)=>{
+        let bounds = _.map(cesium_tms_layer.rectangle, (a) => Cesium.Math.toDegrees(a));
+        layer['options'].bounds = L.latLngBounds(L.latLng(bounds[1],bounds[0]), L.latLng(bounds[3],bounds[2]));
+        layer['options'].maxZoom = cesium_tms_layer.maximumLevel;
+        layer['options'].minZoom = cesium_tms_layer.minimumLevel;
+        res(response);
+      })
+    });
   }
+
 
   noTileLayer():boolean {
     return _.isEmpty(this.getTileLayersArray());

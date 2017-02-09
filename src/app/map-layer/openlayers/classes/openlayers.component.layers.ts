@@ -42,13 +42,16 @@ export class OpenlayersLayers {
 
   addLayersViaUrl(params_layers_array:Array<Object>) {
     let map_tile_layers = this.getTileLayersArray();
-    params_layers_array.forEach( (layer_obj:{source:string}) => {
-      if(!this.layerExistOnMap(map_tile_layers, layer_obj)) {
-        let layer = this.getLayerFromLayerObj(layer_obj);
-        this.openlayers.map.addLayer(layer);
-        if(layer_obj.source == 'tms') this.setTmsOptions(layer_obj['url'], layer);
-      }
-    });
+    params_layers_array.forEach(
+      async (layer_obj:{source:string}) => {
+        if(!this.layerExistOnMap(map_tile_layers, layer_obj)) {
+          let layer = this.getLayerFromLayerObj(layer_obj);
+          if(layer_obj.source == 'tms'){
+            await this.setTmsOptions(layer_obj['url'], layer);
+          }
+          this.openlayers.map.addLayer(layer);
+        }
+      });
   }
 
   getLayerFromLayerObj(layer_obj:{source:string}) {
@@ -79,21 +82,22 @@ export class OpenlayersLayers {
   }
 
   setTmsOptions(url, layer) {
-    this.openlayers.ajaxService.getTmsmapresource(url).subscribe(
-      Tmsmapresource => {
-        let BoundingBox = [Tmsmapresource.TileMap.BoundingBox[0].$.minx, Tmsmapresource.TileMap.BoundingBox[0].$.miny, Tmsmapresource.TileMap.BoundingBox[0].$.maxx, Tmsmapresource.TileMap.BoundingBox[0].$.maxy];
-        BoundingBox.forEach((val, index) => {BoundingBox[index] = Number(val)});
-        let extent:ol.Extent = this.openlayers.transformExtent(<ol.Extent>BoundingBox);
-        let minZoom = parseInt(Tmsmapresource.TileMap.TileSets[0].TileSet[0].$.order);
-        let maxZoom = parseInt(Tmsmapresource.TileMap.TileSets[0].TileSet[Tmsmapresource.TileMap.TileSets[0].TileSet.length - 1].$.order);
+    return new Promise(res => {
+      let cesium_tms_layer =  Cesium.createTileMapServiceImageryProvider({url});
+      cesium_tms_layer.readyPromise.then((response)=>{
+        let bounds = _.map(cesium_tms_layer.rectangle, (a) => Cesium.Math.toDegrees(a));
+        let minZoom = cesium_tms_layer.minimumLevel;
+        let maxZoom = cesium_tms_layer.maximumLevel;
+        let extent:ol.Extent = this.openlayers.transformExtent(<ol.Extent>bounds);
         layer.setExtent(extent);
         layer.setSource(new ol.source.XYZ(<any>{
           url: layer.getSource().jc,
           minZoom,
           maxZoom,
         }));
-
-      });
+        res(response);
+      })
+    });
   }
 
   removeLayersViaUrl(map_layers_array:Array<Object>) {
@@ -169,11 +173,12 @@ export class OpenlayersLayers {
 
   getTmsLayer(layer_obj){
     let tms_url:string = this.parseTmsUrl(layer_obj);
-    return new ol.layer.Tile(<olx.layer.TileOptions>{
+    let layer = new ol.layer.Tile(<olx.layer.TileOptions>{
       source: new ol.source.XYZ(<olx.source.XYZOptions> {
         url: tms_url
       })
     });
+    return layer;
   }
 
   getDefaultLayer(default_obj) {
