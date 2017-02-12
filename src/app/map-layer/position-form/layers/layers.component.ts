@@ -6,7 +6,7 @@ import {ModalDirective} from "ng2-bootstrap";
 import {QueryParamsHelperService} from "../../query-params-helper.service";
 import * as _ from 'lodash';
 import {AjaxService} from "../../ajax.service";
-import {Observable} from "rxjs";
+
 
 @Component({
   animations: [
@@ -43,7 +43,7 @@ export class LayersComponent implements OnInit, OnChanges {
   @Output() submitLayersEmitter = new EventEmitter();
   public layersArray:Array<Object> = [];
   Object:any = Object;
-  public examples$:Observable<any>;
+  public examples$;
 
   public source_images = {
     mapbox: 'http://2rct3i2488gxf9jvb1lqhek9-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/mapbox-logo-256.png',
@@ -57,11 +57,11 @@ export class LayersComponent implements OnInit, OnChanges {
   public addObject = {
     mapbox: {
       obj: {
-          source:'mapbox',
-          format: '',
-          access_token: '',
-          mapid: '',
-          url:'https://api.mapbox.com/v4/'
+        source:'mapbox',
+        format: '',
+        access_token: '',
+        mapid: '',
+        url:'https://api.mapbox.com/v4/'
       },
       required: {
         format: false,
@@ -169,7 +169,6 @@ export class LayersComponent implements OnInit, OnChanges {
       }
     },
 
-
     default: {
       obj: {
         url:''
@@ -182,9 +181,8 @@ export class LayersComponent implements OnInit, OnChanges {
         this.obj = {
           url: ''
         };
-        this.required= {
-        },
-        this.edit_index = -1;
+        this.required = {},
+          this.edit_index = -1;
       },
       onEdit():boolean {
         return this.edit_index != -1
@@ -252,7 +250,7 @@ export class LayersComponent implements OnInit, OnChanges {
     let add_obj = this.addObject[source];
     if(layer_obj.source == "default") delete layer_obj.source;
 
-      _.forEach(layer_obj, (val, key, obj) => {
+    _.forEach(layer_obj, (val, key, obj) => {
         if (!_.isNil(add_obj.required[key]) && !add_obj.required[key]) {
           delete obj[key]
         }
