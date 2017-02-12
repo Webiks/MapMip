@@ -14,6 +14,7 @@ import {PositionFormService} from "../position-form/position-form.service";
 import {CesiumMapView} from "./classes/cesium.component.map-view";
 import {CesiumMapSize} from "./classes/cesium.component.map-size";
 import {CesiumMapPosition} from "./classes/cesium.component.map-position";
+import {CesiumTerrian} from "./classes/cesium.component.terrain";
 
 @Component({
   host: host,
@@ -37,6 +38,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
   public map_view:CesiumMapView;
   public map_size:CesiumMapSize;
   public map_position:CesiumMapPosition;
+  public terrain:CesiumTerrian;
 
   constructor(public queryParamsHelperService:QueryParamsHelperService, public activatedRoute:ActivatedRoute, public generalCanDeactivateService:GeneralCanDeactivateService, public router:Router, public calcService:CalcService, public positionFormService:PositionFormService) {
     this.queryParamsSubscriber = activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
@@ -57,7 +59,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
     this.map_size = new CesiumMapSize(this);
     this.map_view = new CesiumMapView(this);
     this.map_position = new CesiumMapPosition(this);
-
+    this.terrain = new CesiumTerrian(this);
   };
 
   queryParams(params:Params):void {

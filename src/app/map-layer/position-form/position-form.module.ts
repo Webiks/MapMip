@@ -11,6 +11,7 @@ import { ColorPickerComponent } from './color-picker/color-picker.component';
 import { MapSizeComponent } from './map-size/map-size.component';
 import {ClickOutsideModule} from "ng2-click-outside";
 import { MapPositionComponent } from './map-position/map-position.component';
+import { TerrainComponent } from './terrain/terrain.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,7 @@ import { MapPositionComponent } from './map-position/map-position.component';
     JWBootstrapSwitchModule,
     ClickOutsideModule
   ],
-  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent],
+  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent],
   exports: [PositionFormComponent],
   providers:[PositionFormService]
 })
