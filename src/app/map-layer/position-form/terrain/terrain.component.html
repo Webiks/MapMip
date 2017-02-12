@@ -1,0 +1,20 @@
+<template #popTemplate>
+  <form (clickOutside)="pop.hide()" exclude="button#terrain_pop" (submit)="submitTerrain(pop)">
+    <div class="popView" class="popover-terrain">
+      <input #input type="text" class="form-control" [(ngModel)]="terrainUrl"  [ngModelOptions]="{standalone: true}">
+    </div>
+    <div class="control-buttons pull-right">
+      <button type="button" class="btn btn-danger" (click)="pop.hide()">Cancel</button>
+      <button type="submit" class="btn btn-info">OK</button>
+    </div>
+  </form>
+</template>
+
+<button type="button" class="btn btn-info"
+        placement="bottom"
+        id="terrain_pop"
+        #pop="bs-popover"
+        (onShown)="onShownPopover(popTemplate)"
+        [popover]="popTemplate" popoverTitle="Map Terrain">
+  Terrain
+</button>

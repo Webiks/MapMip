@@ -20,6 +20,7 @@ import {MapSizeComponent} from "./map-size/map-size.component";
 import {ColorPickerComponent} from "./color-picker/color-picker.component";
 import {LayersComponent} from "./layers/layers.component";
 import {MarkersComponent} from "./markers/markers.component";
+import {TerrainComponent} from "./terrain/terrain.component";
 
 export let fake_Ajax_Service = {
   getLayerExam():Observable<any>{
@@ -58,7 +59,7 @@ describe('PositionFormComponent', () => {
 
     TestBed.overrideModule(PositionFormModule, {
       set: {
-        declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MockMapPositionComponent]
+        declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MockMapPositionComponent,TerrainComponent]
       }
     });
 
@@ -223,6 +224,7 @@ describe('PositionFormComponent', () => {
     component.params.layers.val = "(url: 'url_tms')";
     component.params.size.val = "10,10";
     component.params.position.val = "40,20";
+    component.params.terrain.val = "terrainUrl";
 
     component.submitForm();
     fixture.detectChanges();
@@ -240,7 +242,8 @@ describe('PositionFormComponent', () => {
       markers: '(1,2,3)',
       layers: "(url: 'url_tms')",
       size: "10,10",
-      position: "40,20"
+      position: "40,20",
+      terrain: "terrainUrl"
     };
     expect(router.navigate).toHaveBeenCalledWith([], {queryParams: queryParams});
 

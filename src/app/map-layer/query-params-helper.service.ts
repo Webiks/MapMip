@@ -51,6 +51,9 @@ export class QueryParamsHelperService{
     if(_.isEmpty(size)) return [100,100];
     return size.split(",").map(str => +str);
   }
+  queryTerrain(params:Params):string{
+    return params['terrain'];
+  }
   queryPosition(params:Params):[number,number]{
     let position = params['position'];
     if(_.isEmpty(position)) return [50,50];
@@ -61,7 +64,11 @@ export class QueryParamsHelperService{
     let currentSize = this.querySize(currentParams);
     return !_.isEqual(prevSize, currentSize);
   }
-
+  anyTerrainChange(prevParams:Params, currentParams:Params) {
+    let prevSize = this.queryTerrain(prevParams);
+    let currentSize = this.queryTerrain(currentParams);
+    return !_.isEqual(prevSize, currentSize);
+  }
   anyPositionChange(prevParams:Params, currentParams:Params){
     let prevSize = this.queryPosition(prevParams);
     let currentSize = this.queryPosition(currentParams);
@@ -188,7 +195,7 @@ export class QueryParamsHelperService{
     queryObj.layers       = _.isEmpty(queryObj.layers) ? undefined : queryObj.layers;
     queryObj.size         = _.isEqual(queryObj.size, "100,100") ? undefined : queryObj.size;
     queryObj.position    =  _.isNil(queryObj.size) || _.isEqual(queryObj.position, "50,50")  ? undefined : queryObj.position;
-
+    queryObj.terrain     =  _.isEmpty(queryObj.terrain) ? undefined :queryObj.terrain;
     return <NavigationExtras> {
       queryParams: queryObj
     };
