@@ -26,9 +26,14 @@
           <app-map-position [size]="params.size.val" (submitPositionEmitter)="submitForm()" [(position)]="params.position.val"></app-map-position>
         </div>
 
+        <div class="form-group terrain-group" *ngIf="params[key].input_type == 'app-terrain'">
+          <app-terrain (submitTerrainEmitter)="submitForm()" [(terrain)]="params.terrain.val"></app-terrain>
+        </div>
+
         <div class="form-group b-switch" *ngIf="params[key].input_type == 'Bswitch'">
           <bSwitch [switch-label-text]="key" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>
         </div>
+
 
       </template>
     </div>
