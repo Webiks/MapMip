@@ -44,8 +44,10 @@ export class OpenlayersMarkers {
     }
   }
 
-  leftClickInputAction(event:{coordinate:[number, number]}) {
-    let position:ol.Coordinate = ol.proj.toLonLat(event.coordinate);
+  leftClickInputAction(event:{pixel:ol.Pixel}) {
+    let fix_pixel:ol.Pixel = [event.pixel[0] + 12.5, event.pixel[1] + 41];
+    let fix_coordinate:ol.Coordinate = this.openlayers.map.getCoordinateFromPixel(fix_pixel);
+    let position:ol.Coordinate = ol.proj.toLonLat(fix_coordinate);
     let color:string = this.openlayers.positionFormService.getSelectedColor();
     this.openlayers.queryParamsHelperService.addMarker({position, color});
   }
@@ -122,7 +124,7 @@ export class OpenlayersMarkers {
     });
     let iconStyle = new ol.style.Style(<any>{
       image: new ol.style.Icon(<any>{
-        anchor: [0, 0],
+        anchor: [0.5, 1],
         src: this.openlayers.positionFormService.getMarkerUrlByColor(marker.color)
       }),
     });
