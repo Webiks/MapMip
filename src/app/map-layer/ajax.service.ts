@@ -29,8 +29,9 @@ export class AjaxService {
     firebase.initializeApp(config);
 
     return <any>firebase.database().ref("array").once("value").then(snapshot => snapshot.val());
-
   }
+  examples$ = this.getLayerExam();
+
 
 
 }

@@ -31,18 +31,33 @@ h4{
     ul {
       li.list-group-item {
         padding: 6px;
+        user-select: none;
+        &.dragovered {
+          outline: 2px dashed lightblue;
+          border-color: transparent;
+          z-index: 1;
+        }
+
+        &.dragged {
+          opacity: .4;
+        }
+
         div.li-row{
+          user-select: none;
           display: flex;
           height: 35px;
           position: relative;
           input.form-control {
             width: 75%;
             height: 100%;
+            user-select: none;
           }
           img{
             height: 100%;
+            user-select: none;
           }
           span.url{
+            user-select: none;
             width: calc(100% - 125px);
             overflow: hidden;
 
@@ -54,6 +69,7 @@ h4{
             margin: 0 10px;
           }
           button {
+            user-select: none;
             flex-grow: 0;
             opacity: 1;
             padding: 5px 10px;
@@ -62,6 +78,7 @@ h4{
             &.glyphicon-chevron-right{
               transform: rotate(0deg);
               transition: .2s;
+              user-select: none;
             }
             &:disabled{
               opacity: .5;

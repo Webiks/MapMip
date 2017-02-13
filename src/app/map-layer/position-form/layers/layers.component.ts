@@ -43,7 +43,7 @@ export class LayersComponent implements OnInit, OnChanges {
   @Output() submitLayersEmitter = new EventEmitter();
   public layersArray:Array<Object> = [];
   Object:any = Object;
-  public examples$;
+  public drag_index:number;
 
   public source_images = {
     mapbox: 'http://2rct3i2488gxf9jvb1lqhek9-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/mapbox-logo-256.png',
@@ -51,8 +51,6 @@ export class LayersComponent implements OnInit, OnChanges {
     tms: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/GDALLogoColor.svg/150px-GDALLogoColor.svg.png',
     openstreetmap:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Openstreetmap_logo.svg/256px-Openstreetmap_logo.svg.png'
   };
-
-
 
   public addObject = {
     mapbox: {
@@ -214,8 +212,35 @@ export class LayersComponent implements OnInit, OnChanges {
   };
 
 
-  constructor(private queryParamsHelperService:QueryParamsHelperService, private ajaxService:AjaxService) {
-    this.examples$ = ajaxService.getLayerExam();
+  constructor(private queryParamsHelperService:QueryParamsHelperService, private ajaxService:AjaxService) {}
+
+  dragstart(li_elem:HTMLElement, index:number):void{
+    this.drag_index = index;
+    li_elem.classList.add("dragged")
+  }
+
+  dragend(li_elem:HTMLElement):void {
+    li_elem.classList.remove("dragged");
+  }
+
+  drop(li_elem:HTMLElement, array, index):void{
+    li_elem.classList.remove("dragovered");
+    if(index != this.drag_index){
+      //swap
+      let temp = array[index];
+      array[index] = array[this.drag_index];
+      array[this.drag_index] = temp;
+    }
+  }
+
+  dragover(e, li_elem):void {
+    e.preventDefault();
+    li_elem.classList.add("dragovered");
+  }
+
+
+  dragleave(li_elem):void {
+    li_elem.classList.remove("dragovered");
   }
 
   submitLayers(hide:boolean=false) {

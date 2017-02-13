@@ -38,8 +38,22 @@
           </button>
         </div>
 
+
+
         <ul class="list-group" *ngIf="layersArray.length > 0">
-          <li class="list-group-item" *ngFor="let layer_item of layersArray; let i = index" [class.show-params]="layer_item.expand">
+          <li class="list-group-item" *ngFor="let layer_item of layersArray; let i = index"
+              [class.show-params]="layer_item.expand"
+              draggable="true"
+              [appDragItem]="i"
+          >
+
+            <!--#li_elem-->
+            <!--(dragstart)="dragstart(li_elem, i)"-->
+            <!--(dragend)="dragend(li_elem)"-->
+            <!--(dragover)="dragover($event, li_elem,layer_item, i)"-->
+            <!--(dragleave)="dragleave(li_elem)"-->
+            <!--(drop)="drop(li_elem, layersArray, i)"-->
+
             <div class="li-row">
               <img *ngIf="source_images[layer_item.layer_obj.source]" [src]="source_images[layer_item.layer_obj.source]"/>
               <button class="btn btn-default glyphicon glyphicon-chevron-right" type="button" (click)="expandParams(layer_item)" [disabled]="Object.keys(layer_item.layer_obj).length < 2"></button>
@@ -72,7 +86,7 @@
             Examples <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
-            <li *ngFor="let example of examples$ | async">
+            <li *ngFor="let example of ajaxService.examples$ | async">
               <a class="dropdown-item" (click)="layersArray.push({layer_obj:example.layer_obj})">{{example.name}}</a>
             </li>
           </ul>
