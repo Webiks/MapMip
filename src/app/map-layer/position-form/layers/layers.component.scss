@@ -39,7 +39,8 @@ h4{
         }
 
         &.dragged {
-          opacity: .4;
+          background: rgb(91, 192, 222);
+          opacity: .2;
         }
 
         div.li-row{

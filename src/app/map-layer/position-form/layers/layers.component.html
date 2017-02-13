@@ -44,8 +44,7 @@
           <li class="list-group-item" *ngFor="let layer_item of layersArray; let i = index"
               [class.show-params]="layer_item.expand"
               draggable="true"
-              [appDragItem]="i"
-          >
+              [appDragItem]="[i, layersArray]">
 
             <!--#li_elem-->
             <!--(dragstart)="dragstart(li_elem, i)"-->

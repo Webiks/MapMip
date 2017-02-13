@@ -1,12 +1,18 @@
-import {Directive, ElementRef, OnChanges, Input, HostListener} from '@angular/core';
+import {Directive, ElementRef, OnChanges, Input, HostListener, Output, EventEmitter} from '@angular/core';
 
 @Directive({
   selector: '[appDragItem]'
 })
-export class DragItemDirective implements OnChanges{
-  @Input() public appDragItem:number;
+export class DragItemDirective{
 
-  @HostListener('dragstart') dragstart() {
+  constructor(private el: ElementRef) {}
+
+  @Input("appDragItem") public data:[number,Array<any>];
+  @Output() onDrop = new EventEmitter();
+
+  @HostListener('dragstart', ['$event']) dragstart($event:DragEvent) {
+    let dragIndex:string = this.data[0].toString();
+    $event.dataTransfer.setData("dragIndex", dragIndex);
     this.el.nativeElement.classList.add("dragged")
   }
 
@@ -23,17 +29,17 @@ export class DragItemDirective implements OnChanges{
     this.el.nativeElement.classList.remove("dragovered")
   }
 
-  @HostListener('drop') drop() {
-    console.log(this.appDragItem);
-    // this.el.nativeElement.classList.remove("dragovered")
-  }
-
-
-
-  constructor(private el: ElementRef) {}
-
-  ngOnChanges(){
-
+  @HostListener('drop', ['$event']) drop($event:DragEvent) {
+    let dropIndex = this.data[0];
+    let dragIndex:number = +$event.dataTransfer.getData("dragIndex");
+    let array = this.data[1];
+    this.el.nativeElement.classList.remove("dragovered");
+    if(dropIndex != dragIndex){
+      let temp = array[dragIndex];
+      array[dragIndex] = array[dropIndex];
+      array[dropIndex] = temp;
+      this.onDrop.emit();
+    }
   }
 
 }

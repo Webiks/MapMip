@@ -214,33 +214,8 @@ export class LayersComponent implements OnInit, OnChanges {
 
   constructor(private queryParamsHelperService:QueryParamsHelperService, private ajaxService:AjaxService) {}
 
-  dragstart(li_elem:HTMLElement, index:number):void{
-    this.drag_index = index;
-    li_elem.classList.add("dragged")
-  }
-
-  dragend(li_elem:HTMLElement):void {
-    li_elem.classList.remove("dragged");
-  }
-
-  drop(li_elem:HTMLElement, array, index):void{
-    li_elem.classList.remove("dragovered");
-    if(index != this.drag_index){
-      //swap
-      let temp = array[index];
-      array[index] = array[this.drag_index];
-      array[this.drag_index] = temp;
-    }
-  }
-
-  dragover(e, li_elem):void {
-    e.preventDefault();
-    li_elem.classList.add("dragovered");
-  }
-
-
-  dragleave(li_elem):void {
-    li_elem.classList.remove("dragovered");
+  onDrop($event) {
+    console.log("ondrop")
   }
 
   submitLayers(hide:boolean=false) {
