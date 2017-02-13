@@ -32,5 +32,7 @@ export class AjaxService {
 
   }
 
+  examples$ = this.getLayerExam();
+
 
 }

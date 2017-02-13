@@ -43,7 +43,6 @@ export class LayersComponent implements OnInit, OnChanges {
   @Output() submitLayersEmitter = new EventEmitter();
   public layersArray:Array<Object> = [];
   Object:any = Object;
-  public examples$;
 
   public source_images = {
     mapbox: 'http://2rct3i2488gxf9jvb1lqhek9-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/mapbox-logo-256.png',
@@ -214,9 +213,7 @@ export class LayersComponent implements OnInit, OnChanges {
   };
 
 
-  constructor(private queryParamsHelperService:QueryParamsHelperService, private ajaxService:AjaxService) {
-    this.examples$ = ajaxService.getLayerExam();
-  }
+  constructor(private queryParamsHelperService:QueryParamsHelperService, private ajaxService:AjaxService) {}
 
   submitLayers(hide:boolean=false) {
     let modal = this.layersModal;
