@@ -1,6 +1,7 @@
 import {Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
 import {QueryParamsHelperService} from "../../query-params-helper.service";
 import {PopoverDirective} from "ng2-bootstrap";
+import {AjaxService} from "../../ajax.service";
 
 @Component({
   selector: 'app-terrain',
@@ -13,7 +14,9 @@ export class TerrainComponent implements OnChanges,OnInit {
   @Output() terrainChange = new EventEmitter();
   @Output() submitTerrainEmitter = new EventEmitter();
   public terrainUrl:string;
-  constructor(private queryParamsHelperService:QueryParamsHelperService) { }
+  public examples$ = this.ajaxService.getTerrainsExam();
+
+  constructor(private queryParamsHelperService:QueryParamsHelperService, private ajaxService:AjaxService) { }
 
   ngOnInit() :void{
     this.setTerrain();
