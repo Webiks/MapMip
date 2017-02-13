@@ -59,6 +59,8 @@ export class CesiumMarkers {
   }
 
   leftClickInputAction(event:{position: {x:number, y:number}}):void {
+    event.position.x+=12.5;
+    event.position.y+=41;
     if(this.marker_picker.not_allowed) return;
     let positionCartesian3 = this.cesium.viewer.camera.pickEllipsoid(event.position);
     let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
@@ -126,8 +128,8 @@ export class CesiumMarkers {
       position : Cesium.Cartesian3.fromDegrees(...marker.position),
       billboard: {
         image: this.cesium.positionFormService.getMarkerUrlByColor(marker.color),
-        horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
-        verticalOrigin:Cesium.VerticalOrigin.TOP
+        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+        verticalOrigin:Cesium.VerticalOrigin.BOTTOM
       }
     });
   }
