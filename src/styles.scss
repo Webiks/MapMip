@@ -29,4 +29,7 @@ app-terrain{
   .popover-title {
     color:#46b8da;
   }
+  popover-container.popover{
+    max-width: none;
+  }
 }

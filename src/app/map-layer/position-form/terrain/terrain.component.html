@@ -4,6 +4,16 @@
       <input #input type="text" class="form-control" [(ngModel)]="terrainUrl"  [ngModelOptions]="{standalone: true}">
     </div>
     <div class="control-buttons pull-right">
+      <div class="btn-group" dropdown dropdown-append-to-body>
+        <button id="btn-append-to-body" type="button" class="btn btn-primary" dropdownToggle >
+          Examples <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
+          <li *ngFor="let example of examples$ | async">
+            <a class="dropdown-item" (click)="terrainUrl=example.url">{{example.name}}</a>
+          </li>
+        </ul>
+      </div>
       <button type="button" class="btn btn-danger" (click)="pop.hide()">Cancel</button>
       <button type="submit" class="btn btn-info">OK</button>
     </div>
@@ -18,3 +28,8 @@
         [popover]="popTemplate" popoverTitle="Map Terrain">
   Terrain
 </button>
+
+
+
+<!--
+(click)="layersArray.push({layer_obj:example.layer_obj})"-->
