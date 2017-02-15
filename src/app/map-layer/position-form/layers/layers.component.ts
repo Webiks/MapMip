@@ -43,7 +43,6 @@ export class LayersComponent implements OnInit, OnChanges {
   @Output() submitLayersEmitter = new EventEmitter();
   public layersArray:Array<Object> = [];
   Object:any = Object;
-  public drag_index:number;
 
   public source_images = {
     mapbox: 'http://2rct3i2488gxf9jvb1lqhek9-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/mapbox-logo-256.png',
@@ -179,44 +178,18 @@ export class LayersComponent implements OnInit, OnChanges {
         this.obj = {
           url: ''
         };
-        this.required = {},
-          this.edit_index = -1;
+        this.required = {};
+        this.edit_index = -1;
       },
       onEdit():boolean {
         return this.edit_index != -1
       }
-    },
-
-    layer_obj:{
-      url: '',
-    },
-    edit_index: -1,
-    on_edit: ():boolean => {
-      return !_.isEmpty(this.layersArray[this.addObject.edit_index])
     }
-  };
 
-  public add_query = {
-    query_obj:{
-      key: '',
-      val: ''
-    },
-    on_edit: false,
-    error: false
-  };
-
-  public add_osm= {
-    source:'openstreetmap',
-    url:'https://a.tile.openstreetmap.org',
-    format: 'png'
   };
 
 
   constructor(private queryParamsHelperService:QueryParamsHelperService, private ajaxService:AjaxService) {}
-
-  onDrop($event) {
-    console.log("ondrop")
-  }
 
   submitLayers(hide:boolean=false) {
     let modal = this.layersModal;
@@ -231,7 +204,7 @@ export class LayersComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(!_.isNil(changes['tmsString'])) {
+    if(!_.isNil(changes['layersString'])) {
       this.initLayersArray();
     }
   }
@@ -272,7 +245,7 @@ export class LayersComponent implements OnInit, OnChanges {
 
   initLayersArray(){
     this.layersArray = this.queryParamsHelperService.queryLayersStringToObjects({layers:this.layersString});
-    this.layersArray = this.layersArray.map( layer_obj => { return {layer_obj:layer_obj} });
+    this.layersArray = this.layersArray.map( layer_obj => new Object({layer_obj}) ) ;
   }
 
   removeTms(index:number) {
@@ -282,45 +255,17 @@ export class LayersComponent implements OnInit, OnChanges {
 
   canApply():boolean{
     let before_change = this.queryParamsHelperService.queryLayersStringToObjects({layers:this.layersString});
-    let after_change = this.layersArray.map(tmsArrayObj => tmsArrayObj['layer_obj']);
+    let after_change = this.layersArray.map(layerItem => layerItem['layer_obj']);
 
     return !_.isEqual(before_change, after_change);
-  }
-
-  submitQuery (queryObj) {
-    if(this.existingKey(this.addObject.layer_obj, queryObj.key) && !this.add_query.on_edit){
-      this.add_query.error = true;
-      setTimeout(() => {this.add_query.error = false}, 1000)
-      return;
-    }
-    this.addObject.layer_obj[queryObj.key] = [queryObj.val];
-    this.addQueryModal.hide();
   }
 
   deleteKey(obj:{},key:string){
     delete obj[key];
   }
 
-  existingKey(obj:{}, key:string) {
-    return key in obj;
-  }
-
-  editQuery(query_obj:{key:string, val:string}) {
-    this.add_query.query_obj = query_obj;
-    this.add_query.on_edit = true;
-    this.addQueryModal.show();
-  }
-
-
-  initAddQuery() {
-    this.add_query = {
-      query_obj:{
-        key: '',
-        val: '',
-      },
-      on_edit: false,
-      error: false
-    }
+  removeAllLayers(){
+    this.layersArray = [];
   }
 
   ngOnInit() {

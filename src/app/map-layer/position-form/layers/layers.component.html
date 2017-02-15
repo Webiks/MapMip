@@ -38,7 +38,9 @@
           </button>
         </div>
 
-
+        <div class="remove-all-btn-area">
+          <button class="glyphicon glyphicon-trash btn btn-danger" type="button" [hidden]="layersArray.length == 0" (click)="removeAllLayers()"></button>
+        </div>
 
         <ul class="list-group" *ngIf="layersArray.length > 0">
           <li class="list-group-item" *ngFor="let layer_item of layersArray; let i = index"
@@ -46,16 +48,9 @@
               draggable="true"
               [appDragItem]="[i, layersArray]">
 
-            <!--#li_elem-->
-            <!--(dragstart)="dragstart(li_elem, i)"-->
-            <!--(dragend)="dragend(li_elem)"-->
-            <!--(dragover)="dragover($event, li_elem,layer_item, i)"-->
-            <!--(dragleave)="dragleave(li_elem)"-->
-            <!--(drop)="drop(li_elem, layersArray, i)"-->
-
             <div class="li-row">
               <img *ngIf="source_images[layer_item.layer_obj.source]" [src]="source_images[layer_item.layer_obj.source]"/>
-              <button class="btn btn-default glyphicon glyphicon-chevron-right" type="button" (click)="expandParams(layer_item)" [disabled]="Object.keys(layer_item.layer_obj).length < 2"></button>
+              <!--<button class="btn btn-default glyphicon glyphicon-chevron-right" type="button" (click)="expandParams(layer_item)" [disabled]="Object.keys(layer_item.layer_obj).length < 2"></button>-->
               <span class="url">{{layer_item.layer_obj.url}}</span>
               <button class="btn btn-info glyphicon glyphicon-pencil" type="button" (click)="editModal(layer_item, i)"></button>
               <button class="btn btn-danger glyphicon glyphicon-remove-sign" type="button" (click)="removeTms(i)"></button>
@@ -63,18 +58,18 @@
 
 
 
-            <div class="params">
-              <table class="table table-bordered">
-                <tbody>
-                <template ngFor let-key [ngForOf]="Object.keys(layer_item.layer_obj)">
-                  <tr *ngIf="key != 'url' && key != 'source'">
-                    <th>{{key}}</th>
-                    <td>{{layer_item.layer_obj[key]}}</td>
-                  </tr>
-                </template>
-                </tbody>
-              </table>
-            </div>
+            <!--<div class="params">-->
+              <!--<table class="table table-bordered">-->
+                <!--<tbody>-->
+                <!--<template ngFor let-key [ngForOf]="Object.keys(layer_item.layer_obj)">-->
+                  <!--<tr *ngIf="key != 'url' && key != 'source'">-->
+                    <!--<th>{{key}}</th>-->
+                    <!--<td>{{layer_item.layer_obj[key]}}</td>-->
+                  <!--</tr>-->
+                <!--</template>-->
+                <!--</tbody>-->
+              <!--</table>-->
+            <!--</div>-->
           </li>
         </ul>
       </div>
@@ -92,6 +87,7 @@
         </div>
 
         <button class="btn btn-default" (click)="layersModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" [disabled]="!canApply()" (click)="initLayersArray()" type="button">Restore</button>
         <button class="btn btn-default" [disabled]="!canApply()" (click)="submitLayers()" type="button">Apply</button>
         <button class="btn btn-default" type="submit">Ok</button>
       </div>
