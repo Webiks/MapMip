@@ -7,7 +7,18 @@ import * as firebase from 'firebase';
 @Injectable()
 export class AjaxService {
 
-  constructor(private http:Http) { }
+  constructor(private http:Http) {
+    this.initFirebase()
+  }
+
+  initFirebase(){
+    let config = {
+      apiKey: "AIzaSyCWOLHmczhM7SBQIq6XZ3f4sPFyMObJRLs",
+      authDomain: "mapmip-6c74a.firebaseapp.com",
+      databaseURL: "https://mapmip-6c74a.firebaseio.com"
+    };
+    firebase.initializeApp(config);
+  }
 
   getTmsmapresource(url:string) : Observable<any>{
     return new Observable(obs => {
@@ -20,19 +31,12 @@ export class AjaxService {
   }
 
   getLayerExam():Promise<any> {
-    // return this.http.get("https://mapmip-6c74a.firebaseio.com/array.json").map( (res:Response) => res.json());
-    let config = {
-      apiKey: "AIzaSyCWOLHmczhM7SBQIq6XZ3f4sPFyMObJRLs",
-      authDomain: "mapmip-6c74a.firebaseapp.com",
-      databaseURL: "https://mapmip-6c74a.firebaseio.com"
-    };
-    firebase.initializeApp(config);
-
     return <any>firebase.database().ref("array").once("value").then(snapshot => snapshot.val());
-
   }
 
-  examples$ = this.getLayerExam();
+  getTerrainsExam():Promise<any> {
+    return <any>firebase.database().ref("terrains").once("value").then(snapshot => snapshot.val());
+  }
 
 
 }

@@ -80,7 +80,7 @@
             Examples <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
-            <li *ngFor="let example of ajaxService.examples$ | async">
+            <li *ngFor="let example of examples$ | async">
               <a class="dropdown-item" (click)="layersArray.push({layer_obj:example.layer_obj})">{{example.name}}</a>
             </li>
           </ul>
