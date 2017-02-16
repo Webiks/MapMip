@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, ViewChild, Input, OnChanges, SimpleChanges, Output, EventEmitter,
+  Component, OnInit, ViewChild, Input, OnChanges, SimpleChanges, Output, EventEmitter,HostListener,
   style, animate, transition, trigger
 } from '@angular/core';
 import {ModalDirective} from "ng2-bootstrap";
@@ -29,7 +29,6 @@ import {AjaxService} from "../../ajax.service";
   styleUrls: ['./layers.component.scss']
 })
 export class LayersComponent implements OnInit, OnChanges {
-
   @ViewChild('layersModal') public layersModal:ModalDirective;
   @ViewChild('addModal') public addModal:ModalDirective;
   @ViewChild('addQueryModal') public addQueryModal:ModalDirective;
@@ -51,8 +50,6 @@ export class LayersComponent implements OnInit, OnChanges {
     tms: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/GDALLogoColor.svg/150px-GDALLogoColor.svg.png',
     openstreetmap:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Openstreetmap_logo.svg/256px-Openstreetmap_logo.svg.png'
   };
-
-
 
   public addObject = {
     mapbox: {
@@ -181,36 +178,13 @@ export class LayersComponent implements OnInit, OnChanges {
         this.obj = {
           url: ''
         };
-        this.required = {},
-          this.edit_index = -1;
+        this.required = {};
+        this.edit_index = -1;
       },
       onEdit():boolean {
         return this.edit_index != -1
       }
-    },
-
-    layer_obj:{
-      url: '',
-    },
-    edit_index: -1,
-    on_edit: ():boolean => {
-      return !_.isEmpty(this.layersArray[this.addObject.edit_index])
     }
-  };
-
-  public add_query = {
-    query_obj:{
-      key: '',
-      val: ''
-    },
-    on_edit: false,
-    error: false
-  };
-
-  public add_osm= {
-    source:'openstreetmap',
-    url:'https://a.tile.openstreetmap.org',
-    format: 'png'
   };
 
 
@@ -223,13 +197,20 @@ export class LayersComponent implements OnInit, OnChanges {
       let parsed_layer:string = this.queryParamsHelperService.queryLayersObjectToString(this.layersArray.map(tmsArrayObj => tmsArrayObj['layer_obj']));
       this.submitLayersEmitter .emit({hide, modal, parsed_layer});
     } else {
-      modal.hide();
+      if(hide){
+        modal.hide();
+      }
     }
+  }
 
+  onKeyPress($event) {
+    if($event.which == 13){
+      this.submitLayers();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(!_.isNil(changes['tmsString'])) {
+    if(!_.isNil(changes['layersString'])) {
       this.initLayersArray();
     }
   }
@@ -269,8 +250,11 @@ export class LayersComponent implements OnInit, OnChanges {
   }
 
   initLayersArray(){
-    this.layersArray = this.queryParamsHelperService.queryLayersStringToObjects({layers:this.layersString});
-    this.layersArray = this.layersArray.map( layer_obj => { return {layer_obj:layer_obj} });
+    let layersArray = this.queryParamsHelperService.queryLayersStringToObjects({layers:this.layersString});
+    layersArray = layersArray.map( layer_obj => new Object({layer_obj}) ) ;
+    if(!_.isEqual(this.layersArray, layersArray)) {
+      this.layersArray = layersArray;
+    }
   }
 
   removeTms(index:number) {
@@ -280,45 +264,17 @@ export class LayersComponent implements OnInit, OnChanges {
 
   canApply():boolean{
     let before_change = this.queryParamsHelperService.queryLayersStringToObjects({layers:this.layersString});
-    let after_change = this.layersArray.map(tmsArrayObj => tmsArrayObj['layer_obj']);
+    let after_change = this.layersArray.map(layerItem => layerItem['layer_obj']);
 
     return !_.isEqual(before_change, after_change);
-  }
-
-  submitQuery (queryObj) {
-    if(this.existingKey(this.addObject.layer_obj, queryObj.key) && !this.add_query.on_edit){
-      this.add_query.error = true;
-      setTimeout(() => {this.add_query.error = false}, 1000)
-      return;
-    }
-    this.addObject.layer_obj[queryObj.key] = [queryObj.val];
-    this.addQueryModal.hide();
   }
 
   deleteKey(obj:{},key:string){
     delete obj[key];
   }
 
-  existingKey(obj:{}, key:string) {
-    return key in obj;
-  }
-
-  editQuery(query_obj:{key:string, val:string}) {
-    this.add_query.query_obj = query_obj;
-    this.add_query.on_edit = true;
-    this.addQueryModal.show();
-  }
-
-
-  initAddQuery() {
-    this.add_query = {
-      query_obj:{
-        key: '',
-        val: '',
-      },
-      on_edit: false,
-      error: false
-    }
+  removeAllLayers(){
+    this.layersArray = [];
   }
 
   ngOnInit() {

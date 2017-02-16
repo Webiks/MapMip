@@ -5,6 +5,7 @@ button.layer-btn{
   background: $tms-btn-background;
   border-color: $tms-btn-border-color;
 }
+
 h4{
   color:#a20aa2;
 }
@@ -26,23 +27,51 @@ h4{
         }
       }
     }
-
+    .remove-all-btn-area{
+      margin: 10px 0;
+      display: flex;
+      justify-content: flex-end;
+    }
 
     ul {
       li.list-group-item {
         padding: 6px;
+        user-select: none;
+        cursor: pointer;
+
+        &:focus{
+          outline: 2px dashed lightblue;
+          border-color: transparent;
+          z-index: 1;
+        }
+
+        &.dragovered {
+          outline: 2px dashed lightblue;
+          border-color: transparent;
+          z-index: 1;
+        }
+
+        &.dragged {
+          background: rgb(91, 192, 222);
+          opacity: .2;
+        }
+
         div.li-row{
+          user-select: none;
           display: flex;
           height: 35px;
           position: relative;
           input.form-control {
             width: 75%;
             height: 100%;
+            user-select: none;
           }
           img{
             height: 100%;
+            user-select: none;
           }
           span.url{
+            user-select: none;
             width: calc(100% - 125px);
             overflow: hidden;
 
@@ -54,6 +83,7 @@ h4{
             margin: 0 10px;
           }
           button {
+            user-select: none;
             flex-grow: 0;
             opacity: 1;
             padding: 5px 10px;
@@ -62,6 +92,7 @@ h4{
             &.glyphicon-chevron-right{
               transform: rotate(0deg);
               transition: .2s;
+              user-select: none;
             }
             &:disabled{
               opacity: .5;
@@ -92,6 +123,11 @@ h4{
         }
 
       }
+    }
+  }
+  .modal-footer{
+    .dropdown{
+      float: left;
     }
   }
 }
@@ -154,34 +190,8 @@ h4{
       margin: 0 5px;
     }
   }
-  //.query-group{
-  //  display: flex;
-  //  flex-direction: column;
-  //  .label-input{
-  //    display: flex;
-  //    justify-content: space-between;
-  //    margin: 5px 0;
-  //    input{
-  //      width:auto;
-  //    }
-  //    label{
-  //      display: flex;
-  //      flex-direction: column;
-  //      justify-content: center;
-  //    }
-  //  }
-  //  p.error{
-  //    position: absolute;
-  //    top: 75%;
-  //    background: rgba(169, 68, 66, 0.22);
-  //    width: 100%;
-  //    left: 0;
-  //    padding: 5px;
-  //    text-align: center;
-  //
-  //  }
-  //}
 }
+
 .modal-body.default-modal-body{
   max-height: 306px;
   overflow: auto;

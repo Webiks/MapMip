@@ -90,6 +90,7 @@ export class QueryParamsHelperService{
   anyLayersChanges(prev:Params, current:Params):boolean{
     let currentLayers = this.queryLayers(current);
     let prevLayers  = this.queryLayers(prev);
+
     return !_.isEqual(currentLayers, prevLayers);
   }
 

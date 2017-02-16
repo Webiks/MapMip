@@ -12,16 +12,19 @@ import { MapSizeComponent } from './map-size/map-size.component';
 import {ClickOutsideModule} from "ng2-click-outside";
 import { MapPositionComponent } from './map-position/map-position.component';
 import { TerrainComponent } from './terrain/terrain.component';
+import { DragItemDirective } from './layers/drag-item.directive';
+import { ReversePipe } from './reverse.pipe';
+import { SwitchLayersComponent } from './layers/switch-layers/switch-layers.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    Ng2BootstrapModule,
+    Ng2BootstrapModule.forRoot(),
     JWBootstrapSwitchModule,
     ClickOutsideModule
   ],
-  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent],
+  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent, DragItemDirective, ReversePipe, SwitchLayersComponent],
   exports: [PositionFormComponent],
   providers:[PositionFormService]
 })
