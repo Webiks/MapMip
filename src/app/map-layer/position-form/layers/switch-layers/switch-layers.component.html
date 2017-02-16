@@ -1,0 +1,6 @@
+<div role="alert" class="alert alert-warning layers-alert" *ngIf="alert" [@fadeInOut]>
+  <strong class="fa fa-keyboard-o"></strong> Press space to switch between layers.
+</div>
+
+<button class="btn btn-default glyphicon glyphicon-retweet switch-layer-btn" type="button" [class.selected]="active" #switch_btn (click)="toggleSwitchBtn(switch_btn)"></button>
+

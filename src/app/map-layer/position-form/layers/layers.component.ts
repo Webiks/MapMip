@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, ViewChild, Input, OnChanges, SimpleChanges, Output, EventEmitter,
+  Component, OnInit, ViewChild, Input, OnChanges, SimpleChanges, Output, EventEmitter,HostListener,
   style, animate, transition, trigger
 } from '@angular/core';
 import {ModalDirective} from "ng2-bootstrap";
@@ -29,7 +29,6 @@ import {AjaxService} from "../../ajax.service";
   styleUrls: ['./layers.component.scss']
 })
 export class LayersComponent implements OnInit, OnChanges {
-
   @ViewChild('layersModal') public layersModal:ModalDirective;
   @ViewChild('addModal') public addModal:ModalDirective;
   @ViewChild('addQueryModal') public addQueryModal:ModalDirective;
@@ -186,7 +185,6 @@ export class LayersComponent implements OnInit, OnChanges {
         return this.edit_index != -1
       }
     }
-
   };
 
 
@@ -199,9 +197,16 @@ export class LayersComponent implements OnInit, OnChanges {
       let parsed_layer:string = this.queryParamsHelperService.queryLayersObjectToString(this.layersArray.map(tmsArrayObj => tmsArrayObj['layer_obj']));
       this.submitLayersEmitter .emit({hide, modal, parsed_layer});
     } else {
-      modal.hide();
+      if(hide){
+        modal.hide();
+      }
     }
+  }
 
+  onKeyPress($event) {
+    if($event.which == 13){
+      this.submitLayers();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -245,8 +250,11 @@ export class LayersComponent implements OnInit, OnChanges {
   }
 
   initLayersArray(){
-    this.layersArray = this.queryParamsHelperService.queryLayersStringToObjects({layers:this.layersString});
-    this.layersArray = this.layersArray.map( layer_obj => new Object({layer_obj}) ) ;
+    let layersArray = this.queryParamsHelperService.queryLayersStringToObjects({layers:this.layersString});
+    layersArray = layersArray.map( layer_obj => new Object({layer_obj}) ) ;
+    if(!_.isEqual(this.layersArray, layersArray)) {
+      this.layersArray = layersArray;
+    }
   }
 
   removeTms(index:number) {

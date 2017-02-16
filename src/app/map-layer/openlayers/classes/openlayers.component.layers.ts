@@ -31,8 +31,17 @@ export class OpenlayersLayers {
 
     this.addLayersViaUrl(params_layers_array);
     this.removeLayersViaUrl(map_layers_array);
+    this.sortLayers(params_layers_array);
 
     if(this.noTileLayer())  this.addBaseLayer();
+  }
+
+  sortLayers(params_layers_array) {
+    params_layers_array.forEach((layer_obj, index) => {
+      let layer = this.getLayerFromLayerObj(layer_obj);
+      let map_l = this.getTileLayersArray().find(_layer => this.layersEqual(layer, _layer ));
+      map_l.setZIndex(index);
+    })
   }
 
   addBaseLayer():void {
@@ -43,7 +52,7 @@ export class OpenlayersLayers {
   addLayersViaUrl(params_layers_array:Array<Object>) {
     let map_tile_layers = this.getTileLayersArray();
     params_layers_array.forEach(
-      async (layer_obj:{source:string}) => {
+      async (layer_obj:{source:string}, index:number) => {
         if(!this.layerExistOnMap(map_tile_layers, layer_obj)) {
           let layer = this.getLayerFromLayerObj(layer_obj);
           if(layer_obj.source == 'tms'){
@@ -100,15 +109,10 @@ export class OpenlayersLayers {
     });
   }
 
-  removeLayersViaUrl(map_layers_array:Array<Object>) {
+  removeLayersViaUrl(map_tile_layers_array:Array<Object>) {
     let params_layers_urls = this.openlayers.queryParamsHelperService.queryLayers(this.openlayers.currentParams);
-
-    map_layers_array.forEach( (layer:ol.layer.Tile) => {
-      if(!this.layerExistOnParams(params_layers_urls, layer)){
-        this.openlayers.map.removeLayer(layer);
-      }
-    });
-
+      let layers_to_remove = map_tile_layers_array.filter( (layer:ol.layer.Tile) => (!this.layerExistOnParams(params_layers_urls, layer)));
+      layers_to_remove.forEach((layer:ol.layer.Tile) => {this.openlayers.map.removeLayer(layer)});
   }
 
   getTileLayersArray() {
@@ -131,24 +135,15 @@ export class OpenlayersLayers {
     return !_.isNil(exist_on_params);
   }
 
-  layersEqual(layer_a, layer_b):boolean {
+  layersEqual(layer_a:ol.layer.Layer, layer_b:ol.layer.Layer):boolean {
     let source = layer_a.getSource();
     let _source = layer_b.getSource();
     let equal_source = source instanceof _source.constructor;
     let api_key = _source['c'] == source['c'];
     let url = _source['jc'] == source['jc'];
     let style = _source['o'] == source['o'];
-    return equal_source && api_key && url && style
-  }
 
-  getMapboxLayer(layer_obj){
-    let mapbox_url:string = this.parseMapboxUrl(layer_obj);
-
-    return new ol.layer.Tile(<olx.layer.TileOptions>{
-      source: new ol.source.XYZ(<olx.source.XYZOptions> {
-        url: mapbox_url
-      })
-    });
+    return equal_source && api_key && url && style;
   }
 
   getOpenstreetmapLayer(oms_layer){
@@ -160,6 +155,15 @@ export class OpenlayersLayers {
       })
     });
 
+  }
+  getMapboxLayer(layer_obj){
+    let mapbox_url:string = this.parseMapboxUrl(layer_obj);
+
+    return new ol.layer.Tile(<olx.layer.TileOptions>{
+      source: new ol.source.XYZ(<olx.source.XYZOptions> {
+        url: mapbox_url
+      })
+    });
   }
 
   getBingLayer(bing_obj):ol.layer.Tile {

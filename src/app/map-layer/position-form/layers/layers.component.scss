@@ -5,6 +5,7 @@ button.layer-btn{
   background: $tms-btn-background;
   border-color: $tms-btn-border-color;
 }
+
 h4{
   color:#a20aa2;
 }
@@ -36,7 +37,14 @@ h4{
       li.list-group-item {
         padding: 6px;
         user-select: none;
-        cursor: move;
+        cursor: pointer;
+
+        &:focus{
+          outline: 2px dashed lightblue;
+          border-color: transparent;
+          z-index: 1;
+        }
+
         &.dragovered {
           outline: 2px dashed lightblue;
           border-color: transparent;

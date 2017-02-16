@@ -81,8 +81,8 @@ export class CesiumLayers{
     let params_tms_array = this.cesium.queryParamsHelperService.queryLayers(params);
     let imageryLayers = this.cesium.viewer.imageryLayers._layers;
 
+    this.removeLayersViaUrl(imageryLayers);
     this.addLayersViaUrl(params_tms_array);
-    // this.removeLayersViaUrl(imageryLayers);
 
     if(this.noTileLayer()) this.addBaseLayer();
 
@@ -99,12 +99,8 @@ export class CesiumLayers{
   }
 
   removeLayersViaUrl(map_imageryLayers) {
-    map_imageryLayers.forEach( (imageryLayer) => {
-      let _imageryProvider = imageryLayer.imageryProvider;
-      if(!this.layerExistOnParams(_imageryProvider)) {
-        this.cesium.viewer.imageryLayers.remove(imageryLayer);
-      }
-    });
+    let layers_to_remove = map_imageryLayers.filter( imageryLayer => !this.layerExistOnParams(imageryLayer));
+    layers_to_remove.forEach(imageryLayer => {this.cesium.viewer.imageryLayers.remove(imageryLayer)});
   }
 
   noTileLayer():boolean{
@@ -137,7 +133,7 @@ export class CesiumLayers{
   imageryProvidersEqual(imageryLayer, _imageryProvider, index):boolean {
     let imageryProvider = imageryLayer.imageryProvider;
     return imageryProvider instanceof _imageryProvider.constructor
-      // && index == imageryLayer._layerIndex
+      && index == imageryLayer._layerIndex
       && imageryProvider['_url'] == _imageryProvider['_url']
       && imageryProvider['_accessToken'] == _imageryProvider['_accessToken'] // MapboxImageryProvider
       && imageryProvider['_mapId'] == _imageryProvider['_mapId'] // MapboxImageryProvider

@@ -21,13 +21,22 @@ export class LeafletLayers {
   }
 
   setLayersChanges(params:Params) {
-    let params_tms_array:Array<Object> = this.leaflet.queryParamsHelperService.queryLayers(params);
+    let params_layers_array:Array<Object> = this.leaflet.queryParamsHelperService.queryLayers(params);
     let map_tile_layers_array:Array<Object> = this.getTileLayersArray();
 
-    this.addLayersViaUrl(params_tms_array);
+    this.addLayersViaUrl(params_layers_array);
     this.removeLayersViaUrl(map_tile_layers_array);
 
+    this.sortLayers(params_layers_array);
+
     if(this.noTileLayer())  this.addBaseLayer();
+  }
+
+  sortLayers(params_layers_array):void {
+    params_layers_array.forEach((layer_obj, index) => {
+      let map_l:L.TileLayer = <L.TileLayer> this.getTileLayersArray().find((layer:L.TileLayer) => this.layersEqual(layer, layer_obj ));
+      map_l.setZIndex(index);
+    })
   }
 
   addBaseLayer():void {
@@ -44,7 +53,6 @@ export class LeafletLayers {
             await this.setTmsOptions(layer_obj['url'], layer);
           }
           layer.addTo(this.leaflet.map)
-
         }
       })
   }
@@ -71,12 +79,8 @@ export class LeafletLayers {
 
   removeLayersViaUrl(map_tile_layers_array:Array<Object>) {
     let params_layers_urls = this.leaflet.queryParamsHelperService.queryLayers(this.leaflet.currentParams);
-
-    map_tile_layers_array.forEach( (layer:L.TileLayer) => {
-      if(!this.layerExistOnParams(params_layers_urls, layer)){
-        this.leaflet.map.removeLayer(layer);
-      }
-    });
+    let layers_to_remove = map_tile_layers_array.filter(layer => !this.layerExistOnParams(params_layers_urls, <any>layer));
+    layers_to_remove.forEach((layer:L.Layer) => {this.leaflet.map.removeLayer(layer)});
   }
 
   getTileLayersArray():Array<Object> {
@@ -84,24 +88,24 @@ export class LeafletLayers {
   }
 
   layerExistOnMap(map_tile_layers, layer_obj):boolean {
-    let _layer: L.TileLayer  = this.getLayerFromLayerObj(layer_obj);
-
-    let exist_on_map = map_tile_layers.find((layer:L.TileLayer) => {
-      return this.layersEqual(layer, _layer);
-    });
+    let exist_on_map = map_tile_layers.find((layer:L.TileLayer) => this.layersEqual(layer, layer_obj));
     return !_.isNil(exist_on_map);
   }
 
   layerExistOnParams(params_tile_layers, layer:L.TileLayer):boolean {
-    let exist_on_params = params_tile_layers.find((layer_obj:{source:string}) => {
-      let _layer: L.TileLayer  = this.getLayerFromLayerObj(layer_obj);
-      return this.layersEqual(layer, _layer);
-    });
+    let exist_on_params = params_tile_layers.find((layer_obj:{source:string}) => this.layersEqual(layer, layer_obj));
     return !_.isNil(exist_on_params);
   }
 
-  layersEqual(layer, _layer):boolean {
-    return _.isEqual(_layer['_url'], layer['_url']) && _.isEqual(_layer['options'], layer['options']);
+  layersEqual(layer:L.TileLayer, layer_obj):boolean {
+    let _layer: L.TileLayer  = this.getLayerFromLayerObj(layer_obj);
+
+    switch (layer_obj.source) {
+      case "bing":
+        return  _.isEqual(_.pick(layer['options'], ['bingMapsKey', 'imagerySet']), _.pick(_layer['options'], ['bingMapsKey', 'imagerySet']));
+      default:
+        return _.isEqual(_layer['_url'], layer['_url']) && _.isEqual(_.pickBy(layer['options'], (val,key) => key != "zIndex"), _.pickBy(_layer['options'], (val,key) => key != "zIndex"));
+    }
   }
 
   getLayersArray():Array<L.Layer> {
