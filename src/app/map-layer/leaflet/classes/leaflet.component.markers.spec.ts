@@ -178,11 +178,13 @@ describe('LeafletComponent', () => {
 
     it("leftClickInputAction should get event with latlng, and call addMarker with latlng", () => {
       spyOn(queryParamsHelperService,'addMarker');
-      let event:{latlng: L.LatLng} = <any>{latlng: L.latLng(30,30)};
+      spyOn(component.map, 'layerPointToLatLng').and.callFake(()=> L.latLng([20,20]));
+
+      let event:{layerPoint: L.Point} = <any>{layerPoint: L.point(30,30)};
       positionFormService.selectedColorIndex = positionFormService.getSelectedColorIndex("black");
       markers.leftClickInputAction(event);
-      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith({position: [30,30], color: "black"});
+      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith({position: [20,20], color: "black"});
     })
 
   });
-})
+});

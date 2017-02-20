@@ -127,31 +127,31 @@ describe('CesiumComponent', () => {
     it('addLayersViaUrl should add layers that exists on params but not exists on map', ()=>{
       let layer_a = {url:'layer_a_url', source:'mapbox'};
       let layer_b = {url:'layer_b_url', source:'bing'};
-      let params_layers = [layer_a,layer_b];
+      let params_layers = [layer_a, layer_b];
 
       spyOn(layers, 'layerExistOnMap').and.callFake((layer) => _.isEqual(layer, layer_a)); // layer_b return false
-      spyOn(layers, 'getLayerFromLayerObj').and.callFake(() => layer_b);
+      spyOn(layers, 'getLayerFromLayerObj').and.callFake((layer) => layer);
       spyOn(component.viewer.imageryLayers, 'addImageryProvider');
 
       layers.addLayersViaUrl(params_layers);
 
       expect(component.viewer.imageryLayers.addImageryProvider).toHaveBeenCalledTimes(1);
-      expect(component.viewer.imageryLayers.addImageryProvider).toHaveBeenCalledWith(layer_b);
+      expect(component.viewer.imageryLayers.addImageryProvider).toHaveBeenCalledWith(layer_b, 1);
     });
 
     it('removeLayersViaUrl should remove layers that exists on map but not exists on params', ()=>{
       let layer_a = {imageryProvider: {url:'layer_a_url'}};
       let layer_b = {imageryProvider: {url:'layer_b_url'}};
       let map_layers = [layer_a, layer_b];
-
-      spyOn(layers, 'layerExistOnParams').and.callFake( imageryProvider => _.isEqual(imageryProvider, layer_a.imageryProvider) ); // layer_a return false
-      spyOn(layers, 'getLayerFromLayerObj').and.callFake(() => layer_a);
+      map_layers.filter = () => map_layers;
       spyOn(component.viewer.imageryLayers, 'remove');
+
+      // spyOn(layers, 'layerExistOnParams').and.callFake( imageryProvider => _.isEqual(imageryProvider, layer_a.imageryProvider) ); // layer_a return false
+      // spyOn(layers, 'getLayerFromLayerObj').and.callFake(layer => layer);
 
       layers.removeLayersViaUrl(map_layers);
 
-      expect(component.viewer.imageryLayers.remove).toHaveBeenCalledTimes(1);
-      expect(component.viewer.imageryLayers.remove).toHaveBeenCalledWith(layer_b);
+      expect(component.viewer.imageryLayers.remove).toHaveBeenCalledTimes(2);
     });
 
     it('no tile layer should return true if _layers array is empty', ()=>{
@@ -169,35 +169,35 @@ describe('CesiumComponent', () => {
     });
 
     it('imageryProvidersEqual should compere 2 imageryProviders and return if they are equals', () => {
-      let imagery_a = {_url: 'a'};
-      let imagery_b = {_url: 'b'};
-      expect(layers.imageryProvidersEqual(imagery_a, imagery_b)).toBeFalsy();
-      imagery_b._url = "a";
-      expect(layers.imageryProvidersEqual(imagery_a, imagery_b)).toBeTruthy();
+      let imageryLayer = {imageryProvider:{_url: 'a'}, _layerIndex: 0};
+      let imageryProvider = {_url: 'a'};
+      let index = 2;
+      expect(layers.imageryProvidersEqual(imageryLayer, imageryProvider, index)).toBeFalsy();
+      index = 0;
+      expect(layers.imageryProvidersEqual(imageryLayer, imageryProvider, index)).toBeTruthy();
     });
 
 
     it('layerExistOnMap should get layer_obj and return  return if exist of map' , ()=>{
-      let layer_obj_a = {source:'default', url:'fake_url_a'};
-      let layer_obj_b = {source:'openstreetmap', url:'fake_url_b'};
-      let layer_obj_c = {source:'mapbox', url:'fake_url_c'};
-      let map_imagery_providers = [layers.getLayerFromLayerObj(layer_obj_a), layers.getLayerFromLayerObj(layer_obj_b)];
-      spyOn(component.viewer.imageryLayers._layers, 'map').and.callFake(() => map_imagery_providers);
-      expect(layers.layerExistOnMap(layer_obj_a)).toBeTruthy();
-      expect(layers.layerExistOnMap(layer_obj_b)).toBeTruthy();
-      expect(layers.layerExistOnMap(layer_obj_c)).toBeFalsy();
-
+      let layer_obj_a = {imageryProvider:{_url:'fake_url_a'}, _layerIndex: 0};
+      let layer_obj_b = {imageryProvider:{_url:'fake_url_b'}, _layerIndex: 1};
+      let layer_obj_c = {imageryProvider:{_url:'fake_url_c'}, _layerIndex: 2};
+      component.viewer.imageryLayers._layers = [layer_obj_a, layer_obj_b];
+      expect(layers.layerExistOnMap(layer_obj_a.imageryProvider, 0)).toBeTruthy();
+      expect(layers.layerExistOnMap(layer_obj_b.imageryProvider, 1)).toBeTruthy();
+      expect(layers.layerExistOnMap(layer_obj_c.imageryProvider, 2)).toBeFalsy();
     });
 
     it('layerExistOnParams should get imageryProvider and return if exist of params' , ()=>{
-      let layer_obj = {source:'default', url:'fake_url'};
-      let imageryProvider = layers.getLayerFromLayerObj(layer_obj);
-      let params_layers_obj = [layer_obj];
+      let imageryLayer = {imageryProvider:{_url:'fake_url'}, _layerIndex: 0};
+      let imageryProviderRes = _.cloneDeep(imageryLayer.imageryProvider);
+      let params_layers_obj = [imageryLayer];
       spyOn(queryParamsHelperService, 'queryLayers').and.callFake(() => params_layers_obj);
-      expect(layers.layerExistOnParams(imageryProvider)).toBeTruthy();
-      layer_obj.url = 'fake_other_url';
-      expect(layers.layerExistOnParams(imageryProvider)).toBeFalsy();
-    })
+      spyOn(layers, 'getLayerFromLayerObj').and.callFake(layer_obj => imageryProviderRes);
+      expect(layers.layerExistOnParams(imageryLayer)).toBeTruthy();
+      imageryProviderRes._url = 'fake_other_url';
+      expect(layers.layerExistOnParams(imageryLayer)).toBeFalsy();
+    });
 
   })
 

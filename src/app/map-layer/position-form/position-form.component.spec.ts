@@ -14,30 +14,54 @@ import {
 import {HttpModule} from "@angular/http";
 import {AjaxService} from "../ajax.service";
 import {Observable} from "rxjs";
-import {MapPositionComponent} from "./map-position/map-position.component";
 import {Component, Input, Output, EventEmitter} from "@angular/core";
 import {MapSizeComponent} from "./map-size/map-size.component";
 import {ColorPickerComponent} from "./color-picker/color-picker.component";
-import {LayersComponent} from "./layers/layers.component";
 import {MarkersComponent} from "./markers/markers.component";
 import {TerrainComponent} from "./terrain/terrain.component";
 
 export let fake_Ajax_Service = {
   getLayerExam():Observable<any>{
     return Observable.of([{name:"exap1"}, {name:"exap2"}]);
+  },
+  getTerrainsExam():Observable<any>{
+    return Observable.of([{name:"tr_exap1"}, {name:"tr_exap2"}]);
   }
 };
 
 @Component({
   selector: 'app-map-position',
-  template: `<h1>שלום לך</h1>`
+  template: `<h1>שלום לך</h1>`,
+  inputs:["position", "size"],
+  outputs:["positionChange", "submitPositionEmitter"]
 })
-class MockMapPositionComponent {
-  @Input() position:string;
-  @Output() positionChange = new EventEmitter();
-  @Output() submitPositionEmitter = new EventEmitter();
-  @Input() size:string;
-}
+class MockMapPositionComponent {}
+
+@Component({
+  selector: 'app-layers',
+  template: `<h1>2שלום לך</h1>`,
+  inputs: ["layersString"],
+  outputs:["submitLayersEmitter"]
+})
+class LayersMock{}
+
+@Component({
+  selector: 'app-markers',
+  template: `<h1>2שלום לך</h1>`,
+  inputs: ["lat", "lng"],
+  outputs:["submitMarkersEmitter"]
+})
+class MarkersMock{}
+
+
+@Component({
+  selector: 'app-map-size',
+  template: `<h1>2שלום לך</h1>`,
+  inputs: ["size"],
+  outputs:["sizeChange","submitSizeEmitter"]
+})
+class MapSizeMock{}
+
 
 describe('PositionFormComponent', () => {
   let component: PositionFormComponent;
@@ -59,7 +83,7 @@ describe('PositionFormComponent', () => {
 
     TestBed.overrideModule(PositionFormModule, {
       set: {
-        declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MockMapPositionComponent,TerrainComponent]
+        declarations: [PositionFormComponent, MarkersMock, ColorPickerComponent, MockMapPositionComponent,TerrainComponent, LayersMock, MapSizeMock]
       }
     });
 
@@ -97,10 +121,6 @@ describe('PositionFormComponent', () => {
   });
 
   it('should havePermission to return if param should include on current state', () => {
-
-
-
-    fixture.detectChanges();
 
     let height = {
       permissions: [Permissions['/cesium']]
@@ -149,7 +169,7 @@ describe('PositionFormComponent', () => {
 
   });
 
-  it('should show all params that include permission of current_state value', () => {
+  xit('should show all params that include permission of current_state value', () => {
 
     current_state = '/leaflet'; //lat,lng,zoom have permissions.
 
@@ -227,7 +247,6 @@ describe('PositionFormComponent', () => {
     component.params.terrain.val = "terrainUrl";
 
     component.submitForm();
-    fixture.detectChanges();
 
     let queryParams = {
       lng:1,
@@ -256,7 +275,6 @@ describe('PositionFormComponent', () => {
     queryParams.rotate =  1;
 
     component.submitForm();
-    fixture.detectChanges();
     expect(router.navigate).toHaveBeenCalledWith([], {queryParams: queryParams});
   });
 

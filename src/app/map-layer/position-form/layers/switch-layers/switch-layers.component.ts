@@ -18,6 +18,7 @@ import {Component, HostListener, Input, EventEmitter, Output, style, animate, tr
       ])
   ]
 })
+
 export class SwitchLayersComponent{
   private _active:boolean = false;
   alert:boolean = false;

@@ -106,7 +106,7 @@ describe('OpenlayersComponent', () => {
     });
 
 
-    it('setLayersChanges: should call addTmsLayersViaUrl and removeTmsLayersViaUrl and addBaseLayer if no tile layers in map', () => {
+   it('setLayersChanges: should call addTmsLayersViaUrl and removeTmsLayersViaUrl and addBaseLayer if no tile layers in map', () => {
       let params:Params = {};
       let fake_parmas_layers_array:Array<Object> = [1,2,3];
       let fake_map_layers_array:Array<Object> = [4,5,6];
@@ -117,12 +117,15 @@ describe('OpenlayersComponent', () => {
 
       spyOn(layers, 'addLayersViaUrl');
       spyOn(layers, 'removeLayersViaUrl');
+      spyOn(layers, 'sortLayers');
+
       spyOn(layers, 'addBaseLayer');
       spyOn(layers, 'noTileLayer').and.callFake(() => noTileLayerRes);
 
       layers.setLayersChanges(params);
       expect(layers.addLayersViaUrl).toHaveBeenCalledWith(fake_parmas_layers_array);
       expect(layers.removeLayersViaUrl).toHaveBeenCalledWith(fake_map_layers_array);
+      expect(layers.sortLayers).toHaveBeenCalledWith(fake_parmas_layers_array);
       expect(layers.addBaseLayer).not.toHaveBeenCalled();
       noTileLayerRes = true;
       layers.setLayersChanges(params);
@@ -174,8 +177,8 @@ describe('OpenlayersComponent', () => {
       let source = {c:'c',jc:"jc", o: "o"};
       let _source = {c:'c',jc:"jc", o: "o1"};
 
-      let layer  = {getSource: () => new Object(source)};
-      let _layer = {getSource: () => new Object(_source)};
+      let layer  = <any>{getSource: () => new Object(source)};
+      let _layer = <any>{getSource: () => new Object(_source)};
 
       expect(layers.layersEqual(layer, _layer)).toBeFalsy();
 
