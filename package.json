@@ -31,7 +31,7 @@
     "angular2-click-outside": "^0.1.0",
     "bootstrap": "^3.3.7",
     "bootstrap-switch": "^3.3.2",
-    "cesium": "^1.29.0",
+    "cesium": "^1.30.0",
     "core-js": "^2.4.1",
     "firebase": "^3.6.9",
     "jw-bootstrap-switch-ng2": "0.0.6",

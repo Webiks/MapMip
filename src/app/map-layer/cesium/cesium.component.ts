@@ -70,10 +70,15 @@ export class CesiumComponent implements OnInit,OnDestroy  {
   initializeMap():void {
     window['CESIUM_BASE_URL'] = 'assets/Cesium';
     Cesium.BingMapsApi.defaultKey = "AnjT_wAj_juA_MsD8NhcEAVSjCYpV-e50lUypkWm1JPxVu0XyVqabsvD3r2DQpX-";
+
+   // var terrain = Cesium.createDefaultTerrainProviderViewModels();
+
     this.viewer = new Cesium.Viewer(this.container.nativeElement , {
-      baseLayerPicker : false
+      baseLayerPicker : false,
     });
+    //this.viewer.terrainProvider = new Cesium.EllipsoidTerrainProvider();
   }
+
 
 
 

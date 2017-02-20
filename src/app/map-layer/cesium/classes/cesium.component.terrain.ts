@@ -18,8 +18,12 @@ export class CesiumTerrian{
 
       if(url) {
         this.cesium.viewer.terrainProvider = new Cesium.CesiumTerrainProvider({url});
+        this.cesium.viewer.scene.globe.enableLighting = true;
+        this.cesium.viewer.scene.globe.depthTestAgainstTerrain = true;
       } else{
         this.cesium.viewer.terrainProvider = new Cesium.EllipsoidTerrainProvider();
+        this.cesium.viewer.scene.globe.enableLighting = false;
+        this.cesium.viewer.scene.globe.depthTestAgainstTerrain = false;
       }
 
     }
