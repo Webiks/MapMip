@@ -4,7 +4,9 @@ import * as _ from 'lodash';
 import {SafeStyle} from "@angular/platform-browser";
 
 export class CesiumMarkers {
-  public cesiumHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.container.nativeElement);
+
+//  public cesiumHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.container.nativeElement);
+  public cesiumHandler = new Cesium.ScreenSpaceEventHandler(  this.cesium.viewer.scene.canvas);
 
   public marker_picker = {
     not_allowed: false
@@ -54,19 +56,36 @@ export class CesiumMarkers {
   }
 
   mouseMoveInputAction(event:{endPosition: {x:number, y:number}, startPosition: {x:number, y:number}}){
-    let positionCartesian3Result = this.cesium.viewer.camera.pickEllipsoid(event.endPosition);
-    this.marker_picker.not_allowed = _.isNil(positionCartesian3Result);
+     let positionCartesian3Result = this.cesium.viewer.camera.pickEllipsoid(event.endPosition);
+     this.marker_picker.not_allowed = _.isNil(positionCartesian3Result);
   }
 
   leftClickInputAction(event:{position: {x:number, y:number}}):void {
+
     event.position.x+=12.5;
     event.position.y+=41;
-    if(this.marker_picker.not_allowed) return;
-    let positionCartesian3 = this.cesium.viewer.camera.pickEllipsoid(event.position);
-    let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
-    let lngDeg:number = Cesium.Math.toDegrees(positionCartographic.longitude);
-    let latDeg:number = Cesium.Math.toDegrees(positionCartographic.latitude);
-    let position: [number, number] = [lngDeg, latDeg];
+
+     if(this.marker_picker.not_allowed) return;
+
+    // terrain case
+    let position:[any];
+
+    if(this.cesium.viewer.terrainProvider.hasOwnProperty("_url")) {
+      let ray = this.cesium.viewer.camera.getPickRay(event.position);
+      let positionCartesian3 = this.cesium.viewer.scene.globe.pick(ray, this.cesium.viewer.scene);
+      let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
+      let lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
+      let latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
+       position = [lngDeg, latDeg, positionCartographic.height];
+    }
+    else {
+      let positionCartesian3 = this.cesium.viewer.camera.pickEllipsoid(event.position);
+      let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
+      let lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
+      let latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
+      position= [lngDeg, latDeg];
+    }
+
     let color:string = this.cesium.positionFormService.getSelectedColor();
     let marker_picker = {position};
     if(color != "blue") marker_picker['color'] = color;
