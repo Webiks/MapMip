@@ -1,0 +1,6 @@
+button.active {
+  color: gold;
+  &:focus{
+    color: gold;
+  }
+}

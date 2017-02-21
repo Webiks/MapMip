@@ -49,7 +49,8 @@ export class PositionFormComponent implements OnInit {
     layers: {val?: string, permissions: number[], input_type?:string},
     size: {val?: string, permissions: number[], input_type?:string},
     position: {val?: string, permissions: number[], input_type?:string},
-    terrain: {val?: string, permissions: number[], input_type?:string}
+    terrain: {val?: string, permissions: number[], input_type?:string},
+    lighting: {val?: string, permissions: number[], input_type?:string}
   } = {
     lng:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
     lat:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
@@ -64,7 +65,8 @@ export class PositionFormComponent implements OnInit {
     layers: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-layers'},
     size: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-map-size' },
     position:{permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-map-position' },
-    terrain:{permissions: [Permissions['/cesium']], input_type: 'app-terrain' }
+    terrain:{permissions: [Permissions['/cesium']], input_type: 'app-terrain' },
+    lighting:{permissions: [Permissions['/cesium']], input_type: 'app-map-lighting' }
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService) {}
