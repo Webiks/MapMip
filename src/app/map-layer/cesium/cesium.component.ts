@@ -15,6 +15,8 @@ import {CesiumMapView} from "./classes/cesium.component.map-view";
 import {CesiumMapSize} from "./classes/cesium.component.map-size";
 import {CesiumMapPosition} from "./classes/cesium.component.map-position";
 import {CesiumTerrian} from "./classes/cesium.component.terrain";
+import {MapLayerService} from "../map-layer.service";
+import {CesiumMapLighting} from "./classes/cesium.component.map-lighting";
 
 @Component({
   host: host,
@@ -39,8 +41,9 @@ export class CesiumComponent implements OnInit,OnDestroy  {
   public map_size:CesiumMapSize;
   public map_position:CesiumMapPosition;
   public terrain:CesiumTerrian;
+  public map_lighting:CesiumMapLighting;
 
-  constructor(public queryParamsHelperService:QueryParamsHelperService, public activatedRoute:ActivatedRoute, public generalCanDeactivateService:GeneralCanDeactivateService, public router:Router, public calcService:CalcService, public positionFormService:PositionFormService) {
+  constructor(public queryParamsHelperService:QueryParamsHelperService, public activatedRoute:ActivatedRoute, public generalCanDeactivateService:GeneralCanDeactivateService, public router:Router, public calcService:CalcService, public positionFormService:PositionFormService,public mapLayerService:MapLayerService) {
     this.queryParamsSubscriber = activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     window['current'] = this;
   }
@@ -60,6 +63,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
     this.map_view = new CesiumMapView(this);
     this.map_position = new CesiumMapPosition(this);
     this.terrain = new CesiumTerrian(this);
+    this.map_lighting = new CesiumMapLighting(this);
   };
 
   queryParams(params:Params):void {
@@ -71,12 +75,9 @@ export class CesiumComponent implements OnInit,OnDestroy  {
     window['CESIUM_BASE_URL'] = 'assets/Cesium';
     Cesium.BingMapsApi.defaultKey = "AnjT_wAj_juA_MsD8NhcEAVSjCYpV-e50lUypkWm1JPxVu0XyVqabsvD3r2DQpX-";
 
-   // var terrain = Cesium.createDefaultTerrainProviderViewModels();
-
     this.viewer = new Cesium.Viewer(this.container.nativeElement , {
       baseLayerPicker : false,
     });
-    //this.viewer.terrainProvider = new Cesium.EllipsoidTerrainProvider();
   }
 
 

@@ -54,6 +54,10 @@ export class QueryParamsHelperService{
   queryTerrain(params:Params):string{
     return params['terrain'];
   }
+  queryLighting(params:Params):number{
+    if(+params['lighting'] != 1) return 0;
+    return 1;
+  }
   queryPosition(params:Params):[number,number]{
     let position = params['position'];
     if(_.isEmpty(position)) return [50,50];
@@ -68,6 +72,11 @@ export class QueryParamsHelperService{
     let prevSize = this.queryTerrain(prevParams);
     let currentSize = this.queryTerrain(currentParams);
     return !_.isEqual(prevSize, currentSize);
+  }
+  anyLightingChange(prevParams:Params, currentParams:Params) {
+    let prevLighting    = this.queryLighting(prevParams);
+    let currentLighting = this.queryLighting(currentParams);
+    return !_.isEqual(prevLighting, currentLighting);
   }
   anyPositionChange(prevParams:Params, currentParams:Params){
     let prevSize = this.queryPosition(prevParams);
@@ -197,6 +206,7 @@ export class QueryParamsHelperService{
     queryObj.size         = _.isEqual(queryObj.size, "100,100") ? undefined : queryObj.size;
     queryObj.position    =  _.isNil(queryObj.size) || _.isEqual(queryObj.position, "50,50")  ? undefined : queryObj.position;
     queryObj.terrain     =  _.isEmpty(queryObj.terrain) ? undefined :queryObj.terrain;
+    queryObj.lighting    =  this.queryLighting({lighting:queryObj.lighting}) != 1 ? undefined : 1;
     return <NavigationExtras> {
       queryParams: queryObj
     };

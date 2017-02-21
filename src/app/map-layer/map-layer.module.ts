@@ -13,6 +13,7 @@ import {Ng2BootstrapModule} from "ng2-bootstrap";
 import {PositionFormModule} from "./position-form/position-form.module";
 import {AjaxService} from "./ajax.service";
 import {HttpModule} from "@angular/http";
+import {MapLayerService} from "./map-layer.service";
 
 @NgModule({
   imports: [
@@ -26,6 +27,6 @@ import {HttpModule} from "@angular/http";
   ],
   declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent],
   exports: [MapLayerComponent],
-  providers:[QueryParamsHelperService, CalcService, AjaxService]
+  providers:[QueryParamsHelperService, CalcService, AjaxService,MapLayerService]
 })
 export class MapLayerModule { }

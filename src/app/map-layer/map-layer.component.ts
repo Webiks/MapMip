@@ -1,6 +1,7 @@
 import {Component, OnInit, style, state, animate, transition, trigger, ViewChild} from '@angular/core';
 import {PositionFormService} from "./position-form/position-form.service";
 
+
 @Component({
   selector: 'app-map-layer',
   templateUrl: './map-layer.component.html',
@@ -10,7 +11,8 @@ import {PositionFormService} from "./position-form/position-form.service";
 export class MapLayerComponent implements OnInit {
   public showTools:boolean = true;
   @ViewChild("mapsCont") mapsCont;
-  constructor(private positionFormService:PositionFormService) {}
+  constructor(private positionFormService:PositionFormService) {
+  }
 
   ngOnInit() {
     this.positionFormService.mapsCont = this.mapsCont;
