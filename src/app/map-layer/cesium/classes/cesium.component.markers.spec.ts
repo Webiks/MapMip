@@ -265,8 +265,8 @@ describe('CesiumComponent', () => {
         position: Cesium.Cartesian3.fromDegrees(...marker.position),
         billboard: {
           image: component.positionFormService.getMarkerUrlByColor(marker["color"]),
-          horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
-          verticalOrigin:Cesium.VerticalOrigin.TOP
+          horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+          verticalOrigin:Cesium.VerticalOrigin.BOTTOM
         }
       });
     });

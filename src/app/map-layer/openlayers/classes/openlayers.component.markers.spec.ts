@@ -160,12 +160,16 @@ describe('OpenlayersComponent', () => {
     });
 
     it("leftClickInputAction should get event with coordinates and should convert toLonLat, and call addMarker with latlng", () => {
-      let event:{coordinate:[number,number]} = {coordinate:[30,30]} ;
+      let event:{pixel:ol.Pixel} = <any>{pixel:[30,30]} ;
+      let fix_pixel:ol.Pixel = [event.pixel[0] + 12.5, event.pixel[1] + 41];
+
       spyOn(component.queryParamsHelperService,'addMarker');
-      spyOn(ol.proj,'toLonLat').and.callFake((coordinate:[number,number]) => coordinate);
+      spyOn(component.map,'getCoordinateFromPixel').and.callFake((coordinate:ol.Pixel):ol.Coordinate => coordinate);
+      spyOn(ol.proj,'toLonLat').and.callFake((coordinate:ol.Pixel):ol.Coordinate => coordinate);
+
       positionFormService.selectedColorIndex = positionFormService.getSelectedColorIndex("yellow");
       markers.leftClickInputAction(event);
-      expect(component.queryParamsHelperService.addMarker).toHaveBeenCalledWith({position: event.coordinate, color:"yellow"});
+      expect(component.queryParamsHelperService.addMarker).toHaveBeenCalledWith({position: fix_pixel, color:"yellow"});
     });
 
   });

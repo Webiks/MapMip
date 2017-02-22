@@ -11,6 +11,9 @@ import {HttpModule} from "@angular/http";
 import {AjaxService} from "../../ajax.service";
 import {RouterTestingModule} from "@angular/router/testing";
 import {fake_Ajax_Service} from "../position-form.component.spec";
+import {SwitchLayersComponent} from "./switch-layers/switch-layers.component";
+import {ReversePipe} from "../reverse.pipe";
+import {DragItemDirective} from "./drag-item.directive";
 
 describe('LayersComponent', () => {
   let component: LayersComponent;
@@ -19,7 +22,7 @@ describe('LayersComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports:[RouterTestingModule, Ng2BootstrapModule, HttpModule],
-      declarations: [ LayersComponent ],
+      declarations: [ LayersComponent , SwitchLayersComponent, ReversePipe, DragItemDirective],
       providers:[QueryParamsHelperService, CalcService, {provide: AjaxService, useValue: fake_Ajax_Service},ComponentLoaderFactory,PositioningService,DropdownConfig,TooltipConfig]
     })
     .compileComponents();

@@ -10,6 +10,7 @@ import {CalcService} from "../../calc-service";
 import {AjaxService} from "../../ajax.service";
 import {LeafletLayers} from "./leaflet.component.layers";
 import * as _ from "lodash";
+import marker = L.marker;
 
 describe('LeafletComponent', () => {
   let component: LeafletComponent;
@@ -119,17 +120,21 @@ describe('LeafletComponent', () => {
 
       spyOn(layers, 'addLayersViaUrl');
       spyOn(layers, 'removeLayersViaUrl');
+      spyOn(layers, 'sortLayers');
+
       spyOn(layers, 'addBaseLayer');
       spyOn(layers, 'noTileLayer').and.callFake(() => noTileLayerRes);
 
       layers.setLayersChanges(params);
       expect(layers.addLayersViaUrl).toHaveBeenCalledWith(fake_parmas_layers_array);
       expect(layers.removeLayersViaUrl).toHaveBeenCalledWith(fake_map_layers_array);
+      expect(layers.sortLayers).toHaveBeenCalledWith(fake_parmas_layers_array);
       expect(layers.addBaseLayer).not.toHaveBeenCalled();
       noTileLayerRes = true;
       layers.setLayersChanges(params);
       expect(layers.addBaseLayer).toHaveBeenCalled();
     });
+
     it('addLayersViaUrl should add layers that exists on params but not exists on map', ()=>{
       let layer_a = {url:'layer_a_url', source:'mapbox'};
       let layer_b = {url:'layer_b_url', source:'bing', addTo: () => {}};
@@ -157,7 +162,17 @@ describe('LeafletComponent', () => {
       expect(component.map.removeLayer).toHaveBeenCalledTimes(1);
       expect(component.map.removeLayer).toHaveBeenCalledWith(layer_a);
     });
-
+    it('sortLayers should loop on params and set correct zIndex to each layer', ()=>{
+      let fake_layer = {setZIndex(zIndex){}};
+      let layers_array = [3,2,1];
+      layers_array.find =  ():any => fake_layer;
+      spyOn(fake_layer, 'setZIndex');
+      spyOn(layers, 'getTileLayersArray').and.callFake(() => layers_array);
+      spyOn(layers, 'layersEqual').and.callFake((a,b) => a == b);
+      let fake_parmas_layers_array:Array<Object> = [1,2,3];
+      layers.sortLayers(fake_parmas_layers_array);
+      expect(fake_layer.setZIndex).toHaveBeenCalledTimes(3);
+    });
     it('noTileLayer should return true if getTileLayersArray array is empty', ()=>{
       let getTileLayersArrayRes = [1,2,3];
       spyOn(layers, "getTileLayersArray").and.callFake(() => getTileLayersArrayRes);
@@ -170,12 +185,16 @@ describe('LeafletComponent', () => {
       let layer_obj = { url:'mapbox_url',access_token:'Hiyush'}; //empty format empty mapid
       expect(layers.parseMapboxUrl(layer_obj)).toEqual(`mapbox_url{z}/{x}/{y}?access_token=Hiyush`)
     });
+
     it('layersEqual should compere 2 imageryProviders and return if they are equals', () => {
-      let layer ={_url:'a',options:{}};
-      let _layer={_url: 'b',options:{}};
-      expect(layers.layersEqual(layer, _layer)).toBeFalsy();
+      let layer = <any>{_url:'a',options:{zIndex: 2}};
+      let _layer = <any>{_url:'b',options:{zIndex: 0}};
+
+      let layer_obj ={source: 'mapbox'};
+      spyOn(layers,'getLayerFromLayerObj').and.callFake(() => _layer);
+      expect(layers.layersEqual(layer, layer_obj)).toBeFalsy();
       _layer._url = 'a';
-      expect(layers.layersEqual(layer, _layer)).toBeTruthy();
+      expect(layers.layersEqual(layer, layer_obj)).toBeTruthy();
     });
 
     it('layerExistOnMap should get layer_obj and return  return if exist of map' , ()=>{

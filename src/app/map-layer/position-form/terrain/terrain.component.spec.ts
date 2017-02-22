@@ -8,6 +8,8 @@ import {CalcService} from "../../calc-service";
 import {QueryParamsHelperService} from "../../query-params-helper.service";
 import {Ng2BootstrapModule, PopoverDirective} from "ng2-bootstrap";
 import {RouterTestingModule} from "@angular/router/testing";
+import {AjaxService} from "../../ajax.service";
+import {fake_Ajax_Service} from "../position-form.component.spec";
 
 describe('TerrainComponent', () => {
   let component: TerrainComponent;
@@ -22,7 +24,7 @@ describe('TerrainComponent', () => {
         Ng2BootstrapModule.forRoot()
       ],
       declarations:[TerrainComponent],
-      providers:[QueryParamsHelperService, CalcService]
+      providers:[QueryParamsHelperService, CalcService, {provide: AjaxService, useValue: fake_Ajax_Service}]
     })
     .compileComponents();
   }));

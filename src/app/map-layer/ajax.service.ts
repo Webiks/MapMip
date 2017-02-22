@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import {Http} from "@angular/http";
-import * as xml2js from 'xml2js';
-import {Observable} from 'rxjs';
 import * as firebase from 'firebase';
 
 @Injectable()
 export class AjaxService {
 
-  constructor(private http:Http) {
-    this.initFirebase()
+  constructor() {
+    if(firebase.apps.length === 0){
+      this.initFirebase();
+    }
   }
 
   initFirebase(){
@@ -20,15 +19,15 @@ export class AjaxService {
     firebase.initializeApp(config);
   }
 
-  getTmsmapresource(url:string) : Observable<any>{
-    return new Observable(obs => {
-      this.http.get(`${url}/tilemapresource.xml`).subscribe(response => {
-        xml2js.parseString(response['_body'], (err, res) => {
-          obs.next(res);
-        });
-      });
-    })
-  }
+  // getTmsmapresource(url:string) : Observable<any>{
+  //   return new Observable(obs => {
+  //     this.http.get(`${url}/tilemapresource.xml`).subscribe(response => {
+  //       xml2js.parseString(response['_body'], (err, res) => {
+  //         obs.next(res);
+  //       });
+  //     });
+  //   })
+  // }
 
   getLayerExam():Promise<any> {
     return <any>firebase.database().ref("array").once("value").then(snapshot => snapshot.val());

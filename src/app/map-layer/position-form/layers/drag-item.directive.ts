@@ -47,9 +47,6 @@ export class DragItemDirective{
     }
   }
 
-
-
-
   @HostListener('keyup', ['$event']) keyup($event){
     switch ($event.which) {
      case 16:
@@ -59,52 +56,78 @@ export class DragItemDirective{
   }
 
   @HostListener('keydown', ['$event']) keydown($event){
-    let dropIndex = this.data[0];
-    let array = this.data[1];
-    let swapIndex, temp;
-
     switch ($event.which) {
       case 38:
-        if(this.shift_down) {
-          swapIndex = (dropIndex + 1) % array.length;
-          temp = array[dropIndex];
-          array[dropIndex] = array[swapIndex];
-          array[swapIndex] = temp;
-          setTimeout(()=>{
-            this.el.nativeElement.focus();
-          }, 0);
-        } else {
-          let elem:HTMLElement = this.el.nativeElement;
-          let brothers:HTMLCollection = elem.parentElement.children;
-          let array = [].slice.call(brothers);
-          let myindex = array.indexOf(this.el.nativeElement);
-          let prev_index = (myindex - 1) < 0 ? array.length + (myindex - 1) : (myindex - 1);
-          array[prev_index ].focus();
-        }
+        this.keydownDown();
         break;
       case 40:
-        if(this.shift_down) {
-          swapIndex = (dropIndex - 1) % array.length;
-          if (swapIndex < 0) swapIndex += array.length;
-          temp = array[dropIndex];
-          array[dropIndex] = array[swapIndex];
-          array[swapIndex] = temp;
-          setTimeout(()=>{
-            this.el.nativeElement.focus();
-          }, 0);
-        } else {
-          let elem:HTMLElement = this.el.nativeElement;
-          let brothers:HTMLCollection = elem.parentElement.children;
-          let array = [].slice.call(brothers);
-          let myindex = array.indexOf(this.el.nativeElement);
-          let next_index = (myindex + 1) % array.length;
-          array[next_index].focus();
-        }
+        this.keydownUp();
         break;
       case 16:
         this.shift_down = true;
         break;
     }
+  }
+
+  keydownDown() {
+    if(this.shift_down) {
+      this.switchNext();
+    } else {
+      this.focusNext();
+    }
+  }
+
+  keydownUp() {
+    if(this.shift_down) {
+      this.switchPrev();
+    } else {
+      this.focusPrev();
+    }
+  }
+
+  switchNext() {
+    let dropIndex = this.data[0];
+    let array = this.data[1];
+    let swapIndex, temp;
+    swapIndex = (dropIndex + 1) % array.length;
+    temp = array[dropIndex];
+    array[dropIndex] = array[swapIndex];
+    array[swapIndex] = temp;
+    setTimeout(()=>{
+      this.el.nativeElement.focus();
+    }, 0);
+  }
+
+  switchPrev() {
+    let dropIndex = this.data[0];
+    let array = this.data[1];
+    let swapIndex, temp;
+    swapIndex = (dropIndex - 1) % array.length;
+    if (swapIndex < 0) swapIndex += array.length;
+    temp = array[dropIndex];
+    array[dropIndex] = array[swapIndex];
+    array[swapIndex] = temp;
+    setTimeout(()=>{
+      this.el.nativeElement.focus();
+    }, 0);
+  }
+
+  focusNext() {
+    let elem:HTMLElement = this.el.nativeElement;
+    let brothers:HTMLCollection = elem.parentElement.children;
+    let array = [].slice.call(brothers);
+    let myindex = array.indexOf(this.el.nativeElement);
+    let prev_index = (myindex - 1) < 0 ? array.length + (myindex - 1) : (myindex - 1);
+    array[prev_index ].focus();
+  }
+
+  focusPrev(){
+    let elem:HTMLElement = this.el.nativeElement;
+    let brothers:HTMLCollection = elem.parentElement.children;
+    let array = [].slice.call(brothers);
+    let myindex = array.indexOf(this.el.nativeElement);
+    let next_index = (myindex + 1) % array.length;
+    array[next_index].focus();
   }
 
 }

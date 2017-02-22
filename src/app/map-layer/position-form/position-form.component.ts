@@ -30,7 +30,7 @@ const position_form_animations = [trigger('showTools',
 export class PositionFormComponent implements OnInit {
 
   @HostBinding("style.display") display = "block";
-  @HostBinding("style.height") height = "auto";
+  @HostBinding("style.height") height = "160px";//"auto";
   @HostBinding("style.max-height") maxHeight = "500px";
   @HostBinding('@showTools') showTools = "true";
 
