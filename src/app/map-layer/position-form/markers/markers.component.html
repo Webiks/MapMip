@@ -1,7 +1,7 @@
 <button class="btn btn-primary pull-left" (click)="smModal.show()" type="button">Markers</button>
 
 <div class="pull-left">
-  <button class="btn btn-default glyphicon glyphicon-record center-btn" [style.color]="positionFormService.getSelectedColorHEX()" (click)="markerCenter()" type="button"></button>
+  <button class="btn btn-default glyphicon glyphicon-record center-btn" [style.color]="positionFormService.getSelectedColorHEX()" (click)="markerCenter()" type="button" tooltip="add centered marker" triggers="hover"></button>
   <app-color-picker (togglePickedEmitter)="togglePicked()" [Active]="positionFormService.onPicked" [(selectedIndex)]="positionFormService.selectedColorIndex"></app-color-picker>
 </div>
 
