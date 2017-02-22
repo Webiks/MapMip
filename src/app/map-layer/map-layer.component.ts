@@ -1,4 +1,4 @@
-import {Component, OnInit, style, state, animate, transition, trigger, ViewChild} from '@angular/core';
+import {Component, OnInit, style, state, animate, transition, trigger, ViewChild, HostBinding} from '@angular/core';
 import {PositionFormService} from "./position-form/position-form.service";
 
 
@@ -10,6 +10,10 @@ import {PositionFormService} from "./position-form/position-form.service";
 
 export class MapLayerComponent implements OnInit {
   public showTools:boolean = true;
+  @HostBinding("style.height") height = "100%";
+  @HostBinding("style.width") width = "100%";
+  @HostBinding("style.display") display = "block";
+
   @ViewChild("mapsCont") mapsCont;
   constructor(private positionFormService:PositionFormService) {
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, Renderer} from '@angular/core';
 
 @Component({
   selector: 'app-navbar',
@@ -6,10 +6,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
+  isCollapsed = true;
 
-  constructor() { }
+  constructor(private renderer: Renderer) { }
 
   ngOnInit() {
   }
 
+  setHeight(el, height){
+    this.renderer.setElementStyle(el, 'height', height + 'px');
+  }
 }

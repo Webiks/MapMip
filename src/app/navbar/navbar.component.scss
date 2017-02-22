@@ -4,3 +4,27 @@
 img{
   width: 90px;
 }
+#navbar.collapse{
+}
+@media (max-width: 767px){
+  #navbar.collapse{
+    position: absolute;
+    transition: height .3s;
+    display: block !important;
+    overflow: hidden !important;
+    width: 100%;
+    z-index: 10000;
+    background: #222222;
+  }
+}
+.nav-item {
+  .nav-link {
+    color: white;
+  }
+  &:hover{
+    background-color: #080808;
+  }
+}
+.navbar-inverse{
+  background-color: #424242;
+}

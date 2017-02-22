@@ -33,6 +33,8 @@ export class PositionFormComponent implements OnInit {
   @HostBinding("style.height") height = "160px";//"auto";
   @HostBinding("style.max-height") maxHeight = "500px";
   @HostBinding('@showTools') showTools = "true";
+  @HostBinding('style.overflow') overflow = "auto";
+
 
 
   public params: {
