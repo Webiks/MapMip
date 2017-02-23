@@ -61,8 +61,10 @@
           </div>
 
         </template>
-
-        <input type="submit" class="btn btn-info" value="Save" style="display: none;">
+        <button type="submit" style="display: none"></button>
+        <div class="form-group submit">
+          <button type="button" class="btn btn-info submit-mobile" (click)="submitForm();close()">Submit</button>
+        </div>
       </form>
 
     </div>

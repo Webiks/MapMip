@@ -26,6 +26,9 @@
   //border-radius: 4px;
 
   form {
+    .form-group.submit{
+      display: none;
+    }
     display: flex;
     flex-wrap: wrap;
     .input_type {
@@ -106,6 +109,19 @@
         }
         .group-div{
           margin-top: 5%;
+        }
+        .form-group.submit{
+          margin: 0;
+          margin-top: 5%;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+
+          button.submit-mobile{
+            width: 80%;
+            background: #0f0961;
+            border-color: #343075;
+          }
         }
       }
     }
