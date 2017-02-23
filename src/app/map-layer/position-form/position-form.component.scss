@@ -1,8 +1,30 @@
+.panel.panel-default{
+  .panel-heading{
+    background-color: #222;
+    border-color: #080808;
+    color: white;
+    .close{
+      color: white;
+      opacity: .8;
+      font-weight: 100;
+      &:hover{
+        opacity: 1;
+        font-weight: 700;
+      }
+    }
+  }
+  .panel-body{
+    background: #424242;
+  }
+}
+
+
 .pos-container{
-  box-shadow: inset 0px 0px 7px 0px rgba(107, 173, 223, 0.5);
-  padding: 30px 60px 20px 60px;
-  background: rgba(107, 173, 223, 0.005);
-  border-radius: 4px;
+  //box-shadow: inset 0px 0px 7px 0px rgb(66, 66, 66);
+  //padding: 30px 60px 20px 60px;
+  //background: rgba(141, 141, 141, 0.27);
+  //border-radius: 4px;
+
   form {
     display: flex;
     flex-wrap: wrap;
@@ -46,10 +68,50 @@
       padding: 0;
 
     }
+
+    md-input-container{
+      color: #d6d6d6;
+      input:focus{
+        color: white;
+      }
+    }
+
+
+
+
   }
 }
-@media screen and (max-width: 700px){
-  .pos-container{
-    display: none;
+@media screen and (max-width: 767px){
+  .panel.panel-default{
+    margin-bottom: 0;
+    border: none;
+    z-index: 1001;
+    position: relative;
+    .panel-body{
+      max-height: 320px;
+      overflow: auto;
+      form{
+        justify-content: center;
+        .input_type{
+          width: inherit;
+        md-input-container{
+          width: 100%;
+        }
+        }
+      }
+    }
   }
+  .pos-container{
+  }
+
+  .blackscreen{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+
 }

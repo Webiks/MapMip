@@ -1,10 +1,15 @@
-//img[src='http://leafletjs.com/docs/images/logo.png'] {
-//  width: 90px;
-//}
+
 img{
   width: 90px;
 }
-#navbar.collapse{
+.glyphicon.glyphicon-wrench{
+  font-size: 20px;
+  &.is-open{
+    color:#fff;
+  }
+  .a-text{
+    display: none;
+  }
 }
 @media (max-width: 767px){
   #navbar.collapse{
@@ -16,6 +21,16 @@ img{
     z-index: 10000;
     background: #222222;
   }
+  .glyphicon.glyphicon-wrench{
+    color:#fff;
+    font-size: 20px;
+    .a-text{
+      display: inline-block;
+      position: relative;
+      bottom: 3px;
+      left: 8px;
+    }
+  }
 }
 .nav-item {
   .nav-link {
@@ -26,5 +41,5 @@ img{
   }
 }
 .navbar-inverse{
-  background-color: #424242;
+  //background-color: #424242;
 }

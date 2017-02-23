@@ -13,6 +13,8 @@ export class MapLayerComponent implements OnInit {
   @HostBinding("style.height") height = "100%";
   @HostBinding("style.width") width = "100%";
   @HostBinding("style.display") display = "block";
+  @HostBinding("style.position") position = "relative";
+
 
   @ViewChild("mapsCont") mapsCont;
   constructor(private positionFormService:PositionFormService) {

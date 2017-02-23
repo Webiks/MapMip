@@ -14,6 +14,7 @@ import {PositionFormModule} from "./position-form/position-form.module";
 import {AjaxService} from "./ajax.service";
 import {HttpModule} from "@angular/http";
 import {MapLayerService} from "./map-layer.service";
+import {MaterialModule} from "@angular/material";
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import {MapLayerService} from "./map-layer.service";
     Ng2BootstrapModule.forRoot(),
     JWBootstrapSwitchModule,
     PositionFormModule,
-    HttpModule
+    HttpModule,
+    MaterialModule
   ],
   declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent],
   exports: [MapLayerComponent],

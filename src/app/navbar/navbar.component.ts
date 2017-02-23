@@ -1,16 +1,19 @@
 import {Component, OnInit, Renderer} from '@angular/core';
+import {PositionFormService} from "../map-layer/position-form/position-form.service";
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   isCollapsed = true;
 
-  constructor(private renderer: Renderer) { }
+  constructor(private renderer: Renderer, private positionFormService:PositionFormService) { }
 
-  ngOnInit() {
+  togglePositionForm(){
+    this.positionFormService.hideComponent = !this.positionFormService.hideComponent;
+    this.isCollapsed = true;
   }
 
   setHeight(el, height){
