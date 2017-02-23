@@ -94,9 +94,15 @@
         justify-content: center;
         .input_type{
           width: inherit;
-        md-input-container{
-          width: 100%;
+          md-input-container{
+            width: 100%;
+          }
         }
+        .layers-group, .markers-group, .size-group, .lighting-group, .terrain-group{
+          width: inherit;
+        }
+        .markers-group{
+          width: inherit;
         }
         .group-div{
           margin-top: 5%;
@@ -116,5 +122,7 @@
     left: 0;
     z-index: 1000;
   }
-
+  .position-group{
+    display: none;
+  }
 }
