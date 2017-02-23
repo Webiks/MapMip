@@ -1,7 +1,11 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
 
-export const MARKER_COLORS:Array<string>=['blue','black','green','gray','orange','yellow','red','violet'];
+export const MARKER_COLORS:Array<string>=['blue','black','green','gray','orange','yellow','red','violet',
+                                          'airports','ferry','truck','cabs','rail','heliport','info',
+                                            'info_circle','flag','arrow-reverse','snow','water','rainy',
+                                            'coffee','dining','star','woman','man','toilets','camera','parks','target',
+                                              'triangle','dollar','police','church','falling_rocks'];
 export const MARKER_COLORS_HEX:Array<string>=['#277fca','#3c3c3c','#23aa1f','#777777', '#cb832c', '#cbc32c', '#c92139', '#9b29ca'];
 
 @Injectable()

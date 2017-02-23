@@ -10,10 +10,16 @@
   </button>
 
   <ul class="dropdown-menu" dropdownMenu role="menu" aria-labelledby="split-button">
-    <li *ngFor="let color of markerColors(); let i =index" role="menuitem">
-      <a class="dropdown-item" (click)="changeMarkerColor(i)">
-        <img [src]="getMarkerUrlByColor(color)"/>
+    <li *ngFor="let iconRow of markerColors() | colorPicker: iconsPerRow; let parentIndex = index" role="menuitem">
+
+      <a
+         class="dropdown-item"
+         *ngFor="let iconItem of iconRow;let childIndex = index"
+         [class.is-selected]="calcIndex(parentIndex, childIndex, iconsPerRow) == selectedIndex"
+         (click)="changeMarkerColor(calcIndex(parentIndex, childIndex, iconsPerRow)) ; PickedEmitter.emit()">
+        <img [src]="getMarkerUrlByColor(iconItem)"/>
       </a>
+
     </li>
   </ul>
 </div>

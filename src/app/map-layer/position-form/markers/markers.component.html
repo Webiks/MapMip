@@ -2,7 +2,7 @@
 
 <div class="pull-left">
   <button class="btn btn-default glyphicon glyphicon-record center-btn" [style.color]="positionFormService.getSelectedColorHEX()" (click)="markerCenter()" type="button" tooltip="add centered marker" triggers="hover"></button>
-  <app-color-picker (togglePickedEmitter)="togglePicked()" [Active]="positionFormService.onPicked" [(selectedIndex)]="positionFormService.selectedColorIndex"></app-color-picker>
+  <app-color-picker (PickedEmitter)="pickNewIcon()" (togglePickedEmitter)="togglePicked()" [Active]="positionFormService.onPicked" [(selectedIndex)]="positionFormService.selectedColorIndex" iconsPerRow="4" ></app-color-picker>
 </div>
 
 <div bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="cloneEditedMarkers()">
@@ -54,7 +54,7 @@
         <div class="form-group">
           <div class="input-and-picker">
             <input class="form-control text-center" [(ngModel)]="edit_obj.marker.position" [ngModelOptions]="{standalone: true}" [style.border-color]="edit_obj.marker.position && !markerStrRegex(edit_obj.marker.position) ? 'red' : '#66afe9'">
-            <app-color-picker [(selectedIndex)]="edit_obj.marker.colorIndex"></app-color-picker>
+            <app-color-picker [(selectedIndex)]="edit_obj.marker.colorIndex" iconsPerRow="4"></app-color-picker>
           </div>
           <h6 class="modal-subtitle text-info text-center">Number,Number,(Number)</h6>
         </div>
