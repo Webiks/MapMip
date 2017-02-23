@@ -11,7 +11,6 @@ export class ColorPickerComponent implements OnInit {
   @Input("selectedIndex") private _selectedIndex:number;
   @Input("Active") Active;
   @Output("togglePickedEmitter") togglePickedEmitter = new EventEmitter();
-  @Output("PickedEmitter") PickedEmitter = new EventEmitter();
   @Output("selectedIndexChange") selectedIndexChange = new EventEmitter();
   @Input("disabledAction") disabledAction:boolean;
   @Input("iconsPerRow") public iconsPerRow:number;
@@ -34,6 +33,7 @@ export class ColorPickerComponent implements OnInit {
 
   changeMarkerColor(selectedColorIndex){
     this.selectedIndex = selectedColorIndex;
+    this.togglePickedEmitter.emit(true);
   }
 
   markerColors(){
@@ -43,6 +43,7 @@ export class ColorPickerComponent implements OnInit {
   getMarkerUrlByColor(color:string):string {
     return this.positionFormService.getMarkerUrlByColor(color);
   }
+
   calcIndex(parentIndex:number, childIndex:number, iconsPerRow:number=1){
     return (iconsPerRow * parentIndex) + childIndex;
   }

@@ -38,7 +38,6 @@ export class LeafletMarkers {
       this.leaflet.map.off("click");
     }
   }
-
   leftClickInputAction(event:{layerPoint:L.Point}) {
     let fix_point:L.Point = L.point(event.layerPoint.x + 12.5, event.layerPoint.y + 41);
     let fix_latlng:L.LatLng = this.leaflet.map.layerPointToLatLng(fix_point);

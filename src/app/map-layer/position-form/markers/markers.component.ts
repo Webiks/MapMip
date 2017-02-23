@@ -111,12 +111,8 @@ export class MarkersComponent implements OnInit{
     this.queryParamsHelperService.addMarker(center_marker);
   }
 
-  togglePicked(){
-    this.positionFormService.onPicked = !this.positionFormService.onPicked;
-    this.positionFormService.markerPickerEmitter.emit(this.positionFormService.onPicked);
-  }
-  pickNewIcon(){
-    this.positionFormService.onPicked =true;
+  togglePicked(onPicked:boolean){
+    this.positionFormService.onPicked = onPicked;
     this.positionFormService.markerPickerEmitter.emit(this.positionFormService.onPicked);
   }
 

@@ -1,6 +1,6 @@
 <div class="btn-group picked-group" dropdown>
 
-  <button class="btn btn-default picked-button" [class.active]="Active" (click)="togglePickedEmitter.emit()" type="button" [disabled]="disabledAction" tooltip="add marker" triggers="hover" container="body">
+  <button class="btn btn-default picked-button" [class.active]="Active" (click)="togglePickedEmitter.emit(!Active)" type="button" [disabled]="disabledAction" tooltip="add marker" triggers="hover" container="body">
     <img [src]="getMarkerUrlByColor(selectedColor)"/>
   </button>
 
@@ -16,7 +16,7 @@
          class="dropdown-item"
          *ngFor="let iconItem of iconRow;let childIndex = index"
          [class.is-selected]="calcIndex(parentIndex, childIndex, iconsPerRow) == selectedIndex"
-         (click)="changeMarkerColor(calcIndex(parentIndex, childIndex, iconsPerRow)) ; PickedEmitter.emit()">
+         (click)="changeMarkerColor(calcIndex(parentIndex, childIndex, iconsPerRow))">
         <img [src]="getMarkerUrlByColor(iconItem)"/>
       </a>
 
