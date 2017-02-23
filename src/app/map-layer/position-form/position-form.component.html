@@ -13,7 +13,7 @@
       <form class="row" (submit)="submitForm()">
         <template ngFor let-key [ngForOf]="keys(params)">
 
-          <div *ngIf="havePermission(params[key])" style="margin-top: 5%">
+          <div class="group-div" *ngIf="havePermission(params[key])">
 
 
 

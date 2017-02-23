@@ -17,6 +17,7 @@ import { ReversePipe } from './reverse.pipe';
 import { SwitchLayersComponent } from './layers/switch-layers/switch-layers.component';
 import { MapLightingComponent } from './map-lighting/map-lighting.component';
 import {MaterialModule} from "@angular/material";
+import { ColorPickerPipe } from './color-picker/color-picker.pipe';
 
 @NgModule({
   imports: [
@@ -27,7 +28,7 @@ import {MaterialModule} from "@angular/material";
     ClickOutsideModule,
     MaterialModule
   ],
-  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent, DragItemDirective, ReversePipe, SwitchLayersComponent, MapLightingComponent],
+  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent, DragItemDirective, ReversePipe, SwitchLayersComponent, MapLightingComponent, ColorPickerPipe],
   exports: [PositionFormComponent],
   providers:[PositionFormService]
 })
