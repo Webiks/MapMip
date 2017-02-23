@@ -16,6 +16,7 @@ import { DragItemDirective } from './layers/drag-item.directive';
 import { ReversePipe } from './reverse.pipe';
 import { SwitchLayersComponent } from './layers/switch-layers/switch-layers.component';
 import { MapLightingComponent } from './map-lighting/map-lighting.component';
+import { ColorPickerPipe } from './color-picker/color-picker.pipe';
 
 @NgModule({
   imports: [
@@ -25,7 +26,7 @@ import { MapLightingComponent } from './map-lighting/map-lighting.component';
     JWBootstrapSwitchModule,
     ClickOutsideModule
   ],
-  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent, DragItemDirective, ReversePipe, SwitchLayersComponent, MapLightingComponent],
+  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent, DragItemDirective, ReversePipe, SwitchLayersComponent, MapLightingComponent, ColorPickerPipe],
   exports: [PositionFormComponent],
   providers:[PositionFormService]
 })

@@ -1,10 +1,29 @@
 .picked-group{
   ul{
+    padding: 20px 10px;
     min-width: inherit;
+    max-height: 270px;
+    overflow: auto;
+
     li{
+      display: flex;
       a{
+        padding: 3px 12px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+
+
+        &:hover{
+          border-color: #cccccc;
+        }
+
+        &.is-selected{
+          border-color: #cccccc;
+        }
+
         img{
-          height: 18px;
+         /* height: 25px;
+          width: 15px;*/
         }
       }
     }

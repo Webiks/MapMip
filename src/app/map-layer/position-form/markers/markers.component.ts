@@ -115,6 +115,10 @@ export class MarkersComponent implements OnInit{
     this.positionFormService.onPicked = !this.positionFormService.onPicked;
     this.positionFormService.markerPickerEmitter.emit(this.positionFormService.onPicked);
   }
+  pickNewIcon(){
+    this.positionFormService.onPicked =true;
+    this.positionFormService.markerPickerEmitter.emit(this.positionFormService.onPicked);
+  }
 
   removeAllMarkers():void{
     this.edited_markers_array = [];
