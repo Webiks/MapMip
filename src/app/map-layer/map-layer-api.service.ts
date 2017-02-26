@@ -49,6 +49,26 @@ export class MapLayerApiService {
     urlTree.queryParams["roll"] = roll;
     this.router.navigateByUrl(urlTree.toString());
   }
+  cesiumChangeMode3d(mode3d:string){
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    if(!urlTree.queryParams.hasOwnProperty("mode3d"))
+      return;
+    urlTree.queryParams["mode3d"] = mode3d;
+    this.router.navigateByUrl(urlTree.toString());
+  }
+  Ol3Rotate(rotate:string){
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    if(!urlTree.queryParams.hasOwnProperty("rotate"))
+      return;
+    urlTree.queryParams["rotate"] = rotate;
+    this.router.navigateByUrl(urlTree.toString());
+  }
+  changeSize(width:string,height:string){
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    urlTree.queryParams["size"] = width+","+height;
+    this.router.navigateByUrl(urlTree.toString());
+  }
+
 
 
 }
