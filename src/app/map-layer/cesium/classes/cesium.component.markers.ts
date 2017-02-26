@@ -56,8 +56,8 @@ export class CesiumMarkers {
   }
 
   mouseMoveInputAction(event:{endPosition: {x:number, y:number}, startPosition: {x:number, y:number}}){
-     let positionCartesian3Result = this.cesium.viewer.camera.pickEllipsoid(event.endPosition);
-     this.marker_picker.not_allowed = _.isNil(positionCartesian3Result);
+    let positionCartesian3Result = this.cesium.viewer.camera.pickEllipsoid(event.endPosition);
+    this.marker_picker.not_allowed = _.isNil(positionCartesian3Result);
   }
 
   leftClickInputAction(event:{position: {x:number, y:number}}):void {
@@ -65,7 +65,7 @@ export class CesiumMarkers {
     event.position.x+=12.5;
     event.position.y+=41;
 
-     if(this.marker_picker.not_allowed) return;
+    if(this.marker_picker.not_allowed) return;
 
 
     let position:[any];
@@ -166,7 +166,7 @@ export class CesiumMarkers {
       mapMarkerObj.position = this.cesium.calcService.toFixes7Obj(mapMarkerObj.position);
       return _.isEqual(e_position, mapMarkerObj.position) && _.isEqual(e_color, mapMarkerObj.color);
     });
-   }
+  }
 
   getColorFromBillboardEntity(entity):string {
     return this.cesium.positionFormService.getMarkerColorByUrl(entity.billboard.image.getValue());

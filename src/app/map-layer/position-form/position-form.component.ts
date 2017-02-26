@@ -9,16 +9,18 @@ import * as _ from 'lodash';
 import {Permissions} from "./permissions.enum";
 import {PositionFormService} from "./position-form.service";
 
+
 const position_form_animations = [trigger('showTools',
   [transition(':enter', [
     style({ maxHeight:'0', opacity: 0}),
-    animate('0.5s', style({ maxHeight: '500px', opacity: 1 }))
+    animate('0.3s', style({ maxHeight: '500px', opacity: 1 }))
   ]),
     transition(':leave', [
       style({ maxHeight:'500px', opacity: 1}),
-      animate('0.5s', style({ maxHeight:'0', opacity: 0 }))
+      animate('0.3s', style({ maxHeight:'0', opacity: 0 }))
     ])]
 )];
+
 
 @Component({
   selector: 'app-position-form',
@@ -29,10 +31,7 @@ const position_form_animations = [trigger('showTools',
 
 export class PositionFormComponent implements OnInit {
 
-  @HostBinding("style.display") display = "block";
-  @HostBinding("style.height") height = "160px";//"auto";
-  @HostBinding("style.max-height") maxHeight = "500px";
-  @HostBinding('@showTools') showTools = "true";
+  @HostBinding('@showTools') showTools = "false";
 
 
   public params: {
@@ -153,7 +152,9 @@ export class PositionFormComponent implements OnInit {
     return havePermission;
   }
 
-
+  close() {
+    this.positionFormService.hideComponent = true;
+  }
 
   keys(obj) {
     return Object.keys(obj);

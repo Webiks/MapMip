@@ -111,8 +111,8 @@ export class OpenlayersLayers {
 
   removeLayersViaUrl(map_tile_layers_array:Array<Object>) {
     let params_layers_urls = this.openlayers.queryParamsHelperService.queryLayers(this.openlayers.currentParams);
-      let layers_to_remove = map_tile_layers_array.filter( (layer:ol.layer.Tile) => (!this.layerExistOnParams(params_layers_urls, layer)));
-      layers_to_remove.forEach((layer:ol.layer.Tile) => {this.openlayers.map.removeLayer(layer)});
+    let layers_to_remove = map_tile_layers_array.filter( (layer:ol.layer.Tile) => (!this.layerExistOnParams(params_layers_urls, layer)));
+    layers_to_remove.forEach((layer:ol.layer.Tile) => {this.openlayers.map.removeLayer(layer)});
   }
 
   getTileLayersArray() {

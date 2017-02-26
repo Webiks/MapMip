@@ -1,26 +1,49 @@
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
 
-  <a class="navbar-brand">MapMip</a>
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" (click)="isCollapsed = !isCollapsed;this.positionFormService.hideComponent = true" >
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand">MapMip</a>
+    </div>
+    <div id="navbar"
+         class="navbar-collapse"
+         aria-expanded="false"
+         [collapse]="isCollapsed"
+         (collapsed)="setHeight(el, 0)"
+         (expanded)="setHeight(el, 0);setHeight(el, el.scrollHeight)" #el>
 
-  <ul class="nav navbar-nav">
+      <ul class="nav navbar-nav">
 
-    <li class="nav-item" routerLinkActive="active">
-      <a class="nav-link" [routerLink]="['/cesium']" preserveQueryParams >
-        <img src="http://cesiumjs.org/releases/b28/Apps/Sandcastle/images/Cesium_Logo_Color_Overlay.png"/>
+      <li class="nav-item" routerLinkActive="active">
+      <a class="nav-link" [routerLink]="['/cesium']" preserveQueryParams (click)="isCollapsed = true">
+      <img src="https://cesiumjs.org/images/logos/cesium-white.png"/>
       </a>
-    </li>
+      </li>
 
-    <li class="nav-item" routerLinkActive="active">
-      <a class="nav-link" [routerLink]="['/leaflet']" preserveQueryParams>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/leaflet']" preserveQueryParams (click)="isCollapsed = true">
         <img src="http://leafletjs.com/docs/images/logo.png"/>
-      </a>
-    </li>
+        </a>
+      </li>
 
-    <li class="nav-item" routerLinkActive="active">
-      <a class="nav-link" [routerLink]="['/openlayers']" preserveQueryParams>
-        <img src="https://vietnam.unsw.adfa.edu.au/wp-content/uploads/OpenLayers-Logo.png"/>
-      </a>
-    </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a href="/" class="nav-link" [routerLink]="['/openlayers']" preserveQueryParams (click)="isCollapsed = true">
+          <img style="width: 24px;height: 24px" src="https://openlayers.org/assets/theme/img/logo70.png">&nbsp;OpenLayers
+        </a>
+      </li>
 
-  </ul>
+      </ul>
+
+
+      <ul class="nav navbar-nav navbar-right">
+        <li><a class="glyphicon glyphicon-wrench" [class.is-open]="!positionFormService.hideComponent" (click)="togglePositionForm()"><span class="a-text">Tools</span></a></li>
+      </ul>
+
+    </div>
+  </div>
 </nav>

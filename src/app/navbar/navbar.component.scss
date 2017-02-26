@@ -1,6 +1,47 @@
-//img[src='http://leafletjs.com/docs/images/logo.png'] {
-//  width: 90px;
-//}
+
 img{
   width: 90px;
+}
+.glyphicon.glyphicon-wrench{
+  font-size: 20px;
+  transition: .3s;
+  &.is-open{
+    color:#fff;
+    transform: rotate(180deg);
+  }
+  .a-text{
+    display: none;
+  }
+}
+@media (max-width: 767px){
+  #navbar.collapse{
+    position: absolute;
+    transition: height .3s;
+    display: block !important;
+    overflow: hidden !important;
+    width: 100%;
+    z-index: 10000;
+    background: #222222;
+  }
+  .glyphicon.glyphicon-wrench{
+    color:#fff;
+    font-size: 20px;
+    .a-text{
+      display: inline-block;
+      position: relative;
+      bottom: 3px;
+      left: 8px;
+    }
+  }
+}
+.nav-item {
+  .nav-link {
+    color: white;
+  }
+  &:hover{
+    background-color: #080808;
+  }
+}
+.navbar-inverse{
+  //background-color: #424242;
 }

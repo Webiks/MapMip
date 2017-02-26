@@ -1,47 +1,73 @@
-<div class="pos-container">
-  <form class="row" (submit)="submitForm()">
-    <div *ngFor="let key of keys(params)">
-      <template [ngIf]="havePermission(params[key])">
+<div class="blackscreen" (click)="close()"></div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Tools&nbsp;<span class="glyphicon glyphicon-wrench"></span>
+    <button aria-label="Close" class="close" type="button" (click)="close()">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
 
-        <div class="form-group input_type" *ngIf="!params[key].input_type">
-          <div class="input-group">
-            <span class="input-group-addon">{{key}}</span>
-            <input type="text" class="form-control" [(ngModel)]="params[key].val" name="{{key}}" placeholder="{{key}}">
+  <div class="panel-body">
+
+    <div class="pos-container">
+      <form class="row" (submit)="submitForm()">
+        <template ngFor let-key [ngForOf]="keys(params)">
+
+          <div class="group-div" *ngIf="havePermission(params[key])">
+
+
+
+
+            <div class="form-group input_type" *ngIf="!params[key].input_type">
+
+              <md-input-container color="primary">
+                <input mdInput placeholder="{{key}}" [(ngModel)]="params[key].val" [ngModelOptions]="{standalone: true}">
+              </md-input-container>
+
+
+              <!--<div class="input-group">-->
+              <!--<span class="input-group-addon">{{key}}</span>-->
+              <!--<input type="text" class="form-control" [(ngModel)]="params[key].val" name="{{key}}" placeholder="{{key}}">-->
+              <!--</div>-->
+            </div>
+
+            <div class="form-group markers-group" *ngIf="params[key].input_type == 'app-markers'">
+              <app-markers [lat]="params.lat.val" [lng]="params.lng.val" (submitMarkersEmitter)="submitMarkers($event)"></app-markers>
+            </div>
+
+            <div class="form-group layers-group" *ngIf="params[key].input_type == 'app-layers'">
+              <app-layers [layersString]="params.layers.val" (submitLayersEmitter)="submitLayers($event)"></app-layers>
+            </div>
+
+            <div class="form-group size-group" *ngIf="params[key].input_type == 'app-map-size'">
+              <app-map-size (submitSizeEmitter)="submitForm()" [(size)]="params.size.val"></app-map-size>
+            </div>
+
+            <div class="form-group position-group" *ngIf="params[key].input_type == 'app-map-position'">
+              <app-map-position [size]="params.size.val" (submitPositionEmitter)="submitForm()" [(position)]="params.position.val"></app-map-position>
+            </div>
+
+            <div class="form-group terrain-group" *ngIf="params[key].input_type == 'app-terrain'">
+              <app-terrain (submitTerrainEmitter)="submitForm()" [(terrain)]="params.terrain.val"></app-terrain>
+            </div>
+            <div class="form-group lighting-group" *ngIf="params[key].input_type == 'app-map-lighting'">
+              <app-map-lighting [lighting]="params.lighting.val"></app-map-lighting>
+            </div>
+
+            <div class="form-group b-switch" *ngIf="params[key].input_type == 'Bswitch'">
+              <bSwitch [switch-label-text]="key" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>
+            </div>
+
           </div>
-        </div>
 
-        <div class="form-group markers-group" *ngIf="params[key].input_type == 'app-markers'">
-          <app-markers [lat]="params.lat.val" [lng]="params.lng.val" (submitMarkersEmitter)="submitMarkers($event)"></app-markers>
+        </template>
+        <button type="submit" style="display: none"></button>
+        <div class="form-group submit">
+          <button type="button" class="btn btn-info submit-mobile" (click)="submitForm();close()">Submit</button>
         </div>
+      </form>
 
-        <div class="form-group layers-group" *ngIf="params[key].input_type == 'app-layers'">
-          <app-layers [layersString]="params.layers.val" (submitLayersEmitter)="submitLayers($event)"></app-layers>
-        </div>
-
-        <div class="form-group size-group" *ngIf="params[key].input_type == 'app-map-size'">
-          <app-map-size (submitSizeEmitter)="submitForm()" [(size)]="params.size.val"></app-map-size>
-        </div>
-
-        <div class="form-group position-group" *ngIf="params[key].input_type == 'app-map-position'">
-          <app-map-position [size]="params.size.val" (submitPositionEmitter)="submitForm()" [(position)]="params.position.val"></app-map-position>
-        </div>
-
-        <div class="form-group terrain-group" *ngIf="params[key].input_type == 'app-terrain'">
-          <app-terrain (submitTerrainEmitter)="submitForm()" [(terrain)]="params.terrain.val"></app-terrain>
-        </div>
-        <div class="form-group lighting-group" *ngIf="params[key].input_type == 'app-map-lighting'">
-          <app-map-lighting [lighting]="params.lighting.val"></app-map-lighting>
-        </div>
-
-        <div class="form-group b-switch" *ngIf="params[key].input_type == 'Bswitch'">
-          <bSwitch [switch-label-text]="key" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>
-        </div>
-
-
-      </template>
     </div>
 
-    <input type="submit" class="btn btn-info" value="Save" style="display: none;">
-  </form>
-
+  </div>
 </div>

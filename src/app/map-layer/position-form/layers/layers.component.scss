@@ -202,3 +202,22 @@ h4{
     margin: 9px;
   }
 }
+@media screen and (max-width: 767px){
+  app-switch-layers{
+    display: none;
+  }
+
+  .layers-modal{
+    .modal-body {
+      .body-header {
+        flex-wrap: wrap;
+        button {
+          margin: 5px;
+        }
+      }
+    }
+    .modal-footer .btn {
+      margin-top: 5px;
+    }
+  }
+}
