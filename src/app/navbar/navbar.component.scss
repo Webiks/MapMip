@@ -4,8 +4,10 @@ img{
 }
 .glyphicon.glyphicon-wrench{
   font-size: 20px;
+  transition: .3s;
   &.is-open{
     color:#fff;
+    transform: rotate(180deg);
   }
   .a-text{
     display: none;
