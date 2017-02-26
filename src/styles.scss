@@ -1,15 +1,13 @@
+@import '~@angular/material/core/theming/all-theme';
+
+
 .url-tooltip {
   div.tooltip-inner{
     max-width: none !important;
   }
 }
 
-body .mapsCont .cursor-marker{
-  cursor: url('/assets/Leaflet/images/marker-icon.cur'), default;
-  &.forbidden-position{
-    cursor: not-allowed;
-  }
-}
+
 [hidden]{
   display: none !important;
 }
@@ -32,4 +30,17 @@ app-terrain{
   popover-container.popover{
     max-width: none;
   }
+}
+.mat-primary{
+  background: #337ab7 !important;
+  color: white !important;
+}
+.mat-input-placeholder.mat-focused{
+  color: white;
+}
+.mat-input-ripple.mat-focused{
+  background: white;
+}
+.bootstrap-switch{
+  background: white;
 }
