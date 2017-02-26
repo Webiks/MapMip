@@ -5,7 +5,7 @@ export const MARKER_COLORS:Array<string>=['blue','black','green','gray','orange'
                                           'airports','ferry','truck','cabs','rail','heliport','info',
                                             'info_circle','flag','arrow-reverse','snow','water','rainy',
                                             'coffee','dining','star','woman','man','toilets','camera','parks','target',
-                                              'triangle','dollar','police','church','falling_rocks'];
+                                              'triangle','dollar','police','church','falling_rocks','home','airport'];
 export const MARKER_COLORS_HEX:Array<string>=['#277fca','#3c3c3c','#23aa1f','#777777', '#cb832c', '#cbc32c', '#c92139', '#9b29ca'];
 
 @Injectable()
