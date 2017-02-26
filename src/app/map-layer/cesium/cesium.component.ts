@@ -15,7 +15,6 @@ import {CesiumMapView} from "./classes/cesium.component.map-view";
 import {CesiumMapSize} from "./classes/cesium.component.map-size";
 import {CesiumMapPosition} from "./classes/cesium.component.map-position";
 import {CesiumTerrian} from "./classes/cesium.component.terrain";
-import {MapLayerService} from "../map-layer.service";
 import {CesiumMapLighting} from "./classes/cesium.component.map-lighting";
 
 @Component({
@@ -43,7 +42,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
   public terrain:CesiumTerrian;
   public map_lighting:CesiumMapLighting;
 
-  constructor(public queryParamsHelperService:QueryParamsHelperService, public activatedRoute:ActivatedRoute, public generalCanDeactivateService:GeneralCanDeactivateService, public router:Router, public calcService:CalcService, public positionFormService:PositionFormService,public mapLayerService:MapLayerService) {
+  constructor(public queryParamsHelperService:QueryParamsHelperService, public activatedRoute:ActivatedRoute, public generalCanDeactivateService:GeneralCanDeactivateService, public router:Router, public calcService:CalcService, public positionFormService:PositionFormService) {
     this.queryParamsSubscriber = activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     window['current'] = this;
   }

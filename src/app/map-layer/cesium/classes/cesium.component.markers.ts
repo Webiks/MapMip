@@ -67,23 +67,23 @@ export class CesiumMarkers {
 
      if(this.marker_picker.not_allowed) return;
 
-    // terrain case
-    let position:[any];
 
+    let position:[any];
+// terrain case
     if(this.cesium.viewer.terrainProvider.hasOwnProperty("_url")) {
-      let ray = this.cesium.viewer.camera.getPickRay(event.position);
-      let positionCartesian3 = this.cesium.viewer.scene.globe.pick(ray, this.cesium.viewer.scene);
+      var pickedObject = this.cesium.viewer.scene.pick(event.position); // Tr
+      let positionCartesian3 = this.cesium.viewer.scene.pickPosition(event.position); // Tr
       let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
       let lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
       let latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
-       position = [lngDeg, latDeg, positionCartographic.height];
+       position = [lngDeg, latDeg];
     }
     else {
       let positionCartesian3 = this.cesium.viewer.camera.pickEllipsoid(event.position);
       let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
       let lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
       let latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
-      position= [lngDeg, latDeg];
+      position = [lngDeg, latDeg];
     }
 
     let color:string = this.cesium.positionFormService.getSelectedColor();
@@ -144,13 +144,14 @@ export class CesiumMarkers {
 
   addMarker(marker:{position:any, color?:string}):void{
       this.cesium.viewer.entities.add({
-      position : Cesium.Cartesian3.fromDegrees(...marker.position),
-      billboard: {
-        image: this.cesium.positionFormService.getMarkerUrlByColor(marker.color),
-        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-        verticalOrigin:Cesium.VerticalOrigin.BOTTOM
-      }
-    });
+        position: Cesium.Cartesian3.fromDegrees(...marker.position),
+        billboard: {
+          image: this.cesium.positionFormService.getMarkerUrlByColor(marker.color),
+          horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+          heightReference : Cesium.HeightReference.CLAMP_TO_GROUND
+        }
+      });
   }
 
   removeMarker(marker:{position:any, color:string}){
