@@ -7,7 +7,7 @@ import {Ng2BootstrapModule} from "ng2-bootstrap";
 import {AppRoutingModule} from "./app-routing.module";
 import { NavbarComponent } from './navbar/navbar.component';
 import {CommonModule} from "@angular/common";
-import {MapLayerModule} from "./map-layer/map-layer.module";
+import {MapMipModule} from "./map-mip/map-mip.module";
 import {MaterialModule, MaterialRootModule} from "@angular/material";
 
 
@@ -23,7 +23,7 @@ import {MaterialModule, MaterialRootModule} from "@angular/material";
     HttpModule,
     Ng2BootstrapModule,
     AppRoutingModule,
-    MapLayerModule,
+    MapMipModule,
     MaterialRootModule,
   ],
   bootstrap: [AppComponent]

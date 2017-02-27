@@ -1,5 +1,5 @@
 import {Component, OnInit, Renderer} from '@angular/core';
-import {PositionFormService} from "../map-layer/position-form/position-form.service";
+import {PositionFormService} from "../map-mip/position-form/position-form.service";
 
 @Component({
   selector: 'app-navbar',

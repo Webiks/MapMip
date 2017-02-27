@@ -1,0 +1,43 @@
+.picked-group{
+  ul{
+    padding: 10px 5px;
+    min-width: inherit;
+    max-height: 120px;
+    overflow: auto;
+    background-color: #424242;
+    li{
+      display: flex;
+      a{
+        padding: 3px 10px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+
+
+        &:hover{
+          border-color: #cccccc;
+          background-color: #424242;
+
+        }
+
+        &.is-selected{
+          border-color: #cccccc;
+          background-color: #337ab7;
+
+        }
+
+        img{
+          height:80%;
+        }
+      }
+    }
+  }
+  button.picked-button{
+    img{
+      height: 18px;
+    }
+    &.active{
+      background: rgba(50, 134, 203, 0.35);
+    }
+  }
+}
+
