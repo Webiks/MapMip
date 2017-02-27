@@ -44,8 +44,9 @@ export class CesiumMapView{
     let rollRadiansP:number     = this.cesium.queryParamsHelperService.queryRoll(params) % 360;
     let mode3dP:number          = this.cesium.queryParamsHelperService.queryMode3d(params);
     let rotateP:number          = this.cesium.queryParamsHelperService.queryRotate(params);
+    let lightingP:number        = this.cesium.queryParamsHelperService.queryLighting(params);
 
-    let arrayP:Array<number> = [longitudeP, latitudeP, heightP, headingRadiansP, pitchRadiansP, rollRadiansP, mode3dP, rotateP];
+    let arrayP:Array<number> = [longitudeP, latitudeP, heightP, headingRadiansP, pitchRadiansP, rollRadiansP, mode3dP, rotateP,lightingP];
 
     let longitude:number        = this.getCenter().lng;
     let latitude:number         = this.getCenter().lat;
@@ -55,13 +56,15 @@ export class CesiumMapView{
     let rollRadians:number      = +Cesium.Math.toDegrees(this.cesium.viewer.camera.roll) % 360;
     let mode3d:number           = this.cesium.viewer.scene.mode == Cesium.SceneMode.SCENE3D ? 1 : 0;
     let rotate:number;
+    let lighting:number         = this.cesium.viewer.scene.globe.enableLighting ? 1 : 0;
+
 
     if(this.cesium.viewer.scene.mode == Cesium.SceneMode.SCENE3D || this.cesium.viewer.scene._mapMode2D == 1){
       rotate = NaN;
     } else {
       rotate = 1
     }
-    let array = [longitude, latitude, height, headingRadians, pitchRadians, rollRadians, mode3d, rotate];
+    let array = [longitude, latitude, height, headingRadians, pitchRadians, rollRadians, mode3d, rotate,lighting];
 
     arrayP = this.cesium.calcService.toFixes7Obj(arrayP);
     array = this.cesium.calcService.toFixes7Obj(array);

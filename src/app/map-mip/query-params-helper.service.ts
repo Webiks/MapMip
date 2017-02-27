@@ -206,7 +206,7 @@ export class QueryParamsHelperService{
     queryObj.size         = _.isEqual(queryObj.size, "100,100") ? undefined : queryObj.size;
     queryObj.position    =  _.isNil(queryObj.size) || _.isEqual(queryObj.position, "50,50")  ? undefined : queryObj.position;
     queryObj.terrain     =  _.isEmpty(queryObj.terrain) ? undefined :queryObj.terrain;
-    queryObj.lighting    =  _.isEmpty(this.queryLighting({lighting:queryObj.lighting})) ? undefined : queryObj.lighting;
+    queryObj.lighting    =  _.isEqual(this.queryLighting({lighting:queryObj.lighting}), 1) ? queryObj.lighting : undefined;
     return <NavigationExtras> {
       queryParams: queryObj
     };
