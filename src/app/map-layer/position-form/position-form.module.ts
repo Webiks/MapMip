@@ -9,7 +9,7 @@ import {LayersComponent} from "./layers/layers.component";
 import {PositionFormService} from "./position-form.service";
 import { ColorPickerComponent } from './color-picker/color-picker.component';
 import { MapSizeComponent } from './map-size/map-size.component';
-import {ClickOutsideModule} from "ng2-click-outside";
+import {ClickOutsideModule} from "ng-click-outside";
 import { MapPositionComponent } from './map-position/map-position.component';
 import { TerrainComponent } from './terrain/terrain.component';
 import { DragItemDirective } from './layers/drag-item.directive';
