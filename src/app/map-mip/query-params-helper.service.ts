@@ -149,6 +149,7 @@ export class QueryParamsHelperService{
   }
 
   markersStrToArray(markersStr:string="") {
+    debugger;
     if(_.isEmpty(markersStr)) return [];
     let markersArrayStr:Array<string> = markersStr.split(" ").join("").split("),(").map(
       (str, index, array) => {

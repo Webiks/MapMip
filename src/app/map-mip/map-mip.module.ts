@@ -14,6 +14,7 @@ import {PositionFormModule} from "./position-form/position-form.module";
 import {AjaxService} from "./ajax.service";
 import {HttpModule} from "@angular/http";
 import {MaterialModule} from "@angular/material";
+import {MapLayerApiService} from "./map-layer-api.service";
 
 @NgModule({
   imports: [
@@ -28,6 +29,6 @@ import {MaterialModule} from "@angular/material";
   ],
   declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent],
   exports: [MapLayerComponent],
-  providers:[QueryParamsHelperService, CalcService, AjaxService]
+  providers:[QueryParamsHelperService, CalcService, AjaxService,MapLayerApiService]
 })
 export class MapMipModule { }
