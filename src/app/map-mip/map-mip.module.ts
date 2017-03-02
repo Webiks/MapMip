@@ -15,8 +15,7 @@ import {AjaxService} from "./ajax.service";
 import {HttpModule} from "@angular/http";
 import {MaterialModule} from "@angular/material";
 import {MapLayerApiService} from "./map-layer-api.service";
-import "cesium/Build/Cesium/Cesium.js";
-declare var Cesium: any;
+
 
 @NgModule({
   imports: [

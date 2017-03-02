@@ -15,7 +15,8 @@ import {CesiumMapSize} from "./classes/cesium.component.map-size";
 import {CesiumMapPosition} from "./classes/cesium.component.map-position";
 import {CesiumTerrian} from "./classes/cesium.component.terrain";
 import {CesiumMapLighting} from "./classes/cesium.component.map-lighting";
-declare const Cesium;
+import "cesium/Build/Cesium/Cesium.js";
+
 
 @Component({
   host: host,
