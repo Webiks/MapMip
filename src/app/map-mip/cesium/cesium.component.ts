@@ -5,7 +5,6 @@ import {
 } from "@angular/router";
 import {host, animations} from "../map-mip.component";
 import 'rxjs/add/operator/take';
-import "cesium/Build/Cesium/Cesium.js";
 import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
 import {CalcService} from "../calc-service";
 import {CesiumLayers} from "./classes/cesium.component.layers";
@@ -71,7 +70,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
   };
 
   initializeMap():void {
-    window['CESIUM_BASE_URL'] = 'assets/Cesium';
+    window['CESIUM_BASE_URL'] = 'http://mapmip.webiks.com/assets/Cesium';
     Cesium.BingMapsApi.defaultKey = "AnjT_wAj_juA_MsD8NhcEAVSjCYpV-e50lUypkWm1JPxVu0XyVqabsvD3r2DQpX-";
 
     this.viewer = new Cesium.Viewer(this.container.nativeElement , {
