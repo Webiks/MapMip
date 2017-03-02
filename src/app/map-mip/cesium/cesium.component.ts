@@ -15,6 +15,7 @@ import {CesiumMapSize} from "./classes/cesium.component.map-size";
 import {CesiumMapPosition} from "./classes/cesium.component.map-position";
 import {CesiumTerrian} from "./classes/cesium.component.terrain";
 import {CesiumMapLighting} from "./classes/cesium.component.map-lighting";
+declare const Cesium;
 
 @Component({
   host: host,
@@ -70,6 +71,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
   };
 
   initializeMap():void {
+
     window['CESIUM_BASE_URL'] = 'http://mapmip.webiks.com/assets/Cesium';
     Cesium.BingMapsApi.defaultKey = "AnjT_wAj_juA_MsD8NhcEAVSjCYpV-e50lUypkWm1JPxVu0XyVqabsvD3r2DQpX-";
 

@@ -1,0 +1,41 @@
+@import url("../node_modules/bootstrap/dist/css/bootstrap.css");
+@import url("../node_modules/leaflet/dist/leaflet.css");
+@import url("../node_modules/openlayers/css/ol.css");
+@import url("../node_modules/cesium/Build/Cesium/Widgets/widgets.css");
+@import url("../node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css");
+
+.url-tooltip div.tooltip-inner{
+  max-width: none !important;
+}
+
+[hidden]{
+  display: none !important;
+}
+
+app-map-size .popover-title {
+  color:#5cb85c;
+}
+
+app-map-position .popover-title {
+  color:#f0ad4e;
+}
+
+app-terrain .popover-title {
+  color:#46b8da;
+}
+popover-container.popover{
+  max-width: none;
+}
+.mat-primary{
+  background: #337ab7 !important;
+  color: white !important;
+}
+.mat-input-placeholder.mat-focused{
+  color: white;
+}
+.mat-input-ripple.mat-focused{
+  background: white;
+}
+.bootstrap-switch{
+  background: white;
+}
