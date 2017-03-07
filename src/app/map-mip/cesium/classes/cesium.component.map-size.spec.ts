@@ -13,7 +13,7 @@ import {CesiumComponent} from "../cesium.component";
 import {CesiumMapSize} from "./cesium.component.map-size";
 
 
-describe('CesiumComponent', () => {
+fdescribe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
   let queryParamsHelperService: QueryParamsHelperService;
