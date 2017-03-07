@@ -5,7 +5,6 @@ import {
 } from "@angular/router";
 import {host, animations} from "../map-mip.component";
 import 'rxjs/add/operator/take';
-import "cesium/Build/Cesium/Cesium.js";
 import {GeneralCanDeactivateService} from "../general-can-deactivate.service";
 import {CalcService} from "../calc-service";
 import {CesiumLayers} from "./classes/cesium.component.layers";
@@ -16,6 +15,8 @@ import {CesiumMapSize} from "./classes/cesium.component.map-size";
 import {CesiumMapPosition} from "./classes/cesium.component.map-position";
 import {CesiumTerrian} from "./classes/cesium.component.terrain";
 import {CesiumMapLighting} from "./classes/cesium.component.map-lighting";
+import "cesium/Build/Cesium/Cesium.js";
+
 
 @Component({
   host: host,
@@ -71,7 +72,8 @@ export class CesiumComponent implements OnInit,OnDestroy  {
   };
 
   initializeMap():void {
-    window['CESIUM_BASE_URL'] = 'assets/Cesium';
+
+    window['CESIUM_BASE_URL'] = 'http://cesiumjs.org/releases/1.30/Build/Cesium';
     Cesium.BingMapsApi.defaultKey = "AnjT_wAj_juA_MsD8NhcEAVSjCYpV-e50lUypkWm1JPxVu0XyVqabsvD3r2DQpX-";
 
     this.viewer = new Cesium.Viewer(this.container.nativeElement , {

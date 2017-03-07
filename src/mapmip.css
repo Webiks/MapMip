@@ -1,0 +1,41 @@
+@import url("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css");
+@import url("https://unpkg.com/leaflet@1.0.3/dist/leaflet.css");
+@import url("https://openlayers.org/en/v4.0.1/css/ol.css");
+@import url("http://cesiumjs.org/releases/1.30/Build/Cesium/Widgets/widgets.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap2/bootstrap-switch.min.css");
+
+.url-tooltip div.tooltip-inner{
+  max-width: none !important;
+}
+
+[hidden]{
+  display: none !important;
+}
+
+app-map-size .popover-title {
+  color:#5cb85c;
+}
+
+app-map-position .popover-title {
+  color:#f0ad4e;
+}
+
+app-terrain .popover-title {
+  color:#46b8da;
+}
+popover-container.popover{
+  max-width: none;
+}
+.mat-primary{
+  background: #337ab7 !important;
+  color: white !important;
+}
+.mat-input-placeholder.mat-focused{
+  color: white;
+}
+.mat-input-ripple.mat-focused{
+  background: white;
+}
+.bootstrap-switch{
+  background: white;
+}

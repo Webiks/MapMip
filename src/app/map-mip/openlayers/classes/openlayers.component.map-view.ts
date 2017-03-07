@@ -20,7 +20,7 @@ export class OpenlayersMapView{
     openlayers.generalCanDeactivateService.onLeave =  Observable.create((observer:Observer<boolean>) => this.onLeave(observer)) ;
 
     openlayers.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
-    openlayers.router.events.filter(event => event instanceof NavigationEnd && !openlayers.router.isActive("/openlayers", false) && !openlayers.router.isActive("/leaflet", false) ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
+    openlayers.router.events.filter(event => event instanceof NavigationEnd && event.url.includes("/cesium") ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
 
 
   }

@@ -9,7 +9,8 @@
       "outDir": "dist",
       "assets": [
         "assets",
-        "favicon.ico"
+        "favicon.ico",
+        "mapmip.css"
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -18,12 +19,7 @@
       "prefix": "app",
       "mobile": false,
       "styles": [
-        "styles.scss",
-        "../node_modules/bootstrap/dist/css/bootstrap.css",
-        "../node_modules/leaflet/dist/leaflet.css",
-        "../node_modules/openlayers/css/ol.css",
-        "../node_modules/cesium/Build/Cesium/Widgets/widgets.css",
-        "../node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css"
+          "mapmip.css"
       ],
       "scripts": ["../node_modules/rison/js/rison.js"],
       "environmentSource": "environments/environment.ts",

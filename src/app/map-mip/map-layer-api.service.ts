@@ -51,14 +51,39 @@ export class MapLayerApiService {
   }
   cesiumChangeMode3d(mode3d:string){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
-    if(!urlTree.queryParams.hasOwnProperty("mode3d"))
+    if(!urlTree.queryParams.hasOwnProperty("mode3d")&& mode3d !="0"  || mode3d ==""  )
       return;
     urlTree.queryParams["mode3d"] = mode3d;
     this.router.navigateByUrl(urlTree.toString());
   }
+  cesiumRotate(rotate:string){
+    let urlTree = this.router.parseUrl(this.router.url);
+    if(urlTree.queryParams["mode3d"]!="0")
+      return;
+    if (rotate!="1")
+    {delete urlTree.queryParams["rotate"];
+      this.router.navigateByUrl(urlTree.toString());
+      return;
+    }
+    urlTree.queryParams["rotate"]= rotate;
+    this.router.navigateByUrl(urlTree.toString());
+}
+
+  cesiumChangeTerrain(terrain:string){
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    urlTree.queryParams["terrain"]= terrain;
+    this.router.navigateByUrl(urlTree.toString());
+  }
+
+  cesiumChangeLighting(lighting:string){
+    let urlTree = this.router.parseUrl(this.router.url);
+    urlTree.queryParams["lighting"]= lighting;
+    this.router.navigateByUrl(urlTree.toString());
+  }
+
   Ol3Rotate(rotate:string){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
-    if(!urlTree.queryParams.hasOwnProperty("rotate"))
+    if(!urlTree.queryParams.hasOwnProperty("rotate") && rotate !="0" || rotate == "")
       return;
     urlTree.queryParams["rotate"] = rotate;
     this.router.navigateByUrl(urlTree.toString());
@@ -68,7 +93,21 @@ export class MapLayerApiService {
     urlTree.queryParams["size"] = width+","+height;
     this.router.navigateByUrl(urlTree.toString());
   }
-
+  changeMapPositionInPage(width:string,height:string){
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    urlTree.queryParams["position"] = width+","+height;
+    this.router.navigateByUrl(urlTree.toString());
+  }
+  leafletChangeZoom (zoom:number){
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    urlTree.queryParams["zoom"]= zoom.toString();
+    this.router.navigateByUrl(urlTree.toString());
+  }
+  Ol3changeZoom (zoom:number){
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    urlTree.queryParams["zoom"]= (zoom <20 ? zoom: 19).toString();
+    this.router.navigateByUrl(urlTree.toString());
+  }
 
 
 }

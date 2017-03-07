@@ -142,7 +142,7 @@ export class PositionFormComponent implements OnInit {
       let url:string  = Permissions[num];
       let urlTreeCheck:UrlTree = this.router.parseUrl(url);
       let path:string = urlTreeCheck.root.children['primary'].segments[0].path;
-      if(this.router.isActive(path, false)){
+      if(this.router.url.includes(path)){
         havePermission = true;
         _.forEach(urlTreeCheck.queryParams, (val, key) => {
           if(urlTreeCheck.queryParams[key] != urlTreeCurrent.queryParams[key]) havePermission = false;
