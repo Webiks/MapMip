@@ -1,21 +1,21 @@
 .picked-group{
   ul{
-    padding: 10px 5px;
+   // padding: 10px 5px;
     min-width: inherit;
-    max-height: 120px;
+    max-height: 270px;
     overflow: auto;
-    background-color: #424242;
+    -webkit-padding-start:0px;
     li{
-      display: flex;
+      display: inline-flex;
       a{
-        padding: 3px 10px;
+        padding: 1px 1px;
         border: 1px solid transparent;
         border-radius: 4px;
 
 
         &:hover{
           border-color: #cccccc;
-          background-color: #424242;
+          background-color: #337ab7;
 
         }
 
@@ -32,12 +32,21 @@
     }
   }
   button.picked-button{
+    border-radius: 4px!important;
     img{
       height: 18px;
     }
     &.active{
       background: rgba(50, 134, 203, 0.35);
     }
+  }
+  button.glyphicon-option-vertical{
+   // padding: 1px 1px ;
+    border: 1px solid transparent;
+    border-radius: 4px!important;
+    top:0px;
+    margin-left: 1px;
+
   }
 }
 

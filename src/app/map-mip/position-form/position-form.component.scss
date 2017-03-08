@@ -1,4 +1,5 @@
 .panel.panel-default{
+  top:-40%;
   .panel-heading{
     background-color: #222;
     border-color: #080808;
@@ -36,7 +37,7 @@
       padding: 0 15px;
     }
     .markers-group {
-      width: 237px;
+      width: 255px;
       padding: 0 15px;
     }
     .layers-group {
@@ -88,7 +89,7 @@
   .panel.panel-default{
     margin-bottom: 0;
     border: none;
-    z-index: 1001;
+    z-index: 1091;
     position: relative;
     .panel-body{
       max-height: 320px;
@@ -141,4 +142,7 @@
   .position-group{
     display: none;
   }
+}
+.glyphicon{
+  top: 0px!important;
 }
