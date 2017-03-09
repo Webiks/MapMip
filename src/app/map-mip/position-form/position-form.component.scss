@@ -1,5 +1,5 @@
 .panel.panel-default{
-  top:-40%;
+  top:-45%;
   .panel-heading{
     background-color: #222;
     border-color: #080808;
@@ -16,6 +16,9 @@
   }
   .panel-body{
     background: #424242;
+  }
+  .form-group{
+    margin-bottom: 3px !important;
   }
 }
 
@@ -92,7 +95,7 @@
     z-index: 1091;
     position: relative;
     .panel-body{
-      max-height: 320px;
+      max-height: 270px;
       overflow: auto;
       form{
         justify-content: center;
@@ -109,11 +112,11 @@
           width: inherit;
         }
         .group-div{
-          margin-top: 5%;
+          margin-top: 2%;
         }
         .form-group.submit{
           margin: 0;
-          margin-top: 5%;
+          margin-top: 2%;
           width: 100%;
           display: flex;
           justify-content: center;
