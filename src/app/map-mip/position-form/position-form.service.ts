@@ -5,7 +5,11 @@ export const MARKER_COLORS:Array<string>=['blue','black','green','gray','orange'
   'coffee','star','home','airport','tools',
   'train','tree','lock','hazard','hotel',
   'gov','dollar','conversation','rest',
-  'man','fire'];
+  'man','fire','airport2','coffee2',
+  'conversation2','dollar2','fire2',
+  'gov2','hazard2','home2','hotel2',
+  'lock2','man2','rest2','star2',
+  'tools2','train2','tree2'];
 
 export const MARKER_COLORS_HEX:Array<string>=['#277fca','#3c3c3c','#23aa1f','#777777', '#cb832c', '#cbc32c', '#c92139', '#9b29ca'];
 
