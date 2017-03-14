@@ -2,6 +2,7 @@ import {LeafletComponent} from "../leaflet.component";
 import {Params} from "@angular/router";
 import * as _ from 'lodash'
 
+
 export class LeafletLayers {
   public queryParamsSubscriber;
 
@@ -125,6 +126,9 @@ export class LeafletLayers {
   getBingLayer(bing_obj):L.TileLayer {
     return L.tileLayer['bing']({bingMapsKey: bing_obj['key'], imagerySet:bing_obj['style']});
   }
+  getJson(geoJsonUrl):any {
+    return L.GeoJSON['AJAX'](geoJsonUrl);
+  }
   getTmsLayer(tms_obj) {
     let tms_url = this.parseTmsUrl(tms_obj);
     return L.tileLayer(tms_url, {tms:true});
@@ -156,6 +160,7 @@ export class LeafletLayers {
   noTileLayer():boolean {
     return _.isEmpty(this.getTileLayersArray());
   }
+
 
 
 }

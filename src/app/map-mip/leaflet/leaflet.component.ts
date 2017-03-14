@@ -8,6 +8,7 @@ import {QueryParamsHelperService} from "../query-params-helper.service";
 import {host, animations} from "../map-mip.component";
 import * as L from 'leaflet';
 import "leaflet-bing-layer/leaflet-bing-layer";
+import "leaflet-ajax/dist/leaflet.ajax";
 import {CalcService} from "../calc-service";
 import {AjaxService} from "../ajax.service";
 import {LeafletLayers} from "./classes/leaflet.component.layers";
@@ -39,6 +40,7 @@ export class LeafletComponent implements OnInit, OnDestroy{
 
 
   @ViewChild("container") public container;
+  private L: any;
 
 
   constructor(public router:Router, public activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public calcService:CalcService, public ajaxService:AjaxService, public positionFormService:PositionFormService) {
@@ -58,6 +60,7 @@ export class LeafletComponent implements OnInit, OnDestroy{
 
   initializeMap():void {
     this.map = L.map(this.container.nativeElement);
+    this.L = L;
   }
 
   ngOnDestroy(): void {

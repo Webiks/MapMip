@@ -34,7 +34,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
   public queryParamsSubscriber;
   public map_size:OpenLayersMapSize;
   public map_position:OpenlayersMapPosition;
-
+  public ol:any;
   @ViewChild("container") public container;
 
   constructor(public activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public router:Router, public calcService:CalcService, public generalCanDeactivateService:GeneralCanDeactivateService, public ajaxService:AjaxService, public positionFormService:PositionFormService) {
@@ -69,7 +69,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
       target: this.container.nativeElement,
       projection: new ol.proj.Projection(<any>{code:"EPSG:4326", extent: [-180.0000, -90.0000, 180.0000, 90.0000]}),
     });
-
+    this.ol =  ol;
     this.layers = new OpenlayersLayers(this);
     this.markers = new OpenlayersMarkers(this);
     this.map_size = new OpenLayersMapSize(this);
