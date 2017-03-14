@@ -25,7 +25,7 @@ export class ColorPickerComponent implements OnInit {
     this.selectedIndexChange.emit(value);
   }
   get selectedColor():string {
-    return MARKER_COLORS[this.selectedIndex];
+    return MARKER_COLORS[this.selectedIndex]["color"];
   }
   get selectedIndex():number {
     return this._selectedIndex;

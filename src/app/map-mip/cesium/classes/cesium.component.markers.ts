@@ -62,8 +62,17 @@ export class CesiumMarkers {
 
   leftClickInputAction(event:{position: {x:number, y:number}}):void {
 
-    event.position.x+=18;
-    event.position.y+=48;
+    //event.position.x+=18;
+    if (this.cesium.positionFormService.getSelectedMarkerWidth()==36) {
+      event.position.x += this.cesium.positionFormService.getSelectedMarkerWidth() / 2;
+
+      event.position.y += this.cesium.positionFormService.getSelectedMarkerHeight();
+    }
+    else{
+      event.position.x += 3.5+ this.cesium.positionFormService.getSelectedMarkerWidth() / 2;
+
+      event.position.y += this.cesium.positionFormService.getSelectedMarkerHeight();
+    }
 
     if(this.marker_picker.not_allowed) return;
 

@@ -39,7 +39,7 @@ export class LeafletMarkers {
     }
   }
   leftClickInputAction(event:{layerPoint:L.Point}) {
-    let fix_point:L.Point = L.point(event.layerPoint.x + 18, event.layerPoint.y + 48);
+    let fix_point:L.Point = L.point(event.layerPoint.x + this.leaflet.positionFormService.getSelectedMarkerWidth()/2, event.layerPoint.y + this.leaflet.positionFormService.getSelectedMarkerHeight());
     let fix_latlng:L.LatLng = this.leaflet.map.layerPointToLatLng(fix_point);
     let position: [number,number] = [fix_latlng.lng, fix_latlng.lat];
     let color:string = this.leaflet.positionFormService.getSelectedColor();
@@ -91,7 +91,7 @@ export class LeafletMarkers {
     let icon = L.icon(<L.IconOptions>{
       iconUrl: this.leaflet.positionFormService.getMarkerUrlByColor(marker.color),
       //shadowUrl: '/assets/Markers/marker-shadow.png',
-      iconAnchor: [18, 48]
+      iconAnchor: [this.leaflet.positionFormService.getSelectedMarkerWidth()/2, this.leaflet.positionFormService.getSelectedMarkerHeight()]
     });
     return L.marker([marker.position[1],marker.position[0]], {icon:icon});
   }

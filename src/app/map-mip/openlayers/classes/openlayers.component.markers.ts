@@ -45,7 +45,15 @@ export class OpenlayersMarkers {
   }
 
   leftClickInputAction(event:{pixel:ol.Pixel}) {
-    let fix_pixel:ol.Pixel = [event.pixel[0] + 18, event.pixel[1] + 48];
+    let fix_pixel: ol.Pixel;
+    if(this.openlayers.positionFormService.getSelectedMarkerWidth()==60) {
+      fix_pixel= [event.pixel[0] + 3.5 + this.openlayers.positionFormService.getSelectedMarkerWidth() / 2,
+        event.pixel[1] + this.openlayers.positionFormService.getSelectedMarkerHeight()];
+    }
+    else{
+      fix_pixel= [event.pixel[0]  + this.openlayers.positionFormService.getSelectedMarkerWidth() / 2,
+        event.pixel[1] + this.openlayers.positionFormService.getSelectedMarkerHeight()];
+    }
     let fix_coordinate:ol.Coordinate = this.openlayers.map.getCoordinateFromPixel(fix_pixel);
     let position:ol.Coordinate = ol.proj.toLonLat(fix_coordinate);
     let color:string = this.openlayers.positionFormService.getSelectedColor();

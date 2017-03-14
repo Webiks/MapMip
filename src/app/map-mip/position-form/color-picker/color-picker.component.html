@@ -35,7 +35,7 @@
               <a
                 [class.is-selected]="_index == selectedIndex"
                 (click)="changeMarkerColor(_index) ;smModal.hide()">
-                <img [src]="getMarkerUrlByColor(icon)"/>
+                <img [src]="getMarkerUrlByColor(icon.color)"/>
               </a>
 
             </li>
