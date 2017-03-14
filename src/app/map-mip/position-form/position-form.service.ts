@@ -1,17 +1,6 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
 
-/*export const MARKER_COLORS:Array<string>=['blue','black','green','gray','orange','yellow','red','violet',
-  'coffee','star','home','airport','tools',
-  'train','tree','lock','hazard','hotel',
-  'gov','dollar','conversation','rest',
-  'man','fire','airport2','coffee2',
-  'conversation2','dollar2','fire2',
-  'gov2','hazard2','home2','hotel2',
-  'lock2','man2','rest2','star2',
-  'tools2','train2','tree2','fire_','fire1a',
-  'fire1b','fire4a','fire4b','fire5','lock1a',
-  'lock1b','lock4a','lock4b','lock5','lock5c'];*/
 export const MARKER_COLORS:Array<any>=[
   {color:'blue',width:36,height:48},{color:'black',width:36,height:48},{color:'green',width:36,height:48},
   {color:'gray',width:36,height:48},{color:'orange',width:36,height:48},{color:'yellow',width:36,height:48},
@@ -41,12 +30,12 @@ export const MARKER_COLORS:Array<any>=[
   {color:'fire1b',width:60,height:80},
   {color:'fire4a',width:36,height:48},
   {color:'fire4b',width:36,height:48},
- // {color:'fire5',width:36,height:48},
+  {color:'fire5',width:36,height:48},
   {color:'lock1a',width:60,height:80},
   {color:'lock1b',width:60,height:80},
   {color:'lock4a',width:36,height:48},
   {color:'lock4b',width:36,height:48},
- // {color:'lock5',width:36,height:48},
+  {color:'lock5',width:36,height:48},
   {color:'lock5c',width:36,height:48}];
 
 
