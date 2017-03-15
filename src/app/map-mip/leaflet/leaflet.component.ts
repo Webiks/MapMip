@@ -17,6 +17,7 @@ import {PositionFormService} from "../position-form/position-form.service";
 import {LeafletMapView} from "./classes/leaflet.component.map-view";
 import {LeafletMapSize} from "./classes/leaflet.component.map-size";
 import {LeafletMapPosition} from "./classes/leaflet.component.map-position";
+import {LeafletGeoJson} from "./classes/leaflet.component.geojson";
 
 @Component({
   host: host,
@@ -37,10 +38,10 @@ export class LeafletComponent implements OnInit, OnDestroy{
   public map_view:LeafletMapView;
   public map_size:LeafletMapSize;
   public map_position:LeafletMapPosition;
-
+  public geojson:LeafletGeoJson;
 
   @ViewChild("container") public container;
-  private L: any;
+  public L: any;
 
 
   constructor(public router:Router, public activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public calcService:CalcService, public ajaxService:AjaxService, public positionFormService:PositionFormService) {
@@ -55,7 +56,7 @@ export class LeafletComponent implements OnInit, OnDestroy{
     this.map_size = new LeafletMapSize(this);
     this.map_view = new LeafletMapView(this);
     this.map_position = new LeafletMapPosition(this);
-
+    this.geojson = new LeafletGeoJson(this);
   }
 
   initializeMap():void {

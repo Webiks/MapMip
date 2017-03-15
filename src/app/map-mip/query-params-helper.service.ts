@@ -54,6 +54,9 @@ export class QueryParamsHelperService{
   queryTerrain(params:Params):string{
     return params['terrain'];
   }
+  queryGeoJson(params:Params):string{
+    return params['geojson'];
+  }
   queryLighting(params:Params):number{
     if(+params['lighting'] != 1) return 0;
     return 1;
@@ -71,6 +74,11 @@ export class QueryParamsHelperService{
   anyTerrainChange(prevParams:Params, currentParams:Params) {
     let prevSize = this.queryTerrain(prevParams);
     let currentSize = this.queryTerrain(currentParams);
+    return !_.isEqual(prevSize, currentSize);
+  }
+  anyGeoJsonChange(prevParams:Params, currentParams:Params) {
+    let prevSize = this.queryGeoJson(prevParams);
+    let currentSize = this.queryGeoJson(currentParams);
     return !_.isEqual(prevSize, currentSize);
   }
   anyLightingChange(prevParams:Params, currentParams:Params) {
@@ -207,6 +215,7 @@ export class QueryParamsHelperService{
     queryObj.position    =  _.isNil(queryObj.size) || _.isEqual(queryObj.position, "50,50")  ? undefined : queryObj.position;
     queryObj.terrain     =  _.isEmpty(queryObj.terrain) ? undefined :queryObj.terrain;
     queryObj.lighting    =  _.isEqual(this.queryLighting({lighting:queryObj.lighting}), 1) ? queryObj.lighting : undefined;
+    queryObj.geojson    =  _.isEmpty(this.queryGeoJson({geojson:queryObj.geojson})) ?  undefined : queryObj.geojson;
     return <NavigationExtras> {
       queryParams: queryObj
     };

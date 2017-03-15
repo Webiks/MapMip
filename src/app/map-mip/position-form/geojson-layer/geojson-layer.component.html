@@ -1,1 +1,27 @@
+<!--
 <button class="btn btn-primary pull-left"  type="button">GeoJson</button>
+-->
+
+<template #popTemplate>
+  <form (clickOutside)="pop.hide()" exclude="button#geojson_pop" (submit)="submitGeoJson(pop)">
+    <div class="popView" class="popover-geojson">
+      <input #input type="text" class="form-control" [(ngModel)]="geojson"  [ngModelOptions]="{standalone: true}">
+    </div>
+    <div class="control-buttons pull-right">
+      <button type="button" class="btn btn-danger" (click)="pop.hide()">Cancel</button>
+      <button type="submit" class="btn btn-info">OK</button>
+    </div>
+  </form>
+</template>
+
+<button type="button" class="btn btn-primary"
+        placement="bottom"
+        id="geojson_pop"
+        #pop="bs-popover"
+        (onShown)="onShownPopover(popTemplate)"
+        [popover]="popTemplate" popoverTitle="Load GeoJson">
+  GeoJson
+</button>
+
+<!--
+(click)="layersArray.push({layer_obj:example.layer_obj})"-->

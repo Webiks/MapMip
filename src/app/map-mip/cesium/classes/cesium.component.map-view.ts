@@ -46,6 +46,7 @@ export class CesiumMapView{
     let rotateP:number          = this.cesium.queryParamsHelperService.queryRotate(params);
     let lightingP:number        = this.cesium.queryParamsHelperService.queryLighting(params);
 
+
     let arrayP:Array<number> = [longitudeP, latitudeP, heightP, headingRadiansP, pitchRadiansP, rollRadiansP, mode3dP, rotateP,lightingP];
 
     let longitude:number        = this.getCenter().lng;
@@ -122,9 +123,10 @@ export class CesiumMapView{
     let position = this.cesium.currentParams['position'];
     let terrain = this.cesium.currentParams['terrain'];
     let lighting = this.cesium.currentParams['lighting'];
+    let geojson = this.cesium.currentParams['geojson'];
 
     rotate = this.cesium.viewer.scene.mode != Cesium.SceneMode.SCENE2D || rotate != 1 ? undefined : 1;
-    let navigationExtras:NavigationExtras = this.cesium.queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, rotate, layers, size, position,terrain,lighting});
+    let navigationExtras:NavigationExtras = this.cesium.queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, rotate, layers, size, position,terrain,lighting,geojson});
     return this.cesium.router.navigate([], navigationExtras);
 
   };

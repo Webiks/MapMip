@@ -122,9 +122,11 @@ export class OpenlayersMapView{
     let rotate = this.openlayers.currentParams['rotate'];
     let size = this.openlayers.currentParams['size'];
     let position = this.openlayers.currentParams['position'];
+    let geojson = this.openlayers.currentParams['geojson'];
+
     rotate = rotate == 0 ? 0 : undefined;
 
-    let navigationExtras:NavigationExtras = this.openlayers.queryParamsHelperService.getQuery({lng, lat, zoom, heading, markers, layers,rotate, size, position});
+    let navigationExtras:NavigationExtras = this.openlayers.queryParamsHelperService.getQuery({lng, lat, zoom, heading, markers, layers,rotate, size, position,geojson});
     return this.openlayers.router.navigate([], navigationExtras);
 
   };
