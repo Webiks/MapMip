@@ -50,13 +50,16 @@
             <div class="form-group terrain-group" *ngIf="params[key].input_type == 'app-terrain'">
               <app-terrain (submitTerrainEmitter)="submitForm()" [(terrain)]="params.terrain.val"></app-terrain>
             </div>
-            <div class="form-group lighting-group" *ngIf="params[key].input_type == 'app-map-lighting'">
-              <app-map-lighting [lighting]="params.lighting.val"></app-map-lighting>
-            </div>
 
             <div class="form-group layers-group" *ngIf="params[key].input_type == 'app-geojson-layer'">
               <app-geojson-layer (submitGeoJsonEmitter)="submitForm()" [(geojson)]="params.geojson.val"></app-geojson-layer>
             </div>
+
+            <div class="form-group lighting-group" *ngIf="params[key].input_type == 'app-map-lighting'">
+              <app-map-lighting [lighting]="params.lighting.val"></app-map-lighting>
+            </div>
+
+
 
             <div class="form-group b-switch" *ngIf="params[key].input_type == 'Bswitch'">
               <bSwitch [switch-label-text]="key" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>

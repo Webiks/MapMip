@@ -65,6 +65,10 @@ export class OpenlayersMarkers {
       if(layer.getSource && layer.getSource().getFeatures) geom = layer.getSource().getFeatures()[0].getGeometry();
       return geom instanceof ol.geom.Point;
     }) . map(layer => {
+      if(layer.getSource()["Z"])
+        if(layer.getSource()["Z"].includes("geojson"))
+          return layer;
+
       let position = layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
       position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
       position = this.openlayers.calcService.toFixes7Obj(position);
@@ -145,6 +149,11 @@ export class OpenlayersMarkers {
         let position = layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
         position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
         position = this.openlayers.calcService.toFixes7Obj(position);
+
+        if(layer.getSource()["Z"])
+          if(layer.getSource()["Z"].includes("geojson"))
+            return false;
+
         let color:string = this.openlayers.positionFormService.getMarkerColorByUrl(layer.getStyle().getImage().getSrc());
         return _.isEqual(position, mapMarker.position) && _.isEqual(color, mapMarker.color);
       });
