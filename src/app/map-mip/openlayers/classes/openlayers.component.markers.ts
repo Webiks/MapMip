@@ -62,13 +62,9 @@ export class OpenlayersMarkers {
   getMarkersPosition(): Array<any>{
     return this.openlayers.LayersArray.filter( (layer) => {
       let geom;
-      if(layer.getSource && layer.getSource().getFeatures) geom = layer.getSource().getFeatures()[0].getGeometry();
+      if(layer.getSource && layer.getSource().getFeatures && !layer.getSource().Z) geom = layer.getSource().getFeatures()[0].getGeometry();
       return geom instanceof ol.geom.Point;
-    }) . map(layer => {
-      if(layer.getSource()["Z"])
-        if(layer.getSource()["Z"].includes("geojson"))
-          return layer;
-
+    }) . map(layer => {layer.getSource().getFeatures
       let position = layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
       position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
       position = this.openlayers.calcService.toFixes7Obj(position);

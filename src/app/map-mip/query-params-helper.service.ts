@@ -54,8 +54,8 @@ export class QueryParamsHelperService{
   queryTerrain(params:Params):string{
     return params['terrain'];
   }
-  queryGeoJson(params:Params):string{
-    return params['geojson'];
+  queryGeoJson(params:Params):string[]{
+    return this.geojsonStrToArray(params['geojson']);
   }
   queryLighting(params:Params):number{
     if(+params['lighting'] != 1) return 0;
@@ -100,6 +100,14 @@ export class QueryParamsHelperService{
     this.router.navigateByUrl(urlTree.toString())
   }
 
+  addGeojson(geojson){
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    let geojson_array:Array<any> = this.geojsonStrToArray(urlTree.queryParams['geojson']);
+    geojson_array.push(geojson);
+    urlTree.queryParams['geojson'] = this.geojsonArrayToStr(geojson_array);
+    this.router.navigateByUrl(urlTree.toString())
+  }
+
   queryMarkers(params:Params):Array<{position:number[],color:string}>{
     return this.markersStrToArray(params['markers']);
   }
@@ -129,8 +137,17 @@ export class QueryParamsHelperService{
     layer_to_decode = layer_to_decode.split(" ").join("");
     return rison.decode_array(layer_to_decode);
   }
-
+  queryGeojsonStringToObjects(params:Params):Array<Object>{
+    let geojson_to_decode:string = params['geojson'];
+    if(_.isEmpty(geojson_to_decode) ) geojson_to_decode = '';
+    geojson_to_decode = geojson_to_decode.split(" ").join("");
+    return rison.decode_array(geojson_to_decode);
+  }
   queryLayersObjectToString(tms_obj):string{
+    if(_.isEmpty(tms_obj)) return "";
+    return rison.encode_array(tms_obj);
+  }
+  queryGeoJsonObjectToString(tms_obj):string{
     if(_.isEmpty(tms_obj)) return "";
     return rison.encode_array(tms_obj);
   }
@@ -180,6 +197,21 @@ export class QueryParamsHelperService{
 
     return markersArrayObject;
   }
+  geojsonStrToArray(geojsonStr:string="") {
+    if(_.isEmpty(geojsonStr)) return [];
+    let geojsonArrayStr:Array<string> = geojsonStr.split(" ").join("").split("),(").map(
+      (str, index, array) => {
+        if(index == 0){
+          str = str.replace("(", "")
+        }
+        if(index == array.length - 1) {
+          str = str.replace(")", "")
+        }
+        return str
+      });
+
+    return geojsonArrayStr;
+  }
 
   markersArrayToStr(markersArray:Array<any>):string {
     let url_str = "";
@@ -189,6 +221,19 @@ export class QueryParamsHelperService{
       one_array_str += markersObj.position;
       one_array_str = markersObj.color ? one_array_str + "," + markersObj.color: one_array_str;
       one_array_str = "(" + one_array_str + "),";
+      one_array_str = index == (array.length - 1) ? one_array_str.replace("),", ")") : one_array_str;
+      url_str += one_array_str;
+    });
+
+    return url_str;
+  }
+  geojsonArrayToStr(geojsonArray:Array<any>):string {
+    let url_str = "";
+
+    geojsonArray.forEach( (geojsonObj, index, array) => {
+      let one_array_str:string = "";
+      one_array_str += geojsonObj
+      one_array_str = "(" + geojsonObj + "),";
       one_array_str = index == (array.length - 1) ? one_array_str.replace("),", ")") : one_array_str;
       url_str += one_array_str;
     });
