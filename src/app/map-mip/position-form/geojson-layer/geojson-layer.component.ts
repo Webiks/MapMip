@@ -53,7 +53,7 @@ export class GeojsonLayerComponent implements OnInit {
 
   setGeoJson(){
     let geojson = this.geojson_array;
-    this.geojson_array = this.queryParamsHelperService.queryGeoJson({geojson});
+   // this.geojson_array = this.queryParamsHelperService.queryGeoJson({geojson});
     this.queryParamsHelperService.addGeojson(geojson);
   }
 
