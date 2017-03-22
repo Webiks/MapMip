@@ -73,6 +73,14 @@ export class PositionFormComponent implements OnInit {
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService) {}
 
 
+  submitLayers($event: {hide:boolean, modal:ModalDirective, parsed_layer:string}) {
+    this.params.layers.val = $event.parsed_layer;
+
+    this.submitForm().then(()=>{
+      if($event.hide || _.isNil(this.params.layers.val)) $event.modal.hide();
+    });
+  }
+
   submitMarkers($event: {hide:boolean, smModal:ModalDirective, parsed_markers:string}) {
     this.params.markers.val = $event.parsed_markers;
 
@@ -81,13 +89,14 @@ export class PositionFormComponent implements OnInit {
     });
   }
 
-  submitLayers($event: {hide:boolean, modal:ModalDirective, parsed_layer:string}) {
-    this.params.layers.val = $event.parsed_layer;
+  submitGeojsons($event: {hide:boolean, modal:ModalDirective, parsed_geojson:string}){
+    this.params.geojson.val = $event.parsed_geojson;
 
     this.submitForm().then(()=>{
-      if($event.hide || _.isNil(this.params.layers.val)) $event.modal.hide();
+      if($event.hide || _.isNil(this.params.markers.val)) $event.modal.hide();
     });
   }
+
 
   ngOnInit() {
     this.route.queryParams.subscribe((params:Params)=> {
@@ -143,8 +152,14 @@ export class PositionFormComponent implements OnInit {
     _.forEach(obj.permissions, (num:number) => {
       let url:string  = Permissions[num];
       let urlTreeCheck:UrlTree = this.router.parseUrl(url);
-      let path:string = urlTreeCheck.root.children['primary'].segments[0].path;
-      if(this.router.url.includes(path)){
+      let path_premission:string = urlTreeCheck.root.children['primary'].segments[0].path;
+
+      let url_router:string  = this.router.url;
+      let urlTreeCheckRouter:UrlTree = this.router.parseUrl(url_router);
+      let path_router:string = urlTreeCheckRouter.root.children['primary'].segments[0].path;
+
+
+      if(path_router.includes(path_premission)){
         havePermission = true;
         _.forEach(urlTreeCheck.queryParams, (val, key) => {
           if(urlTreeCheck.queryParams[key] != urlTreeCurrent.queryParams[key]) havePermission = false;
