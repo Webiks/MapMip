@@ -14,6 +14,7 @@ export class ColorPickerComponent implements OnInit {
   @Output("selectedIndexChange") selectedIndexChange = new EventEmitter();
   @Input("disabledAction") disabledAction:boolean;
   @Input("iconsPerRow") public iconsPerRow:number;
+  @Input("backdrop") public backdrop:boolean;
 
   constructor(private positionFormService:PositionFormService) { }
 

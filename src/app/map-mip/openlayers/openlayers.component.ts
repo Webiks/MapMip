@@ -13,6 +13,7 @@ import {OpenlayersMapView} from "./classes/openlayers.component.map-view";
 import {OpenLayersMapSize} from "./classes/openlayers.component.map-size";
 import {PositionFormService} from "../position-form/position-form.service";
 import {OpenlayersMapPosition} from "./classes/openlayers.component.map-position";
+import {OpenlayersGeoJson} from "./classes/openlayers.component.geojson";
 
 @Component({
   host: host,
@@ -34,6 +35,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
   public queryParamsSubscriber;
   public map_size:OpenLayersMapSize;
   public map_position:OpenlayersMapPosition;
+  public geojson:OpenlayersGeoJson;
   public ol:any;
   @ViewChild("container") public container;
 
@@ -75,6 +77,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
     this.map_size = new OpenLayersMapSize(this);
     this.map_position = new OpenlayersMapPosition(this);
     this.map_view = new OpenlayersMapView(this);
+    this.geojson = new OpenlayersGeoJson(this);
   }
 
   get LayersArray() {

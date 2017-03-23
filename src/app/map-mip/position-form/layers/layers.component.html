@@ -1,51 +1,6 @@
 <button class="btn btn-primary layer-btn" (click)="layersModal.show()" type="button">Layers</button>
 <app-switch-layers [(layersArray)]="layersArray" (submitLayersEmitter)="submitLayers()"></app-switch-layers>
 
-<!--<div role="alert" class="alert alert-warning" ng-reflect-klass="alert alert-warning" style="-->
-    <!--position: fixed;-->
-    <!--z-index: 2000;-->
-    <!--width: 100%;-->
-    <!--left: 0;-->
-    <!--bottom: 0;-->
-    <!--margin: 0;-->
-<!--">-->
-  <!--<strong _ngcontent-ams-25="">Well done!</strong> You successfully read this important alert message.-->
-
-<!--</div>-->
-
-
-
-
-
-<!--<template #popTemplate>-->
-  <!--<div style="width: 200px" (clickOutside)="pop.hide()" exclude="#pop">-->
-    <!--width: {{sizeArr[0]}}%-->
-    <!--<input type="range" [(ngModel)]="sizeArr[0]" (ngModelChange)="onSizeChange()" name="points" min="0" max="100">-->
-    <!--height: {{sizeArr[1]}}%-->
-    <!--<input type="range" [(ngModel)]="sizeArr[1]" (ngModelChange)="onSizeChange()" name="points" min="0" max="100">-->
-
-  <!--</div>-->
-<!--</template>-->
-
-<!--<button type="button" class="btn btn-success"-->
-        <!--placement="bottom"-->
-        <!--id="pop"-->
-        <!--#pop="bs-popover"-->
-        <!--[popover]="popTemplate" popoverTitle="Map size">-->
-  <!--Size-->
-<!--</button>-->
-
-
-
-
-
-
-
-
-
-
-
-
 <div  bsModal #layersModal="bs-modal" class="modal fade layers-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" (onShow)="initLayersArray()" (keypress)="onKeyPress($event)" aria-hidden="true">
   <div class="modal-dialog modal-md">
     <form class="modal-content" (ngSubmit)="submitLayers()">

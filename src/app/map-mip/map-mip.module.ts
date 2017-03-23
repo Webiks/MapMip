@@ -43,7 +43,7 @@ export const MapMipChildren :Routes = [
     path: '',
     component:MapLayerComponent,
     children: [
-      { path: '', redirectTo: 'cesium', pathMatch: 'full' },
+      { path: '', redirectTo: 'leaflet', pathMatch: 'full' },
       {
         path: 'cesium',
         component: CesiumComponent,
