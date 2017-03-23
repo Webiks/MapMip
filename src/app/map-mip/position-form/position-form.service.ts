@@ -49,7 +49,7 @@ export class PositionFormService {
   public selectedColorIndex:number = 0;
   public markerPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   public mapsCont: any;
-  public hideComponent:boolean = false;
+  public hideComponent:boolean = true;
 
   constructor(private domSanitizer :DomSanitizer ) { }
 

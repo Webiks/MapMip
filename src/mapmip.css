@@ -39,3 +39,7 @@ popover-container.popover{
 .bootstrap-switch{
   background: white;
 }
+
+.modal-open .modal{
+  overflow: visible !important;
+}

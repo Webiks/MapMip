@@ -1,48 +1,31 @@
-<div class="btn-group picked-group "  >
-
+<div class="btn-group picked-group">
   <button class="btn btn-default picked-button" [class.active]="Active" (click)="togglePickedEmitter.emit(!Active)" type="button" [disabled]="disabledAction" tooltip="add marker" triggers="hover" container="body">
     <img [src]="getMarkerUrlByColor(selectedColor)"/>
   </button>
+  <button class="btn btn-default glyphicon glyphicon-option-vertical" (click)="smModal.show()"  tooltip="choose icon" triggers="hover" container="body" type="button"></button>
+</div>
 
-<!--  <button type="button" class="btn btn-default dropdown-toggle-split "  >
-    <span class="caret"></span>
-    <span class="sr-only">Split button!</span>
-  </button>-->
-  <button class="btn btn-default glyphicon glyphicon-option-vertical" (click)="smModal.show()"  tooltip="choose icon" triggers="hover" container="body"></button>
-  <div [config]="{backdrop: false}"  bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title pull-left">Choose icon</h4>
-          <button type="button" class="close pull-right" aria-label="Close" (click)="smModal.hide()">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <ul >
-         <!--   <li *ngFor="let iconRow of markerColors() | colorPicker: iconsPerRow; let parentIndex = index" >
+<div bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" [config]="{backdrop: backdrop}">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Choose icon</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="smModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul >
+          <li *ngFor="let icon of markerColors(); let _index = index" >
+            <a
+              [class.is-selected]="_index == selectedIndex"
+              (click)="changeMarkerColor(_index) ;smModal.hide()">
+              <img [src]="getMarkerUrlByColor(icon.color)"/>
+            </a>
+          </li>
+        </ul>
 
-              <a
-                *ngFor="let iconItem of iconRow;let childIndex = index"
-                [class.is-selected]="calcIndex(parentIndex, childIndex, iconsPerRow) == selectedIndex"
-                (click)="changeMarkerColor(calcIndex(parentIndex, childIndex, iconsPerRow)) ;smModal.hide()">
-                <img [src]="getMarkerUrlByColor(iconItem)"/>
-              </a>
-
-            </li>-->
-            <li *ngFor="let icon of markerColors(); let _index = index" >
-
-              <a
-                [class.is-selected]="_index == selectedIndex"
-                (click)="changeMarkerColor(_index) ;smModal.hide()">
-                <img [src]="getMarkerUrlByColor(icon.color)"/>
-              </a>
-
-            </li>
-          </ul>
-        </div>
       </div>
     </div>
   </div>
-
 </div>
