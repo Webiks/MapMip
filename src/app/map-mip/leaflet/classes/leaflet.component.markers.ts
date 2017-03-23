@@ -105,8 +105,8 @@ export class LeafletMarkers {
       });
   }
 
-  getMarkerLayersArray():Array<L.Marker>{
-    return <Array<L.Marker>> _.filter(this.leaflet.map['_layers'], (l:L.Marker) => l.getLatLng)
+  getMarkerLayersArray():Array<L.Marker>{  // addition: exclude geojson
+    return <Array<L.Marker>> _.filter(this.leaflet.map['_layers'], (l) => l.getLatLng && !l.hasOwnProperty("feature"))
   }
 
   markerExistOnMap(markers_map_positions, paramMarker) {

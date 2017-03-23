@@ -3,10 +3,12 @@
  */
 import {Params} from "@angular/router";
 import {LeafletComponent} from "../leaflet.component";
+import * as _ from 'lodash';
 
 export class LeafletGeoJson{
   public queryParamsSubscriber;
-
+  public assetLayerGroup;
+  public geoJsonLayers :string[];
   constructor(private leaflet:LeafletComponent){
     this.queryParamsSubscriber = leaflet.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
   }
@@ -21,11 +23,24 @@ export class LeafletGeoJson{
 }
 
   queryParams(params:Params) {
+    var that = this;
     if(this.leaflet.queryParamsHelperService.anyGeoJsonChange(this.leaflet.prevParams, this.leaflet.currentParams)) {
-      let url = this.leaflet.queryParamsHelperService.queryGeoJson(params);
+      this.geoJsonLayers =[];
+      //for case when moving from other component
+      if (!this.assetLayerGroup) {
+        this.assetLayerGroup = new this.leaflet.L.LayerGroup();
+      }
+      this.assetLayerGroup.clearLayers();
+      let urls = this.leaflet.queryParamsHelperService.queryGeoJson(params);
 
-      var geoLayer = this.leaflet.L.geoJSON['ajax'](url,{onEachFeature:this.popUp}
-        ).addTo(this.leaflet.map)
+      _.forEach(urls, function(url,index){
+        that.geoJsonLayers[index] = that.leaflet.L.geoJSON['ajax'](url,{onEachFeature:that.popUp});
+        that.assetLayerGroup.addLayer(that.geoJsonLayers[index])
+      } );
+
+      // add the whole group to map
+      this.assetLayerGroup.addTo(this.leaflet.map);
+
     }
   }
 

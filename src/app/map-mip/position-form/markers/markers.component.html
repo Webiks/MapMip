@@ -7,7 +7,7 @@
   <app-color-picker (togglePickedEmitter)="togglePicked($event)" [Active]="positionFormService.onPicked" [(selectedIndex)]="positionFormService.selectedColorIndex" iconsPerRow="6" ></app-color-picker>
 </div>
 
-<div bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="cloneEditedMarkers()">
+<div [config]="{backdrop: false}" bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="cloneEditedMarkers()">
   <div class="modal-dialog modal-md">
     <form class="modal-content" (submit)="submitMarkers(true)">
 

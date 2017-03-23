@@ -9,7 +9,7 @@
     <span class="sr-only">Split button!</span>
   </button>-->
   <button class="btn btn-default glyphicon glyphicon-option-vertical" (click)="smModal.show()"  tooltip="choose icon" triggers="hover" container="body"></button>
-  <div bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div [config]="{backdrop: false}"  bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
         <div class="modal-header">
