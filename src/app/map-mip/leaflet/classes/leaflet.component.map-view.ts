@@ -34,9 +34,10 @@ export class LeafletMapView{
     let layers       = this.leaflet.currentParams['layers'];
     let size       = this.leaflet.currentParams['size'];
     let position = this.leaflet.currentParams['position'];
+    let geojson = this.leaflet.currentParams['geojson'];
 
 
-    let navigationExtras:NavigationExtras = this.leaflet.queryParamsHelperService.getQuery({lng, lat, zoom, markers, layers, size,position});
+    let navigationExtras:NavigationExtras = this.leaflet.queryParamsHelperService.getQuery({lng, lat, zoom, markers, layers, size,position,geojson});
 
     return this.leaflet.router.navigate([], navigationExtras);
   };

@@ -1,0 +1,72 @@
+$base-color :#277fca;
+
+.control-buttons{
+  margin: 10px 0;
+  display: flex;
+  justify-content: flex-end;
+  button{
+    margin: 0 10px;
+  }
+}
+
+
+button.center-btn{
+  color: $base-color;
+  margin: 0px 10px;
+  top: 0px;
+}
+
+button.top-button{
+  margin: 10px 0;
+}
+
+
+div.modal-body{
+  button{
+    margin: 10px 0;
+  }
+
+  div.li-row{
+    user-select: none;
+    display: flex;
+    position: relative;
+    input.form-control {
+      width: 75%;
+      height: 100%;
+      user-select: none;
+    }
+    img{
+      height: 100%;
+      user-select: none;
+    }
+    span.url{
+      user-select: none;
+      width: calc(100% - 125px);
+      overflow: hidden;
+
+      flex-grow: 10;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 0 10px;
+    }
+    button {
+      user-select: none;
+      flex-grow: 0;
+      opacity: 1;
+      padding: 5px 10px;
+      margin: 0 5px;
+      font-size: 12px;
+      &.glyphicon-chevron-right{
+        transform: rotate(0deg);
+        transition: .2s;
+        user-select: none;
+      }
+      &:disabled{
+        opacity: .5;
+      }
+    }
+
+  }
+}

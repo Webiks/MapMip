@@ -16,6 +16,7 @@ import {CesiumMapPosition} from "./classes/cesium.component.map-position";
 import {CesiumTerrian} from "./classes/cesium.component.terrain";
 import {CesiumMapLighting} from "./classes/cesium.component.map-lighting";
 import "cesium/Build/Cesium/Cesium.js";
+import {CesiumGeoJson} from "./classes/cesium.component.geojson";
 
 
 @Component({
@@ -42,6 +43,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
   public map_position:CesiumMapPosition;
   public terrain:CesiumTerrian;
   public map_lighting:CesiumMapLighting;
+  private geojson: CesiumGeoJson;
 
   constructor(public queryParamsHelperService:QueryParamsHelperService, public activatedRoute:ActivatedRoute, public generalCanDeactivateService:GeneralCanDeactivateService, public router:Router, public calcService:CalcService, public positionFormService:PositionFormService) {
     this.queryParamsSubscriber = activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
@@ -64,6 +66,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
     this.map_position = new CesiumMapPosition(this);
     this.terrain = new CesiumTerrian(this);
     this.map_lighting = new CesiumMapLighting(this);
+    this.geojson = new CesiumGeoJson(this);
   };
 
   queryParams(params:Params):void {
