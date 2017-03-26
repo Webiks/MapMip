@@ -2,6 +2,7 @@ import {Component, Input, Output, EventEmitter, ViewChild} from '@angular/core';
 import { ModalDirective} from "ng2-bootstrap";
 import {QueryParamsHelperService} from "../../query-params-helper.service";
 import * as _ from 'lodash';
+import {AjaxService} from "../../ajax.service";
 @Component({
   selector: 'app-geojson-layer',
   templateUrl: './geojson-layer.component.html',
@@ -12,6 +13,7 @@ export class GeojsonLayerComponent{
   @ViewChild('defaultModal') public defaultModal:ModalDirective;
 
   private _geojson:string;
+  public examples$ = this.ajaxService.getGeoJsonExam();
 
   @Input("geojson")
   set geojson(geojson:string){
@@ -43,7 +45,7 @@ export class GeojsonLayerComponent{
 
   public geojson_array;
 
-  constructor(private queryParamsHelperService:QueryParamsHelperService) { }
+  constructor(private queryParamsHelperService:QueryParamsHelperService,private ajaxService:AjaxService) { }
 
   submitAddGeojson(input) {
     if(this.add_geojson.onEdit()) {
@@ -51,8 +53,15 @@ export class GeojsonLayerComponent{
     } else {
       this.geojson_array.push(input);
     }
-    this.add_geojson.init();
-    this.defaultModal.hide();
+    if (input!= "") {
+      this.add_geojson.init();
+      this.defaultModal.hide();
+    }
+  }
+
+  addGeojsonExample(input) {
+      this.geojson_array.push(input);
+      this.defaultModal.hide();
   }
 
   submitGeoJson() {

@@ -36,6 +36,8 @@ export class AjaxService {
   getTerrainsExam():Promise<any> {
     return <any>firebase.database().ref("terrains").once("value").then(snapshot => snapshot.val());
   }
-
+  getGeoJsonExam():Promise<any> {
+    return <any>firebase.database().ref("geojsons").once("value").then(snapshot => snapshot.val());
+  }
 
 }

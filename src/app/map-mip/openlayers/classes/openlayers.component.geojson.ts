@@ -30,7 +30,13 @@ export class OpenlayersGeoJson{
         that.geojsonLayers[index]  = new that.openlayers.ol.layer.Vector({
           source: new that.openlayers.ol.source.Vector({
             format: new that.openlayers.ol.format.GeoJSON(),
-            url: url
+            url: url,
+            style: new ol.style.Style({
+              image: new ol.style.Circle({
+                radius: 3,
+                fill: new ol.style.Fill({color: 'white'})
+              })
+          })
           })
         });
         // add each elem of the array

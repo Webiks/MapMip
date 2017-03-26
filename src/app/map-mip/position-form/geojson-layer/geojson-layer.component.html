@@ -71,6 +71,16 @@
       </div>
 
       <div class="modal-footer">
+        <div class="btn-group" dropdown dropdown-append-to-body>
+          <button id="btn-append-to-body" type="button" class="btn btn-primary" dropdownToggle>
+            Examples <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
+            <li *ngFor="let example of examples$ | async">
+              <a class="dropdown-item" (click)="addGeojsonExample(example.url)">{{example.name}}</a>
+            </li>
+          </ul>
+        </div>
         <span class="glyphicon glyphicon-exclamation-sign pull-left" [tooltip]="test" tooltipClass="url-tooltip"></span>
         <button class="btn btn-default" (click)="defaultModal.hide()" type="button">Cancel</button>
         <button class="btn btn-default" type="submit">{{add_geojson.onEdit() ? 'Save' : 'Add'}}</button>
