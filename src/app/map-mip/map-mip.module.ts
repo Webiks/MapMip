@@ -1,28 +1,48 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapLayerComponent } from './map-mip.component';
-import {CesiumComponent} from "./cesium/cesium.component";
-import {LeafletComponent} from "./leaflet/leaflet.component";
-import {OpenlayersComponent} from "./openlayers/openlayers.component";
-import {QueryParamsHelperService} from "./query-params-helper.service";
+import {CesiumComponent} from "./components/cesium/cesium.component";
+import {LeafletComponent} from "./components/leaflet/leaflet.component";
+import {OpenlayersComponent} from "./components/openlayers/openlayers.component";
+import {QueryParamsHelperService} from "./services/query-params-helper.service";
 import {FormsModule} from "@angular/forms";
-import {CalcService} from "./calc-service";
+import {CalcService} from "./services/calc-service";
 import { JWBootstrapSwitchModule } from 'jw-bootstrap-switch-ng2';
 import {Ng2BootstrapModule} from "ng2-bootstrap";
-import {PositionFormModule} from "./position-form/position-form.module";
-import {AjaxService} from "./ajax.service";
+import {PositionFormModule} from "./components/position-form/position-form.module";
+import {AjaxService} from "./services/ajax.service";
 import {HttpModule} from "@angular/http";
 import {MaterialModule} from "@angular/material";
-import {MapLayerApiService} from "./map-layer-api.service";
+import {MapLayerApiService} from "./services/map-layer-api.service";
 import {Routes, RouterModule} from "@angular/router";
-import {GeneralCanDeactivateService} from "./general-can-deactivate.service";
+import {GeneralCanDeactivateService} from "./services/general-can-deactivate.service";
+import {MapMipService} from "./api/map-mip.service";
+
+export const MapMipChildren :Routes = [
+  {
+    path: 'cesium',
+    component: CesiumComponent,
+    canDeactivate: [GeneralCanDeactivateService]
+  },
+  {
+    path: 'openlayers',
+    component: OpenlayersComponent,
+    canDeactivate: [GeneralCanDeactivateService]
+  },
+  {
+    path: 'leaflet',
+    component: LeafletComponent
+  }
+];
 
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule,
+    RouterModule.forRoot(
+      MapMipChildren, {useHash: false, }
+    ),
     Ng2BootstrapModule.forRoot(),
     JWBootstrapSwitchModule,
     PositionFormModule,
@@ -31,33 +51,9 @@ import {GeneralCanDeactivateService} from "./general-can-deactivate.service";
   ],
   declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent],
   exports: [MapLayerComponent],
-  providers:[QueryParamsHelperService, CalcService, AjaxService,MapLayerApiService, GeneralCanDeactivateService]
+  providers:[QueryParamsHelperService, CalcService, AjaxService,MapLayerApiService, GeneralCanDeactivateService, MapMipService]
 })
 export class MapMipModule { }
 
 
 
-
-export const MapMipChildren :Routes = [
-  {
-    path: '',
-    component:MapLayerComponent,
-    children: [
-      { path: '', redirectTo: 'leaflet', pathMatch: 'full' },
-      {
-        path: 'cesium',
-        component: CesiumComponent,
-        canDeactivate: [GeneralCanDeactivateService]
-      },
-      {
-        path: 'openlayers',
-        component: OpenlayersComponent,
-        canDeactivate: [GeneralCanDeactivateService]
-      },
-      {
-        path: 'leaflet',
-        component: LeafletComponent
-      }
-    ]
-  },
-];

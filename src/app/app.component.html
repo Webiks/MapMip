@@ -1,5 +1,7 @@
 <app-navbar></app-navbar>
 
+<button (click)="mapmip.skipLocationChange = !mapmip.skipLocationChange">Skip Location Change: {{mapmip.skipLocationChange}}</button>
 <div class="page-container">
-  <router-outlet></router-outlet>
+  <map-mip></map-mip>
 </div>
+
