@@ -71,7 +71,7 @@ export class PositionFormComponent implements OnInit {
     lighting:{permissions: [Permissions['/cesium']], input_type: 'app-map-lighting' }
   };
 
-  constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService, private mapMipService:MapMipService) {}
+  constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService, public mapMipService:MapMipService) {}
 
 
   submitLayers($event: {hide:boolean, modal:ModalDirective, parsed_layer:string}) {

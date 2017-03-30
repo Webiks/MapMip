@@ -68,6 +68,11 @@
           </div>
 
         </template>
+
+        <div class="group-div">
+          <app-flip-switch [state]="mapMipService.skipLocationChange"></app-flip-switch>
+        </div>
+
         <button type="submit" style="display: none"></button>
         <div class="form-group submit">
           <button type="button" class="btn btn-info submit-mobile" (click)="submitForm();close()">Submit</button>

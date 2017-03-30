@@ -19,6 +19,7 @@ import { MapLightingComponent } from './map-lighting/map-lighting.component';
 import {MaterialModule} from "@angular/material";
 import { ColorPickerPipe } from './color-picker/color-picker.pipe';
 import { GeojsonLayerComponent } from './geojson-layer/geojson-layer.component';
+import { FlipSwitchComponent } from './flip-switch/flip-switch.component';
 
 @NgModule({
   imports: [
@@ -29,7 +30,7 @@ import { GeojsonLayerComponent } from './geojson-layer/geojson-layer.component';
     ClickOutsideModule,
     MaterialModule
   ],
-  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent, DragItemDirective, ReversePipe, SwitchLayersComponent, MapLightingComponent, ColorPickerPipe, GeojsonLayerComponent],
+  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent, DragItemDirective, ReversePipe, SwitchLayersComponent, MapLightingComponent, ColorPickerPipe, GeojsonLayerComponent, FlipSwitchComponent],
   exports: [PositionFormComponent],
   providers:[PositionFormService]
 })

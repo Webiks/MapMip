@@ -41,7 +41,7 @@ export const MapMipChildren :Routes = [
     CommonModule,
     FormsModule,
     RouterModule.forRoot(
-      MapMipChildren, {useHash: false, }
+      MapMipChildren, {useHash: false}
     ),
     Ng2BootstrapModule.forRoot(),
     JWBootstrapSwitchModule,

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {PositionFormService} from "../components/position-form/position-form.service";
-import {NavigationExtras, Router, UrlTree} from "@angular/router";
+import {NavigationCancel, NavigationExtras, Router, UrlTree} from "@angular/router";
+import {Location} from '@angular/common';
 
 @Injectable()
 export class MapMipService {
@@ -8,11 +9,18 @@ export class MapMipService {
   private _skipLocationChange:boolean = true;
   private default_state:string = 'leaflet';
 
-  constructor(private positionFormService:PositionFormService, private router:Router){
+  constructor(private positionFormService:PositionFormService, private router:Router, private location:Location){
+
 
     this.router.events.filter(e => e.url == '/').subscribe((e) => {
       this.goTo(<"leaflet">this.default_state);
     });
+
+    this.router.events.filter(e => e instanceof NavigationCancel).subscribe((e) => {
+      // console.log("lalalalalalalalalala")
+      // this.goTo(<"leaflet" > this.default_state);
+    });
+
 
   }
 
@@ -21,6 +29,9 @@ export class MapMipService {
   }
 
   set skipLocationChange(value: boolean) {
+    if(value) {
+      this.location.go("")
+    }
     this._skipLocationChange = value;
   }
 
@@ -34,6 +45,15 @@ export class MapMipService {
   }
 
   goTo(state: "leaflet" | "cesium" | "openlayers"):Promise<any> {
+    switch (state){
+      case "leaflet":
+        break;
+      case "cesium":
+        break;
+      case "openlayers":
+        break;
+    }
+
     return this.navigate([`/${state}`], {skipLocationChange: this.skipLocationChange, preserveQueryParams: true} );
   }
 

@@ -13,7 +13,7 @@ import {MaterialRootModule} from "@angular/material";
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

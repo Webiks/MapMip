@@ -10,6 +10,8 @@ export class OpenlayersMapView{
   public DragRotateInteractions: ol.interaction.DragRotate;
   public moveEndEvent;
   public queryParamsSubscriber;
+  public navigationEndGoNorthSubscriber;
+  public navigationEndSubscriber;
 
   constructor(private openlayers:OpenlayersComponent){
 
@@ -19,8 +21,8 @@ export class OpenlayersMapView{
 
     openlayers.generalCanDeactivateService.onLeave =  Observable.create((observer:Observer<boolean>) => this.onLeave(observer)) ;
 
-    openlayers.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
-    openlayers.router.events.filter(event => event instanceof NavigationEnd && event.url.includes("/cesium") ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
+    this.navigationEndGoNorthSubscriber = openlayers.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
+    this.navigationEndSubscriber = openlayers.router.events.filter(event => event instanceof NavigationEnd && event.url.includes("/cesium") ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
 
 
   }
@@ -35,6 +37,8 @@ export class OpenlayersMapView{
 
   destroy() {
     this.queryParamsSubscriber.unsubscribe();
+    this.navigationEndGoNorthSubscriber.unsubscribe();
+    this.navigationEndSubscriber.unsubscribe();
   }
 
   onLeave(observer:Observer<boolean>):void {
