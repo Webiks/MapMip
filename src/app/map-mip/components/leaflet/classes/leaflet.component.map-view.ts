@@ -93,9 +93,6 @@ export class LeafletMapView{
   }
 
   setQueryBoundsOnNavigationEnd(event:NavigationEnd):void {
-    console.log("heheheheheheheheheheheheheheheheheheheh")
-    console.log("event ", event.url)
-
     let urlTree:UrlTree = this.leaflet.router.parseUrl(event.url);
     urlTree.queryParams['bounds'] = this.getBounds().toString();
     this.leaflet.mapMipService.navigateByUrl(urlTree.toString());

@@ -17,8 +17,6 @@ export class MapMipService {
     });
 
     this.router.events.filter(e => e instanceof NavigationCancel).subscribe((e) => {
-      // console.log("lalalalalalalalalala")
-      // this.goTo(<"leaflet" > this.default_state);
     });
 
 

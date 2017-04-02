@@ -60,7 +60,6 @@
             </div>
 
 
-
             <div class="form-group b-switch" *ngIf="params[key].input_type == 'Bswitch'">
               <bSwitch [switch-label-text]="key" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>
             </div>
