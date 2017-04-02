@@ -1,23 +1,28 @@
 import {Component, OnInit, style, state, animate, transition, trigger, ViewChild, HostBinding} from '@angular/core';
-import {PositionFormService} from "./position-form/position-form.service";
+import {PositionFormService} from "./components/position-form/position-form.service";
+import {NavigationStart, Router} from "@angular/router";
+import {MapMipService} from "./api/map-mip.service";
 
 
 @Component({
-  selector: 'app-map-layer',
+  selector: 'map-mip',
   templateUrl: 'map-mip.component.html',
   styleUrls: ['map-mip.component.scss']
 })
 
 export class MapLayerComponent implements OnInit {
-  public showTools:boolean = true;
   @HostBinding("style.height") height = "100%";
   @HostBinding("style.width") width = "100%";
   @HostBinding("style.display") display = "block";
   @HostBinding("style.position") position = "relative";
-
-
   @ViewChild("mapsCont") mapsCont;
-  constructor(private positionFormService:PositionFormService) {
+
+  constructor(private positionFormService:PositionFormService, private mapMipService:MapMipService) {
+
+  }
+
+  get hideComponent():boolean {
+    return this.positionFormService.hideComponent
   }
 
   ngOnInit() {

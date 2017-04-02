@@ -1,5 +1,6 @@
 import {Component, OnInit, Renderer} from '@angular/core';
-import {PositionFormService} from "../map-mip/position-form/position-form.service";
+import {PositionFormService} from "../map-mip/components/position-form/position-form.service";
+import {MapMipService} from "../map-mip/api/map-mip.service";
 
 @Component({
   selector: 'app-navbar',
@@ -9,10 +10,10 @@ import {PositionFormService} from "../map-mip/position-form/position-form.servic
 export class NavbarComponent {
   isCollapsed = true;
 
-  constructor(private renderer: Renderer, private positionFormService:PositionFormService) { }
+  constructor(private renderer: Renderer, private mapMipService:MapMipService) { }
 
   togglePositionForm(){
-    this.positionFormService.hideComponent = !this.positionFormService.hideComponent;
+    this.mapMipService.togglePositionForm();
     this.isCollapsed = true;
   }
 
