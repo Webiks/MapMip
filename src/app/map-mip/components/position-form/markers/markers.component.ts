@@ -41,7 +41,7 @@ export class MarkersComponent implements OnInit{
   public markers_array;
   public edited_markers_array;
 
-  constructor(private queryParamsHelperService:QueryParamsHelperService, private route:ActivatedRoute, private positionFormService:PositionFormService) { }
+  constructor(private queryParamsHelperService:QueryParamsHelperService, private route:ActivatedRoute, private positionFormService:PositionFormService) { debugger;}
 
   ngOnInit() {
     this.route.queryParams.subscribe(this.queryParams);
@@ -124,6 +124,18 @@ export class MarkersComponent implements OnInit{
     this.edit_obj.marker = _.cloneDeep(this.edited_markers_array[index]);
     this.edit_obj.edit_index = index;
     this.addModal.show();
+  }
+
+  removeMarkerByPosition(marker){
+    let that =this;
+    _.forEach(this.edited_markers_array,function(marker,index)
+    {
+      if (marker.position==marker.position && marker.colorIndex == marker.colorIndex)
+      {
+        that.edited_markers_array.splice(index, 1)
+      }
+    });
+    this.submitMarkersEmitter.emit({parsed_markers: this.parseMarkers(this.edited_markers_array)})
   }
 
 }

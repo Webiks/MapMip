@@ -100,6 +100,17 @@ export class QueryParamsHelperService{
     urlTree.queryParams['markers'] = this.markersArrayToStr(markers_array);
     this.mapMipService.navigateByUrl(urlTree.toString())
   }
+  removeMarker(marker){
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    let markers_array:Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
+    _.forEach(markers_array,function(m,index){
+      if (marker.position[0]==m.position[0] && marker.position[1]==m.position[1] && marker.color==m.color) {
+        markers_array.splice(index,1)
+      }
+    });
+    urlTree.queryParams['markers'] = this.markersArrayToStr(markers_array);
+    this.mapMipService.navigateByUrl(urlTree.toString())
+  }
 
   addGeojson(geojson){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);

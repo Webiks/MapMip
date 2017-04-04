@@ -23,8 +23,7 @@ export class OpenlayersMapView{
 
     this.navigationEndGoNorthSubscriber = openlayers.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
     this.navigationEndSubscriber = openlayers.router.events.filter(event => event instanceof NavigationEnd && event.url.includes("/cesium") ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
-
-
+    //openlayers.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
   }
 
   queryParams(params:Params):void {

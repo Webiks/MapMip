@@ -43,6 +43,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
   constructor(public activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public router:Router, public calcService:CalcService, public generalCanDeactivateService:GeneralCanDeactivateService, public ajaxService:AjaxService, public positionFormService:PositionFormService, public mapMipService:MapMipService) {
     window['current'] = this;
     this.queryParamsSubscriber = this.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
+
   }
 
   ngOnInit() {

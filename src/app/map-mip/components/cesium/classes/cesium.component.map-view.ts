@@ -13,6 +13,8 @@ export class CesiumMapView{
     cesium.generalCanDeactivateService.onLeave =  Observable.create((observer:Observer<boolean>) => this.onLeave(observer)) ;
     cesium.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
     cesium.router.events.filter(event => event instanceof NavigationEnd && !event.url.includes("/cesium")).take(1).subscribe(this.setQueryBoundsOnNavigationEnd);
+    //cesium.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
+
   }
 
   destroy() {

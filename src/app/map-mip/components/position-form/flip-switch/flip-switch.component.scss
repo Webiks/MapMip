@@ -19,7 +19,7 @@
   box-sizing: border-box;
 }
 .onoffswitch-inner:before {
-  content: "Save URL";
+  content: "Fixed URL";
   padding-left: 5px;
   background-color: #34A7C1; color: #FFFFFF;
 }
@@ -27,7 +27,7 @@
   content: "OFF";
   padding-right: 10px;
   background-color: #EEEEEE; color: #999999;
-  text-align: right;
+  text-align: center;
 }
 .onoffswitch-switch {
   display: block; width: 18px; margin: 6px;

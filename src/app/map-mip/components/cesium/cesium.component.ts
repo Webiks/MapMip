@@ -48,6 +48,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
 
   constructor(public queryParamsHelperService:QueryParamsHelperService, public activatedRoute:ActivatedRoute, public generalCanDeactivateService:GeneralCanDeactivateService, public router:Router, public calcService:CalcService, public positionFormService:PositionFormService, public mapMipService:MapMipService) {
     this.queryParamsSubscriber = activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
+
     window['current'] = this;
   }
 

@@ -88,21 +88,4 @@ export class GeojsonLayerComponent{
     this.defaultModal.show();
   }
 
-  // canApply():boolean{
-  //   let before_change = this.queryParamsHelperService.queryGeojsonStringToObjects({geojson:this.geojson});
-  //   let after_change = this.geojson_array.map(geojsonItem => geojsonItem['url']);
-  //
-  //   return !_.isEqual(before_change, after_change);
-  // }
-
-
-
-  //
-  // setGeoJson(){
-  //   let geojson = this.geojson_array;
-  //   // this.geojson_array = this.queryParamsHelperService.queryGeoJson({geojson});
-  //   this.queryParamsHelperService.addGeojson(geojson);
-  // }
-
-
 }

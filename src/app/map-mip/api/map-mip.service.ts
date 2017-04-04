@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, Output, EventEmitter} from '@angular/core';
 import {PositionFormService} from "../components/position-form/position-form.service";
 import {NavigationCancel, NavigationExtras, Router, UrlTree} from "@angular/router";
 import {Location} from '@angular/common';
@@ -6,10 +6,10 @@ import {Location} from '@angular/common';
 @Injectable()
 export class MapMipService {
 
-  private _skipLocationChange:boolean = true;
+  private _skipLocationChange:boolean = false;
   private default_state:string = 'leaflet';
-
-  constructor(private positionFormService:PositionFormService, private router:Router, private location:Location){
+  public gotoEmitter  = new EventEmitter();
+  constructor(private positionFormService:PositionFormService, public router:Router, private location:Location){
 
 
     this.router.events.filter(e => e.url == '/').subscribe((e) => {
@@ -41,8 +41,10 @@ export class MapMipService {
   positionFormHidden():boolean {
     return this.positionFormService.hideComponent;
   }
-
-  goTo(state: "leaflet" | "cesium" | "openlayers"):Promise<any> {
+  /*goTo(state: "leaflet" | "cesium" | "openlayers"):void {
+    this.gotoEmitter.emit(state);
+  }*/
+  goTo(state: "leaflet" | "cesium" | "openlayers"):Promise<any>{
     switch (state){
       case "leaflet":
         break;
@@ -51,8 +53,7 @@ export class MapMipService {
       case "openlayers":
         break;
     }
-
-    return this.navigate([`/${state}`], {skipLocationChange: this.skipLocationChange, preserveQueryParams: true} );
+     return this.navigate([`/${state}`], {skipLocationChange: this.skipLocationChange, preserveQueryParams: true} );
   }
 
   navigate(commands: any[], extras?: NavigationExtras): Promise<any> {

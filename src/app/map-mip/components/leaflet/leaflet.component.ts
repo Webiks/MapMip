@@ -48,6 +48,7 @@ export class LeafletComponent implements OnInit, OnDestroy{
   constructor(public router:Router, public activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public calcService:CalcService, public ajaxService:AjaxService, public positionFormService:PositionFormService, public mapMipService:MapMipService) {
     window['current'] = this;
     this.queryParamsSubscriber = this.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
+
   }
 
   ngOnInit() {
@@ -58,6 +59,7 @@ export class LeafletComponent implements OnInit, OnDestroy{
     this.map_view = new LeafletMapView(this);
     this.map_position = new LeafletMapPosition(this);
     this.geojson = new LeafletGeoJson(this);
+
   }
 
   initializeMap():void {

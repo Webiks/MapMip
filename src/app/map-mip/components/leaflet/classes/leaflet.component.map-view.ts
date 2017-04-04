@@ -1,6 +1,8 @@
 import {LeafletComponent} from "../leaflet.component";
 import {Params, NavigationExtras, UrlTree, NavigationEnd} from "@angular/router";
 import * as _ from "lodash";
+import {MapMipService} from "../../../api/map-mip.service";
+import {EventEmitter} from "@angular/core";
 
 export class LeafletMapView{
   public queryParamsSubscriber;
@@ -9,6 +11,7 @@ export class LeafletMapView{
   constructor(private leaflet:LeafletComponent){
     this.queryParamsSubscriber = leaflet.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     this.navigationEndSubscriber = leaflet.router.events.filter(event => event instanceof NavigationEnd && event.url.includes("/cesium")).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
+    //leaflet.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
     leaflet.map.on('moveend', this.moveEnd.bind(this));
   }
 
