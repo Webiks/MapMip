@@ -20,4 +20,17 @@ export class NavbarComponent {
   setHeight(el, height){
     this.renderer.setElementStyle(el, 'height', height + 'px');
   }
+
+  get CESIUM_PATH(): string {
+    return MapMipService.CESIUM_PATH;
+  }
+
+  get LEAFLET_PATH(): string {
+    return MapMipService.LEAFLET_PATH;
+  }
+
+  get OPENLAYERS_PATH(): string {
+    return MapMipService.OPENLAYERS_PATH;
+  }
+
 }

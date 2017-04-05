@@ -3,6 +3,7 @@ import {Observer, Observable} from "rxjs";
 import {NavigationEnd, UrlTree, Params, NavigationExtras, NavigationStart} from "@angular/router";
 import * as _ from "lodash"
 import * as ol from 'openlayers';
+import {MapMipService} from "../../../api/map-mip.service";
 
 export class OpenlayersMapView{
   public go_north:boolean = false;
@@ -10,8 +11,7 @@ export class OpenlayersMapView{
   public DragRotateInteractions: ol.interaction.DragRotate;
   public moveEndEvent;
   public queryParamsSubscriber;
-  public navigationEndGoNorthSubscriber;
-  public navigationEndSubscriber;
+  public gotoEmitterSubscriber;
 
   constructor(private openlayers:OpenlayersComponent){
 
@@ -19,11 +19,8 @@ export class OpenlayersMapView{
     this.moveEndEvent = openlayers.map.on('moveend', this.moveEnd.bind(this));
     this.queryParamsSubscriber = openlayers.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
 
-    openlayers.generalCanDeactivateService.onLeave =  Observable.create((observer:Observer<boolean>) => this.onLeave(observer)) ;
-
-    this.navigationEndGoNorthSubscriber = openlayers.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
-    this.navigationEndSubscriber = openlayers.router.events.filter(event => event instanceof NavigationEnd && event.url.includes("/cesium") ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
-    openlayers.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
+    // this.navigationEndSubscriber = openlayers.router.events.filter(event => event instanceof NavigationEnd && event.url.includes("/cesium") ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
+    this.gotoEmitterSubscriber = openlayers.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
   }
 
   queryParams(params:Params):void {
@@ -36,28 +33,22 @@ export class OpenlayersMapView{
 
   destroy() {
     this.queryParamsSubscriber.unsubscribe();
-    this.navigationEndGoNorthSubscriber.unsubscribe();
-    this.navigationEndSubscriber.unsubscribe();
   }
 
-  onLeave(observer:Observer<boolean>):void {
-    this.andRotation = (complete:boolean) => {observer.next(complete)};
-
-    if(this.openlayers.map.getView().getRotation() == 0 || !this.go_north){
-      observer.next(true);
-    } else {
-      let radian_rotation = this.openlayers.map.getView().getRotation();
-      let north = this.openlayers.calcService.toDegrees(radian_rotation) < 180 ? 0 : Cesium.Math.toRadians(360);
-      this.openlayers.map.getView().animate({rotation:north, duration:500}, this.andRotation);
-    }
+  onLeaveToLeaflet(): Observable <boolean>{
+    return Observable.create( (observer:Observer<boolean>) => {
+      this.andRotation = (complete: boolean) => {
+        observer.next(complete)
+      };
+      if (this.openlayers.map.getView().getRotation() == 0) {
+        observer.next(true);
+      } else {
+        let radian_rotation = this.openlayers.map.getView().getRotation();
+        let north = this.openlayers.calcService.toDegrees(radian_rotation) < 180 ? 0 : Cesium.Math.toRadians(360);
+        this.openlayers.map.getView().animate({rotation: north, duration: 500}, this.andRotation);
+      }
+    })
   };
-
-  setQueryBoundsOnNavigationEnd(event):void {
-    let urlTree:UrlTree = this.openlayers.router.parseUrl(event);
-    urlTree.queryParams['bounds'] = this.getBounds().toString();
-    this.openlayers.mapMipService.navigateByUrl(urlTree.toString());
-  };
-
 
   setMapView(params:Params):void {
     let rotate:boolean = isNaN(this.openlayers.queryParamsHelperService.queryRotate(params)) ? true : false;
@@ -142,4 +133,31 @@ export class OpenlayersMapView{
     let saved_bounds:[number, number, number, number] = t_bounds;
     return saved_bounds;
   }
+
+  setQueryBoundsOnNavigationEnd(state:string):void {
+    let preserveQueryParams: boolean = true;
+    let extras:NavigationExtras = {preserveQueryParams};
+
+    switch (state){
+
+      case MapMipService.CESIUM_PATH:
+        let bounds = this.getBounds().toString();
+        extras.queryParams = {bounds};
+        this.openlayers.mapMipService.navigate([state], extras).then(()=>{
+          this.gotoEmitterSubscriber.unsubscribe();
+        });
+        break;
+
+      case MapMipService.LEAFLET_PATH:
+        this.onLeaveToLeaflet().subscribe(()=>{
+          this.openlayers.mapMipService.navigate([state], extras).then(()=>{
+            this.gotoEmitterSubscriber.unsubscribe();
+          });
+        });
+        break;
+    }
+  }
+
+
+
 }

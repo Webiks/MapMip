@@ -15,20 +15,17 @@ import {HttpModule} from "@angular/http";
 import {MaterialModule} from "@angular/material";
 import {MapLayerApiService} from "./services/map-layer-api.service";
 import {Routes, RouterModule} from "@angular/router";
-import {GeneralCanDeactivateService} from "./services/general-can-deactivate.service";
 import {MapMipService} from "./api/map-mip.service";
 import { NewTabComponent } from './components/position-form/new-tab/new-tab.component';
 
 export const MapMipChildren :Routes = [
   {
     path: 'cesium',
-    component: CesiumComponent,
-    canDeactivate: [GeneralCanDeactivateService]
+    component: CesiumComponent
   },
   {
     path: 'openlayers',
-    component: OpenlayersComponent,
-    canDeactivate: [GeneralCanDeactivateService]
+    component: OpenlayersComponent
   },
   {
     path: 'leaflet',
@@ -52,7 +49,7 @@ export const MapMipChildren :Routes = [
   ],
   declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent,NewTabComponent],
   exports: [MapLayerComponent],
-  providers:[QueryParamsHelperService, CalcService, AjaxService,MapLayerApiService, GeneralCanDeactivateService, MapMipService]
+  providers:[QueryParamsHelperService, CalcService, AjaxService,MapLayerApiService, MapMipService]
 })
 export class MapMipModule { }
 

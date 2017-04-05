@@ -2,19 +2,17 @@ import {CesiumComponent} from "../cesium.component";
 import {Params, NavigationExtras, UrlTree, NavigationEnd, NavigationStart} from "@angular/router";
 import * as _ from "lodash";
 import {Observer, Observable} from "rxjs";
+import {MapMipService} from "../../../api/map-mip.service";
 
 export class CesiumMapView{
   public queryParamsSubscriber;
-  public go_north:boolean = false;
+  public gotoEmitterSubscriber;
+
 
   constructor(private cesium:CesiumComponent){
     cesium.viewer.camera.moveEnd.addEventListener(this.moveEnd.bind(this));
     this.queryParamsSubscriber = cesium.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
-    cesium.generalCanDeactivateService.onLeave =  Observable.create((observer:Observer<boolean>) => this.onLeave(observer)) ;
-    cesium.router.events.filter(event => event instanceof NavigationStart && event.url.includes("/leaflet")).take(1).subscribe(() => {this.go_north = true });
-    cesium.router.events.filter(event => event instanceof NavigationEnd && !event.url.includes("/cesium")).take(1).subscribe(this.setQueryBoundsOnNavigationEnd);
-    cesium.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
-
+    this.gotoEmitterSubscriber = cesium.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
   }
 
   destroy() {
@@ -29,12 +27,6 @@ export class CesiumMapView{
       this.setMapView(params);
     }
   }
-
-  setQueryBoundsOnNavigationEnd: (NavigationEnd) => void = (event):void => {
-    let urlTree:UrlTree = this.cesium.router.parseUrl(event);
-    urlTree.queryParams['bounds'] = this.getBounds().toString();
-    this.cesium.mapMipService.navigateByUrl(urlTree.toString());
-  };
 
   anyParamChanges(params:Params):boolean {
 
@@ -204,15 +196,15 @@ export class CesiumMapView{
 
   }
 
-  onLeave(observer:Observer<boolean>):void {
-    this.cesium.ngOnDestroy();
-
-    this.flyToCenterAndGetBounds().subscribe((bool:boolean) => {
-      observer.next(bool);
+  onLeave(go_north: boolean): Observable<any>{
+    return Observable.create((observer:Observer<boolean>) => {
+      this.flyToCenterAndGetBounds(go_north).subscribe((bool:boolean) => {
+        observer.next(bool);
+      })
     })
   };
 
-  flyToCenterAndGetBounds() {
+  flyToCenterAndGetBounds(go_north:boolean) {
     this.cesium.viewer.scene._mapMode2D == 0
 
     const headingDeg = Cesium.Math.toDegrees(this.cesium.viewer.camera.heading);
@@ -254,7 +246,7 @@ export class CesiumMapView{
           destination: position,
           easingFunction: Cesium.EasingFunction.LINEAR_NONE,
           orientation: {
-            heading: this.go_north ? 0 : heading ,
+            heading: go_north ? 0 : heading ,
             pitch: Cesium.Math.toRadians(-90.0), //look down
             roll: 0.0 //no change
           },
@@ -270,4 +262,23 @@ export class CesiumMapView{
 
 
 
+  // setQueryBoundsOnNavigationEnd: (NavigationEnd) => void = (event):void => {
+  //   let urlTree:UrlTree = this.cesium.router.parseUrl(event);
+  //   urlTree.queryParams['bounds'] = this.getBounds().toString();
+  //   this.cesium.mapMipService.navigateByUrl(urlTree.toString());
+  // };
+
+  setQueryBoundsOnNavigationEnd(state:string):void {
+    let preserveQueryParams: boolean = true;
+    let extras:NavigationExtras = {preserveQueryParams};
+    let go_north = state == MapMipService.LEAFLET_PATH ? true : false;
+
+    this.onLeave(go_north).subscribe(()=>{
+      let bounds = this.getBounds().toString();
+      extras.queryParams = {bounds};
+      this.cesium.mapMipService.navigate([state], extras).then(()=>{
+        this.gotoEmitterSubscriber.unsubscribe();
+      });
+    });
+  }
 }

@@ -1,17 +1,17 @@
 import {LeafletComponent} from "../leaflet.component";
-import {Params, NavigationExtras, UrlTree, NavigationEnd} from "@angular/router";
+import {Params, NavigationExtras, NavigationEnd} from "@angular/router";
 import * as _ from "lodash";
 import {MapMipService} from "../../../api/map-mip.service";
-import {EventEmitter} from "@angular/core";
 
 export class LeafletMapView{
   public queryParamsSubscriber;
   public navigationEndSubscriber;
+  public gotoEmitterSubscriber;
 
   constructor(private leaflet:LeafletComponent){
     this.queryParamsSubscriber = leaflet.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     this.navigationEndSubscriber = leaflet.router.events.filter(event => event instanceof NavigationEnd && event.url.includes("/cesium")).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
-    leaflet.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
+    this.gotoEmitterSubscriber = leaflet.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
     leaflet.map.on('moveend', this.moveEnd.bind(this));
   }
 
@@ -95,9 +95,28 @@ export class LeafletMapView{
     return saved_bounds;
   }
 
-  setQueryBoundsOnNavigationEnd(event):void {
-    let urlTree:UrlTree = this.leaflet.router.parseUrl(event);
-    urlTree.queryParams['bounds'] = this.getBounds().toString();
-    this.leaflet.mapMipService.navigateByUrl(urlTree.toString());
+  setQueryBoundsOnNavigationEnd(state:string):void {
+    let extras:NavigationExtras = {};
+    switch (state){
+      case MapMipService.CESIUM_PATH:
+        let bounds = this.getBounds().toString();
+        extras.queryParams = {bounds};
+        break;
+      case MapMipService.OPENLAYERS_PATH:
+        let preserveQueryParams: boolean = true;
+        extras = {preserveQueryParams};
+        break;
+    }
+    this.leaflet.mapMipService.navigate([state], extras).then(()=>{
+      this.gotoEmitterSubscriber.unsubscribe();
+    });
+
   }
 }
+
+
+
+
+// let urlTree:UrlTree = this.leaflet.router.parseUrl(event);
+// urlTree.queryParams['bounds'] = this.getBounds().toString();
+// this.leaflet.mapMipService.navigateByUrl(urlTree.toString());

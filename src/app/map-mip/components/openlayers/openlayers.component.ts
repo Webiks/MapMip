@@ -12,7 +12,6 @@ import {OpenlayersGeoJson} from "./classes/openlayers.component.geojson";
 import {QueryParamsHelperService} from "../../services/query-params-helper.service";
 import {CalcService} from "../../services/calc-service";
 import {animations, host} from "../../map-mip.component";
-import {GeneralCanDeactivateService} from "../../services/general-can-deactivate.service";
 import {AjaxService} from "../../services/ajax.service";
 import {MapMipService} from "../../api/map-mip.service";
 
@@ -40,7 +39,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
   public ol:any;
   @ViewChild("container") public container;
 
-  constructor(public activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public router:Router, public calcService:CalcService, public generalCanDeactivateService:GeneralCanDeactivateService, public ajaxService:AjaxService, public positionFormService:PositionFormService, public mapMipService:MapMipService) {
+  constructor(public activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public router:Router, public calcService:CalcService, public ajaxService:AjaxService, public positionFormService:PositionFormService, public mapMipService:MapMipService) {
     window['current'] = this;
     this.queryParamsSubscriber = this.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
 

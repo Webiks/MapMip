@@ -15,7 +15,6 @@ import "cesium/Build/Cesium/Cesium.js";
 import {CesiumGeoJson} from "./classes/cesium.component.geojson";
 import {animations, host} from "../../map-mip.component";
 import {QueryParamsHelperService} from "../../services/query-params-helper.service";
-import {GeneralCanDeactivateService} from "../../services/general-can-deactivate.service";
 import {CalcService} from "../../services/calc-service";
 import {MapMipService} from "../../api/map-mip.service";
 
@@ -46,7 +45,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
   public map_lighting:CesiumMapLighting;
   private geojson: CesiumGeoJson;
 
-  constructor(public queryParamsHelperService:QueryParamsHelperService, public activatedRoute:ActivatedRoute, public generalCanDeactivateService:GeneralCanDeactivateService, public router:Router, public calcService:CalcService, public positionFormService:PositionFormService, public mapMipService:MapMipService) {
+  constructor(public queryParamsHelperService:QueryParamsHelperService, public activatedRoute:ActivatedRoute, public router:Router, public calcService:CalcService, public positionFormService:PositionFormService, public mapMipService:MapMipService) {
     this.queryParamsSubscriber = activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
 
     window['current'] = this;
