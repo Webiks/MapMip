@@ -269,13 +269,18 @@ export class CesiumMapView{
   // };
 
   setQueryBoundsOnNavigationEnd(state:string):void {
-    let preserveQueryParams: boolean = true;
-    let extras:NavigationExtras = {preserveQueryParams};
+    let extras:NavigationExtras = {};
     let go_north = state == MapMipService.LEAFLET_PATH ? true : false;
 
     this.onLeave(go_north).subscribe(()=>{
       let bounds = this.getBounds().toString();
       extras.queryParams = {bounds};
+
+      if(state == MapMipService.OPENLAYERS_PATH){
+        let heading = this.cesium.queryParamsHelperService.queryHeading(this.cesium.currentParams);
+        extras.queryParams['heading'] = heading;
+      }
+
       this.cesium.mapMipService.navigate([state], extras).then(()=>{
         this.gotoEmitterSubscriber.unsubscribe();
       });

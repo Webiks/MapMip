@@ -135,21 +135,24 @@ export class OpenlayersMapView{
   }
 
   setQueryBoundsOnNavigationEnd(state:string):void {
-    let preserveQueryParams: boolean = true;
-    let extras:NavigationExtras = {preserveQueryParams};
+    let extras:NavigationExtras = {};
 
     switch (state){
 
       case MapMipService.CESIUM_PATH:
         let bounds = this.getBounds().toString();
-        extras.queryParams = {bounds};
+        let heading = this.openlayers.queryParamsHelperService.queryHeading(this.openlayers.currentParams);
+        extras.queryParams = {bounds, heading};
         this.openlayers.mapMipService.navigate([state], extras).then(()=>{
           this.gotoEmitterSubscriber.unsubscribe();
         });
         break;
 
       case MapMipService.LEAFLET_PATH:
-        this.onLeaveToLeaflet().subscribe(()=>{
+        this.onLeaveToLeaflet().subscribe(() => {
+          let preserveQueryParams: boolean = true;
+          extras = {preserveQueryParams};
+
           this.openlayers.mapMipService.navigate([state], extras).then(()=>{
             this.gotoEmitterSubscriber.unsubscribe();
           });
