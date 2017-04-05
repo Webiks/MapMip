@@ -11,7 +11,7 @@ export class LeafletMapView{
   constructor(private leaflet:LeafletComponent){
     this.queryParamsSubscriber = leaflet.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     this.navigationEndSubscriber = leaflet.router.events.filter(event => event instanceof NavigationEnd && event.url.includes("/cesium")).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
-    //leaflet.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
+    leaflet.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
     leaflet.map.on('moveend', this.moveEnd.bind(this));
   }
 
@@ -95,8 +95,8 @@ export class LeafletMapView{
     return saved_bounds;
   }
 
-  setQueryBoundsOnNavigationEnd(event:NavigationEnd):void {
-    let urlTree:UrlTree = this.leaflet.router.parseUrl(event.url);
+  setQueryBoundsOnNavigationEnd(event):void {
+    let urlTree:UrlTree = this.leaflet.router.parseUrl(event);
     urlTree.queryParams['bounds'] = this.getBounds().toString();
     this.leaflet.mapMipService.navigateByUrl(urlTree.toString());
   }

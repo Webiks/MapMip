@@ -126,16 +126,6 @@ export class MarkersComponent implements OnInit{
     this.addModal.show();
   }
 
-  removeMarkerByPosition(marker){
-    let that =this;
-    _.forEach(this.edited_markers_array,function(marker,index)
-    {
-      if (marker.position==marker.position && marker.colorIndex == marker.colorIndex)
-      {
-        that.edited_markers_array.splice(index, 1)
-      }
-    });
-    this.submitMarkersEmitter.emit({parsed_markers: this.parseMarkers(this.edited_markers_array)})
-  }
+
 
 }

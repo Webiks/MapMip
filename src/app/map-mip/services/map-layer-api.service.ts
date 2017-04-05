@@ -113,8 +113,8 @@ export class MapLayerApiService {
     this.mapmipService.router.navigateByUrl(urlTree.toString());
   }
 
-  goto(state: "leaflet" | "cesium" | "openlayers"):Promise<any>{
-    return this.mapmipService.goTo(state);
+  goto(state: "leaflet" | "cesium" | "openlayers"):void{
+    this.mapmipService.goTo(state);
   }
 
   removeMarkerByPosition(marker){

@@ -41,10 +41,10 @@ export class MapMipService {
   positionFormHidden():boolean {
     return this.positionFormService.hideComponent;
   }
-  /*goTo(state: "leaflet" | "cesium" | "openlayers"):void {
+  goTo(state: "leaflet" | "cesium" | "openlayers"):void {
     this.gotoEmitter.emit(state);
-  }*/
-  goTo(state: "leaflet" | "cesium" | "openlayers"):Promise<any>{
+  }
+/*  goTo(state: "leaflet" | "cesium" | "openlayers"):Promise<any>{
     switch (state){
       case "leaflet":
         break;
@@ -54,7 +54,7 @@ export class MapMipService {
         break;
     }
      return this.navigate([`/${state}`], {skipLocationChange: this.skipLocationChange, preserveQueryParams: true} );
-  }
+  }*/
 
   navigate(commands: any[], extras?: NavigationExtras): Promise<any> {
     extras.skipLocationChange = this.skipLocationChange;
