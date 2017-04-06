@@ -9,10 +9,9 @@ export class LeafletMapView{
   public gotoEmitterSubscriber;
 
   constructor(private leaflet:LeafletComponent){
-    this.queryParamsSubscriber = leaflet.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
-    this.navigationEndSubscriber = leaflet.router.events.filter(event => event instanceof NavigationEnd && event.url.includes("/cesium")).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
-    this.gotoEmitterSubscriber = leaflet.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
     leaflet.map.on('moveend', this.moveEnd.bind(this));
+    this.queryParamsSubscriber = leaflet.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
+    this.gotoEmitterSubscriber = leaflet.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
   }
 
   queryParams(params:Params){
@@ -26,11 +25,10 @@ export class LeafletMapView{
   }
   destroy() {
     this.queryParamsSubscriber.unsubscribe();
-    this.navigationEndSubscriber.unsubscribe();
   }
 
 
-  moveEnd(event):Promise<boolean> {
+  moveEnd(event) {
     if(!this.anyParamChanges(this.leaflet.currentParams)) return;
     let lng: number  = event.target.getCenter().lng;
     let lat: number  = event.target.getCenter().lat;
@@ -91,7 +89,7 @@ export class LeafletMapView{
 
   getBounds():[number, number, number, number] {
     let leaflet_bounds:L.LatLngBounds = this.leaflet.map.getBounds();
-    let saved_bounds:[number, number, number, number] = [leaflet_bounds.getSouthWest().lng, leaflet_bounds.getSouthWest().lat, leaflet_bounds.getNorthEast().lng, leaflet_bounds.getNorthEast().lat];
+    let saved_bounds:[number, number, number, number] = [leaflet_bounds.getNorthWest().lng, leaflet_bounds.getNorthWest().lat, leaflet_bounds.getSouthEast().lng, leaflet_bounds.getSouthEast().lat];
     return saved_bounds;
   }
 
@@ -108,6 +106,7 @@ export class LeafletMapView{
         break;
     }
     this.leaflet.mapMipService.navigate([state], extras).then(()=>{
+      this.leaflet.map.off("moveend");
       this.gotoEmitterSubscriber.unsubscribe();
     });
 

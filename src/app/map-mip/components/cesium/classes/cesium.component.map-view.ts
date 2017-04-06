@@ -16,7 +16,6 @@ export class CesiumMapView{
   }
 
   destroy() {
-    this.cesium.viewer.camera.moveEnd._listeners.pop();
     this.queryParamsSubscriber.unsubscribe();
   }
 
@@ -97,7 +96,7 @@ export class CesiumMapView{
 
   }
 
-  moveEnd(e?):Promise<boolean> {
+  moveEnd(e?) {
     if(!this.anyParamChanges(this.cesium.currentParams)) return;
 
     let center: {lat:number, lng:number} = this.getCenter();
@@ -282,6 +281,7 @@ export class CesiumMapView{
       }
 
       this.cesium.mapMipService.navigate([state], extras).then(()=>{
+        this.cesium.viewer.camera.moveEnd._listeners.pop();
         this.gotoEmitterSubscriber.unsubscribe();
       });
     });

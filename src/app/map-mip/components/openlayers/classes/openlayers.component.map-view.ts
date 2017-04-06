@@ -18,8 +18,6 @@ export class OpenlayersMapView{
     this.DragRotateInteractions = openlayers.map.getInteractions().getArray().find( i => i instanceof ol.interaction.DragRotate);
     this.moveEndEvent = openlayers.map.on('moveend', this.moveEnd.bind(this));
     this.queryParamsSubscriber = openlayers.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
-
-    // this.navigationEndSubscriber = openlayers.router.events.filter(event => event instanceof NavigationEnd && event.url.includes("/cesium") ).take(1).subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
     this.gotoEmitterSubscriber = openlayers.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
   }
 
