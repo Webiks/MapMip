@@ -44,19 +44,10 @@ export class MapMipService {
     return this.positionFormService.hideComponent;
   }
   goTo(state: '/leaflet' | '/cesium' | '/openlayers'): void {
-    this.gotoEmitter.emit(state);
+    if(!this.isActive(state)) {
+      this.gotoEmitter.emit(state);
+    }
   }
-  /*  goTo(state: "leaflet" | "cesium" | "openlayers"):Promise<any>{
-   switch (state){
-   case "leaflet":
-   break;
-   case "cesium":
-   break;
-   case "openlayers":
-   break;
-   }
-   return this.navigate([`/${state}`], {skipLocationChange: this.skipLocationChange, preserveQueryParams: true} );
-   }*/
 
   navigate(commands: any[], extras: NavigationExtras = {}): Promise<any> {
     extras.skipLocationChange = this.skipLocationChange;
