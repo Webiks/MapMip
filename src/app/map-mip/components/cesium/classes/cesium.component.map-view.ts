@@ -273,7 +273,12 @@ export class CesiumMapView{
 
     this.onLeave(go_north).subscribe(()=>{
       let bounds = this.getBounds().toString();
-      extras.queryParams = {bounds};
+      let markers = this.cesium.currentParams['markers'];
+      let layers = this.cesium.currentParams['layers'];
+      let size = this.cesium.currentParams['size'];
+      let position = this.cesium.currentParams['position'];
+      let geojson = this.cesium.currentParams['geojson'];
+      extras.queryParams = {bounds,markers,layers,size,position,geojson};
 
       if(state == MapMipService.OPENLAYERS_PATH){
         let heading = this.cesium.queryParamsHelperService.queryHeading(this.cesium.currentParams);

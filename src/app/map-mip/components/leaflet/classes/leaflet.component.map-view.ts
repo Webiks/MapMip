@@ -95,10 +95,16 @@ export class LeafletMapView{
 
   setQueryBoundsOnNavigationEnd(state:string):void {
     let extras:NavigationExtras = {};
+    let that = this;
     switch (state){
       case MapMipService.CESIUM_PATH:
         let bounds = this.getBounds().toString();
-        extras.queryParams = {bounds};
+        let markers = this.leaflet.currentParams['markers'];
+        let layers = this.leaflet.currentParams['layers'];
+        let size = this.leaflet.currentParams['size'];
+        let position = this.leaflet.currentParams['position'];
+        let geojson = this.leaflet.currentParams['geojson'];
+        extras.queryParams = {bounds,markers,layers,size,position,geojson};
         break;
       case MapMipService.OPENLAYERS_PATH:
         let preserveQueryParams: boolean = true;

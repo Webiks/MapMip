@@ -140,7 +140,12 @@ export class OpenlayersMapView{
       case MapMipService.CESIUM_PATH:
         let bounds = this.getBounds().toString();
         let heading = this.openlayers.queryParamsHelperService.queryHeading(this.openlayers.currentParams);
-        extras.queryParams = {bounds, heading};
+        let markers = this.openlayers.currentParams['markers'];
+        let layers = this.openlayers.currentParams['layers'];
+        let size = this.openlayers.currentParams['size'];
+        let position = this.openlayers.currentParams['position'];
+        let geojson = this.openlayers.currentParams['geojson'];
+        extras.queryParams = {bounds, heading,markers,layers,size,position,geojson};
         this.openlayers.mapMipService.navigate([state], extras).then(()=>{
           this.gotoEmitterSubscriber.unsubscribe();
         });
