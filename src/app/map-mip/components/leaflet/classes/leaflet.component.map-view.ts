@@ -95,7 +95,6 @@ export class LeafletMapView{
 
   setQueryBoundsOnNavigationEnd(state:string):void {
     let extras:NavigationExtras = {};
-    let that = this;
     switch (state){
       case MapMipService.CESIUM_PATH:
         let bounds = this.getBounds().toString();
