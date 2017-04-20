@@ -8,6 +8,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import {CommonModule} from "@angular/common";
 import {MapMipModule} from "./map-mip/map-mip.module";
 import {MaterialRootModule} from "@angular/material";
+import {MapMipService} from "./map-mip/api/map-mip.service";
 
 
 @NgModule({
@@ -26,4 +27,7 @@ import {MaterialRootModule} from "@angular/material";
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor( public mapmipService:MapMipService) {
+  }
+}
