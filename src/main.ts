@@ -14,7 +14,6 @@ class MapmipApi {
 public mapMipService;
   constructor(element: HTMLElement | string | any) {
     this.initMapmip(element,{skipLocationChange:false})
-
   }
 
   initMapmip (element: HTMLElement | string | any, options:{skipLocationChange:boolean}={skipLocationChange:false}) {
@@ -30,7 +29,12 @@ public mapMipService;
   }
   goToComponent(state: '/leaflet' | '/cesium' | '/openlayers'): void {
     this.mapMipService.goTo(state)
-
+  }
+  urlOverride(){
+    this.mapMipService.skipLocationChange=true;
+  }
+  changePosition(lat,lon){
+    this.mapMipService.changePosition(lat,lon);
   }
 
 }

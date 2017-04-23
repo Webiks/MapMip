@@ -43,7 +43,7 @@ export class LeafletMarkers {
     let fix_latlng:L.LatLng = this.leaflet.map.layerPointToLatLng(fix_point);
     let position: [number,number] = [fix_latlng.lng, fix_latlng.lat];
     let color:string = this.leaflet.positionFormService.getSelectedColor();
-    this.leaflet.queryParamsHelperService.addMarker({position, color});
+    this.leaflet.mapMipService.addMarker({position, color});
   }
 
   anyMarkersMapChanges(params:Params): boolean{

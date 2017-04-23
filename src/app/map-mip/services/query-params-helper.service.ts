@@ -8,7 +8,7 @@ declare let rison;
 @Injectable()
 export class QueryParamsHelperService{
 
-  constructor(private calcService:CalcService, private router:Router, private mapMipService:MapMipService) {}
+  constructor(private calcService:CalcService, private router:Router) {}
 
   queryBounds(params:Params):[number, number, number, number] {
     let boundsString = params['bounds'];
@@ -93,32 +93,22 @@ export class QueryParamsHelperService{
     return !_.isEqual(prevSize, currentSize);
   }
 
-  addMarker(marker){
+  /*addMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let markers_array:Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
     markers_array.push(marker);
     urlTree.queryParams['markers'] = this.markersArrayToStr(markers_array);
     this.mapMipService.navigateByUrl(urlTree.toString())
-  }
-  removeMarker(marker){
-    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
-    let markers_array:Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
-    _.forEach(markers_array,function(m,index){
-      if (marker.position[0]==m.position[0] && marker.position[1]==m.position[1] && marker.color==m.color) {
-        markers_array.splice(index,1)
-      }
-    });
-    urlTree.queryParams['markers'] = this.markersArrayToStr(markers_array);
-    this.mapMipService.navigateByUrl(urlTree.toString())
-  }
+  }*/
 
-  addGeojson(geojson){
+
+ /* addGeojson(geojson){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let geojson_array:Array<any> = this.geojsonStrToArray(urlTree.queryParams['geojson']);
     geojson_array.push(geojson);
     urlTree.queryParams['geojson'] = this.geojsonArrayToStr(geojson_array);
     this.mapMipService.navigateByUrl(urlTree.toString())
-  }
+  }*/
 
   queryMarkers(params:Params):Array<{position:number[],color:string}>{
     return this.markersStrToArray(params['markers']);

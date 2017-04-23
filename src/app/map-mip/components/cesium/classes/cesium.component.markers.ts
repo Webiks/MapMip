@@ -98,7 +98,7 @@ export class CesiumMarkers {
     let color:string = this.cesium.positionFormService.getSelectedColor();
     let marker_picker = {position};
     if(color != "blue") marker_picker['color'] = color;
-    this.cesium.queryParamsHelperService.addMarker(marker_picker);
+    this.cesium.mapMipService.addMarker(marker_picker);
   }
 
   anyMarkersMapChanges(params:Params): boolean{

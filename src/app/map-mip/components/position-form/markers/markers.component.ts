@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import {QueryParamsHelperService} from "../../../services/query-params-helper.service";
 import {Params, ActivatedRoute} from "@angular/router";
 import {PositionFormService} from "../position-form.service";
+import {MapMipService} from "../../../api/map-mip.service";
 
 @Component({
   selector: 'app-markers',
@@ -41,7 +42,7 @@ export class MarkersComponent implements OnInit{
   public markers_array;
   public edited_markers_array;
 
-  constructor(private queryParamsHelperService:QueryParamsHelperService, private route:ActivatedRoute, private positionFormService:PositionFormService) { debugger;}
+  constructor(private queryParamsHelperService:QueryParamsHelperService, private route:ActivatedRoute, private positionFormService:PositionFormService,private mapMipService:MapMipService) { debugger;}
 
   ngOnInit() {
     this.route.queryParams.subscribe(this.queryParams);
@@ -108,7 +109,7 @@ export class MarkersComponent implements OnInit{
     if(this.positionFormService.getSelectedColor() != "blue") {
       center_marker['color'] = this.positionFormService.getSelectedColor();
     }
-    this.queryParamsHelperService.addMarker(center_marker);
+    this.mapMipService.addMarker(center_marker);
   }
 
   togglePicked(onPicked:boolean){
