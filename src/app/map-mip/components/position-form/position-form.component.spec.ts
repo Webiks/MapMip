@@ -8,7 +8,7 @@ import {Permissions} from "./permissions.enum";
 import {PositionFormModule} from "./position-form.module";
 import {CalcService} from "../../services/calc-service";
 import {
-  ModalDirective, DropdownConfig, ComponentLoaderFactory, PositioningService, TooltipConfig,
+  ModalDirective, BsDropdownModule, ComponentLoaderFactory, PositioningService, TooltipConfig,
   PopoverConfig
 } from "ng2-bootstrap";
 import {HttpModule} from "@angular/http";
@@ -78,7 +78,7 @@ describe('PositionFormComponent', () => {
         RouterTestingModule,
         HttpModule
       ],
-      providers:[QueryParamsHelperService,CalcService, {provide: AjaxService, useValue: fake_Ajax_Service},DropdownConfig,ComponentLoaderFactory,PositioningService,TooltipConfig,PopoverConfig]
+      providers:[QueryParamsHelperService,CalcService, {provide: AjaxService, useValue: fake_Ajax_Service},BsDropdownModule,ComponentLoaderFactory,PositioningService,TooltipConfig,PopoverConfig]
     });
 
     TestBed.overrideModule(PositionFormModule, {

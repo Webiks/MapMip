@@ -188,7 +188,7 @@ export class LayersComponent implements OnInit, OnChanges {
   };
 
 
-  constructor(private queryParamsHelperService:QueryParamsHelperService, private ajaxService:AjaxService) {}
+  constructor(public queryParamsHelperService:QueryParamsHelperService, private ajaxService:AjaxService) {}
 
   submitLayers(hide:boolean=false) {
     let modal = this.layersModal;

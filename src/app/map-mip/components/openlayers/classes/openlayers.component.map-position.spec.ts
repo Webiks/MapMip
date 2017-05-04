@@ -9,7 +9,7 @@ import {CalcService} from "../../../services/calc-service";
 import {HttpModule} from "@angular/http";
 import {RouterTestingModule} from "@angular/router/testing";
 import {OpenlayersComponent} from "../openlayers.component";
-import {GeneralCanDeactivateService} from "../../../services/general-can-deactivate.service";
+//import {GeneralCanDeactivateService} from "../../../services/general-can-deactivate.service";
 import {OpenlayersMapPosition} from "./openlayers.component.map-position";
 
 
@@ -25,7 +25,7 @@ describe('OpenLayersComponent', () => {
         HttpModule
       ],
       declarations: [OpenlayersComponent],
-      providers: [QueryParamsHelperService, CalcService, AjaxService, PositionFormService,GeneralCanDeactivateService]
+      providers: [QueryParamsHelperService, CalcService, AjaxService, PositionFormService/*,GeneralCanDeactivateService*/]
     })
       .compileComponents();
   }));

@@ -4,7 +4,7 @@ import { LayersComponent } from './layers.component';
 import {QueryParamsHelperService} from "../../../services/query-params-helper.service";
 import {CalcService} from "../../../services/calc-service";
 import {
-  Ng2BootstrapModule, ComponentLoaderFactory, PositioningService, DropdownConfig,
+  Ng2BootstrapModule, ComponentLoaderFactory, PositioningService, BsDropdownModule,
   TooltipConfig
 } from "ng2-bootstrap";
 import {HttpModule} from "@angular/http";
@@ -23,7 +23,7 @@ describe('LayersComponent', () => {
     TestBed.configureTestingModule({
       imports:[RouterTestingModule, Ng2BootstrapModule, HttpModule],
       declarations: [ LayersComponent , SwitchLayersComponent, ReversePipe, DragItemDirective],
-      providers:[QueryParamsHelperService, CalcService, {provide: AjaxService, useValue: fake_Ajax_Service},ComponentLoaderFactory,PositioningService,DropdownConfig,TooltipConfig]
+      providers:[QueryParamsHelperService, CalcService, {provide: AjaxService, useValue: fake_Ajax_Service},ComponentLoaderFactory,PositioningService,BsDropdownModule,TooltipConfig]
     })
     .compileComponents();
   }));

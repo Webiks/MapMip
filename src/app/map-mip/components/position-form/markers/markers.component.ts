@@ -41,7 +41,7 @@ export class MarkersComponent implements OnInit{
   public markers_array;
   public edited_markers_array;
 
-  constructor(private queryParamsHelperService:QueryParamsHelperService, private route:ActivatedRoute, private positionFormService:PositionFormService) { debugger;}
+  constructor(private queryParamsHelperService:QueryParamsHelperService, private route:ActivatedRoute, public positionFormService:PositionFormService) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(this.queryParams);

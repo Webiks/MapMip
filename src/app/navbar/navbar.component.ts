@@ -10,7 +10,7 @@ import {MapMipService} from "../map-mip/api/map-mip.service";
 export class NavbarComponent {
   isCollapsed = true;
 
-  constructor(private renderer: Renderer, private mapMipService:MapMipService) { }
+  constructor(private renderer: Renderer, public mapMipService:MapMipService) { }
 
   togglePositionForm(){
     this.mapMipService.togglePositionForm();

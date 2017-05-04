@@ -32,6 +32,6 @@ import { FlipSwitchComponent } from './flip-switch/flip-switch.component';
   ],
    declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent, DragItemDirective, ReversePipe, SwitchLayersComponent, MapLightingComponent, ColorPickerPipe, GeojsonLayerComponent, FlipSwitchComponent],
   exports: [PositionFormComponent],
-  providers: [PositionFormService]
+  providers:[PositionFormService]
 })
 export class PositionFormModule { }

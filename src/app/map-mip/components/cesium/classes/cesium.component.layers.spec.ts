@@ -5,7 +5,7 @@ import {PositionFormService} from "../../position-form/position-form.service";
 import {CalcService} from "../../../services/calc-service";
 import {QueryParamsHelperService} from "../../../services/query-params-helper.service";
 import {Router, Params} from "@angular/router";
-import {GeneralCanDeactivateService} from "../../../services/general-can-deactivate.service";
+//import {GeneralCanDeactivateService} from "../../../services/general-can-deactivate.service";
 import {RouterTestingModule} from "@angular/router/testing";
 import {CesiumLayers} from "./cesium.component.layers";
 import * as _ from "lodash";
@@ -22,7 +22,7 @@ describe('CesiumComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [CesiumComponent],
-      providers: [QueryParamsHelperService, GeneralCanDeactivateService, CalcService, PositionFormService]
+      providers: [QueryParamsHelperService/*, GeneralCanDeactivateService*/, CalcService, PositionFormService]
     })
       .compileComponents();
   }));

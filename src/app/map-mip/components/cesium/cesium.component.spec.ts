@@ -2,7 +2,7 @@
 import {async, ComponentFixture, TestBed, inject} from '@angular/core/testing';
 import { CesiumComponent } from './cesium.component';
 import {QueryParamsHelperService} from "../../services/query-params-helper.service";
-import {GeneralCanDeactivateService} from "../../services/general-can-deactivate.service";
+//import {GeneralCanDeactivateService} from "../../services/general-can-deactivate.service";
 import {CalcService} from "../../services/calc-service";
 import {RouterTestingModule} from "@angular/router/testing";
 import {Router, Params} from "@angular/router";
@@ -23,7 +23,7 @@ describe('CesiumComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [ CesiumComponent ],
-      providers:[QueryParamsHelperService, GeneralCanDeactivateService, CalcService, PositionFormService]
+      providers:[QueryParamsHelperService/*, GeneralCanDeactivateService*/, CalcService, PositionFormService]
     })
       .compileComponents();
   }));

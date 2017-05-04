@@ -8,7 +8,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import {CommonModule} from '@angular/common';
 import {MapMipModule} from './map-mip/map-mip.module';
 import {MaterialRootModule} from '@angular/material';
-
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -23,6 +23,7 @@ import {MaterialRootModule} from '@angular/material';
     Ng2BootstrapModule,
     MapMipModule,
     MaterialRootModule,
+    BrowserAnimationsModule
   ],
   bootstrap: [AppComponent]
 })

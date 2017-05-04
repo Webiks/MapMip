@@ -7,7 +7,7 @@ import {QueryParamsHelperService} from "../../../services/query-params-helper.se
 import {CalcService} from "../../../services/calc-service";
 import {Params} from "@angular/router";
 import {PositionFormService} from "../position-form.service";
-import {DropdownConfig, ComponentLoaderFactory, PositioningService} from "ng2-bootstrap";
+import {BsDropdownModule, ComponentLoaderFactory, PositioningService} from "ng2-bootstrap";
 
 
 describe('MarkersComponent', () => {
@@ -22,7 +22,7 @@ describe('MarkersComponent', () => {
         PositionFormModule,
         RouterTestingModule
       ],
-      providers:[QueryParamsHelperService, CalcService,DropdownConfig,ComponentLoaderFactory,PositioningService]
+      providers:[QueryParamsHelperService, CalcService,BsDropdownModule,ComponentLoaderFactory,PositioningService]
     })
       .compileComponents();
   }));
@@ -232,7 +232,7 @@ describe('MarkersComponent', () => {
   it("togglePicked should toggle onPicked and send event with the new value", () => {
     spyOn(positionFormService.markerPickerEmitter,'emit');
     positionFormService.onPicked = false;
-    component.togglePicked();
+    component.togglePicked(positionFormService.onPicked);
     expect(positionFormService.onPicked).toBeTruthy();
     expect(positionFormService.markerPickerEmitter.emit).toHaveBeenCalledWith(true);
   });
