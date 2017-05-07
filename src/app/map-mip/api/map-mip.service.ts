@@ -16,7 +16,7 @@ export class MapMipService {
   public gotoEmitter  = new EventEmitter();
   constructor(private positionFormService: PositionFormService, public router: Router, private location: Location,private queryParamsHelperService:QueryParamsHelperService){
 
-    this.router.events.filter(e => e.url === '/').subscribe((e) => {
+    this.router.events.filter(e => e['url'] === '/').subscribe((e) => {
       this.navigate([this.default_state]);
     });
 
@@ -45,7 +45,7 @@ export class MapMipService {
   positionFormHidden():boolean {
     return this.positionFormService.hideComponent;
   }
-  goTo(state: '/leaflet' | '/cesium' | '/openlayers'): void {
+  goTo(state:string): void {
     if(!this.isActive(state)) {
       this.gotoEmitter.emit(state);
     }

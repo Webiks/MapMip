@@ -8,7 +8,6 @@ import {AjaxService} from "../../../services/ajax.service";
 import {CalcService} from "../../../services/calc-service";
 import {HttpModule} from "@angular/http";
 import {RouterTestingModule} from "@angular/router/testing";
-import {GeneralCanDeactivateService} from "../../../services/general-can-deactivate.service";
 import {CesiumComponent} from "../cesium.component";
 import {CesiumMapSize} from "./cesium.component.map-size";
 
@@ -25,7 +24,7 @@ fdescribe('CesiumComponent', () => {
         HttpModule
       ],
       declarations: [CesiumComponent],
-      providers:[QueryParamsHelperService, GeneralCanDeactivateService, CalcService, PositionFormService]
+      providers:[QueryParamsHelperService, /*GeneralCanDeactivateService,*/ CalcService, PositionFormService]
     })
       .compileComponents();
   }));

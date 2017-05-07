@@ -176,7 +176,7 @@ describe('LeafletComponent', () => {
       expect(component.map.off).toHaveBeenCalledWith('click');
     });
 
-    it("leftClickInputAction should get event with latlng, and call addMarker with latlng", () => {
+    /*it("leftClickInputAction should get event with latlng, and call addMarker with latlng", () => {
       spyOn(queryParamsHelperService,'addMarker');
       spyOn(component.map, 'layerPointToLatLng').and.callFake(()=> L.latLng([20,20]));
 
@@ -184,7 +184,7 @@ describe('LeafletComponent', () => {
       positionFormService.selectedColorIndex = positionFormService.getSelectedColorIndex("black");
       markers.leftClickInputAction(event);
       expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith({position: [20,20], color: "black"});
-    })
+    })*/
 
   });
 });

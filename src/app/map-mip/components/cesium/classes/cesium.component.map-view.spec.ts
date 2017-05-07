@@ -4,7 +4,7 @@ import {PositionFormService} from "../../position-form/position-form.service";
 import {CalcService} from "../../../services/calc-service";
 import {QueryParamsHelperService} from "../../../services/query-params-helper.service";
 import {Router, NavigationEnd, Params, NavigationExtras} from "@angular/router";
-import {GeneralCanDeactivateService} from "../../../services/general-can-deactivate.service";
+//import {GeneralCanDeactivateService} from "../../../services/general-can-deactivate.service";
 import {RouterTestingModule} from "@angular/router/testing";
 import {CesiumMapView} from "./cesium.component.map-view";
 import {Observer, Observable} from "rxjs";
@@ -21,7 +21,7 @@ describe('CesiumComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [CesiumComponent],
-      providers: [QueryParamsHelperService, GeneralCanDeactivateService, CalcService, PositionFormService]
+      providers: [QueryParamsHelperService, /*GeneralCanDeactivateService,*/ CalcService, PositionFormService]
     })
       .compileComponents();
   }));
@@ -108,10 +108,10 @@ describe('CesiumComponent', () => {
       spyOn(map_view, 'getBounds').and.returnValue([1,2,3,4]);
       spyOn(router, 'navigateByUrl');
 
-      let event:NavigationEnd = <any> {url: "/cesium?lat=1&lng=2"}
-      map_view.setQueryBoundsOnNavigationEnd(event);
+      let state:string ="/cesium";
+      map_view.setQueryBoundsOnNavigationEnd(state);
 
-      expect(router.navigateByUrl).toHaveBeenCalledWith(`/cesium?lat=1&lng=2&bounds=${encodeURIComponent("1,2,3,4")}`)
+      expect(router.navigateByUrl).toHaveBeenCalledWith(`/cesium`)
     });
 
 
@@ -201,17 +201,18 @@ describe('CesiumComponent', () => {
     it('flyToCenterAndGetBounds shuold call flyTo with right values, only when sceneMode on SCENE3D and heading, roll, pitch not equal to zero', () => {
       spyOn(component.viewer.camera, 'flyTo');
       component.viewer.scene.mode = Cesium.SceneMode.SCENE2D;
-      map_view.flyToCenterAndGetBounds().toPromise().then(()=>{
+      let go_north:boolean =true;
+      map_view.flyToCenterAndGetBounds(go_north).toPromise().then(()=>{
         expect(component.viewer.camera.flyTo).not.toHaveBeenCalled();
         component.viewer.scene.mode = Cesium.SceneMode.SCENE3D;
-        map_view.flyToCenterAndGetBounds().toPromise().then(()=>{
+        map_view.flyToCenterAndGetBounds(!go_north).toPromise().then(()=>{
           expect(component.viewer.camera.flyTo).toHaveBeenCalled();
         });
       });
     });
 
 
-    it('onLeave: should call ngOnDestroy , call flyToCenterAndGetBounds and call obs.next with response ', () => {
+   /* it('onLeave: should call ngOnDestroy , call flyToCenterAndGetBounds and call obs.next with response ', () => {
       let observer:Observer<boolean> = <any>{ next(bool:boolean):void {}};
       Observable.create((_observer:Observer<boolean>) => {observer = _observer});
       let bool_result:boolean = true;
@@ -224,7 +225,7 @@ describe('CesiumComponent', () => {
       expect(map_view.flyToCenterAndGetBounds).toHaveBeenCalled();
       expect(observer.next).toHaveBeenCalledWith(bool_result);
     });
-
+*/
 
 
 

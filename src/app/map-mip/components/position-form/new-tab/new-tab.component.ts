@@ -8,7 +8,7 @@ import {Router} from "@angular/router";
 })
 export class NewTabComponent implements OnInit {
 
-  constructor(private router:Router) { }
+  constructor(public router:Router) { }
 
   ngOnInit() {
   }
