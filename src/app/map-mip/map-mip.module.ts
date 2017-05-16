@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {APP_BASE_HREF, CommonModule} from '@angular/common';
 import { MapLayerComponent } from './map-mip.component';
 import {CesiumComponent} from "./components/cesium/cesium.component";
 import {LeafletComponent} from "./components/leaflet/leaflet.component";
@@ -19,6 +19,10 @@ import {MapMipService} from "./api/map-mip.service";
 import { NewTabComponent } from './components/position-form/new-tab/new-tab.component';
 
 export const MapMipChildren :Routes = [
+  {
+    path: '',
+    component: LeafletComponent
+  },
   {
     path: 'cesium',
     component: CesiumComponent
@@ -49,7 +53,7 @@ export const MapMipChildren :Routes = [
   ],
   declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent,NewTabComponent],
   exports: [MapLayerComponent],
-  providers:[QueryParamsHelperService, CalcService, AjaxService,MapLayerApiService, MapMipService]
+  providers:[QueryParamsHelperService, CalcService, AjaxService,MapLayerApiService, MapMipService,{provide: APP_BASE_HREF, useValue : window.location.pathname.split('/').join('/') || '' }]
 })
 export class MapMipModule { }
 

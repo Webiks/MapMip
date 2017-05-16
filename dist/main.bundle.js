@@ -939,7 +939,7 @@ if (__WEBPACK_IMPORTED_MODULE_2__environments_environment__["a" /* environment *
 }
 var MapmipApi = (function () {
     function MapmipApi(element) {
-        this.initMapmip(element, { skipLocationChange: false });
+        this.initMapmip(element, { skipLocationChange: true });
     }
     MapmipApi.prototype.initMapmip = function (element, options) {
         var _this = this;
@@ -5091,6 +5091,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 var MapMipChildren = [
     {
+        path: '',
+        component: __WEBPACK_IMPORTED_MODULE_4__components_leaflet_leaflet_component__["a" /* LeafletComponent */]
+    },
+    {
         path: 'cesium',
         component: __WEBPACK_IMPORTED_MODULE_3__components_cesium_cesium_component__["a" /* CesiumComponent */]
     },
@@ -5122,7 +5126,7 @@ MapMipModule = __decorate([
         ],
         declarations: [__WEBPACK_IMPORTED_MODULE_2__map_mip_component__["a" /* MapLayerComponent */], __WEBPACK_IMPORTED_MODULE_3__components_cesium_cesium_component__["a" /* CesiumComponent */], __WEBPACK_IMPORTED_MODULE_4__components_leaflet_leaflet_component__["a" /* LeafletComponent */], __WEBPACK_IMPORTED_MODULE_5__components_openlayers_openlayers_component__["a" /* OpenlayersComponent */], __WEBPACK_IMPORTED_MODULE_18__components_position_form_new_tab_new_tab_component__["a" /* NewTabComponent */]],
         exports: [__WEBPACK_IMPORTED_MODULE_2__map_mip_component__["a" /* MapLayerComponent */]],
-        providers: [__WEBPACK_IMPORTED_MODULE_6__services_query_params_helper_service__["a" /* QueryParamsHelperService */], __WEBPACK_IMPORTED_MODULE_8__services_calc_service__["a" /* CalcService */], __WEBPACK_IMPORTED_MODULE_12__services_ajax_service__["a" /* AjaxService */], __WEBPACK_IMPORTED_MODULE_15__services_map_layer_api_service__["a" /* MapLayerApiService */], __WEBPACK_IMPORTED_MODULE_17__api_map_mip_service__["a" /* MapMipService */]]
+        providers: [__WEBPACK_IMPORTED_MODULE_6__services_query_params_helper_service__["a" /* QueryParamsHelperService */], __WEBPACK_IMPORTED_MODULE_8__services_calc_service__["a" /* CalcService */], __WEBPACK_IMPORTED_MODULE_12__services_ajax_service__["a" /* AjaxService */], __WEBPACK_IMPORTED_MODULE_15__services_map_layer_api_service__["a" /* MapLayerApiService */], __WEBPACK_IMPORTED_MODULE_17__api_map_mip_service__["a" /* MapMipService */], { provide: __WEBPACK_IMPORTED_MODULE_1__angular_common__["e" /* APP_BASE_HREF */], useValue: window.location.pathname.split('/').join('/') || '' }]
     })
 ], MapMipModule);
 

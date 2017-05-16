@@ -11,7 +11,7 @@ if (environment.production) {
 class MapmipApi {
 public mapMipService;
   constructor(element: HTMLElement | string | any) {
-    this.initMapmip(element,{skipLocationChange:false})
+    this.initMapmip(element,{skipLocationChange:true})
   }
 
   initMapmip (element: HTMLElement | string | any, options:{skipLocationChange:boolean}={skipLocationChange:false}) {
