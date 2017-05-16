@@ -7,7 +7,7 @@ import {Ng2BootstrapModule} from 'ng2-bootstrap';
 import { NavbarComponent } from './navbar/navbar.component';
 import {CommonModule} from '@angular/common';
 import {MapMipModule} from './map-mip/map-mip.module';
-import {MaterialRootModule} from '@angular/material';
+import {MdInputModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
@@ -22,7 +22,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     HttpModule,
     Ng2BootstrapModule,
     MapMipModule,
-    MaterialRootModule,
+    MdInputModule,
     BrowserAnimationsModule
   ],
   bootstrap: [AppComponent]
