@@ -17,6 +17,7 @@ import {animations, host} from "../../map-mip.component";
 import {QueryParamsHelperService} from "../../services/query-params-helper.service";
 import {CalcService} from "../../services/calc-service";
 import {MapMipService} from "../../api/map-mip.service";
+import {CesiumPolygons} from "./classes/cesium.component.polygons";
 
 
 @Component({
@@ -44,6 +45,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
   public terrain:CesiumTerrian;
   public map_lighting:CesiumMapLighting;
   private geojson: CesiumGeoJson;
+  private polygon: CesiumPolygons;
 
   constructor(public queryParamsHelperService:QueryParamsHelperService, public activatedRoute:ActivatedRoute, public router:Router, public calcService:CalcService, public positionFormService:PositionFormService, public mapMipService:MapMipService) {
     this.queryParamsSubscriber = activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
@@ -68,6 +70,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
     this.terrain = new CesiumTerrian(this);
     this.map_lighting = new CesiumMapLighting(this);
     this.geojson = new CesiumGeoJson(this);
+    this.polygon = new CesiumPolygons(this);
   };
 
   queryParams(params:Params):void {

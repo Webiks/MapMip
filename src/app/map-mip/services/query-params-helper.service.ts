@@ -67,6 +67,11 @@ export class QueryParamsHelperService{
     if(_.isEmpty(position)) return [50,50];
     return position.split(",").map(str => +str);
   }
+  queryPolygons(params:Params){
+    let polygons = params['polygons'];
+    if(_.isEmpty(polygons)) return [] ;
+    return polygons.split(",").map(str => +str);
+  }
   anySizeChange(prevParams:Params, currentParams:Params) {
     let prevSize = this.querySize(prevParams);
     let currentSize = this.querySize(currentParams);
@@ -80,6 +85,11 @@ export class QueryParamsHelperService{
   anyGeoJsonChange(prevParams:Params, currentParams:Params) {
     let prevSize = this.queryGeoJson(prevParams);
     let currentSize = this.queryGeoJson(currentParams);
+    return !_.isEqual(prevSize, currentSize);
+  }
+  anyPolygonsChange(prevParams:Params, currentParams:Params) {
+    let prevSize = this.queryPolygons(prevParams);
+    let currentSize = this.queryPolygons(currentParams);
     return !_.isEqual(prevSize, currentSize);
   }
   anyLightingChange(prevParams:Params, currentParams:Params) {
@@ -123,6 +133,7 @@ export class QueryParamsHelperService{
   queryMarkers(params:Params):Array<{position:number[],color:string}>{
     return this.markersStrToArray(params['markers']);
   }
+
 
   anyLayersChanges(prev:Params, current:Params):boolean{
     let currentLayers = this.queryLayers(current);

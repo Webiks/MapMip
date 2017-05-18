@@ -51,7 +51,8 @@ export class PositionFormComponent implements OnInit {
     position: {val?: string, permissions: number[], input_type?:string},
     terrain: {val?: string, permissions: number[], input_type?:string},
     geojson: {val?: string, permissions: number[], input_type?:string},
-    lighting: {val?: string, permissions: number[], input_type?:string}
+    lighting: {val?: string, permissions: number[], input_type?:string},
+    polygons: {val?: string, permissions: number[], input_type?:string}
   } = {
     lng:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
     lat:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
@@ -68,7 +69,8 @@ export class PositionFormComponent implements OnInit {
     position:{permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-map-position' },
     terrain:{permissions: [Permissions['/cesium']], input_type: 'app-terrain' },
     geojson: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-geojson-layer' },
-    lighting:{permissions: [Permissions['/cesium']], input_type: 'app-map-lighting' }
+    lighting:{permissions: [Permissions['/cesium']], input_type: 'app-map-lighting' },
+    polygons: {permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-polygons' }
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService, public mapMipService:MapMipService) {}
@@ -97,6 +99,7 @@ export class PositionFormComponent implements OnInit {
       if($event.hide || _.isNil(this.params.markers.val)) $event.modal.hide();
     });
   }
+
 
 
   ngOnInit() {

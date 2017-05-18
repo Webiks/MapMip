@@ -45,9 +45,11 @@ export const MARKER_COLORS_HEX:Array<string>=['#277fca','#3c3c3c','#23aa1f','#77
 export class PositionFormService {
 
   public onPicked:boolean;
+  public onPolygonPicked:boolean;
 
   public selectedColorIndex:number = 0;
   public markerPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public polygonPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   public mapsCont: any;
   public hideComponent:boolean = true;
 
