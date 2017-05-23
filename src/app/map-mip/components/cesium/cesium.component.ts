@@ -70,7 +70,7 @@ export class CesiumComponent implements OnInit,OnDestroy  {
     this.terrain = new CesiumTerrian(this);
     this.map_lighting = new CesiumMapLighting(this);
     this.geojson = new CesiumGeoJson(this);
-    this.polygon = new CesiumPolygons(this);
+    this.polygon = new CesiumPolygons(this,this.queryParamsHelperService);
   };
 
   queryParams(params:Params):void {

@@ -28,11 +28,10 @@ export class PolygonsComponent implements OnInit {
   queryParams: (Params) => void = (params:Params):void => {
     this.polygonsArray = this.queryParamsHelperService.queryPolygons(params);
 
-    this.polygonsArray = this.polygonsArray.map(polygon => {
-      let color = polygon['color'] ? polygon['color'] : "blue";
+   /* this.polygonsArray = this.polygonsArray.map(polygon => {
       let position = polygon['position'].toString();
-      return {position, color}
-    });
+      return {position}
+    });*/
 
   }
 

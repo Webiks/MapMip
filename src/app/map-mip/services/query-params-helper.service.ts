@@ -8,6 +8,7 @@ declare let rison;
 @Injectable()
 export class QueryParamsHelperService{
 
+  public polygons_array:Array<any> = [];
   constructor(private calcService:CalcService, private router:Router, private mapMipService:MapMipService) {}
 
   queryBounds(params:Params):[number, number, number, number] {
@@ -67,10 +68,9 @@ export class QueryParamsHelperService{
     if(_.isEmpty(position)) return [50,50];
     return position.split(",").map(str => +str);
   }
-  queryPolygons(params:Params){
-    let polygons = params['polygons'];
-    if(_.isEmpty(polygons)) return [] ;
-    return polygons.split(",").map(str => +str);
+  queryPolygons(params:Params):Array<any> {
+     return this.polygonsStrToArray(params['polygons']);
+
   }
   anySizeChange(prevParams:Params, currentParams:Params) {
     let prevSize = this.querySize(prevParams);
@@ -110,6 +110,16 @@ export class QueryParamsHelperService{
     urlTree.queryParams['markers'] = this.markersArrayToStr(markers_array);
     this.mapMipService.navigateByUrl(urlTree.toString())
   }
+  addPolygon(positions){
+    //here I need to get all the polygon coords, each time one coord and to add them to the spesific polygon
+    //then outcome will be like that : ('32.4422','34.33245',35.3535,44.4343) so polygons: (lat,lon,lat,lon),(lat,lon,lat,lon,lat,lon) etc. one triangle second square etc.
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    this.polygons_array.push(positions);
+    urlTree.queryParams['polygons'] = this.polygonsArrayToStr(this.polygons_array); //maybe we will change that a bit
+    this.mapMipService.navigateByUrl(urlTree.toString())
+      //var x = '('+markersObj.toLocaleString()+')'
+  }
+
   removeMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let markers_array:Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
@@ -195,6 +205,20 @@ export class QueryParamsHelperService{
     markers.forEach(marker => {marker.position = [marker.position[0], marker.position[1]]});
     return markers;
   }
+  polygonsStrToArray(polygonStr:string=""):Array<any> {
+
+    return polygonStr.split(" ").join("").split(")(").map(
+      (str, index, array) => {
+        if(index == 0){
+          str = str.replace("(", "")
+        }
+        if(index == array.length - 1) {
+          str = str.replace(")", "")
+        }
+        return str
+      });
+
+  }
 
   markersStrToArray(markersStr:string="") {
     if(_.isEmpty(markersStr)) return [];
@@ -234,6 +258,14 @@ export class QueryParamsHelperService{
       });
 
     return geojsonArrayStr;
+  }
+  polygonsArrayToStr(coordsArray:Array<any>):string{
+    let url_str = "";
+    coordsArray.forEach( (coord, index, array) => {
+      url_str += '('+coord.toLocaleString()+')'
+
+    });
+    return url_str;
   }
 
   markersArrayToStr(markersArray:Array<any>):string {

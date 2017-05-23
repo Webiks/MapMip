@@ -19,6 +19,7 @@ import {CalcService} from "../../services/calc-service";
 import {AjaxService} from "../../services/ajax.service";
 import {animations, host} from "../../map-mip.component";
 import {MapMipService} from "../../api/map-mip.service";
+import {LeafletPolygons} from "./classes/leaflet.component.polygons";
 
 @Component({
   host: host,
@@ -40,6 +41,7 @@ export class LeafletComponent implements OnInit, OnDestroy{
   public map_size:LeafletMapSize;
   public map_position:LeafletMapPosition;
   public geojson:LeafletGeoJson;
+  public polygons:LeafletPolygons;
 
   @ViewChild("container") public container;
   public L: any;
@@ -59,7 +61,7 @@ export class LeafletComponent implements OnInit, OnDestroy{
     this.map_view = new LeafletMapView(this);
     this.map_position = new LeafletMapPosition(this);
     this.geojson = new LeafletGeoJson(this);
-
+    this.polygons = new LeafletPolygons(this,this.queryParamsHelperService);
   }
 
   initializeMap():void {
