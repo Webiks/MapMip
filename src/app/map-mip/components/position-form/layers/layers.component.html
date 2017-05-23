@@ -82,7 +82,7 @@
           </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
             <li *ngFor="let example of examples$ | async">
-              <a class="dropdown-item" (click)="layersArray.push({layer_obj:example.layer_obj})">{{example.name}}</a>
+              <a class="dropdown-item" *ngIf="example?.name?.length" (click)="layersArray.push({layer_obj:example.layer_obj})">{{example.name}}</a>
             </li>
           </ul>
         </div>
