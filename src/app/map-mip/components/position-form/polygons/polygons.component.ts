@@ -13,20 +13,13 @@ export class PolygonsComponent implements OnInit {
   @Input("Active") Active;
   @Output("togglePickedEmitter") togglePickedEmitter = new EventEmitter();
 
-
-  public polygonToAdd = {
-    polygon:{
-      positions:[]
-    }
-  };
-  public polygonsArray;
   constructor(private queryParamsHelperService:QueryParamsHelperService, private route:ActivatedRoute, public positionFormService:PositionFormService) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(this.queryParams);
   }
   queryParams: (Params) => void = (params:Params):void => {
-    this.polygonsArray = this.queryParamsHelperService.queryPolygons(params);
+    //this.polygonsArray = this.queryParamsHelperService.queryPolygons(params);
 
    /* this.polygonsArray = this.polygonsArray.map(polygon => {
       let position = polygon['position'].toString();

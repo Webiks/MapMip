@@ -6,14 +6,18 @@
  import * as _ from "lodash";
  import {isFunction, isUndefined} from "util";
  import {QueryParamsHelperService} from "../../../services/query-params-helper.service";
+ import {AppState} from '../../../app.store';
 
  export class CesiumPolygons{
    queryParamsSubscriber;
    public _polygonEntity;
    public _positions:Array<any>=[]; //TODO: should be on the url
    public polygon_id=0;
-
+   public polygons_changed:AppState = new AppState(this.cesium.router);
    constructor(private cesium: CesiumComponent,private queryParamsHelperService: QueryParamsHelperService){
+     //if(polygons_changed){
+     //this.queryParamsSubscriber = this.polygons_changed.polygons.subscribe(this.queryParams.bind(this));
+  //     }
      this.queryParamsSubscriber = cesium.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
      cesium.positionFormService.polygonPickerEmitter.subscribe(this.togglePolygonPicker.bind(this));
      if(cesium.positionFormService.onPolygonPicked) this.togglePolygonPicker.bind(this)(true);
@@ -25,23 +29,101 @@
 
    queryParams(params: Params) {
      let params_changes:boolean = this.cesium.queryParamsHelperService.anyPolygonsChange(this.cesium.prevParams, this.cesium.currentParams);
-     if(params_changes ) {
+     if( params_changes ) {  // TODO: add logic to check if polygon is already exist
        this.setPolygonChanges(params);
      }
+
    }
    setPolygonChanges(params:Params):void{
-     let params_polygons:Array<any> = this.cesium.queryParamsHelperService.queryPolygons(params);
-     let that =this;
-     params_polygons.forEach((polygon)=>{
-      that.queryParamsHelperService.addPolygon(polygon);
+     let params_polygons_array: Array<Object> = this.cesium.queryParamsHelperService.queryPolygons(params);
+     this.addPolygonsViaUrl(params_polygons_array);
+
+     /*let that = this;
+
+     let polygons_splitted = params.polygons.split(" ").join("").split(")(").map(
+       (str, index, array) => {
+         if(index == 0){
+           str = str.replace("(", "")
+         }
+         if(index == array.length - 1) {
+           str = str.replace(")", "")
+         }
+         return str
+       });
+
+     let poly_str_arr=[];
+     _.forEach(polygons_splitted,function (poly) {
+       poly_str_arr.push(poly.split(','));
+     });
+
+
+     _.forEach(poly_str_arr,function(polygon){
+       that.cesium.viewer.entities.add({
+         id: that.polygon_id+=1,
+         name : 'PolygonDrawer'+that.polygon_id,
+         polygon : {
+           hierarchy : new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polygon)),
+         /!*  outline : true,
+           outlineColor : Cesium.Color.RED,*!/
+           /!*outlineWidth : 4   *!/ }
+       });
+     });
+
+*/
+   }
+
+   addPolygonsViaUrl(params_polygons_array: any[]) {
+    let that =this;
+     params_polygons_array.forEach(polygon_obj => {
+       let coords = [];
+         coords.push(polygon_obj.coords)
+       if(!this.polygonsExistOnMap(coords)) {
+         //add to map
+
+
+           that.cesium.viewer.entities.add({
+             id: that.polygon_id+=1,
+             name : 'PolygonDrawer'+that.polygon_id,
+             polygon : {
+               hierarchy : new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(coords[0])),
+               material : Cesium.Color.LIGHTSKYBLUE.withAlpha(0.5),
+               outline : true,
+               outlineColor : Cesium.Color.RED
+            }
+
+         });
+
+       }
      });
 
    }
+   polygonsExistOnMap(coords):boolean{
+    //no entities on map - don't check:
+     if (this.cesium.viewer.entities.values==0)
+     {
+       return false;
+     }
+     for (let a=0; a<this.cesium.viewer.entities.values.length;a++)
+     {
+       var exist = this.cesium.viewer.entities.values[a].polygon.hierarchy.getValue();
 
 
+       for ( let i=0; i<exist.length-2; i++)
+       {
+         let lng=Cesium.Cartographic.fromCartesian(exist[i]).longitude;
+         let lngDeg = Cesium.Math.toDegrees(lng);
+         let lngFixed = lngDeg.toFixed(7);
 
+         let lat =Cesium.Cartographic.fromCartesian(exist[i]).latitude;
+         let latDeg = Cesium.Math.toDegrees(lat)
+         let latFixed = latDeg.toFixed(7);
 
-
+         if(lngFixed!==coords[0][(2*i)] || latFixed!==coords[0][(2*i)+1])
+           return false;
+       }
+     }
+     return true;
+   }
    togglePolygonPicker(){
     console.log("do cesium polygon");
      this._positions=[];
@@ -52,13 +134,16 @@
        polyline: {
          show: true,
          positions: this.setCallbackProperty(this._positions),
-         material : Cesium.Color.RED
+         material : Cesium.Color.LIGHTSKYBLUE.withAlpha(0.5)
        },
        polygon : {
          hierarchy: this.setCallbackProperty(this._positions),
-         material : Cesium.Color.RED
+         material : Cesium.Color.LIGHTSKYBLUE.withAlpha(0.5),
+         outline : true,
+         outlineColor : Cesium.Color.LIGHTSKYBLUE
        }
      });
+
      this.initDrawer()
    }
    calcPositions(cartesianArr){
@@ -79,13 +164,16 @@
        let latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
        position = [lngDeg, latDeg];
      }*/
+    /* for (let i = 0; i < cartesianArr.length - 2; i++){
+
+     }*/
      _.forEach(cartesianArr,function (cartesian,index) {
        let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
        let latDeg: number = Cesium.Math.toDegrees(cartographic.latitude).toFixed(7);
        let lngDeg: number  = Cesium.Math.toDegrees(cartographic.longitude).toFixed(7);
-       positionArr.push(latDeg,lngDeg)
+       positionArr.push(lngDeg, latDeg)
      });
-      positionArr.splice(positionArr.length-4, 4) //remove redundant points from double click
+     positionArr.splice(positionArr.length-4, 4) //remove redundant points from double click
      return positionArr;
 
    }
@@ -150,6 +238,8 @@
      {
        this._positions.splice(this._positions.length - 1, 1, cartesian);
      }
+
+     console.log(this._positions.length);
    }
 
    private endDrawPolygon(){
@@ -165,9 +255,8 @@
        that.queryParamsHelperService.addPolygon(that.calcPositions(this._positions));
 
 
-     //this.polygonDrawerEnded.emit(this._positions);
-     // this.resetPolygon();
    }
+
 
    private resetPolygon()
    {
@@ -182,7 +271,6 @@
        this.cesium.viewer.cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
      }
    }
-
    private setCallbackProperty(value, property?)
    {
      return new Cesium.CallbackProperty(function () {

@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/filter';
 import * as L from 'leaflet';
+//import * as L.Draw 'leaflet-draw';
 import "leaflet-bing-layer/leaflet-bing-layer";
 import "leaflet-ajax/dist/leaflet.ajax";
 import {LeafletLayers} from "./classes/leaflet.component.layers";
@@ -20,6 +21,7 @@ import {AjaxService} from "../../services/ajax.service";
 import {animations, host} from "../../map-mip.component";
 import {MapMipService} from "../../api/map-mip.service";
 import {LeafletPolygons} from "./classes/leaflet.component.polygons";
+
 
 @Component({
   host: host,
@@ -62,6 +64,7 @@ export class LeafletComponent implements OnInit, OnDestroy{
     this.map_position = new LeafletMapPosition(this);
     this.geojson = new LeafletGeoJson(this);
     this.polygons = new LeafletPolygons(this,this.queryParamsHelperService);
+
   }
 
   initializeMap():void {

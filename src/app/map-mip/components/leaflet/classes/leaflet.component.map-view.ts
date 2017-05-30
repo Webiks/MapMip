@@ -105,7 +105,7 @@ export class LeafletMapView{
         let position = this.leaflet.currentParams['position'];
         let geojson = this.leaflet.currentParams['geojson'];
         let polygons = this.leaflet.currentParams['polygons'];
-        extras.queryParams = {bounds,markers,layers,size,position,geojson,polygons};
+        extras.queryParams = {bounds, markers, layers, size, position, geojson, polygons};
         break;
       case MapMipService.OPENLAYERS_PATH:
         let preserveQueryParams: boolean = true;

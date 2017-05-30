@@ -279,7 +279,7 @@ export class CesiumMapView{
       let size = this.cesium.currentParams['size'];
       let position = this.cesium.currentParams['position'];
       let geojson = this.cesium.currentParams['geojson'];
-      let polygons = this.cesium.currentParams['geojson'];
+      let polygons = this.cesium.currentParams['polygons'];
 
       extras.queryParams = {bounds,markers,layers,size,position,geojson,polygons};
 
