@@ -52,7 +52,8 @@ export class PositionFormComponent implements OnInit {
     terrain: {val?: string, permissions: number[], input_type?:string},
     geojson: {val?: string, permissions: number[], input_type?:string},
     lighting: {val?: string, permissions: number[], input_type?:string},
-    polygons: {val?: string, permissions: number[], input_type?:string}
+    polygons: {val?: string, permissions: number[], input_type?:string},
+    polyline: {val?: string, permissions: number[], input_type?:string}
   } = {
     lng:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
     lat:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
@@ -70,7 +71,8 @@ export class PositionFormComponent implements OnInit {
     terrain:{permissions: [Permissions['/cesium']], input_type: 'app-terrain' },
     geojson: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-geojson-layer' },
     lighting:{permissions: [Permissions['/cesium']], input_type: 'app-map-lighting' },
-    polygons: {permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-polygons' }
+    polygons: {permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-polygons' },
+    polyline: {permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-polyline' }
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService, public mapMipService:MapMipService) {}

@@ -23,20 +23,40 @@ export class CesiumGeoJson {
       _.forEach(urls, function (url) {
 
         let promise = Cesium.GeoJsonDataSource.load(url,{
-          stroke: Cesium.Color.DEEPSKYBLUE ,
+     /*     stroke: Cesium.Color.DEEPSKYBLUE ,
           fill: Cesium.Color.DEEPSKYBLUE.withAlpha(0.1),
-          strokeWidth: 3
+          strokeWidth: 3*/
         });
         promise.then(function (dataSource) {
             that.cesium.viewer.dataSources.add(dataSource);
             let entities = dataSource.entities.values;
             _.forEach(entities,function (ent) {
-              ent.billboard.image = "http://mapmip.webiks.com/assets/Markers/marker-icon-blue.png";
+              ent.billboard ? ent.billboard.image = "http://mapmip.webiks.com/assets/Markers/marker-icon-blue.png" : '';
+              if (ent.polyline && ent.properties.color) {
+                 ent.polyline.material.color = Cesium.Color.fromCssColorString(that.getColor(ent.properties.color));
+              }
             });
 
           }
         )
+
+
       });
+    }
+  }
+
+  getColor(color){
+    switch (color) {
+      case 'red':
+        return  "#ff0000";
+      case 'blue':
+        return "#0000ff";
+      case 'green':
+        return  "#00ff00";
+      case 'yellow':
+        return "#feff43";
+      case 'black':
+        return  "#000000";
     }
   }
 }

@@ -46,10 +46,13 @@ export class PositionFormService {
 
   public onPicked:boolean;
   public onPolygonPicked:boolean;
+  public onPolylinePicked:boolean;
+
 
   public selectedColorIndex:number = 0;
   public markerPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   public polygonPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public polylinePickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   public mapsCont: any;
   public hideComponent:boolean = true;
 

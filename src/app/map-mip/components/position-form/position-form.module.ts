@@ -21,6 +21,7 @@ import { ColorPickerPipe } from './color-picker/color-picker.pipe';
 import { GeojsonLayerComponent } from './geojson-layer/geojson-layer.component';
 import { FlipSwitchComponent } from './flip-switch/flip-switch.component';
 import { PolygonsComponent } from './polygons/polygons.component';
+import { PolylineComponent } from './polyline/polyline.component';
 
 @NgModule({
   imports: [
@@ -31,7 +32,7 @@ import { PolygonsComponent } from './polygons/polygons.component';
     ClickOutsideModule,
     MaterialModule
   ],
-   declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent, DragItemDirective, ReversePipe, SwitchLayersComponent, MapLightingComponent, ColorPickerPipe, GeojsonLayerComponent, FlipSwitchComponent, PolygonsComponent],
+   declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent, DragItemDirective, ReversePipe, SwitchLayersComponent, MapLightingComponent, ColorPickerPipe, GeojsonLayerComponent, FlipSwitchComponent, PolygonsComponent, PolylineComponent],
   exports: [PositionFormComponent],
   providers:[PositionFormService]
 })

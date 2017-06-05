@@ -118,9 +118,10 @@ export class CesiumMapView{
     let lighting = this.cesium.currentParams['lighting'];
     let geojson = this.cesium.currentParams['geojson'];
     let polygons = this.cesium.currentParams['polygons'];
+    let polyline = this.cesium.currentParams['polyline'];
 
     rotate = this.cesium.viewer.scene.mode != Cesium.SceneMode.SCENE2D || rotate != 1 ? undefined : 1;
-    let navigationExtras:NavigationExtras = this.cesium.queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, rotate, layers, size, position,terrain,lighting,geojson,polygons});
+    let navigationExtras:NavigationExtras = this.cesium.queryParamsHelperService.getQuery({lng, lat, height, heading, pitch, roll, mode3d, markers, rotate, layers, size, position,terrain,lighting,geojson,polygons,polyline});
     return this.cesium.mapMipService.navigate([], navigationExtras);
   };
 
@@ -280,8 +281,9 @@ export class CesiumMapView{
       let position = this.cesium.currentParams['position'];
       let geojson = this.cesium.currentParams['geojson'];
       let polygons = this.cesium.currentParams['polygons'];
+      let polyline = this.cesium.currentParams['polyline'];
 
-      extras.queryParams = {bounds,markers,layers,size,position,geojson,polygons};
+      extras.queryParams = {bounds,markers,layers,size,position,geojson,polygons,polyline};
 
       if(state == MapMipService.OPENLAYERS_PATH){
         let heading = this.cesium.queryParamsHelperService.queryHeading(this.cesium.currentParams);

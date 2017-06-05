@@ -72,6 +72,10 @@ export class QueryParamsHelperService{
     return this.polygonsStrToArray(params['polygons']);
 
   }
+  queryPolyline(params:Params): Array<any> {
+    return this.polylineStrToArray(params['polyline']);
+
+  }
   anySizeChange(prevParams:Params, currentParams:Params) {
     let prevSize = this.querySize(prevParams);
     let currentSize = this.querySize(currentParams);
@@ -92,6 +96,12 @@ export class QueryParamsHelperService{
     let currentSize = this.queryPolygons(currentParams);
     return !_.isEqual(prevSize, currentSize);
   }
+  anyPolylineChange(prevParams:Params, currentParams:Params) {
+    let prevSize = this.queryPolyline(prevParams);
+    let currentSize = this.queryPolyline(currentParams);
+    return !_.isEqual(prevSize, currentSize);
+  }
+
   anyLightingChange(prevParams:Params, currentParams:Params) {
     let prevLighting    = this.queryLighting(prevParams);
     let currentLighting = this.queryLighting(currentParams);
@@ -110,7 +120,14 @@ export class QueryParamsHelperService{
     urlTree.queryParams['markers'] = this.markersArrayToStr(markers_array);
     this.mapMipService.navigateByUrl(urlTree.toString())
   }
-
+  addPolyline(coords: number[]) {
+    let urlTree: UrlTree = this.router.parseUrl(this.router.url);
+    const polyline_url = urlTree.queryParams['polyline'] || "";
+    const polyline_array = rison.decode_array(polyline_url);
+    polyline_array.push({coords});
+    urlTree.queryParams['polyline'] = rison.encode_array(polyline_array);
+    this.mapMipService.navigateByUrl(urlTree.toString())
+  }
   addPolygon(coords: number[]){
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
     const polygons_url = urlTree.queryParams['polygons'] || "";
@@ -249,6 +266,11 @@ export class QueryParamsHelperService{
     //   });
   }
 
+  polylineStrToArray(polylineStr:string=""): Array<any> {
+
+    return rison.decode_array(polylineStr);
+  }
+
   markersStrToArray(markersStr:string="") {
     if(_.isEmpty(markersStr)) return [];
     let markersArrayStr:Array<string> = markersStr.split(" ").join("").split("),(").map(
@@ -345,7 +367,8 @@ export class QueryParamsHelperService{
     queryObj.terrain     =  _.isEmpty(queryObj.terrain) ? undefined :queryObj.terrain;
     queryObj.lighting    =  _.isEqual(this.queryLighting({lighting:queryObj.lighting}), 1) ? queryObj.lighting : undefined;
     queryObj.geojson    =  _.isEmpty(this.queryGeoJson({geojson:queryObj.geojson})) ?  undefined : queryObj.geojson;
-    queryObj.polygons   =  _.isEmpty(this.queryPolygons({polygons:queryObj.polygons})) ?  undefined : queryObj.polygons
+    queryObj.polygons   =  _.isEmpty(this.queryPolygons({polygons:queryObj.polygons})) ?  undefined : queryObj.polygons;
+    queryObj.polyline   =  _.isEmpty(this.queryPolyline({polyline:queryObj.polyline})) ?  undefined : queryObj.polyline;
 
     return <NavigationExtras> {
       queryParams: queryObj
