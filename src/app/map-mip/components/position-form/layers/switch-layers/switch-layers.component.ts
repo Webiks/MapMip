@@ -20,7 +20,7 @@ import {Component, HostListener, Input, EventEmitter, Output, style, animate, tr
 })
 
 export class SwitchLayersComponent{
-  private _active:boolean = false;
+  private _active:boolean = true;
   alert:boolean = false;
   timeoutEvent;
 

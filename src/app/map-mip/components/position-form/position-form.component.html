@@ -59,14 +59,14 @@
               <app-map-lighting [lighting]="params.lighting.val"></app-map-lighting>
             </div>
 
-            <div class="form-group polygons-group" *ngIf="params[key].input_type == 'app-polygons'">
+           <!-- <div class="form-group polygons-group" *ngIf="params[key].input_type == 'app-polygons'">
               <app-polygons (togglePickedEmitter) = "submitForm()"  ></app-polygons>
             </div>
 
             <div class="form-group polyline-group" *ngIf="params[key].input_type == 'app-polyline'">
               <app-polyline (togglePolylinePickedEmitter) = "submitForm()"  ></app-polyline>
             </div>
-
+-->
 
             <div class="form-group b-switch" *ngIf="params[key].input_type == 'Bswitch'">
               <bSwitch [switch-label-text]="key" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>
