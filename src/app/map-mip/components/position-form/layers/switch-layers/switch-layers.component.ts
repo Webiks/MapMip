@@ -1,4 +1,5 @@
-import {Component, HostListener, Input, EventEmitter, Output, style, animate, transition, trigger} from '@angular/core';
+import {Component, HostListener, Input, EventEmitter, Output } from '@angular/core';
+import {style, animate, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'app-switch-layers',

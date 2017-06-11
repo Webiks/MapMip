@@ -47,7 +47,7 @@ public _mainDataSource:Array<any>=[];
                 width : 20,
                 vertexFormat : Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
               });
-              var color = Cesium.Color.fromCssColorString(that.getColor('red'))
+              var color = Cesium.Color.fromCssColorString(that.getColor(ent.properties.color || 'azure'))
 
               var coloredCorridorInstance = new Cesium.GeometryInstance({
                 geometry: corridorGeometry,
@@ -77,6 +77,8 @@ public _mainDataSource:Array<any>=[];
         return  "#ff0000";
       case 'blue':
         return "#0000ff";
+      case 'azure':
+        return '#3285f8';
       case 'green':
         return  "#00ff00";
       case 'yellow':

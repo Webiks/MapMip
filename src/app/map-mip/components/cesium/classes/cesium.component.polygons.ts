@@ -29,7 +29,7 @@
 
    queryParams(params: Params) {
      let params_changes:boolean = this.cesium.queryParamsHelperService.anyPolygonsChange(this.cesium.prevParams, this.cesium.currentParams);
-     if( params_changes ) {  // TODO: add logic to check if polygon is already exist
+     if( params_changes ) {
        this.setPolygonChanges(params);
      }
 
@@ -96,6 +96,7 @@
        }
      });
 
+
    }
    polygonsExistOnMap(coords):boolean{
     //no entities on map - don't check:
@@ -108,13 +109,13 @@
        var exist = this.cesium.viewer.entities.values[a].polygon.hierarchy.getValue();
 
 
-       for ( let i=0; i<exist.length-2; i++)
+       for ( let i=0; i<exist.positions.length; i++)
        {
-         let lng=Cesium.Cartographic.fromCartesian(exist[i]).longitude;
+         let lng=Cesium.Cartographic.fromCartesian(exist.positions[i]).longitude;
          let lngDeg = Cesium.Math.toDegrees(lng);
          let lngFixed = lngDeg.toFixed(7);
 
-         let lat =Cesium.Cartographic.fromCartesian(exist[i]).latitude;
+         let lat =Cesium.Cartographic.fromCartesian(exist.positions[i]).latitude;
          let latDeg = Cesium.Math.toDegrees(lat)
          let latFixed = latDeg.toFixed(7);
 
@@ -125,7 +126,6 @@
      return true;
    }
    togglePolygonPicker(){
-    console.log("do cesium polygon");
      this._positions=[];
 
      this._polygonEntity= this.cesium.viewer.entities.add({

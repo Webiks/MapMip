@@ -68,19 +68,28 @@ export class LeafletPolygons {
   }
 
   addPolygonsViaUrl(params_polygons_array: any[]) {
+    if(params_polygons_array.length == 0){
 
-    params_polygons_array.forEach(polygon_obj => {
-      let coords = [];
-      for (let i = 0; i < polygon_obj.coords.length; i += 2) {
-        coords.push([polygon_obj.coords[i + 1], polygon_obj.coords[i]])
-      }
-      if(!this.polygonsExistOnMap(coords)) {
-        L.polygon(
-          coords
-        ).addTo(this.leaflet.map);
-      }
-    });
+      let polygonsOnMap = _.filter(this.leaflet.map['_layers'], (l) => l['_latlngs'] && !l.hasOwnProperty("feature")&& !l.hasOwnProperty("_icon"))
 
+      polygonsOnMap.forEach(polygon_obj => {
+        polygon_obj['remove']();
+      })
+
+    }
+    else {
+      params_polygons_array.forEach(polygon_obj => {
+        let coords = [];
+        for (let i = 0; i < polygon_obj.coords.length; i += 2) {
+          coords.push([polygon_obj.coords[i + 1], polygon_obj.coords[i]])
+        }
+        if (!this.polygonsExistOnMap(coords)) {
+          L.polygon(
+            coords
+          ).addTo(this.leaflet.map);
+        }
+      });
+    }
   }
 
   polygonsExistOnMap(coords: L.LatLng[]): boolean {

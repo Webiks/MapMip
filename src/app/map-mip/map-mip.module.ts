@@ -17,6 +17,7 @@ import {MapLayerApiService} from "./services/map-layer-api.service";
 import {Routes, RouterModule} from "@angular/router";
 import {MapMipService} from "./api/map-mip.service";
 import { NewTabComponent } from './components/position-form/new-tab/new-tab.component';
+import { SwitchLayersDirective } from './directives/switch-layers.directive';
 
 export const MapMipChildren :Routes = [
   {
@@ -47,8 +48,8 @@ export const MapMipChildren :Routes = [
     HttpModule,
     MaterialModule
   ],
-  declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent,NewTabComponent],
-  exports: [MapLayerComponent],
+  declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent,NewTabComponent, SwitchLayersDirective],
+  exports: [MapLayerComponent, SwitchLayersDirective],
   providers:[QueryParamsHelperService, CalcService, AjaxService,MapLayerApiService, MapMipService]
 })
 export class MapMipModule { }

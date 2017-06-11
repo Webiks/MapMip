@@ -1,7 +1,7 @@
 import {
-  Component, OnInit, ViewChild, Input, OnChanges, SimpleChanges, Output, EventEmitter,HostListener,
-  style, animate, transition, trigger
+  Component, OnInit, ViewChild, Input, OnChanges, SimpleChanges, Output, EventEmitter,HostListener
 } from '@angular/core';
+import {  style, animate, transition, trigger} from '@angular/animations'
 import {ModalDirective} from "ng2-bootstrap";
 import {QueryParamsHelperService} from "../../../services/query-params-helper.service";
 import * as _ from 'lodash';
