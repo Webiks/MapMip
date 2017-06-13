@@ -1,0 +1,12 @@
+div.polygon-row{
+  display: flex;
+  overflow: hidden;
+  *{
+    margin: 0 3px;
+  }
+  span{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

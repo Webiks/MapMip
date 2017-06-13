@@ -252,18 +252,11 @@ export class QueryParamsHelperService{
   }
 
   polygonsStrToArray(polygonStr:string=""): Array<any> {
-
     return rison.decode_array(polygonStr);
-    // return polygonStr.split(" ").join("").split(")(").map(
-    //   (str, index, array) => {
-    //     if(index == 0){
-    //       str = str.replace("(", "")
-    //     }
-    //     if(index == array.length - 1) {
-    //       str = str.replace(")", "")
-    //     }
-    //     return str
-    //   });
+  }
+
+  polygonsArrayToStr(polygonArray:Array<any>): string{
+    return rison.encode_array(polygonArray);
   }
 
   polylineStrToArray(polylineStr:string=""): Array<any> {
@@ -310,14 +303,7 @@ export class QueryParamsHelperService{
 
     return geojsonArrayStr;
   }
-  polygonsArrayToStr(coordsArray:Array<any>):string{
-    let url_str = "";
-    coordsArray.forEach( (coord, index, array) => {
-      url_str += '('+coord.toLocaleString()+')';
 
-    });
-    return url_str;
-  }
 
   markersArrayToStr(markersArray:Array<any>):string {
     let url_str = "";

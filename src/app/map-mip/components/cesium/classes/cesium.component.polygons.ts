@@ -37,50 +37,20 @@
    setPolygonChanges(params:Params):void{
      let params_polygons_array: Array<Object> = this.cesium.queryParamsHelperService.queryPolygons(params);
      this.addPolygonsViaUrl(params_polygons_array);
-
-     /*let that = this;
-
-     let polygons_splitted = params.polygons.split(" ").join("").split(")(").map(
-       (str, index, array) => {
-         if(index == 0){
-           str = str.replace("(", "")
-         }
-         if(index == array.length - 1) {
-           str = str.replace(")", "")
-         }
-         return str
-       });
-
-     let poly_str_arr=[];
-     _.forEach(polygons_splitted,function (poly) {
-       poly_str_arr.push(poly.split(','));
-     });
-
-
-     _.forEach(poly_str_arr,function(polygon){
-       that.cesium.viewer.entities.add({
-         id: that.polygon_id+=1,
-         name : 'PolygonDrawer'+that.polygon_id,
-         polygon : {
-           hierarchy : new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polygon)),
-         /!*  outline : true,
-           outlineColor : Cesium.Color.RED,*!/
-           /!*outlineWidth : 4   *!/ }
-       });
-     });
-
-*/
    }
 
    addPolygonsViaUrl(params_polygons_array: any[]) {
-    let that =this;
+     const polygonsOnMap = _.filter(this.cesium.viewer.entities.values, (ent) => ent['polygon']);
+
+     polygonsOnMap.forEach(polygon_obj => {
+       this.cesium.viewer.entities.remove(polygon_obj);
+     })
+
+     let that =this;
      params_polygons_array.forEach(polygon_obj => {
        let coords = [];
          coords.push(polygon_obj.coords)
        if(!this.polygonsExistOnMap(coords)) {
-         //add to map
-
-
            that.cesium.viewer.entities.add({
              id: that.polygon_id+=1,
              name : 'PolygonDrawer'+that.polygon_id,
@@ -90,39 +60,37 @@
                outline : true,
                outlineColor : Cesium.Color.RED
             }
-
          });
-
        }
      });
-
-
    }
-   polygonsExistOnMap(coords):boolean{
-    //no entities on map - don't check:
-     if (this.cesium.viewer.entities.values==0)
-     {
-       return false;
-     }
-     for (let a=0; a<this.cesium.viewer.entities.values.length;a++)
-     {
+   polygonsExistOnMap(coords):boolean {
+     //no entities on map - don't check:
+    const polygonsOnMap = _.filter(this.cesium.viewer.entities.values, (ent) => ent['polygon']);
+      if (polygonsOnMap.length==0)
+      return false;
+
+     for (let a = 0; a < this.cesium.viewer.entities.values.length; a++) {
+       if (this.cesium.viewer.entities.values[a].polygon) {
+
+
        var exist = this.cesium.viewer.entities.values[a].polygon.hierarchy.getValue();
 
 
-       for ( let i=0; i<exist.positions.length; i++)
-       {
-         let lng=Cesium.Cartographic.fromCartesian(exist.positions[i]).longitude;
+       for (let i = 0; i < exist.positions.length; i++) {
+         let lng = Cesium.Cartographic.fromCartesian(exist.positions[i]).longitude;
          let lngDeg = Cesium.Math.toDegrees(lng);
          let lngFixed = lngDeg.toFixed(7);
 
-         let lat =Cesium.Cartographic.fromCartesian(exist.positions[i]).latitude;
+         let lat = Cesium.Cartographic.fromCartesian(exist.positions[i]).latitude;
          let latDeg = Cesium.Math.toDegrees(lat)
          let latFixed = latDeg.toFixed(7);
 
-         if(lngFixed!==coords[0][(2*i)] || latFixed!==coords[0][(2*i)+1])
+         if (lngFixed !== coords[0][(2 * i)] || latFixed !== coords[0][(2 * i) + 1])
            return false;
        }
      }
+   }
      return true;
    }
    togglePolygonPicker(){

@@ -68,7 +68,6 @@ export class LeafletPolygons {
   }
 
   addPolygonsViaUrl(params_polygons_array: any[]) {
-    if(params_polygons_array.length == 0){
 
       let polygonsOnMap = _.filter(this.leaflet.map['_layers'], (l) => l['_latlngs'] && !l.hasOwnProperty("feature")&& !l.hasOwnProperty("_icon"))
 
@@ -76,8 +75,6 @@ export class LeafletPolygons {
         polygon_obj['remove']();
       })
 
-    }
-    else {
       params_polygons_array.forEach(polygon_obj => {
         let coords = [];
         for (let i = 0; i < polygon_obj.coords.length; i += 2) {
@@ -89,7 +86,6 @@ export class LeafletPolygons {
           ).addTo(this.leaflet.map);
         }
       });
-    }
   }
 
   polygonsExistOnMap(coords: L.LatLng[]): boolean {
@@ -118,7 +114,6 @@ export class LeafletPolygons {
 
   togglePolygonPicker(){
     let that = this;
-    console.log("do leaflet polygon");
     var polygonDrawer = new this.leaflet.L.Draw["Polygon"](this.leaflet.map);
     polygonDrawer.enable();
 
@@ -131,12 +126,10 @@ export class LeafletPolygons {
       that.polygonsCoords.push(layer['_latlngs'])
       _.forEach(layer['_latlngs'],function(point){
         _.forEach(point,function(p){
-          // str+=p.lng+","+p.lat+',';
           poly_arr.push(p.lng)
           poly_arr.push(p.lat)
         });
         str = str.substring(0, str.length - 1);
-        // that.queryParamsHelperService.addPolygon('('+str+')');
         that.queryParamsHelperService.addPolygon(poly_arr);
 
       });

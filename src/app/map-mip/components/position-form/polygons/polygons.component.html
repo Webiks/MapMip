@@ -1,6 +1,6 @@
 <div class="pull-left" id="polygons">
   <button  class="btn btn-default glyphicon glyphicon-pencil"
-          [class.active]="Active" (click)=" togglePolygonPicked(!Active)"  type="button" tooltip="Draw Polygon" triggers="hover"></button>
+           [class.active]="Active" (click)=" togglePolygonPicked(!Active)"  type="button" tooltip="Draw Polygon" triggers="hover"></button>
 </div>
 <button class="btn btn-primary pull-left" (click)="smModal.show()" type="button">Polygons</button>
 <div [config]="{backdrop: false}" bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="cloneEditedPolygons()">
@@ -16,17 +16,19 @@
 
       <div class="modal-body">
         <button class="btn btn-primary top-button" type="button" (click)="addModal.show()">Add</button>
-        <button class="glyphicon glyphicon-trash btn btn-danger pull-right top-button" type="button" [hidden]="edited_polygons_array.length == 0" (click)="removeAllPolygons()"></button>
+        <button class="glyphicon glyphicon-trash btn btn-danger pull-right top-button" type="button" [hidden]="polygonsArray.length == 0" (click)="removeAllPolygons()"></button>
 
-        <ul class="list-group" *ngIf="edited_polygons_array.length > 0">
-          <li class="list-group-item" *ngFor="let polygon of edited_polygons_array; let i = index" >
+        <ul class="list-group" *ngIf="polygonsArray.length > 0">
+          <li class="list-group-item" *ngFor="let polygon of polygonsArray; let i = index" >
 
-            <div class="li-row">
-              <span class="position">{{polygon.position}}</span>
-<!--
-              <button class="btn btn-info glyphicon glyphicon-pencil" type="button" (click)="editMarker(i)"></button>
--->
+            <div class="polygon-row">
+
               <button class="btn btn-danger glyphicon glyphicon-remove-sign" type="button" (click)="rmvPolygon(i)"></button>
+              <button class="btn btn-info glyphicon glyphicon-pencil" type="button" (click)="editMarker(i)"></button>
+
+              <span class="position">
+                {{polygon.coords}}
+              </span>
             </div>
           </li>
         </ul>

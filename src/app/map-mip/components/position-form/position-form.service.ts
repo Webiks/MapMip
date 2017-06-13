@@ -89,8 +89,10 @@ export class PositionFormService {
   getMarkerUrlByColor(color:string="blue" ,format:string="png"):string{
     return `http://mapmip.webiks.com/assets/Markers/marker-icon-${color}.${format}`
   }
-  getMarkerColorByUrl(url:string):string{
+  getMarkerColorByUrl(url:string) {
     // return url.replace(location.origin, "").replace("/assets/Markers/marker-icon-", "").replace(".png","");
-    return url.replace("http://mapmip.webiks.com", "").replace("/assets/Markers/marker-icon-", "").replace(".png","");
+    if (url) {
+       return url.replace("http://mapmip.webiks.com", "").replace("/assets/Markers/marker-icon-", "").replace(".png", "");
+  }
   }
 }

@@ -14,6 +14,7 @@ import {CalcService} from "../../services/calc-service";
 import {animations, host} from "../../map-mip.component";
 import {AjaxService} from "../../services/ajax.service";
 import {MapMipService} from "../../api/map-mip.service";
+import {OpenlayersPolygons} from "./classes/openlayers.component.polygons";
 
 @Component({
   host: host,
@@ -36,7 +37,10 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
   public map_size:OpenLayersMapSize;
   public map_position:OpenlayersMapPosition;
   public geojson:OpenlayersGeoJson;
+  public polygons: OpenlayersPolygons
   public ol:any;
+
+
   @ViewChild("container") public container;
 
   constructor(public activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public router:Router, public calcService:CalcService, public ajaxService:AjaxService, public positionFormService:PositionFormService, public mapMipService:MapMipService) {
@@ -79,6 +83,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
     this.map_position = new OpenlayersMapPosition(this);
     this.map_view = new OpenlayersMapView(this);
     this.geojson = new OpenlayersGeoJson(this);
+    this.polygons = new OpenlayersPolygons(this, this.queryParamsHelperService);
   }
 
   get LayersArray() {
