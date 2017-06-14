@@ -83,7 +83,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
     this.map_position = new OpenlayersMapPosition(this);
     this.map_view = new OpenlayersMapView(this);
     this.geojson = new OpenlayersGeoJson(this);
-    this.polygons = new OpenlayersPolygons(this, this.queryParamsHelperService);
+    this.polygons = new OpenlayersPolygons(this);
   }
 
   get LayersArray() {
