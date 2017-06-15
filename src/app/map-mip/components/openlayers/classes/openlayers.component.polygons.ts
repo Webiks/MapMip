@@ -7,6 +7,7 @@ import * as ol from 'openlayers';
 import * as _ from 'lodash';
 
 import Polygon = ol.geom.Polygon;
+import {forEach} from "@angular/router/src/utils/collection";
 
 export class OpenlayersPolygons {
   public queryParamsSubscriber;
@@ -16,11 +17,6 @@ export class OpenlayersPolygons {
 
   constructor(private openlayers: OpenlayersComponent) {
     this.addPolygonsLayer();
-
-    this.openlayers.map.addLayer(new ol.layer.Vector({
-      source: this.vectorSource
-    }));
-
     this.queryParamsSubscriber = openlayers.activatedRoute.queryParams
       .filter((params:Params) => this.openlayers.queryParamsHelperService.anyPolygonsChange(this.openlayers.prevParams, this.openlayers.currentParams))
       .subscribe(this.setPolygonsChanges.bind(this));
@@ -44,77 +40,74 @@ export class OpenlayersPolygons {
   }
 
   getPolygonsPositions(): {coords: number[]} [] {
-    return this.vectorSource.getFeatures().map((feature: ol.Feature) => {
-      const geometry: any = feature.getGeometry();
-      const coordinates: any = geometry.getCoordinates()[0];
-      const coords = [];
-      coordinates.forEach(
-        coord => {
-          const [number_a, number_b] = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')
-          coords.push(number_a);
-          coords.push(number_b);
-      });
-      return {coords}
-    })
+    return this.vectorSource.getFeatures().map(this.getPolygonObj);
   }
 
   setPolygonsChanges(params) {
-    const params_polygons_array: Array<Object> = this.openlayers.queryParamsHelperService.queryPolygons(params);
+    const params_polygons_array: Array<Object> = this.openlayers.calcService.toFixes7Obj(this.openlayers.queryParamsHelperService.queryPolygons(params));
+    const map_polygons_array = this.openlayers.calcService.toFixes7Obj(this.getPolygonsPositions());
 
-    this.addPolygonsViaUrl(params_polygons_array);
-    // this.removePolygonsViaUrl(map_tile_layers_array);
+    this.addPolygonsViaUrl(params_polygons_array, map_polygons_array );
+    this.removePolygonsViaUrl(params_polygons_array, map_polygons_array );
   }
 
-  addPolygonsViaUrl(params_polygons_array: any[] ) {
-
-    //const polygonsOnMap = params_polygons_array.filter((polygon: {cords: number[]}) => {   });
-
-
-    // _.filter(layers,function(layer){
-    //   return layer['getSource']().getFeatures()[0].getGeometry().getType()=="Polygon"
-    // });
-
-    /* let polygonsOnMap = _.filter(this.leaflet.map['_layers'], (l) => l['_latlngs'] && !l.hasOwnProperty("feature")&& !l.hasOwnProperty("_icon"))
-
-     polygonsOnMap.forEach(polygon_obj => {
-     polygon_obj['remove']();
-     })
-    */
-
+  addPolygonsViaUrl(params_polygons_array: any[], map_polygons_array ) {
     params_polygons_array.forEach(polygon_obj => {
-     if (!this.polygonsExistOnMap(polygon_obj.coords)) {
-       let transformedCoords=[]
-       for (let i=0;i<polygon_obj.coords.length;i += 2){
-         transformedCoords.push([polygon_obj.coords[i],polygon_obj.coords[i+1]])
-       }
-
-
-       let tempArr=[];
-       transformedCoords.forEach(elem=>{
-         tempArr.push( ol.proj.transform(elem, 'EPSG:4326', 'EPSG:3857'));
-       });
-
-       let transformedGeomery = new ol.geom.Polygon( [tempArr]);
-       var featurething = new ol.Feature({
-         geometry: transformedGeomery
-       });
-       this.vectorSource.addFeature(featurething)
-     }
-     });
-  }
-  polygonsExistOnMap(coords){
-    const map_polygons_array = this.getPolygonsPositions(); // array of polygons objects with coords property
-    map_polygons_array.forEach((polygon)=>{
-      if (_.isEqual(polygon.coords,coords) ) return true;
+      if (!this.polygonsExistOnMap(polygon_obj, map_polygons_array)) {
+        const feature = this.getFeaturePolygon(polygon_obj);
+        this.vectorSource.addFeature(feature);
+      }
     });
-    return false;
-    // now check if the coords
-    /*find((polygon) => {
-      const real_coord: L.LatLng[] = (polygon.getLatLngs()[0] as any).map(o => [o.lat, o.lng]);
-      return _.isEqual(real_coord, coords);
-    });
-*/
   }
+
+  removePolygonsViaUrl(params_polygons_array, map_polygons_array) {
+    map_polygons_array.forEach((map_polygon_obj) => {
+      if(!this.polygonExistOnParams(map_polygon_obj, params_polygons_array)) {
+        const featureGeomCoor = (<any>this.getFeaturePolygon(map_polygon_obj).getGeometry()).getCoordinates()[0];
+        const VectorSourceFeatureFeature = this.vectorSource.getFeatures().find(
+          (vectorSourceFeature) => {
+            const vectorSourceFeatureGeomCoor = (<any>vectorSourceFeature.getGeometry()).getCoordinates()[0];
+            const parsedFeatureGeomCoor= featureGeomCoor.map(elem=>[elem[0].toFixed(7),elem[1].toFixed(7)]);
+            const parsedvectorSourceFeatureGeomCoor= vectorSourceFeatureGeomCoor.map(elem=>[elem[0].toFixed(7),elem[1].toFixed(7)]);
+            return _.isEqual(parsedFeatureGeomCoor,parsedvectorSourceFeatureGeomCoor)
+          });
+          this.vectorSource.removeFeature(VectorSourceFeatureFeature);
+      }
+    })
+  }
+
+  getFeaturePolygon(polygon_obj: {coords: number[]}): ol.Feature {
+    let transformedCoords = [];
+    for (let i = 0; i < polygon_obj.coords.length; i += 2){
+      transformedCoords.push([polygon_obj.coords[i],polygon_obj.coords[i+1]])
+    }
+    transformedCoords = transformedCoords.map((coords) => ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857'));
+    transformedCoords = this.openlayers.calcService.toFixes7Obj(transformedCoords);
+    const geometry = new ol.geom.Polygon( [transformedCoords ]);
+    return new ol.Feature({geometry});
+  }
+
+  getPolygonObj(feature: ol.Feature) {
+    let coords = [];
+    const featureCoords = (<any>feature.getGeometry()).getCoordinates()[0];
+    featureCoords.forEach(f_coords => {
+      const [number_a, number_b] = ol.proj.transform(f_coords, 'EPSG:3857', 'EPSG:4326');
+      coords.push(number_a);
+      coords.push(number_b);
+    });
+    return {coords};
+  }
+
+  polygonExistOnParams(polygon_obj, params_polygons_array) {
+    let exist_polygon = params_polygons_array.find(paramPolygon => _.isEqual(paramPolygon, polygon_obj));
+    return !_.isEmpty(exist_polygon);
+  }
+
+  polygonsExistOnMap(map_polygon_obj, map_polygons_array){
+    const exist_polygon  = map_polygons_array.find(polygon_obj=> _.isEqual(polygon_obj, map_polygon_obj)) ;
+    return !_.isEmpty(exist_polygon);
+  }
+
   /* polygonsExistOnMap(coords: L.LatLng[]): boolean {
    const polygonsOnMap = _.filter(this.leaflet.map['_layers'], (l) => l['_latlngs'] && !l.hasOwnProperty("feature")&& !l.hasOwnProperty("_icon"));
    const exist_polygon = polygonsOnMap.find((polygon: L.Polygon) => {

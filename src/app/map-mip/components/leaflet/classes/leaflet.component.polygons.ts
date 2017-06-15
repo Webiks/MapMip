@@ -30,34 +30,6 @@ export class LeafletPolygons {
     if(this.leaflet.queryParamsHelperService.anyPolygonsChange(this.leaflet.prevParams, this.leaflet.currentParams)) {
       this.setPolygonsChanges(params);
     }
-
-    // let polygons_splitted = params.split(" ").join("").split(")(").map(
-    //   (str, index, array) => {
-    //     if(index == 0){
-    //       str = str.replace("(", "")
-    //     }
-    //     if(index == array.length - 1) {
-    //       str = str.replace(")", "")
-    //     }
-    //     return str
-    //   });
-    //
-    // let poly_str_arr=[];
-    // _.forEach(polygons_splitted,function (poly) {
-    //   poly_str_arr.push(poly.split(','));
-    // });
-    //
-    // _.forEach(poly_str_arr,function(polygon){
-    //   let coords=[];
-    //   for (let i=0;i<polygon.length;i+=2) {
-    //     coords.push([polygon[i],polygon[i+1]])
-    //   }
-    //   L.polygon(
-    //     coords
-    //   ).addTo(this.leaflet.map);
-    //
-    //
-    // });
   }
 
   setPolygonsChanges(params) {

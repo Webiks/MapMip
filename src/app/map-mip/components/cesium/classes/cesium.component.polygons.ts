@@ -11,19 +11,17 @@
  export class CesiumPolygons{
    queryParamsSubscriber;
    public _polygonEntity;
-   public _positions:Array<any>=[]; //TODO: should be on the url
+   public _positions:Array<any>=[];
    public polygon_id=0;
    public polygons_changed:AppState = new AppState(this.cesium.router);
    constructor(private cesium: CesiumComponent,private queryParamsHelperService: QueryParamsHelperService){
-     //if(polygons_changed){
-     //this.queryParamsSubscriber = this.polygons_changed.polygons.subscribe(this.queryParams.bind(this));
-  //     }
      this.queryParamsSubscriber = cesium.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
      cesium.positionFormService.polygonPickerEmitter.subscribe(this.togglePolygonPicker.bind(this));
      if(cesium.positionFormService.onPolygonPicked) this.togglePolygonPicker.bind(this)(true);
    }
    destroy() {
      this.queryParamsSubscriber.unsubscribe();
+     this.cesium.positionFormService.polygonPickerEmitter.unsubscribe();
      this.cesium.viewer.cesiumHandler.destroy();
    }
 
