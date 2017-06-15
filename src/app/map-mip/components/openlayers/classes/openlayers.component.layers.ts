@@ -16,6 +16,7 @@ export class OpenlayersLayers {
     if(this.openlayers.queryParamsHelperService.anyLayersChanges(this.openlayers.prevParams, this.openlayers.currentParams)) {
       this.setLayersChanges(params);
     }
+
   }
   destroy() {
     this.queryParamsSubscriber.unsubscribe();
@@ -34,13 +35,22 @@ export class OpenlayersLayers {
     this.sortLayers(params_layers_array);
 
     if(this.noTileLayer())  this.addBaseLayer();
+
   }
 
   sortLayers(params_layers_array) {
+    //let layersGroup = this.openlayers.map.getLayers();
+    //let layersArray = layersGroup.a;
     params_layers_array.forEach((layer_obj, index) => {
       let layer = this.getLayerFromLayerObj(layer_obj);
       let map_l = this.getTileLayersArray().find(_layer => this.layersEqual(layer, _layer ));
+    //  let map_l = layersArray.find(_layer => this.layersEqual(layer, _layer.a.layer ));
       map_l.setZIndex(index);
+
+
+
+
+
     })
   }
 
@@ -58,7 +68,9 @@ export class OpenlayersLayers {
           if(layer_obj.source == 'tms'){
             await this.setTmsOptions(layer_obj['url'], layer);
           }
+          layer.setZIndex(index);
           this.openlayers.map.addLayer(layer);
+          //this.openlayers.map.getLayers().a[index].setZIndex(index);
         }
       });
   }

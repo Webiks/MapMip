@@ -1,0 +1,44 @@
+<div class="pull-left" id="polygons">
+  <button  class="btn btn-default glyphicon glyphicon-pencil"
+           [class.active]="Active" (click)=" togglePolygonPicked(!Active)"  type="button" tooltip="Draw Polygon" triggers="hover"></button>
+</div>
+<button class="btn btn-primary pull-left" (click)="smModal.show()" type="button">Polygons</button>
+<div [config]="{backdrop: false}" bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="cloneEditedPolygons()">
+  <div class="modal-dialog modal-md">
+    <form class="modal-content" (submit)="submitPolygons(true)">
+
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="smModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Polygons</h4>
+      </div>
+
+      <div class="modal-body">
+        <button class="btn btn-primary top-button" type="button" (click)="addModal.show()">Add</button>
+        <button class="glyphicon glyphicon-trash btn btn-danger pull-right top-button" type="button" [hidden]="polygonsArray.length == 0" (click)="removeAllPolygons()"></button>
+
+        <ul class="list-group" *ngIf="polygonsArray.length > 0">
+          <li class="list-group-item" *ngFor="let polygon of polygonsArray; let i = index" >
+
+            <div class="polygon-row">
+
+              <button class="btn btn-danger glyphicon glyphicon-remove-sign" type="button" (click)="rmvPolygon(i)"></button>
+
+              <span class="position">
+                {{polygon.coords}}
+              </span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-default" (click)="smModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" [disabled]="!canApply()" (click)="submitPolygons()" type="button">Apply</button>
+        <button class="btn btn-default" type="submit">Ok</button>
+      </div>
+
+    </form>
+  </div>
+</div>

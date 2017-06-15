@@ -8,6 +8,7 @@ declare let rison;
 @Injectable()
 export class QueryParamsHelperService{
 
+  public polygons_array:Array<any> = [];
   constructor(private calcService:CalcService, private router:Router, private mapMipService:MapMipService) {}
 
   queryBounds(params:Params):[number, number, number, number] {
@@ -67,6 +68,14 @@ export class QueryParamsHelperService{
     if(_.isEmpty(position)) return [50,50];
     return position.split(",").map(str => +str);
   }
+  queryPolygons(params:Params): Array<any> {
+    return this.polygonsStrToArray(params['polygons']);
+
+  }
+  queryPolyline(params:Params): Array<any> {
+    return this.polylineStrToArray(params['polyline']);
+
+  }
   anySizeChange(prevParams:Params, currentParams:Params) {
     let prevSize = this.querySize(prevParams);
     let currentSize = this.querySize(currentParams);
@@ -82,6 +91,17 @@ export class QueryParamsHelperService{
     let currentSize = this.queryGeoJson(currentParams);
     return !_.isEqual(prevSize, currentSize);
   }
+  anyPolygonsChange(prevParams:Params, currentParams:Params) {
+    let prevSize = this.queryPolygons(prevParams);
+    let currentSize = this.queryPolygons(currentParams);
+    return !_.isEqual(prevSize, currentSize);
+  }
+  anyPolylineChange(prevParams:Params, currentParams:Params) {
+    let prevSize = this.queryPolyline(prevParams);
+    let currentSize = this.queryPolyline(currentParams);
+    return !_.isEqual(prevSize, currentSize);
+  }
+
   anyLightingChange(prevParams:Params, currentParams:Params) {
     let prevLighting    = this.queryLighting(prevParams);
     let currentLighting = this.queryLighting(currentParams);
@@ -91,7 +111,7 @@ export class QueryParamsHelperService{
     let prevSize = this.queryPosition(prevParams);
     let currentSize = this.queryPosition(currentParams);
     return !_.isEqual(prevSize, currentSize);
-  }
+  };
 
   addMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
@@ -100,6 +120,51 @@ export class QueryParamsHelperService{
     urlTree.queryParams['markers'] = this.markersArrayToStr(markers_array);
     this.mapMipService.navigateByUrl(urlTree.toString())
   }
+  addPolyline(coords: number[]) {
+    let urlTree: UrlTree = this.router.parseUrl(this.router.url);
+    const polyline_url = urlTree.queryParams['polyline'] || "";
+    const polyline_array = rison.decode_array(polyline_url);
+    polyline_array.push({coords});
+    urlTree.queryParams['polyline'] = rison.encode_array(polyline_array);
+    this.mapMipService.navigateByUrl(urlTree.toString())
+  }
+  addPolygon(coords: number[]){
+    let urlTree: UrlTree = this.router.parseUrl(this.router.url);
+    const polygons_url = urlTree.queryParams['polygons'] || "";
+    const polygons_array = rison.decode_array(polygons_url);
+    polygons_array.push({coords});
+    urlTree.queryParams['polygons'] = rison.encode_array(polygons_array);
+    this.mapMipService.navigateByUrl(urlTree.toString())
+
+
+
+    // if(this.polygons_array.length === 0 && urlTree.queryParams['polygons']!== undefined){
+    //   this.polygons_array.push(urlTree.queryParams['polygons']);
+    // }
+    // if(coords.constructor.name =="String") {
+    //   let posArr = this.polygonsStrToArray(positions);
+    //   this.polygons_array.push(posArr);
+    // }
+    // if(coords.constructor.name =="Array") {
+    //   this.polygons_array.push(positions);
+    // }
+    // let polygonsString = this.polygonsArrayToStr(this.polygons_array);
+    // polygonsString = polygonsString.replace('((','(');
+    // polygonsString = polygonsString.replace('))',')');
+    // urlTree.queryParams['polygons'] = polygonsString;
+    // this.mapMipService.navigateByUrl(urlTree.toString())
+  }
+  addPolygonStr(positions){
+    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
+    if(this.polygons_array.length === 0 && urlTree.queryParams['polygons']!== undefined){
+      this.polygons_array.push(urlTree.queryParams['polygons']);
+    }
+    let posArr = this.polygonsStrToArray(positions);
+    this.polygons_array.push(posArr);
+
+    this.mapMipService.navigateByUrl(urlTree.toString())
+  }
+
   removeMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let markers_array:Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
@@ -123,6 +188,7 @@ export class QueryParamsHelperService{
   queryMarkers(params:Params):Array<{position:number[],color:string}>{
     return this.markersStrToArray(params['markers']);
   }
+
 
   anyLayersChanges(prev:Params, current:Params):boolean{
     let currentLayers = this.queryLayers(current);
@@ -185,6 +251,19 @@ export class QueryParamsHelperService{
     return markers;
   }
 
+  polygonsStrToArray(polygonStr:string=""): Array<any> {
+    return rison.decode_array(polygonStr);
+  }
+
+  polygonsArrayToStr(polygonArray:Array<any>): string{
+    return rison.encode_array(polygonArray);
+  }
+
+  polylineStrToArray(polylineStr:string=""): Array<any> {
+
+    return rison.decode_array(polylineStr);
+  }
+
   markersStrToArray(markersStr:string="") {
     if(_.isEmpty(markersStr)) return [];
     let markersArrayStr:Array<string> = markersStr.split(" ").join("").split("),(").map(
@@ -224,6 +303,7 @@ export class QueryParamsHelperService{
 
     return geojsonArrayStr;
   }
+
 
   markersArrayToStr(markersArray:Array<any>):string {
     let url_str = "";
@@ -273,6 +353,9 @@ export class QueryParamsHelperService{
     queryObj.terrain     =  _.isEmpty(queryObj.terrain) ? undefined :queryObj.terrain;
     queryObj.lighting    =  _.isEqual(this.queryLighting({lighting:queryObj.lighting}), 1) ? queryObj.lighting : undefined;
     queryObj.geojson    =  _.isEmpty(this.queryGeoJson({geojson:queryObj.geojson})) ?  undefined : queryObj.geojson;
+    queryObj.polygons   =  _.isEmpty(this.queryPolygons({polygons:queryObj.polygons})) ?  undefined : queryObj.polygons;
+    queryObj.polyline   =  _.isEmpty(this.queryPolyline({polyline:queryObj.polyline})) ?  undefined : queryObj.polyline;
+
     return <NavigationExtras> {
       queryParams: queryObj
     };

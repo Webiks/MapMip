@@ -1,6 +1,6 @@
 <app-position-form *ngIf="!hideComponent"></app-position-form>
 
-<div class="map-layer">
+<div class="map-layer" appSwitchLayers>
   <div class="mapsCont" #mapsCont>
     <app-new-tab></app-new-tab>
     <router-outlet></router-outlet>

@@ -6,6 +6,7 @@ import {OpenlayersComponent} from "../openlayers.component";
 import * as _ from 'lodash';
 
 export class OpenlayersGeoJson{
+  public feature;
   public queryParamsSubscriber;
   public geojsonLayers:string[];
   public  myMultiStyle = {
@@ -23,8 +24,16 @@ export class OpenlayersGeoJson{
     }),
   'LineString': new this.openlayers.ol.style.Style({
     stroke: new this.openlayers.ol.style.Stroke({
+      color: this.getColor(this.feature)
+
+
+
+
+    //sfeature.get("color")=="red"
+
+  /*  stroke: new this.openlayers.ol.style.Stroke({
       color: '#3388ff',
-      width: 3
+      width: 3*/
     })
   }),
     'MultiLineString': new this.openlayers.ol.style.Style({
@@ -51,12 +60,29 @@ export class OpenlayersGeoJson{
         width: 1
       })
     })
+
 };
 
   constructor(private openlayers:OpenlayersComponent){
     this.queryParamsSubscriber = openlayers.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
   }
+getColor(feature){
+  if (feature) {
+    switch (feature.get("color")) {
+      case 'red':
+        return  "#ff0000";
+      case 'blue':
+        return "#0000ff";
+      case 'green':
+        return  "#00ff00";
+      case 'yellow':
+        return "#feff43";
+      case 'black':
+        return  "#000000";
+    }
+  }
 
+}
   queryParams(params:Params) {
     var that = this;
     if(this.openlayers.queryParamsHelperService.anyGeoJsonChange(this.openlayers.prevParams, this.openlayers.currentParams)) {
@@ -112,6 +138,7 @@ export class OpenlayersGeoJson{
 
  myStyleFunction(feature,resolution) {
     let that = this;
+    that.feature =feature;
     if(feature.getGeometry().getType() == "GeometryCollection")
     {
       let geoColStyle =[];
@@ -121,6 +148,14 @@ export class OpenlayersGeoJson{
       })
       return geoColStyle;
 
+    }
+    else if(feature.getGeometry().getType() == "LineString") {
+      return new this.openlayers.ol.style.Style({
+        stroke: new this.openlayers.ol.style.Stroke({
+          color: this.getColor(this.feature),
+          width: 3
+        })
+      });
     }
     else return this.myMultiStyle[feature.getGeometry().getType()];
 }

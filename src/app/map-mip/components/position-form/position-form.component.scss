@@ -75,6 +75,14 @@
       padding: 0;
 
     }
+    .polygons-group {
+      width: 20px;
+      margin: 0 5px;
+      padding: 0;
+      margin-left: -44px;
+      margin-top: -1px;
+
+    }
 
     md-input-container{
       color: #d6d6d6;
@@ -105,7 +113,7 @@
             width: 100%;
           }
         }
-        .layers-group, .markers-group, .size-group, .lighting-group, .terrain-group{
+        .layers-group, .markers-group, .size-group, .lighting-group, .terrain-group, .polygons-group{
           width: inherit;
         }
         .markers-group{

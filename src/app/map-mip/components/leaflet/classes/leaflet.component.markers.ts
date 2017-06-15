@@ -107,6 +107,7 @@ export class LeafletMarkers {
 
   getMarkerLayersArray():Array<L.Marker>{  // addition: exclude geojson
     return <Array<L.Marker>> _.filter(this.leaflet.map['_layers'], (l) => l['getLatLng'] && !l.hasOwnProperty("feature")&& !l.hasOwnProperty("_closeButton"))
+
   }
 
   markerExistOnMap(markers_map_positions, paramMarker) {

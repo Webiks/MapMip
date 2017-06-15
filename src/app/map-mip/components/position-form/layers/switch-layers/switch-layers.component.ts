@@ -1,4 +1,5 @@
-import {Component, HostListener, Input, EventEmitter, Output, style, animate, transition, trigger} from '@angular/core';
+import {Component, HostListener, Input, EventEmitter, Output } from '@angular/core';
+import {style, animate, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'app-switch-layers',
@@ -20,7 +21,7 @@ import {Component, HostListener, Input, EventEmitter, Output, style, animate, tr
 })
 
 export class SwitchLayersComponent{
-  private _active:boolean = false;
+  private _active:boolean = true;
   alert:boolean = false;
   timeoutEvent;
 

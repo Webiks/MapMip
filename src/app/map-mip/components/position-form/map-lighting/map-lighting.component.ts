@@ -10,7 +10,7 @@ import {MapMipService} from "../../../api/map-mip.service";
 })
 export class MapLightingComponent implements OnChanges{
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['lighting']) {
+    if (changes['lighting']) {
       let lighting = this.lighting;
       this.lighting_value = this.queryParamsHelperService.queryLighting({lighting})
     }

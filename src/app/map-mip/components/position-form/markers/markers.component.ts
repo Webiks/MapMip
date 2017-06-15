@@ -53,7 +53,7 @@ export class MarkersComponent implements OnInit{
     this.markers_array = this.markers_array.map(marker => {
       let color = marker['color'] ? marker['color'] : "blue";
       let colorIndex  = this.positionFormService.getSelectedColorIndex(color);
-      let position = marker['position'].toString()
+      let position = marker['position'].toString();
       return {position, colorIndex}
     });
 

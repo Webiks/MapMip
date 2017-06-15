@@ -1,5 +1,5 @@
 <button class="btn btn-primary layer-btn" (click)="layersModal.show()" type="button">Layers</button>
-<app-switch-layers [(layersArray)]="layersArray" (submitLayersEmitter)="submitLayers()"></app-switch-layers>
+<!--<app-switch-layers [(layersArray)]="layersArray" (submitLayersEmitter)="submitLayers()"></app-switch-layers>-->
 
 <div  bsModal #layersModal="bs-modal" class="modal fade layers-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" (onShow)="initLayersArray()" (keypress)="onKeyPress($event)" aria-hidden="true">
   <div class="modal-dialog modal-md">
