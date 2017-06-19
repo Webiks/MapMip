@@ -43,3 +43,16 @@ popover-container.popover{
 .modal-open .modal{
   overflow: visible !important;
 }
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary{
+  background: yellowgreen;
+}
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary:hover{
+  background: #81ac2a;
+}
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-default{
+  background: #ab0808;
+  color: white;
+}
+div.bootstrap-switch{
+  border-radius: 4px;
+}

@@ -1,4 +1,20 @@
-<template #popTemplate>
+<div class="terrain">
+
+  <button type="button" class="btn btn-info"
+          placement="bottom"
+          id="terrain_pop"
+          #pop="bs-popover"
+          (onShown)="onShownPopover()"
+          [popover]="popTemplate" popoverTitle="Map Terrain">
+    Terrain
+  </button>
+
+</div>
+
+
+<!-- popover -->
+
+<ng-template #popTemplate>
   <form (clickOutside)="pop.hide()" exclude="button#terrain_pop" (submit)="submitTerrain(pop)">
     <div class="popView" class="popover-terrain">
       <input #input type="text" class="form-control" [(ngModel)]="terrainUrl"  [ngModelOptions]="{standalone: true}">
@@ -18,16 +34,8 @@
       <button type="submit" class="btn btn-info">OK</button>
     </div>
   </form>
-</template>
+</ng-template>
 
-<button type="button" class="btn btn-info"
-        placement="bottom"
-        id="terrain_pop"
-        #pop="bs-popover"
-        (onShown)="onShownPopover()"
-        [popover]="popTemplate" popoverTitle="Map Terrain">
-  Terrain
-</button>
 
 
 

@@ -62,12 +62,12 @@
             <!--<div class="params">-->
               <!--<table class="table table-bordered">-->
                 <!--<tbody>-->
-                <!--<template ngFor let-key [ngForOf]="Object.keys(layer_item.layer_obj)">-->
+                <!--<ng-template ngFor let-key [ngForOf]="Object.keys(layer_item.layer_obj)">-->
                   <!--<tr *ngIf="key != 'url' && key != 'source'">-->
                     <!--<th>{{key}}</th>-->
                     <!--<td>{{layer_item.layer_obj[key]}}</td>-->
                   <!--</tr>-->
-                <!--</template>-->
+                <!--</ng-template>-->
                 <!--</tbody>-->
               <!--</table>-->
             <!--</div>-->
@@ -311,14 +311,14 @@
       </div>
 
       <div class="modal-body default-modal-body">
-        <template  ngFor let-key [ngForOf]="Object.keys(addObject.default.obj)">
+        <ng-template  ngFor let-key [ngForOf]="Object.keys(addObject.default.obj)">
           <div class="form-group">
             <button *ngIf="key != 'url'" class="glyphicon glyphicon-remove" (click)="deleteKey(addObject.default.obj, key)"></button>
             <label>{{key}}</label>
 
             <input class="form-control" [(ngModel)]="addObject.default.obj[key]" [ngModelOptions]="{standalone: true}"/>
           </div>
-        </template>
+        </ng-template>
       </div>
 
       <div class="modal-footer">

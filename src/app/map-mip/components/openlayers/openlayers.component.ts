@@ -74,7 +74,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
   initializeMap():void {
     this.map = new ol.Map(<any>{
       target: this.container.nativeElement,
-      projection: new ol.proj.Projection(<any>{code:"EPSG:4326", extent: [-180.0000, -90.0000, 180.0000, 90.0000]}),
+      projection: new ol.proj.Projection(<any>{code:"EPSG:4326", extent: [-180.0000, -90.0000, 180.0000, 90.0000]})
     });
     this.ol =  ol;
     this.layers = new OpenlayersLayers(this);

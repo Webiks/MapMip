@@ -1,8 +1,12 @@
-<div class="pull-left" id="polygons">
-  <button  class="btn btn-default glyphicon glyphicon-pencil"
-           [class.active]="Active" (click)=" togglePolygonPicked(!Active)"  type="button" tooltip="Draw Polygon" triggers="hover"></button>
+<div class="polygons">
+    <button class="btn btn-primary polygons-menu" (click)="smModal.show()" type="button">Polygons</button>
+  <button class="btn btn-default glyphicon glyphicon-pencil draw-polygons" [class.active]="Active" (click)=" togglePolygonPicked(!Active)"  type="button" tooltip="Draw Polygon" triggers="hover"></button>
 </div>
-<button class="btn btn-primary pull-left" (click)="smModal.show()" type="button">Polygons</button>
+
+
+
+<!-- dialogs -->
+
 <div [config]="{backdrop: false}" bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="cloneEditedPolygons()">
   <div class="modal-dialog modal-md">
     <form class="modal-content" (submit)="submitPolygons(true)">

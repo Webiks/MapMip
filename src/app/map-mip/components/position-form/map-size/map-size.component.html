@@ -1,6 +1,6 @@
 
 
-<template #popTemplate>
+<ng-template #popTemplate>
   <div style="width: 200px" (clickOutside)="pop.hide()" exclude="#pop">
      width: {{sizeArr[0]}}%
     <input type="range" [(ngModel)]="sizeArr[0]" (ngModelChange)="onSizeChange()" name="points" min="0" max="100">
@@ -8,7 +8,7 @@
     <input type="range" [(ngModel)]="sizeArr[1]" (ngModelChange)="onSizeChange()" name="points" min="0" max="100">
 
   </div>
-</template>
+</ng-template>
 
 <button type="button" class="btn btn-success"
         placement="bottom"

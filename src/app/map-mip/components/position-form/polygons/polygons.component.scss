@@ -1,3 +1,6 @@
+$polygons-color: #009688;
+$polygons-border-color: #016a60;;
+
 div.polygon-row{
   display: flex;
   overflow: hidden;
@@ -8,5 +11,22 @@ div.polygon-row{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+div.polygons{
+  display: flex;
+
+  button.btn.btn-primary.polygons-menu {
+    background-color: $polygons-color;
+    border-color: $polygons-border-color;
+    margin-right: 5px;
+  }
+
+  button.btn.btn-default.glyphicon.glyphicon-pencil.draw-polygons{
+    color: $polygons-color;
+    border-color: $polygons-border-color;
+    top:0px;
+    margin-left: 5px;
   }
 }

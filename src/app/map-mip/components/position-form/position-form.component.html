@@ -10,79 +10,79 @@
   <div class="panel-body">
 
     <div class="pos-container">
+
       <form class="row" (submit)="submitForm()">
-        <template ngFor let-key [ngForOf]="keys(params)">
-
-          <div class="group-div" *ngIf="havePermission(params[key])">
 
 
+        <ng-template ngFor let-key [ngForOf]="keys(params)" >
+
+          <ng-template [ngIf]="havePermission(params[key])">
+
+            <div class="group-div">
+
+              <div class="input_type {{key}}" *ngIf="!params[key].input_type">
+                <md-input-container color="primary">
+                  <input mdInput placeholder="{{key}}" [(ngModel)]="params[key].val" [ngModelOptions]="{standalone: true}">
+                </md-input-container>
+              </div>
 
 
-            <div class="form-group input_type" *ngIf="!params[key].input_type">
-
-              <md-input-container color="primary">
-                <input mdInput placeholder="{{key}}" [(ngModel)]="params[key].val" [ngModelOptions]="{standalone: true}">
-              </md-input-container>
+              <div class="terrain-group" *ngIf="params[key].input_type == 'app-terrain'">
+                <app-terrain (submitTerrainEmitter)="submitForm()" [(terrain)]="params.terrain.val"></app-terrain>
+              </div>
 
 
-              <!--<div class="input-group">-->
-              <!--<span class="input-group-addon">{{key}}</span>-->
-              <!--<input type="text" class="form-control" [(ngModel)]="params[key].val" name="{{key}}" placeholder="{{key}}">-->
-              <!--</div>-->
+              <div class="lighting-group" *ngIf="params[key].input_type == 'app-map-lighting'">
+                <app-map-lighting [lighting]="params.lighting.val"></app-map-lighting>
+              </div>
+                <!--
+                          <div class="form-group polyline-group" *ngIf="params[key].input_type == 'app-polyline'">
+                            <app-polyline (togglePolylinePickedEmitter) = "submitForm()"  ></app-polyline>
+                          </div>-->
+
+              <div class="b-switch" *ngIf="params[key].input_type == 'Bswitch'">
+                <bSwitch [switch-label-text]="key" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>
+              </div>
+
             </div>
 
-            <div class="form-group markers-group" *ngIf="params[key].input_type == 'app-markers'">
-              <app-markers [lat]="params.lat.val" [lng]="params.lng.val" (submitMarkersEmitter)="submitMarkers($event)"></app-markers>
-            </div>
+          </ng-template>
+        </ng-template>
 
-            <div class="form-group layers-group" *ngIf="params[key].input_type == 'app-layers'">
-              <app-layers [layersString]="params.layers.val" (submitLayersEmitter)="submitLayers($event)"></app-layers>
-            </div>
+        <div class="markers-group">
+          <app-markers [lat]="params.lat.val" [lng]="params.lng.val" (submitMarkersEmitter)="submitMarkers($event)"></app-markers>
+        </div>
 
-            <div class="form-group size-group" *ngIf="params[key].input_type == 'app-map-size'">
-              <app-map-size (submitSizeEmitter)="submitForm()" [(size)]="params.size.val"></app-map-size>
-            </div>
+        <div class="layers-group">
+          <app-layers [layersString]="params.layers.val" (submitLayersEmitter)="submitLayers($event)"></app-layers>
+        </div>
 
-            <div class="form-group position-group" *ngIf="params[key].input_type == 'app-map-position'">
-              <app-map-position [size]="params.size.val" (submitPositionEmitter)="submitForm()" [(position)]="params.position.val"></app-map-position>
-            </div>
+        <div class="size-group">
+          <app-map-size (submitSizeEmitter)="submitForm()" [(size)]="params.size.val"></app-map-size>
+        </div>
 
-            <div class="form-group terrain-group" *ngIf="params[key].input_type == 'app-terrain'">
-              <app-terrain (submitTerrainEmitter)="submitForm()" [(terrain)]="params.terrain.val"></app-terrain>
-            </div>
+        <div class="position-group">
+          <app-map-position [size]="params.size.val" (submitPositionEmitter)="submitForm()" [(position)]="params.position.val"></app-map-position>
+        </div>
 
-            <div class="form-group layers-group" *ngIf="params[key].input_type == 'app-geojson-layer'">
-              <app-geojson-layer [geojson]="params.geojson.val" (submitGeoJsonEmitter)="submitGeojsons($event)"></app-geojson-layer>
-            </div>
+        <div class="layers-group">
+          <app-geojson-layer [geojson]="params.geojson.val" (submitGeoJsonEmitter)="submitGeojsons($event)"></app-geojson-layer>
+        </div>
 
-            <div class="form-group lighting-group" *ngIf="params[key].input_type == 'app-map-lighting'">
-              <app-map-lighting [lighting]="params.lighting.val"></app-map-lighting>
-            </div>
+        <div class="polygons-group">
+          <app-polygons (togglePickedEmitter)="submitForm()"  (submitPolygonsEmitter)="submitPolygons($event)" [polygons]="params.polygons.val" ></app-polygons>
+        </div>
 
-            <div class="form-group polygons-group" *ngIf="params[key].input_type == 'app-polygons'">
-              <app-polygons (togglePickedEmitter)="submitForm()"  (submitPolygonsEmitter)="submitPolygons($event)" [polygons]="params.polygons.val" ></app-polygons>
-            </div>
-<!--
-            <div class="form-group polyline-group" *ngIf="params[key].input_type == 'app-polyline'">
-              <app-polyline (togglePolylinePickedEmitter) = "submitForm()"  ></app-polyline>
-            </div>-->
+        <div class="polygons-group">
+          <app-flip-switch [(state)]="mapMipService.skipLocationChange" tooltip="Fixed Url"></app-flip-switch>
+        </div>
 
-            <div class="form-group b-switch" *ngIf="params[key].input_type == 'Bswitch'">
-              <bSwitch [switch-label-text]="key" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>
-            </div>
-
-          </div>
-
-        </template>
-
-
-          <app-flip-switch [state]="mapMipService.skipLocationChange"></app-flip-switch>
-
-
-        <button type="submit" style="display: none"></button>
         <div class="form-group submit">
           <button type="button" class="btn btn-info submit-mobile" (click)="submitForm();close()">Submit</button>
         </div>
+
+        <button type="submit" style="display: none"></button>
+
       </form>
 
     </div>
