@@ -8,30 +8,19 @@
   </div>
 
   <div class="panel-body">
-
     <div class="pos-container">
-
       <form class="row" (submit)="submitForm()">
-
-
         <ng-template ngFor let-key [ngForOf]="keys(params)" >
-
           <ng-template [ngIf]="havePermission(params[key])">
-
             <div class="group-div">
-
               <div class="input_type {{key}}" *ngIf="!params[key].input_type">
                 <md-input-container color="primary">
                   <input mdInput placeholder="{{key}}" [(ngModel)]="params[key].val" [ngModelOptions]="{standalone: true}">
                 </md-input-container>
               </div>
-
-
               <div class="terrain-group" *ngIf="params[key].input_type == 'app-terrain'">
                 <app-terrain (submitTerrainEmitter)="submitForm()" [(terrain)]="params.terrain.val"></app-terrain>
               </div>
-
-
               <div class="lighting-group" *ngIf="params[key].input_type == 'app-map-lighting'">
                 <app-map-lighting [lighting]="params.lighting.val"></app-map-lighting>
               </div>
@@ -39,15 +28,23 @@
                           <div class="form-group polyline-group" *ngIf="params[key].input_type == 'app-polyline'">
                             <app-polyline (togglePolylinePickedEmitter) = "submitForm()"  ></app-polyline>
                           </div>-->
-
               <div class="b-switch" *ngIf="params[key].input_type == 'Bswitch'">
-                <bSwitch [switch-label-text]="key" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>
+                <!--<bSwitch [switch-label-text]="'aa'" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>-->
+                <app-flip-switch
+                  [(state)]="params[key].val"
+                  [tooltip]="key"
+                  (stateChange)="submitForm()">
+                </app-flip-switch>
+
               </div>
 
             </div>
 
           </ng-template>
         </ng-template>
+
+
+
 
         <div class="markers-group">
           <app-markers [lat]="params.lat.val" [lng]="params.lng.val" (submitMarkersEmitter)="submitMarkers($event)"></app-markers>

@@ -76,7 +76,10 @@ export class PositionFormComponent implements OnInit {
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService, public mapMipService:MapMipService) {}
-
+  removeMe(key, event) {
+    this.params[key].val = event;
+    this.submitForm();
+  }
 
   submitLayers($event: {hide:boolean, modal:ModalDirective, parsed_layer:string}) {
     this.params.layers.val = $event.parsed_layer;
@@ -189,7 +192,12 @@ export class PositionFormComponent implements OnInit {
   keys(obj) {
     return Object.keys(obj);
   }
-
+  get rotateRef() {
+    return this.params.rotate;
+  }
+  get modeD() {
+    return this.params.rotate;
+  }
 }
 
 
