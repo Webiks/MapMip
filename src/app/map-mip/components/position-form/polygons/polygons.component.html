@@ -19,7 +19,6 @@
       </div>
 
       <div class="modal-body">
-        <button class="btn btn-primary top-button" type="button" (click)="addModal.show()">Add</button>
         <button class="glyphicon glyphicon-trash btn btn-danger pull-right top-button" type="button" [hidden]="polygonsArray.length == 0" (click)="removeAllPolygons()"></button>
 
         <ul class="list-group" *ngIf="polygonsArray.length > 0">
