@@ -29,7 +29,7 @@
                             <app-polyline (togglePolylinePickedEmitter) = "submitForm()"  ></app-polyline>
                           </div>-->
               <div class="b-switch" *ngIf="params[key].input_type == 'Bswitch'">
-                <!--<bSwitch [switch-label-text]="'aa'" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>-->
+                <!--<bSwitch [switch-label-text]="'aa '" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>-->
                 <app-flip-switch
                   [(state)]="params[key].val"
                   [tooltip]="key"

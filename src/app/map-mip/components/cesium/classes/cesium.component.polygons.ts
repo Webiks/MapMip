@@ -140,6 +140,7 @@
        positionArr.push(lngDeg, latDeg)
      });
      positionArr.splice(positionArr.length-4, 4) //remove redundant points from double click
+     positionArr=positionArr.map(newArr=>parseFloat(newArr));
      return positionArr;
 
    }

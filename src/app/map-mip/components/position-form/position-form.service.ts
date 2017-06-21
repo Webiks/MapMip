@@ -54,7 +54,7 @@ export class PositionFormService {
   public polygonPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   public polylinePickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   public mapsCont: any;
-  public hideComponent:boolean = false;
+  public hideComponent:boolean = true;
 
   constructor(private domSanitizer :DomSanitizer ) { }
 

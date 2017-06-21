@@ -44,8 +44,8 @@ export class OpenlayersPolygons {
   }
 
   setPolygonsChanges(params) {
-    const params_polygons_array: Array<Object> = this.openlayers.calcService.toFixes7Obj(this.openlayers.queryParamsHelperService.queryPolygons(params));
-    const map_polygons_array = this.openlayers.calcService.toFixes7Obj(this.getPolygonsPositions());
+    const params_polygons_array: Array<Object> = /*this.openlayers.calcService.toFixes7Obj(*/this.openlayers.queryParamsHelperService.queryPolygons(params);
+    const map_polygons_array = /*this.openlayers.calcService.toFixes7Obj(*/this.getPolygonsPositions();
 
     this.addPolygonsViaUrl(params_polygons_array, map_polygons_array );
     this.removePolygonsViaUrl(params_polygons_array, map_polygons_array );
@@ -82,7 +82,7 @@ export class OpenlayersPolygons {
       transformedCoords.push([polygon_obj.coords[i],polygon_obj.coords[i+1]])
     }
     transformedCoords = transformedCoords.map((coords) => ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857'));
-    transformedCoords = this.openlayers.calcService.toFixes7Obj(transformedCoords);
+    transformedCoords = /*this.openlayers.calcService.toFixes7Obj(*/transformedCoords;
     const geometry = new ol.geom.Polygon( [transformedCoords ]);
     return new ol.Feature({geometry});
   }
@@ -107,15 +107,6 @@ export class OpenlayersPolygons {
     const exist_polygon  = map_polygons_array.find(polygon_obj=> _.isEqual(polygon_obj, map_polygon_obj)) ;
     return !_.isEmpty(exist_polygon);
   }
-
-  /* polygonsExistOnMap(coords: L.LatLng[]): boolean {
-   const polygonsOnMap = _.filter(this.leaflet.map['_layers'], (l) => l['_latlngs'] && !l.hasOwnProperty("feature")&& !l.hasOwnProperty("_icon"));
-   const exist_polygon = polygonsOnMap.find((polygon: L.Polygon) => {
-   const real_coord: L.LatLng[] = (polygon.getLatLngs()[0] as any).map(o => [o.lat, o.lng]);
-   return _.isEqual(real_coord, coords);
-   });
-   return !_.isNil(exist_polygon);
-   }*/
 
   togglePolygonPicker(){
     let that =this;
