@@ -134,7 +134,7 @@ export class LeafletLayers {
     return L.tileLayer(tms_url, {tms:true});
   }
   getDefaultLayer(default_obj) {
-    return L.tileLayer(this.leaflet.queryParamsHelperService.layerObjectToUrl(default_obj));
+    return L.tileLayer(this.leaflet.queryParamsHelperService.layerObjecttToUrl(default_obj));
   }
   parseTmsUrl(osm_obj){
     return `${osm_obj['url']}/{z}/{x}/{y}${osm_obj['format'] ? '.' + osm_obj['format'] : ''}`

@@ -73,7 +73,7 @@ export class CesiumLayers{
 
   getUrlTemplateLayer(default_obj){
     return new Cesium.UrlTemplateImageryProvider({
-      url: this.cesium.queryParamsHelperService.layerObjectToUrl(default_obj)
+      url: this.cesium.queryParamsHelperService.layerObjecttToUrl(default_obj)
     });
   }
 

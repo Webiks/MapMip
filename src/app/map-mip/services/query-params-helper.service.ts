@@ -230,7 +230,7 @@ export class QueryParamsHelperService{
     return rison.encode_array(tms_obj);
   }
 
-  layerObjectToUrl(layer_obj):string {
+  layerObjecttToUrl(layer_obj):string {
     let obj = _.cloneDeep(layer_obj);
     let url = obj.url;
     delete obj.url;

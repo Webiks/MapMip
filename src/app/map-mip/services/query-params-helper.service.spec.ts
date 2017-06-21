@@ -130,13 +130,13 @@
 //     expect(queryParamsHelperService.anyMarkersParamsChanges(prevParams, currentParams)).toBeTruthy();
 //   });
 //
-//   it('layerObjectToUrl should get object and parse him to url', ()=>{
+//   it('layerObjecttToUrl should get object and parse him to url', ()=>{
 //     let url_obj = {
 //       url: 'the_tms_of_url',
 //       p1: 'p1_value',
 //       p2: 'p2_value'
 //     };
-//     let url_string:string = queryParamsHelperService.layerObjectToUrl(url_obj);
+//     let url_string:string = queryParamsHelperService.layerObjecttToUrl(url_obj);
 //     expect(url_string).toEqual(`${url_obj.url}?p1=${url_obj.p1}&p2=${url_obj.p2}`);
 //   });
 //

@@ -54,6 +54,8 @@ export class OpenlayersMapView{
     this.openlayers.map.setView(new ol.View(<olx.ViewOptions>{
       center: ol.proj.fromLonLat([this.openlayers.queryParamsHelperService.queryLng(params),this.openlayers.queryParamsHelperService.queryLat(params)]),
       zoom: this.openlayers.queryParamsHelperService.queryZoom(params),
+      minZoom: 3,
+      maxZoom: 19,
       rotation: this.openlayers.calcService.toRadians(360 - this.openlayers.queryParamsHelperService.queryHeading(params))
     }));
 

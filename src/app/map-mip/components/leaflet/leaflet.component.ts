@@ -68,8 +68,34 @@ export class LeafletComponent implements OnInit, OnDestroy{
   }
 
   initializeMap():void {
-    this.map = L.map(this.container.nativeElement);
+
+    this.map = L.map(this.container.nativeElement,{
+    });
     this.L = L;
+    //[-180.0000, -90.0000, 180.0000, 90.0000]
+   // const bounds = new L.LatLngBounds(new L.LatLng(-90.0000, -180.0000), new L.LatLng(90.0000, 180.0000));
+    let fitBoundsSouthWest = new L.LatLng(59.95741670174863, 5.910301208496094);
+    let fitBoundsNorthEast = new L.LatLng(60.13877, 6.34392);
+
+    let fitBoundsArea = new L.LatLngBounds(fitBoundsSouthWest, fitBoundsNorthEast);
+
+    let maxBoundsSouthWest = new L.LatLng(59.938504253195234, 5.79803466796875);
+    let maxBoundsNorthEast = new L.LatLng(60.15790959006859, 6.45721435546875);
+
+    let maxBoundsArea = new L.LatLngBounds(maxBoundsSouthWest, maxBoundsNorthEast);
+    let that = this;
+    let onViewReset = function(e){
+      that.map.setMaxBounds(maxBoundsArea);
+
+      that.map.off('viewreset', onViewReset);
+    };
+
+    this.map.on('viewreset', onViewReset);
+
+    this.map.fitBounds(fitBoundsArea);
+
+
+
   }
 
   ngOnDestroy(): void {

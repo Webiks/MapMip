@@ -45,9 +45,8 @@ export class OpenlayersLayers {
       let layer = this.getLayerFromLayerObj(layer_obj);
       let map_l = this.getTileLayersArray().find(_layer => this.layersEqual(layer, _layer ));
     //  let map_l = layersArray.find(_layer => this.layersEqual(layer, _layer.a.layer ));
-      if(map_l) {
-        map_l.setZIndex(index);
-      }
+      map_l.setZIndex(index);
+
 
 
 
@@ -165,8 +164,8 @@ export class OpenlayersLayers {
     return new ol.layer.Tile(<olx.layer.TileOptions>{
       source: new ol.source.XYZ(<olx.source.XYZOptions> {
         url: osm_url
-      })/*,
-      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')*/
+      }),
+      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')
     });
 
   }
@@ -176,8 +175,8 @@ export class OpenlayersLayers {
     return new ol.layer.Tile(<olx.layer.TileOptions>{
       source: new ol.source.XYZ(<olx.source.XYZOptions> {
         url: mapbox_url
-      })/*,
-      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')*/
+      }),
+      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')
     });
   }
 
@@ -186,8 +185,8 @@ export class OpenlayersLayers {
       source: new ol.source.BingMaps(<any>{
         key: bing_obj['key'],
         imagerySet: bing_obj['style']
-      })/*,
-      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')*/
+      }),
+      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')
     });
   }
 
@@ -196,8 +195,8 @@ export class OpenlayersLayers {
     let layer = new ol.layer.Tile(<olx.layer.TileOptions>{
       source: new ol.source.XYZ(<olx.source.XYZOptions> {
         url: tms_url
-      })/*,
-      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')*/
+      }),
+      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')
     });
     return layer;
   }
@@ -206,8 +205,8 @@ export class OpenlayersLayers {
     return new ol.layer.Tile(<olx.layer.TileOptions>{
       source: new ol.source.XYZ(<olx.source.XYZOptions> {
         url: `${this.openlayers.calcService.getParsedUrlWithSubdomain(default_obj['url'])}`
-      })/*,
-      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')*/
+      }),
+      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')
     });
   }
 

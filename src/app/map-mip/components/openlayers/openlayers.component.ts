@@ -30,7 +30,6 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
   private _map;
   public currentParams:Params = {};
   public prevParams:Params = {};
-
   public layers:OpenlayersLayers;
   public markers:OpenlayersMarkers;
   public map_view:OpenlayersMapView;
@@ -74,19 +73,10 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
 
   initializeMap():void {
 
-
     this.map = new ol.Map(<any>{
       target: this.container.nativeElement,
       projection: new ol.proj.Projection(<any>{code:"EPSG:4326", extent: [-180.0000, -90.0000, 180.0000, 90.0000]})
     });
-/*    const  nav= ol.control.
-    const  pan=new OpenLayers.Control.PanZoom();
-
-    this.map.addControls([nav,pan]);
-
-    nav.activate();
-    pan.activate()*/
-  //  this.map.boundingExtent([-180.0000, -90.0000, 180.0000, 90.0000]);
     this.ol =  ol;
     this.layers = new OpenlayersLayers(this);
     this.markers = new OpenlayersMarkers(this);
@@ -96,6 +86,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
     this.geojson = new OpenlayersGeoJson(this);
     this.polygons = new OpenlayersPolygons(this);
   }
+
 
   get LayersArray() {
     return this.map.getLayers().getArray();
