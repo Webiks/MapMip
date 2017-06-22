@@ -45,8 +45,9 @@ export class OpenlayersLayers {
       let layer = this.getLayerFromLayerObj(layer_obj);
       let map_l = this.getTileLayersArray().find(_layer => this.layersEqual(layer, _layer ));
     //  let map_l = layersArray.find(_layer => this.layersEqual(layer, _layer.a.layer ));
-      map_l.setZIndex(index);
-
+      if(map_l) {
+        map_l.setZIndex(index);
+      }
 
 
 

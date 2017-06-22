@@ -322,7 +322,7 @@
       </div>
 
       <div class="modal-footer">
-        <span class="glyphicon glyphicon-exclamation-sign pull-left" [tooltip]="queryParamsHelperService.layerObjecttToUrl(addObject.default.obj)" tooltipClass="url-tooltip"></span>
+        <span class="glyphicon glyphicon-exclamation-sign pull-left" [tooltip]="queryParamsHelperService.layerObjectToUrl(addObject.default.obj)" tooltipClass="url-tooltip"></span>
         <button class="btn btn-default" (click)="defaultModal.hide()" type="button">Cancel</button>
         <button class="btn btn-default" type="submit">{{addObject.default.onEdit() ? 'Save' : 'Add'}}</button>
       </div>
