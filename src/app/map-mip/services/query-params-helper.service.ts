@@ -135,36 +135,7 @@ export class QueryParamsHelperService{
     polygons_array.push({coords});
     urlTree.queryParams['polygons'] = rison.encode_array(polygons_array);
     this.mapMipService.navigateByUrl(urlTree.toString())
-
-
-
-    // if(this.polygons_array.length === 0 && urlTree.queryParams['polygons']!== undefined){
-    //   this.polygons_array.push(urlTree.queryParams['polygons']);
-    // }
-    // if(coords.constructor.name =="String") {
-    //   let posArr = this.polygonsStrToArray(positions);
-    //   this.polygons_array.push(posArr);
-    // }
-    // if(coords.constructor.name =="Array") {
-    //   this.polygons_array.push(positions);
-    // }
-    // let polygonsString = this.polygonsArrayToStr(this.polygons_array);
-    // polygonsString = polygonsString.replace('((','(');
-    // polygonsString = polygonsString.replace('))',')');
-    // urlTree.queryParams['polygons'] = polygonsString;
-    // this.mapMipService.navigateByUrl(urlTree.toString())
   }
-  addPolygonStr(positions){
-    let urlTree:UrlTree = this.router.parseUrl(this.router.url);
-    if(this.polygons_array.length === 0 && urlTree.queryParams['polygons']!== undefined){
-      this.polygons_array.push(urlTree.queryParams['polygons']);
-    }
-    let posArr = this.polygonsStrToArray(positions);
-    this.polygons_array.push(posArr);
-
-    this.mapMipService.navigateByUrl(urlTree.toString())
-  }
-
   removeMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let markers_array:Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
@@ -254,6 +225,7 @@ export class QueryParamsHelperService{
   polygonsStrToArray(polygonStr:string=""): Array<any> {
     return rison.decode_array(polygonStr);
   }
+
 
   polygonsArrayToStr(polygonArray:Array<any>): string{
     return rison.encode_array(polygonArray);

@@ -1,0 +1,32 @@
+$polyline-color: #009688;
+$polyline-border-color: #016a60;;
+
+div.polyline-row{
+  display: flex;
+  overflow: hidden;
+*{
+  margin: 0 3px;
+}
+span{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+}
+
+div.polyline{
+  display: flex;
+
+button.btn.btn-primary.polygons-menu {
+  background-color: $polyline-color;
+  border-color: $polyline-border-color;
+  margin-right: 5px;
+}
+
+button.btn.btn-default.glyphicon.glyphicon-pencil.draw-polyline{
+  color: $polyline-color;
+  border-color: $polyline-border-color;
+  top:0px;
+  margin-left: 5px;
+}
+}

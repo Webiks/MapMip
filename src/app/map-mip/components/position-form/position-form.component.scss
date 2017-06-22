@@ -42,7 +42,7 @@
         width: 90px;
       }
     }
-    .markers-group, .layers-group, .size-group, .terrain-group, .position-group, .lighting-group, .polygons-group, .flip-switch-group   {
+    .markers-group, .layers-group, .size-group, .terrain-group, .position-group, .lighting-group, .polygons-group, .polyline-group, .flip-switch-group   {
       margin: 0 5px;
     }
     .b-switch {
@@ -80,7 +80,7 @@
             width: 100%;
           }
         }
-        .layers-group, .markers-group, .size-group, .lighting-group, .terrain-group, .polygons-group, flip-switch-group{
+        .layers-group, .markers-group, .size-group, .lighting-group, .terrain-group, .polygons-group, .polyline-group, flip-switch-group{
           width: inherit;
         }
 

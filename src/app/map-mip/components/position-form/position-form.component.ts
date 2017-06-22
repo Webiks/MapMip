@@ -105,6 +105,15 @@ export class PositionFormComponent implements OnInit {
     });
   }
 
+  submitPolyline($event: {hide:boolean, smModal:ModalDirective, parsed_polylines:string}) {
+    this.params.polyline.val = $event.parsed_polylines;
+
+    this.submitForm().then(()=>{
+      if($event.hide || _.isNil(this.params.polyline.val)) $event.smModal.hide();
+    });
+  }
+
+
   submitGeojsons($event: {hide:boolean, modal:ModalDirective, parsed_geojson:string}){
     this.params.geojson.val = $event.parsed_geojson;
 

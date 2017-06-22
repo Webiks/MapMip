@@ -1,5 +1,47 @@
-<div class="pull-left" id="polyline">
-  <button  class="btn btn-default glyphicon glyphicon-pencil"
+<div class="polyline">
+  <button class="btn btn-primary polyline-menu" (click)="smModal.show()" type="button">Polylines</button>
+  <button  class="btn btn-default glyphicon glyphicon-pencil draw-polyline"
            [class.active]="Active" (click)=" togglePolylinePicked(!Active)"  type="button" tooltip="Draw Polyline" triggers="hover"></button>
 </div>
 
+
+<!-- dialogs -->
+
+<div [config]="{backdrop: false}" bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="cloneEditedPolyline()">
+  <div class="modal-dialog modal-md">
+    <form class="modal-content" (submit)="submitPolylines(true)">
+
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="smModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Polylines</h4>
+      </div>
+
+      <div class="modal-body">
+        <button class="glyphicon glyphicon-trash btn btn-danger pull-right top-button" type="button" [hidden]="polylineArray.length == 0" (click)="removeAllPolylines()"></button>
+
+        <ul class="list-group" *ngIf="polylineArray.length > 0">
+          <li class="list-group-item" *ngFor="let polyline of polylineArray; let i = index" >
+
+            <div class="polyline-row">
+
+              <button class="btn btn-danger glyphicon glyphicon-remove-sign" type="button" (click)="rmvPolyline(i)"></button>
+
+              <span class="position">
+                {{polyline.coords}}
+              </span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-default" (click)="smModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" [disabled]="!canApply()" (click)="submitPolygons()" type="button">Apply</button>
+        <button class="btn btn-default" type="submit">Ok</button>
+      </div>
+
+    </form>
+  </div>
+</div>

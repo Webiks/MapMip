@@ -22,6 +22,7 @@ export class CesiumPolyline{
   }
   destroy() {
     this.queryParamsSubscriber.unsubscribe();
+    this.cesium.positionFormService.polygonPickerEmitter.unsubscribe();
     this.cesium.viewer.cesiumHandler.destroy();
   }
 
@@ -35,42 +36,15 @@ export class CesiumPolyline{
   setPolylineChanges(params:Params):void{
     let params_polyline_array: Array<Object> = this.cesium.queryParamsHelperService.queryPolyline(params);
     this.addPolylineViaUrl(params_polyline_array);
-
-    /*let that = this;
-
-     let polygons_splitted = params.polygons.split(" ").join("").split(")(").map(
-     (str, index, array) => {
-     if(index == 0){
-     str = str.replace("(", "")
-     }
-     if(index == array.length - 1) {
-     str = str.replace(")", "")
-     }
-     return str
-     });
-
-     let poly_str_arr=[];
-     _.forEach(polygons_splitted,function (poly) {
-     poly_str_arr.push(poly.split(','));
-     });
-
-
-     _.forEach(poly_str_arr,function(polygon){
-     that.cesium.viewer.entities.add({
-     id: that.polygon_id+=1,
-     name : 'PolygonDrawer'+that.polygon_id,
-     polygon : {
-     hierarchy : new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polygon)),
-     /!*  outline : true,
-     outlineColor : Cesium.Color.RED,*!/
-     /!*outlineWidth : 4   *!/ }
-     });
-     });
-
-     */
   }
 
   addPolylineViaUrl(params_polyline_array: any[]) {
+    const polylinesOnMap = _.filter(this.cesium.viewer.entities.values, (ent) => ent['polyline']);
+
+    polylinesOnMap.forEach(polyline_obj => {
+      this.cesium.viewer.entities.remove(polyline_obj);
+    });
+
     let that =this;
     params_polyline_array.forEach(polyline_obj => {
       let coords = [];

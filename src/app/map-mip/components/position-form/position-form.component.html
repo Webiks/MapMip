@@ -24,10 +24,9 @@
               <div class="lighting-group" *ngIf="params[key].input_type == 'app-map-lighting'">
                 <app-map-lighting [lighting]="params.lighting.val"></app-map-lighting>
               </div>
-                <!--
-                          <div class="form-group polyline-group" *ngIf="params[key].input_type == 'app-polyline'">
-                            <app-polyline (togglePolylinePickedEmitter) = "submitForm()"  ></app-polyline>
-                          </div>-->
+                          <div class="polyline-group" *ngIf="params[key].input_type == 'app-polyline'">
+                            <app-polyline (togglePolylinePickedEmitter) = "submitForm()" (submitPolylineEmitter)="submitPolyline($event)" ></app-polyline>
+                          </div>
               <div class="b-switch" *ngIf="params[key].input_type == 'Bswitch'">
                 <!--<bSwitch [switch-label-text]="'aa '" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>-->
                 <app-flip-switch
