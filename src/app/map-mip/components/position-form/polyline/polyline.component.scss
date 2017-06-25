@@ -23,10 +23,14 @@ button.btn.btn-primary.polygons-menu {
   margin-right: 5px;
 }
 
-button.btn.btn-default.glyphicon.glyphicon-pencil.draw-polyline{
+button.btn.btn-default.draw-polyline{
   color: $polyline-color;
   border-color: $polyline-border-color;
   top:0px;
   margin-left: 5px;
 }
+  img{
+    width:14px;
+    height:16px;
+  }
 }

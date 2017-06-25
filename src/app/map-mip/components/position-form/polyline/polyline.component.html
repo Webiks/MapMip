@@ -1,7 +1,10 @@
 <div class="polyline">
   <button class="btn btn-primary polyline-menu" (click)="smModal.show()" type="button">Polylines</button>
-  <button  class="btn btn-default glyphicon glyphicon-pencil draw-polyline"
-           [class.active]="Active" (click)=" togglePolylinePicked(!Active)"  type="button" tooltip="Draw Polyline" triggers="hover"></button>
+  <button  class="btn btn-default draw-polyline"
+           [class.active]="Active" (click)=" togglePolylinePicked(!Active)"  type="button" tooltip="Draw Polyline" triggers="hover">
+    <img src="../../../../../assets/Icons/glyphicons-98-vector-path-line.png"/>
+  </button>
+
 </div>
 
 

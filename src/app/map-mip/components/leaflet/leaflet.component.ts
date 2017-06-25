@@ -21,6 +21,7 @@ import {AjaxService} from "../../services/ajax.service";
 import {animations, host} from "../../map-mip.component";
 import {MapMipService} from "../../api/map-mip.service";
 import {LeafletPolygons} from "./classes/leaflet.component.polygons";
+import {LeafletPolyline} from "./classes/leaflet.component.polyline";
 
 
 @Component({
@@ -44,6 +45,7 @@ export class LeafletComponent implements OnInit, OnDestroy{
   public map_position:LeafletMapPosition;
   public geojson:LeafletGeoJson;
   public polygons:LeafletPolygons;
+  public polyline:LeafletPolyline;
   public southWest = L.latLng(-87.71179927260242,-180);
   public northEast = L.latLng(89.45016124669523, 180);
   public bounds = L.latLngBounds(this.southWest, this.northEast);
@@ -67,9 +69,10 @@ export class LeafletComponent implements OnInit, OnDestroy{
     this.map_position = new LeafletMapPosition(this);
     this.geojson = new LeafletGeoJson(this);
     this.polygons = new LeafletPolygons(this,this.queryParamsHelperService);
+    this.polyline = new LeafletPolyline(this,this.queryParamsHelperService);
 
 
-    
+
   }
 
   initializeMap():void {

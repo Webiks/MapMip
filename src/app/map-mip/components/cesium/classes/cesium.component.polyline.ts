@@ -54,8 +54,8 @@ export class CesiumPolyline{
 
 
         that.cesium.viewer.entities.add({
-          id: that.polyline_id+=1,
-          name : 'PolylineDrawer'+that.polyline_id,
+          // id: that.polyline_id+=1,
+          // name : 'PolylineDrawer'+that.polyline_id,
           polyline: {
             show: true,
             positions:  Cesium.Cartesian3.fromDegreesArray((coords[0])),
@@ -100,8 +100,8 @@ export class CesiumPolyline{
     this._positions=[];
 
     this._polylineEntity= this.cesium.viewer.entities.add({
-      id: this.polyline_id+=1,
-      name : 'Polyline'+this.polyline_id,
+      // id: this.polyline_id+=1,
+      // name : 'Polyline'+this.polyline_id,
       polyline: {
         show: true,
         positions: this.setCallbackProperty(this._positions),

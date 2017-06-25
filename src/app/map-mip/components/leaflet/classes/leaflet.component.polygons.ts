@@ -1,4 +1,4 @@
-/**
+7/**
  * Created by USSeR on 5/23/2017.
  */
 import {Params} from "@angular/router";
@@ -14,17 +14,11 @@ export class LeafletPolygons {
     this.queryParamsSubscriber = leaflet.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     leaflet.positionFormService.polygonPickerEmitter.subscribe(this.togglePolygonPicker.bind(this));
     if(leaflet.positionFormService.onPolygonPicked) this.togglePolygonPicker.bind(this)(true);
-
-    //   if (leaflet.activatedRoute.queryParams['polygons'].isDefined()){
-    // //    this.queryParams(leaflet.queryParams['polygons']);
-    //   }
-
-    // if (this.leaflet.router['rawUrlTree'].queryParams.polygons) { //from ol3
-    //   this.queryParams(this.leaflet.router['rawUrlTree'].queryParams.polygons)
-    // }
   }
+
   destroy() {
     this.queryParamsSubscriber.unsubscribe();
+    this.leaflet.positionFormService.polygonPickerEmitter.unsubscribe();
   }
   queryParams(params:Params){
     if(this.leaflet.queryParamsHelperService.anyPolygonsChange(this.leaflet.prevParams, this.leaflet.currentParams)) {
@@ -41,11 +35,12 @@ export class LeafletPolygons {
 
   addPolygonsViaUrl(params_polygons_array: any[]) {
 
-      let polygonsOnMap = _.filter(this.leaflet.map['_layers'], (l) => l['_latlngs'] && !l.hasOwnProperty("feature")&& !l.hasOwnProperty("_icon"))
+      let polygonsOnMap = _.filter(this.leaflet.map['_layers'], (l) => l['_latlngs'] && !l.hasOwnProperty("feature")&& !l.hasOwnProperty("_icon")
+        && (l as any).toGeoJSON().geometry.type=='Polygon');
 
-      polygonsOnMap.forEach(polygon_obj => {
+    polygonsOnMap.forEach(polygon_obj => {
         polygon_obj['remove']();
-      })
+      });
 
       params_polygons_array.forEach(polygon_obj => {
         let coords = [];
@@ -61,27 +56,13 @@ export class LeafletPolygons {
   }
 
   polygonsExistOnMap(coords: L.LatLng[]): boolean {
-    const polygonsOnMap = _.filter(this.leaflet.map['_layers'], (l) => l['_latlngs'] && !l.hasOwnProperty("feature")&& !l.hasOwnProperty("_icon"));
+    const polygonsOnMap = _.filter(this.leaflet.map['_layers'], (l) => l['_latlngs'] && !l.hasOwnProperty("feature")&& !l.hasOwnProperty("_icon")
+    && (l as any).toGeoJSON().geometry.type=='Polygon');
     const exist_polygon = polygonsOnMap.find((polygon: L.Polygon) => {
       const real_coord: L.LatLng[] = (polygon.getLatLngs()[0] as any).map(o => [o.lat, o.lng]);
       return _.isEqual(real_coord, coords);
     });
     return !_.isNil(exist_polygon);
-
-    //    for(let i=0;i<polygonsOnMap.length;i++){
-    //      for (let j =0; j<polygonsOnMap[i][0]['_latlngs'][0].length;j++){
-    //        if(polygonsOnMap[0]['_latlngs'][0][j].lng !== coords[j] ||
-    //          polygonsOnMap[0]['_latlngs'][0][j].lat !== coords[j+1]) {
-    //          //one of the coordinates are not exist so exist the function and draw it
-    //          return false;
-    //        }
-    //
-    //      }
-    //
-    //    }
-    //    // no mismatch so polygon is on map already
-    //   return true;
-    // no polygons at map return false and draw
   }
 
   togglePolygonPicker(){
@@ -94,7 +75,7 @@ export class LeafletPolygons {
       const poly_arr = [];
       var type = e['layerType'],
         layer = e['layer'];
-      layer.addTo(that.leaflet.map);
+     // layer.addTo(that.leaflet.map);
       that.polygonsCoords.push(layer['_latlngs'])
       _.forEach(layer['_latlngs'],function(point){
         _.forEach(point,function(p){

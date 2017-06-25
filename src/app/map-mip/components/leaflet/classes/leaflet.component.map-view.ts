@@ -39,9 +39,10 @@ export class LeafletMapView{
     let position = this.leaflet.currentParams['position'];
     let geojson = this.leaflet.currentParams['geojson'];
     let polygons = this.leaflet.currentParams['polygons'];
+    let polyline = this.leaflet.currentParams['polyline'];
 
 
-    let navigationExtras:NavigationExtras = this.leaflet.queryParamsHelperService.getQuery({lng, lat, zoom, markers, layers, size,position,geojson,polygons});
+    let navigationExtras:NavigationExtras = this.leaflet.queryParamsHelperService.getQuery({lng, lat, zoom, markers, layers, size,position,geojson,polygons,polyline});
 
     return this.leaflet.mapMipService.navigate([], navigationExtras)
   };
@@ -105,7 +106,8 @@ export class LeafletMapView{
         let position = this.leaflet.currentParams['position'];
         let geojson = this.leaflet.currentParams['geojson'];
         let polygons = this.leaflet.currentParams['polygons'];
-        extras.queryParams = {bounds, markers, layers, size, position, geojson, polygons};
+        let polyline = this.leaflet.currentParams['polyline'];
+        extras.queryParams = {bounds, markers, layers, size, position, geojson, polygons, polyline};
         break;
       case MapMipService.OPENLAYERS_PATH:
         let preserveQueryParams: boolean = true;

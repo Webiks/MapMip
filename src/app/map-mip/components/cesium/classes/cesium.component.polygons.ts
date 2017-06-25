@@ -50,8 +50,8 @@
          coords.push(polygon_obj.coords)
        if(!this.polygonsExistOnMap(coords)) {
            that.cesium.viewer.entities.add({
-             id: that.polygon_id+=1,
-             name : 'PolygonDrawer'+that.polygon_id,
+             // id: that.polygon_id+=1,
+             // name : 'PolygonDrawer'+that.polygon_id,
              polygon : {
                hierarchy : new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(coords[0])),
                material : Cesium.Color.LIGHTSKYBLUE.withAlpha(0.5),
@@ -95,8 +95,8 @@
      this._positions=[];
 
      this._polygonEntity= this.cesium.viewer.entities.add({
-       id: this.polygon_id+=1,
-       name : 'PolygonDrawer'+this.polygon_id,
+       // id: this.polygon_id+=1,
+       // name : 'PolygonDrawer'+this.polygon_id,
        polyline: {
          show: true,
          positions: this.setCallbackProperty(this._positions),

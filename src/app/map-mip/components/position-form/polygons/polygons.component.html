@@ -1,6 +1,8 @@
 <div class="polygons">
     <button class="btn btn-primary polygons-menu" (click)="smModal.show()" type="button">Polygons</button>
-  <button class="btn btn-default glyphicon glyphicon-pencil draw-polygons" [class.active]="Active" (click)=" togglePolygonPicked(!Active)"  type="button" tooltip="Draw Polygon" triggers="hover"></button>
+  <button class="btn btn-default draw-polygons" [class.active]="Active" (click)=" togglePolygonPicked(!Active)"  type="button" tooltip="Draw Polygon" triggers="hover">
+    <img src="../../../../../assets/Icons/glyphicons-97-vector-path-polygon.png"/>
+  </button>
 </div>
 
 

@@ -23,10 +23,14 @@ div.polygons{
     margin-right: 5px;
   }
 
-  button.btn.btn-default.glyphicon.glyphicon-pencil.draw-polygons{
+  button.btn.btn-default.draw-polygons{
     color: $polygons-color;
     border-color: $polygons-border-color;
     top:0px;
     margin-left: 5px;
+  }
+  img{
+     width:14px;
+    height:16px;
   }
 }
