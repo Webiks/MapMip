@@ -20,7 +20,7 @@ export class LeafletPolyline {
       .subscribe(this.setPolylineChanges.bind(this));
 
     leaflet.positionFormService.polylinePickerEmitter.subscribe(this.togglePolylinePicker.bind(this));
-    if(leaflet.positionFormService.onPolylinePicked) this.togglePolylinePicker.bind(this)(true);
+  //  if(leaflet.positionFormService.onPolylinePicked) this.togglePolylinePicker.bind(this)(true);
   }
   destroy() {
     this.queryParamsSubscriber.unsubscribe();

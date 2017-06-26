@@ -18,11 +18,11 @@ export class CesiumPolyline{
 
     this.queryParamsSubscriber = cesium.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     cesium.positionFormService.polylinePickerEmitter.subscribe(this.togglePolylinePicker.bind(this));
-    if(cesium.positionFormService.onPolylinePicked) this.togglePolylinePicker.bind(this)(true);
+  //  if(cesium.positionFormService.onPolylinePicked) this.togglePolylinePicker.bind(this)(true);
   }
   destroy() {
     this.queryParamsSubscriber.unsubscribe();
-    this.cesium.positionFormService.polygonPickerEmitter.unsubscribe();
+    this.cesium.positionFormService.polylinePickerEmitter.unsubscribe();
     this.cesium.viewer.cesiumHandler.destroy();
   }
 
@@ -70,38 +70,41 @@ export class CesiumPolyline{
   }
   polylineExistOnMap(coords):boolean{
     //no entities on map - don't check:
-    return false;
-   /* if (this.cesium.viewer.entities.values==0)
+    const polylinesOnMap = _.filter(this.cesium.viewer.entities.values, (ent) => ent['polyline']);
+    if (polylinesOnMap.length==0)
+      return false;
+    if (this.cesium.viewer.entities.values==0)
     {
       return false;
     }
-    for (let a=0; a<this.cesium.viewer.entities.values.length;a++)
-    {
-      var exist = this.cesium.viewer.entities.values[a].polygon.hierarchy.getValue();
+    for (let a=0; a<this.cesium.viewer.entities.values.length;a++) {
+
+      if(this.cesium.viewer.entities.values[a].polyline){
+
+      var exist = this.cesium.viewer.entities.values[a].polyline.positions.getValue();
 
 
-      for ( let i=0; i<exist.length-2; i++)
-      {
-        let lng=Cesium.Cartographic.fromCartesian(exist[i]).longitude;
+      for (let i = 0; i < exist.length; i++) {
+        let lng = Cesium.Cartographic.fromCartesian(exist[i]).longitude;
         let lngDeg = Cesium.Math.toDegrees(lng);
         let lngFixed = lngDeg.toFixed(7);
 
-        let lat =Cesium.Cartographic.fromCartesian(exist[i]).latitude;
+        let lat = Cesium.Cartographic.fromCartesian(exist[i]).latitude;
         let latDeg = Cesium.Math.toDegrees(lat)
         let latFixed = latDeg.toFixed(7);
 
-        if(lngFixed!==coords[0][(2*i)] || latFixed!==coords[0][(2*i)+1])
+        if (lngFixed !== coords[0][(2 * i)] || latFixed !== coords[0][(2 * i) + 1])
           return false;
       }
     }
-    return true;*/
+
+    }
+    return true;
   }
   togglePolylinePicker(){
     this._positions=[];
 
     this._polylineEntity= this.cesium.viewer.entities.add({
-      // id: this.polyline_id+=1,
-      // name : 'Polyline'+this.polyline_id,
       polyline: {
         show: true,
         positions: this.setCallbackProperty(this._positions),
@@ -114,31 +117,14 @@ export class CesiumPolyline{
   calcPositions(cartesianArr){
     // terrain case
     var positionArr=[];
-    /*if(this.cesium.viewer.terrainProvider.hasOwnProperty("_url")) {
-     //var pickedObject = this.cesium.viewer.scene.pick(event.position); // Tr
-     let positionCartesian3 = this.cesium.viewer.scene.pickPosition(event.position); // Tr
-     let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
-     let lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
-     let latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
-     position = [lngDeg, latDeg];
-     }
-     else {
-     let positionCartesian3 = this.cesium.viewer.camera.pickEllipsoid(event.position);
-     let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
-     let lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
-     let latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
-     position = [lngDeg, latDeg];
-     }*/
-    /* for (let i = 0; i < cartesianArr.length - 2; i++){
-
-     }*/
     _.forEach(cartesianArr,function (cartesian,index) {
       let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
       let latDeg: number = Cesium.Math.toDegrees(cartographic.latitude).toFixed(7);
       let lngDeg: number  = Cesium.Math.toDegrees(cartographic.longitude).toFixed(7);
       positionArr.push(lngDeg, latDeg)
     });
-    positionArr.splice(positionArr.length-4, 4) //remove redundant points from double click
+    positionArr.splice(positionArr.length-4, 4); //remove redundant points from double click
+    positionArr=positionArr.map(newArr=>parseFloat(newArr));
     return positionArr;
 
   }
@@ -151,17 +137,6 @@ export class CesiumPolyline{
     this.cesium.viewer.cesiumHandler.setInputAction(this.doubleClickInputAction.bind(this), Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK); //end draw polygon
   }
 
-  /*ngOnDestroy() {
-   if(!isUndefined(this._cesiumHandler))
-   {
-   this._cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-   this._cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-   this._cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-   }
-   if(!isUndefined(this._parentComponent.cesiumViewerLoaded))
-   this._parentComponent.cesiumViewerLoaded.unsubscribe();
-   }
-   */
   private leftClickInputAction(event: {position: {x: number, y: number}}): void
   {
     this.startDrawPolygon(event);

@@ -118,10 +118,11 @@ export class OpenlayersMapView{
     let position = this.openlayers.currentParams['position'];
     let geojson = this.openlayers.currentParams['geojson'];
     let polygons = this.openlayers.currentParams['polygons'];
+    let polyline = this.openlayers.currentParams['polyline'];
 
     rotate = rotate == 0 ? 0 : undefined;
 
-    let navigationExtras:NavigationExtras = this.openlayers.queryParamsHelperService.getQuery({lng, lat, zoom, heading, markers, layers,rotate, size, position,geojson,polygons});
+    let navigationExtras:NavigationExtras = this.openlayers.queryParamsHelperService.getQuery({lng, lat, zoom, heading, markers, layers,rotate, size, position,geojson,polygons,polyline});
     return this.openlayers.mapMipService.navigate([], navigationExtras)
   };
 
@@ -149,7 +150,8 @@ export class OpenlayersMapView{
         let position = this.openlayers.currentParams['position'];
         let geojson = this.openlayers.currentParams['geojson'];
         let polygons = this.openlayers.currentParams['polygons'];
-        extras.queryParams = {bounds, heading,markers,layers,size,position,polygons};
+        let polyline = this.openlayers.currentParams['polyline'];
+        extras.queryParams = {bounds, heading,markers,layers,size,position,polygons,polyline};
         this.openlayers.mapMipService.navigate([state], extras).then(()=>{
           this.gotoEmitterSubscriber.unsubscribe();
         });

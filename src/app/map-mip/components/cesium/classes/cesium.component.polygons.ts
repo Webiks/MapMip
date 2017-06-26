@@ -17,7 +17,7 @@
    constructor(private cesium: CesiumComponent,private queryParamsHelperService: QueryParamsHelperService){
      this.queryParamsSubscriber = cesium.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
      cesium.positionFormService.polygonPickerEmitter.subscribe(this.togglePolygonPicker.bind(this));
-     if(cesium.positionFormService.onPolygonPicked) this.togglePolygonPicker.bind(this)(true);
+    // if(cesium.positionFormService.onPolygonPicked) this.togglePolygonPicker.bind(this)(true);
    }
    destroy() {
      this.queryParamsSubscriber.unsubscribe();
@@ -50,8 +50,6 @@
          coords.push(polygon_obj.coords)
        if(!this.polygonsExistOnMap(coords)) {
            that.cesium.viewer.entities.add({
-             // id: that.polygon_id+=1,
-             // name : 'PolygonDrawer'+that.polygon_id,
              polygon : {
                hierarchy : new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(coords[0])),
                material : Cesium.Color.LIGHTSKYBLUE.withAlpha(0.5),

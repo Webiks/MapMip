@@ -21,7 +21,7 @@ export class OpenlayersPolygons {
       .filter((params:Params) => this.openlayers.queryParamsHelperService.anyPolygonsChange(this.openlayers.prevParams, this.openlayers.currentParams))
       .subscribe(this.setPolygonsChanges.bind(this));
     openlayers.positionFormService.polygonPickerEmitter.subscribe(this.togglePolygonPicker.bind(this));
-    if(openlayers.positionFormService.onPolygonPicked) this.togglePolygonPicker.bind(this)(true);
+    //if(openlayers.positionFormService.onPolygonPicked) this.togglePolygonPicker.bind(this)(true);
   }
 
 

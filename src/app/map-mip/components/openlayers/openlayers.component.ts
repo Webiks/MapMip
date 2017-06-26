@@ -16,6 +16,7 @@ import {AjaxService} from "../../services/ajax.service";
 import {MapMipService} from "../../api/map-mip.service";
 import {OpenlayersPolygons} from "./classes/openlayers.component.polygons";
 import * as OpenLayers from "openlayers";
+import {OpenlayersPolyline} from "./classes/openlayers.component.polyline";
 
 @Component({
   host: host,
@@ -38,6 +39,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
   public map_position:OpenlayersMapPosition;
   public geojson:OpenlayersGeoJson;
   public polygons: OpenlayersPolygons
+  public polyline: OpenlayersPolyline
   public ol:any;
 
 
@@ -85,6 +87,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
     this.map_view = new OpenlayersMapView(this);
     this.geojson = new OpenlayersGeoJson(this);
     this.polygons = new OpenlayersPolygons(this);
+    this.polyline = new OpenlayersPolyline(this);
   }
 
 

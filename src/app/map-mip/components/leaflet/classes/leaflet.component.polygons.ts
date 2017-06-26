@@ -13,7 +13,7 @@ export class LeafletPolygons {
   constructor(private leaflet: LeafletComponent,private queryParamsHelperService: QueryParamsHelperService) {
     this.queryParamsSubscriber = leaflet.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     leaflet.positionFormService.polygonPickerEmitter.subscribe(this.togglePolygonPicker.bind(this));
-    if(leaflet.positionFormService.onPolygonPicked) this.togglePolygonPicker.bind(this)(true);
+   // if(leaflet.positionFormService.onPolygonPicked) this.togglePolygonPicker.bind(this)(true);
   }
 
   destroy() {

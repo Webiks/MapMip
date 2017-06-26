@@ -1,5 +1,5 @@
-$polyline-color: #009688;
-$polyline-border-color: #016a60;;
+$polyline-color: #673ab7;
+$polyline-border-color: #673ab7;
 
 div.polyline-row{
   display: flex;
@@ -17,13 +17,13 @@ span{
 div.polyline{
   display: flex;
 
-button.btn.btn-primary.polygons-menu {
+button.btn.btn-primary  {
   background-color: $polyline-color;
   border-color: $polyline-border-color;
   margin-right: 5px;
 }
 
-button.btn.btn-default.draw-polyline{
+button.btn.btn-default {
   color: $polyline-color;
   border-color: $polyline-border-color;
   top:0px;
