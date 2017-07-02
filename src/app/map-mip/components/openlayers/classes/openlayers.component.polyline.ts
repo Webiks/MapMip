@@ -56,7 +56,7 @@ export class OpenlayersPolyline {
         let feature = this.getFeaturePolyline(polyline_obj);
         feature.setStyle(new this.openlayers.ol.style.Style({
           stroke: new this.openlayers.ol.style.Stroke({
-            color: '#3388ff',
+            color: polyline_obj.color,
             width: 3
           })}));
         this.vectorSource.addFeature(feature);
@@ -115,8 +115,8 @@ export class OpenlayersPolyline {
     let that =this;
 
     let source = new this.openlayers.ol.source.Vector({wrapX: false});
-
-    this.draw = new this.openlayers.ol.interaction.Draw({
+    let color = this.openlayers.positionFormService.selectedPolylineColor;
+      this.draw = new this.openlayers.ol.interaction.Draw({
       source: source,
       type:'LineString'
     });
@@ -127,24 +127,25 @@ export class OpenlayersPolyline {
       that.openlayers.map.removeInteraction(that.draw);
       evt.feature.setStyle(new that.openlayers.ol.style.Style({
         stroke: new that.openlayers.ol.style.Stroke({
-          color: '#3388ff',
+          color: color,
           width: 3
         })}));
       that.vectorSource.addFeature(evt.feature);
-      let coordinates=[];
+      let coords=[];
       let initcoordinates = evt.feature.getGeometry().getCoordinates();
       initcoordinates = initcoordinates.map((coord)=>ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
       initcoordinates.forEach(
       (coord)=>
-        coordinates.push(coord[0],coord[1]));
+        coords.push(coord[0],coord[1]));
      /* initcoordinates.forEach(coord=>{
         let coordToPush = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')
         coordinates.push(coordToPush[0]);
         coordinates.push(coordToPush[1]);
       });*/
-      that.openlayers.queryParamsHelperService.addPolyline(coordinates);
+      that.openlayers.queryParamsHelperService.addPolyline({coords, color});
     });
   }
+
 
 
 

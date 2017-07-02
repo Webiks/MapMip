@@ -17,7 +17,8 @@ export class PolylineComponent  {
   @Output() submitPolylineEmitter = new EventEmitter();
   @Output("togglePolylinePickedEmitter") togglePolylinePickedEmitter = new EventEmitter();
   public polylineArray=[];
-
+  public polylineColors=['blue','green','yellow','grey','white','black','purple','orange'];
+  public selectedColor:string='blue';
   constructor(private queryParamsHelperService:QueryParamsHelperService, public positionFormService:PositionFormService) { }
 
 
@@ -53,14 +54,16 @@ export class PolylineComponent  {
   rmvPolyline(index:number) {
     this.polylineArray.splice(index, 1);
   }
+  changePolylineColor(color){
+    this.positionFormService.selectedPolylineColor=color;
+  }
 
-
-  togglePolylinePicked(onPolylinePicked:boolean){
+  togglePolylinePicked(onPolylinePicked:boolean,selectedColor:string){
     //do toggle to button and start draw mode
     this.positionFormService.onPolylinePicked = onPolylinePicked;
     this.positionFormService.polylinePickerEmitter.emit(this.positionFormService.onPolylinePicked)
-
   }
+
 
 
 

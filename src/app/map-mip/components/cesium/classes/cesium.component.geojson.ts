@@ -35,21 +35,22 @@ public _mainDataSource:Array<any>=[];
               var positionArr=[];
 
               _.forEach(cartesianArr,function (cartesian) {
-                var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-                var latDeg = Cesium.Math.toDegrees(cartographic.latitude).toFixed(7);
-                var lngDeg  = Cesium.Math.toDegrees(cartographic.longitude).toFixed(7);
+                let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+                let latDeg = Cesium.Math.toDegrees(cartographic.latitude).toFixed(7);
+                let lngDeg  = Cesium.Math.toDegrees(cartographic.longitude).toFixed(7);
                 positionArr.push(lngDeg, latDeg)
               });
-              positionArr = positionArr.map(Number)
+              positionArr = positionArr.map(Number);
 
-              var corridorGeometry = new Cesium.CorridorGeometry({
+              let corridorGeometry = new Cesium.CorridorGeometry({
                 positions : Cesium.Cartesian3.fromDegreesArray(positionArr),
                 width : 20,
                 vertexFormat : Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
               });
-              var color = Cesium.Color.fromCssColorString(that.getColor(ent.properties.color || 'azure'))
 
-              var coloredCorridorInstance = new Cesium.GeometryInstance({
+              let color = Cesium.Color.fromCssColorString(that.getColor(ent.properties.color || 'azure'))
+
+              let coloredCorridorInstance = new Cesium.GeometryInstance({
                 geometry: corridorGeometry,
                 appearance : new Cesium.PerInstanceColorAppearance({
                   closed : true
@@ -75,7 +76,7 @@ public _mainDataSource:Array<any>=[];
     switch (color) {
       case 'red':
         return  "#ff0000";
-      case 'blue':
+        case 'blue':
         return "#0000ff";
       case 'azure':
         return '#3285f8';

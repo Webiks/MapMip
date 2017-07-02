@@ -120,11 +120,11 @@ export class QueryParamsHelperService{
     urlTree.queryParams['markers'] = this.markersArrayToStr(markers_array);
     this.mapMipService.navigateByUrl(urlTree.toString())
   }
-  addPolyline(coords: number[]) {
+  addPolyline(polyline) {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
     const polyline_url = urlTree.queryParams['polyline'] || "";
     const polyline_array = rison.decode_array(polyline_url);
-    polyline_array.push({coords});
+    polyline_array.push(polyline);
     urlTree.queryParams['polyline'] = rison.encode_array(polyline_array);
     this.mapMipService.navigateByUrl(urlTree.toString())
   }

@@ -1,9 +1,23 @@
 <div class="polyline">
   <button class="btn btn-primary polyline-menu" (click)="smModal.show()" type="button">Polylines</button>
   <button  class="btn btn-default draw-polyline"
-           [class.active]="Active" (click)=" togglePolylinePicked(!Active)"  type="button" tooltip="Draw Polyline" triggers="hover">
+           [class.active]="Active" (click)=" togglePolylinePicked(!Active,selectedColor)"  type="button" tooltip="Draw Polyline" triggers="hover">
     <img src="../../../../../assets/Icons/glyphicons-98-vector-path-line.png"/>
   </button>
+  <div class="btn-group" dropdown>
+    <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+      <span class="caret"></span>
+    </button>
+    <ul *dropdownMenu class="dropdown-menu"  role="menu" >
+      <li role="menuitem">
+        <a class="dropdown-item"  *ngFor="let color of polylineColors"  (click)="changePolylineColor(color)">{{color}}
+        </a>
+      </li>
+
+
+
+    </ul>
+  </div>
 
 </div>
 

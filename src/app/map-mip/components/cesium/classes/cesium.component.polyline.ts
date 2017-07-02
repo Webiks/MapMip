@@ -10,10 +10,13 @@ import {AppState} from '../../../app.store';
 
 export class CesiumPolyline{
   queryParamsSubscriber;
-  public _polylineEntity;
-  public _positions:Array<any>=[]; //TODO: should be on the url
-  public polyline_id=0;
-  public polyline_changed:AppState = new AppState(this.cesium.router);
+  public _corridorEntity;
+  public _positions:Array<any>=[];
+  cartesian: any;
+  longitude: any;
+  private latitude:any ;
+  altitude: any
+
   constructor(private cesium: CesiumComponent,private queryParamsHelperService: QueryParamsHelperService){
 
     this.queryParamsSubscriber = cesium.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
@@ -23,7 +26,6 @@ export class CesiumPolyline{
   destroy() {
     this.queryParamsSubscriber.unsubscribe();
     this.cesium.positionFormService.polylinePickerEmitter.unsubscribe();
-    this.cesium.viewer.cesiumHandler.destroy();
   }
 
   queryParams(params: Params) {
@@ -53,7 +55,7 @@ export class CesiumPolyline{
         //add to map
 
 
-        that.cesium.viewer.entities.add({
+   /*     that.cesium.viewer.entities.add({
           // id: that.polyline_id+=1,
           // name : 'PolylineDrawer'+that.polyline_id,
           polyline: {
@@ -62,7 +64,7 @@ export class CesiumPolyline{
             material : Cesium.Color.LIGHTSKYBLUE
           }
 
-        });
+        });*/
 
       }
     });
@@ -102,26 +104,38 @@ export class CesiumPolyline{
     return true;
   }
   togglePolylinePicker(){
+    let that =this ;
     this._positions=[];
-
+    console.log("1 "+this._positions);
+    this._corridorEntity= this.cesium.viewer.entities.add({
+       corridor: {
+         show: true,
+         positions: this.setCallbackProperty(this._positions)?this.setCallbackProperty(this._positions):[],
+         width : 200
+       }
+     });
+    console.log("2 "+this._positions);
+/*
     this._polylineEntity= this.cesium.viewer.entities.add({
       polyline: {
         show: true,
         positions: this.setCallbackProperty(this._positions),
         material : Cesium.Color.LIGHTSKYBLUE
       }
-    });
+    });*/
 
     this.initDrawer()
   }
   calcPositions(cartesianArr){
     // terrain case
     var positionArr=[];
-    _.forEach(cartesianArr,function (cartesian,index) {
+    _.forEach(cartesianArr,function (cartesian) {
       let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
       let latDeg: number = Cesium.Math.toDegrees(cartographic.latitude).toFixed(7);
       let lngDeg: number  = Cesium.Math.toDegrees(cartographic.longitude).toFixed(7);
-      positionArr.push(lngDeg, latDeg)
+      let altitude = cartographic.height;
+      let altitudeString = Math.round(altitude).toString();
+      positionArr.push(lngDeg, latDeg,altitude)
     });
     positionArr.splice(positionArr.length-4, 4); //remove redundant points from double click
     positionArr=positionArr.map(newArr=>parseFloat(newArr));
@@ -137,61 +151,64 @@ export class CesiumPolyline{
     this.cesium.viewer.cesiumHandler.setInputAction(this.doubleClickInputAction.bind(this), Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK); //end draw polygon
   }
 
-  private leftClickInputAction(event: {position: {x: number, y: number}}): void
+  private leftClickInputAction(event): void
   {
-    this.startDrawPolygon(event);
+    this.startDrawPolyline(event);
   }
 
-  private mouseMoveInputAction(event: {endPosition: {x: number, y: number}}): void
+  private mouseMoveInputAction(event): void
   {
-    this.updatePolygon(event);
+    this.updatePolyline(event);
   }
 
-  private doubleClickInputAction(event: {position: {x: number, y: number}}): void
+  private doubleClickInputAction(): void
   {
-    this.endDrawPolygon();
+    this.endDrawPolyline();
   }
 
 
-  private startDrawPolygon(iClickEvent)
+  private startDrawPolyline(iClickEvent)
   {
-    let cartesian = this.cesium.viewer.camera.pickEllipsoid(iClickEvent.position, this.cesium.viewer.scene.globe.ellipsoid);
-    if (!cartesian) return;
-
-    this._polylineEntity.polyline.show = true;
-
-    this._positions.push(cartesian);
+    var pickedObject = this.cesium.viewer.scene.pick(iClickEvent.endPosition || iClickEvent.position);
+    this.cartesian = this.cesium.viewer.scene.pickPosition(iClickEvent.endPosition || iClickEvent.position )
+   // let cartesian = this.cesium.viewer.camera.pickEllipsoid(iClickEvent.position, this.cesium.viewer.scene.globe.ellipsoid);
+    var cartographic = Cesium.Cartographic.fromCartesian(this.cartesian);
+    this.longitude = Cesium.Math.toDegrees(cartographic.longitude);
+    this.latitude = Cesium.Math.toDegrees(cartographic.latitude);
+    this.altitude = cartographic.height;
+     if (!this.cartesian) return;
+    console.log("3 "+this._positions);
+    this._positions.push(this.cartesian);
   }
 
-  private updatePolygon(iClickEvent)
+  private updatePolyline(iClickEvent)
   {
-    let cartesian = this.cesium.viewer.camera.pickEllipsoid(iClickEvent.endPosition, this.cesium.viewer.scene.globe.ellipsoid);
-    if (!cartesian)
-      return;
-
+    var pickedObject = this.cesium.viewer.scene.pick(iClickEvent.endPosition || iClickEvent.position);
+    let cartesian = this.cesium.viewer.scene.pickPosition(iClickEvent.endPosition || iClickEvent.position)
+   // let cartesian = this.cesium.viewer.camera.pickEllipsoid(iClickEvent.endPosition, this.cesium.viewer.scene.globe.ellipsoid);
+   if (!cartesian)  return;
+    console.log("4 "+this._positions);
     if (this._positions.length == 1)
     {
+      console.log("5 "+this._positions);
       this._positions.push(cartesian);
     }
     else if(this._positions.length > 1)
-    {
+    {console.log("6 "+this._positions);
       this._positions.splice(this._positions.length - 1, 1, cartesian);
     }
 
-    console.log(this._positions.length);
   }
 
-  private endDrawPolygon(){
+  private endDrawPolyline(){
     this.cesium.viewer.cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
     this.cesium.viewer.cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     this.cesium.viewer.cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-
-    this._polylineEntity.polyline.show = true;
+    this.cesium.viewer.cesiumHandler.destroy();
+    //this._polylineEntity.polyline.show = true;
     let that = this;
-
-
+    console.log("7 "+this._positions);
     that.queryParamsHelperService.addPolyline(that.calcPositions(this._positions));
-
 
   }
 

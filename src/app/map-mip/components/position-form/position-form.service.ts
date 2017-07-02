@@ -40,6 +40,7 @@ export const MARKER_COLORS:Array<any>=[
 
 
 export const MARKER_COLORS_HEX:Array<string>=['#277fca','#3c3c3c','#23aa1f','#777777', '#cb832c', '#cbc32c', '#c92139', '#9b29ca'];
+export const POLYLINE_COLORS_HEX:Array<string>=['#277fca','#3c3c3c','#23aa1f','#777777', '#cb832c', '#cbc32c', '#c92139', '#9b29ca'];
 
 @Injectable()
 export class PositionFormService {
@@ -48,7 +49,7 @@ export class PositionFormService {
   public onPolygonPicked:boolean;
   public onPolylinePicked:boolean;
 
-
+  public selectedPolylineColor:string='blue';
   public selectedColorIndex:number = 0;
   public markerPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   public polygonPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -82,6 +83,7 @@ export class PositionFormService {
   getSelectedColorHEX(index:number=this.selectedColorIndex):string {
     return MARKER_COLORS_HEX[index];
   }
+
 
   getMarkerCursorStyle():SafeStyle {
     return this.domSanitizer.bypassSecurityTrustStyle(`url(http://mapmip.webiks.com/assets/Markers/marker-icon-${this.getSelectedColor()}.cur), default`);

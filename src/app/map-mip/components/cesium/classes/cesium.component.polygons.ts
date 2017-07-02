@@ -12,8 +12,6 @@
    queryParamsSubscriber;
    public _polygonEntity;
    public _positions:Array<any>=[];
-   public polygon_id=0;
-   public polygons_changed:AppState = new AppState(this.cesium.router);
    constructor(private cesium: CesiumComponent,private queryParamsHelperService: QueryParamsHelperService){
      this.queryParamsSubscriber = cesium.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
      cesium.positionFormService.polygonPickerEmitter.subscribe(this.togglePolygonPicker.bind(this));
@@ -68,11 +66,7 @@
 
      for (let a = 0; a < this.cesium.viewer.entities.values.length; a++) {
        if (this.cesium.viewer.entities.values[a].polygon) {
-
-
        var exist = this.cesium.viewer.entities.values[a].polygon.hierarchy.getValue();
-
-
        for (let i = 0; i < exist.positions.length; i++) {
          let lng = Cesium.Cartographic.fromCartesian(exist.positions[i]).longitude;
          let lngDeg = Cesium.Math.toDegrees(lng);
@@ -93,8 +87,6 @@
      this._positions=[];
 
      this._polygonEntity= this.cesium.viewer.entities.add({
-       // id: this.polygon_id+=1,
-       // name : 'PolygonDrawer'+this.polygon_id,
        polyline: {
          show: true,
          positions: this.setCallbackProperty(this._positions),
@@ -111,36 +103,16 @@
      this.initDrawer()
    }
    calcPositions(cartesianArr){
-     // terrain case
      var positionArr=[];
-     /*if(this.cesium.viewer.terrainProvider.hasOwnProperty("_url")) {
-       //var pickedObject = this.cesium.viewer.scene.pick(event.position); // Tr
-       let positionCartesian3 = this.cesium.viewer.scene.pickPosition(event.position); // Tr
-       let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
-       let lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
-       let latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
-       position = [lngDeg, latDeg];
-     }
-     else {
-       let positionCartesian3 = this.cesium.viewer.camera.pickEllipsoid(event.position);
-       let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
-       let lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
-       let latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
-       position = [lngDeg, latDeg];
-     }*/
-    /* for (let i = 0; i < cartesianArr.length - 2; i++){
-
-     }*/
      _.forEach(cartesianArr,function (cartesian,index) {
        let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
        let latDeg: number = Cesium.Math.toDegrees(cartographic.latitude).toFixed(7);
        let lngDeg: number  = Cesium.Math.toDegrees(cartographic.longitude).toFixed(7);
        positionArr.push(lngDeg, latDeg)
      });
-     positionArr.splice(positionArr.length-4, 4) //remove redundant points from double click
+     positionArr.splice(positionArr.length-4, 4); //remove redundant points from double click
      positionArr=positionArr.map(newArr=>parseFloat(newArr));
      return positionArr;
-
    }
 
    initDrawer()
@@ -151,17 +123,6 @@
      this.cesium.viewer.cesiumHandler.setInputAction(this.doubleClickInputAction.bind(this), Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK); //end draw polygon
    }
 
-   /*ngOnDestroy() {
-     if(!isUndefined(this._cesiumHandler))
-     {
-       this._cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-       this._cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-       this._cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-     }
-     if(!isUndefined(this._parentComponent.cesiumViewerLoaded))
-       this._parentComponent.cesiumViewerLoaded.unsubscribe();
-   }
-*/
    private leftClickInputAction(event: {position: {x: number, y: number}}): void
    {
      this.startDrawPolygon(event);
@@ -203,8 +164,6 @@
      {
        this._positions.splice(this._positions.length - 1, 1, cartesian);
      }
-
-     console.log(this._positions.length);
    }
 
    private endDrawPolygon(){
@@ -215,26 +174,8 @@
      this._polygonEntity.polyline.show = false;
      this._polygonEntity.polygon.show = true;
      let that = this;
-
-
        that.queryParamsHelperService.addPolygon(that.calcPositions(this._positions));
 
-
-   }
-
-
-   private resetPolygon()
-   {
-     this._positions.length=0;
-     this._polygonEntity.polyline.show = false;
-     this._polygonEntity.polygon.show = false;
-
-     if(!isUndefined(this.cesium.viewer.cesiumHandler))
-     {
-       this.cesium.viewer.cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-       this.cesium.viewer.cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-       this.cesium.viewer.cesiumHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-     }
    }
    private setCallbackProperty(value, property?)
    {
