@@ -128,11 +128,11 @@ export class QueryParamsHelperService{
     urlTree.queryParams['polyline'] = rison.encode_array(polyline_array);
     this.mapMipService.navigateByUrl(urlTree.toString())
   }
-  addPolygon(coords: number[]){
+  addPolygon(polygon){
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
     const polygons_url = urlTree.queryParams['polygons'] || "";
     const polygons_array = rison.decode_array(polygons_url);
-    polygons_array.push({coords});
+    polygons_array.push(polygon);
     urlTree.queryParams['polygons'] = rison.encode_array(polygons_array);
     this.mapMipService.navigateByUrl(urlTree.toString())
   }

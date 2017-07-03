@@ -50,8 +50,9 @@ export class LeafletPolyline {
       }
       if (!this.polygonsExistOnMap(coords)) {
         L.polyline(
-          coords
-        ).addTo(this.leaflet.map);
+          coords,{
+          color: polyline_obj.color
+        }).addTo(this.leaflet.map);
       }
     });
   }
@@ -61,7 +62,7 @@ export class LeafletPolyline {
     && (l as any).toGeoJSON().geometry.type=='LineString');
     let real_coord= [];
     const exist_polyline = polylinesOnMap.find((polyline: L.Polyline) => {
-        polyline.getLatLngs().forEach(obj=> {real_coord.push([obj.lng,obj.lat])})
+        polyline.getLatLngs().forEach(obj=> {real_coord.push([obj.lng,obj.lat])});
     //  const real_coord: L.LatLng[] = (polyline.getLatLngs()[0] as any).map(o => [o.lat, o.lng]);
       return _.isEqual(real_coord, coords);
     });
@@ -74,17 +75,19 @@ export class LeafletPolyline {
     polylineDrawer.enable();
 
     this.leaflet.map.on('draw:created', function (e) {
-      const poly_arr = [];
+      let coords = [];
       var type = e['layerType'],
         layer = e['layer'];
+      let color = that.leaflet.positionFormService.selectedPolylineColor;
+      layer.options.color= color;
       // layer.addTo(that.leaflet.map);
       that.polylinesId.push(e.target._leaflet_id);
       that.polylineCoords.push(layer['_latlngs'])
       _.forEach(layer['_latlngs'],function(point){
-          poly_arr.push(point.lng)
-          poly_arr.push(point.lat)
+        coords.push(point.lng)
+        coords.push(point.lat)
         });
-      that.queryParamsHelperService.addPolyline(poly_arr);
+      that.queryParamsHelperService.addPolyline({coords,color});
       that.leaflet.map.off('draw:created');
       polylineDrawer.disable();
     });

@@ -56,10 +56,10 @@ export class PolylineComponent  {
   }
   changePolylineColor(color){
     this.positionFormService.selectedPolylineColor=color;
+    this.positionFormService.polylinePickerEmitter.emit(true)
   }
 
-  togglePolylinePicked(onPolylinePicked:boolean,selectedColor:string){
-    //do toggle to button and start draw mode
+  togglePolylinePicked(onPolylinePicked:boolean){
     this.positionFormService.onPolylinePicked = onPolylinePicked;
     this.positionFormService.polylinePickerEmitter.emit(this.positionFormService.onPolylinePicked)
   }

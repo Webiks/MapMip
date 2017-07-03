@@ -13,6 +13,9 @@ span{
   text-overflow: ellipsis;
 }
 }
+/*button.btn.btn-primary.dropdown-toggle{
+  background-color: #EEEEEE!important;
+}*/
 
 div.polyline{
   display: flex;
@@ -33,4 +36,7 @@ button.btn.btn-default {
     width:14px;
     height:16px;
   }
+}
+ul.dropdown-menu{
+  min-width: inherit;
 }

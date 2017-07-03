@@ -49,8 +49,9 @@ export class LeafletPolygons {
         }
         if (!this.polygonsExistOnMap(coords)) {
           L.polygon(
-            coords
-          ).addTo(this.leaflet.map);
+            coords,{
+              color:polygon_obj.color
+            }).addTo(this.leaflet.map);
         }
       });
   }
@@ -72,18 +73,19 @@ export class LeafletPolygons {
 
     this.leaflet.map.on('draw:created', function (e) {
       let str ='';
-      const poly_arr = [];
+      let coords = [];
       var type = e['layerType'],
         layer = e['layer'];
-     // layer.addTo(that.leaflet.map);
+      let color = that.leaflet.positionFormService.selectedPolylgonColor;
+      layer.options.color= color;
       that.polygonsCoords.push(layer['_latlngs'])
       _.forEach(layer['_latlngs'],function(point){
         _.forEach(point,function(p){
-          poly_arr.push(p.lng)
-          poly_arr.push(p.lat)
+          coords.push(p.lng)
+          coords.push(p.lat)
         });
         str = str.substring(0, str.length - 1);
-        that.queryParamsHelperService.addPolygon(poly_arr);
+        that.queryParamsHelperService.addPolygon({coords,color});
 
       });
       that.leaflet.map.off('draw:created');

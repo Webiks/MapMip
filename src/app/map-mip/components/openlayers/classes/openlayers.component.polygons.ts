@@ -54,7 +54,12 @@ export class OpenlayersPolygons {
   addPolygonsViaUrl(params_polygons_array: any[], map_polygons_array ) {
     params_polygons_array.forEach(polygon_obj => {
       if (!this.polygonsExistOnMap(polygon_obj, map_polygons_array)) {
-        const feature = this.getFeaturePolygon(polygon_obj);
+        let feature = this.getFeaturePolygon(polygon_obj);
+        feature.setStyle(new this.openlayers.ol.style.Style({
+          stroke: new this.openlayers.ol.style.Stroke({
+            color: polygon_obj.color,
+            width: 3
+          })}));
         this.vectorSource.addFeature(feature);
       }
     });
@@ -112,7 +117,7 @@ export class OpenlayersPolygons {
     let that =this;
 
     let source = new this.openlayers.ol.source.Vector({wrapX: false});
-
+    let color = this.openlayers.positionFormService.selectedPolylgonColor;
     this.draw = new this.openlayers.ol.interaction.Draw({
       source: source,
       type:'Polygon'
@@ -121,17 +126,21 @@ export class OpenlayersPolygons {
     this.openlayers.map.addInteraction(this.draw);
 
     this.draw.on('drawend', function(evt){
-      //that.draw.finishDrawing();
       that.openlayers.map.removeInteraction(that.draw);
+      evt.feature.setStyle(new that.openlayers.ol.style.Style({
+        stroke: new that.openlayers.ol.style.Stroke({
+          color: color,
+          width: 3
+        })}));
       that.vectorSource.addFeature(evt.feature);
       let initcoordinates = evt.feature.getGeometry().getCoordinates();
-      let coordinates=[];
+      let coords=[];
       initcoordinates [0].forEach(coord=>{
         let coordToPush = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')
-        coordinates.push(coordToPush[0]);
-        coordinates.push(coordToPush[1]);
+        coords.push(coordToPush[0]);
+        coords.push(coordToPush[1]);
       });
-      that.openlayers.queryParamsHelperService.addPolygon(coordinates);
+      that.openlayers.queryParamsHelperService.addPolygon({coords,color});
     });
   }
 

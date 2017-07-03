@@ -3,6 +3,20 @@
   <button class="btn btn-default draw-polygons" [class.active]="Active" (click)=" togglePolygonPicked(!Active)"  type="button" tooltip="Draw Polygon" triggers="hover">
     <img src="../../../../../assets/Icons/glyphicons-97-vector-path-polygon.png"/>
   </button>
+  <div class="btn-group" dropdown>
+    <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+      <span class="caret"></span>
+    </button>
+    <ul *dropdownMenu class="dropdown-menu"  role="menu" >
+      <li role="menuitem">
+        <a class="dropdown-item"  *ngFor="let color of polygonColors"  (click)="changePolygonColor(color)">
+          <svg height="20" width="20">
+            <line x1="0" y1="0" x2="20" y2="20" style="stroke-width:2" [style.stroke]="color"/>
+          </svg>
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>
 
 

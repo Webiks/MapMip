@@ -1,5 +1,9 @@
 $polygons-color: #009688;
 $polygons-border-color: #016a60;;
+button.btn.btn-primary.dropdown-toggle{
+  background-color: $polygons-color!important;
+  border-color:$polygons-border-color!important;
+}
 
 div.polygon-row{
   display: flex;
@@ -33,4 +37,7 @@ div.polygons{
      width:14px;
     height:16px;
   }
+}
+ul.dropdown-menu{
+  min-width: inherit;
 }

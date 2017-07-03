@@ -18,8 +18,9 @@ export class PolygonsComponent implements OnInit {
   @ViewChild('smModal') public smModal:ModalDirective;
   @Output("togglePickedEmitter") togglePickedEmitter = new EventEmitter();
   @Output() submitPolygonsEmitter = new EventEmitter();
-
   public polygonsArray=[];
+  public polygonColors=['blue','green','yellow','grey','white','black','purple','orange'];
+  public selectedColor:string='blue';
 
   constructor(private queryParamsHelperService:QueryParamsHelperService, public positionFormService:PositionFormService) { }
 
@@ -55,9 +56,11 @@ export class PolygonsComponent implements OnInit {
   canApply(){
     return !_.isEqual(this.polygonsArray, this.polygonsStrToArray());
   }
-
+  changePolygonColor(color){
+    this.positionFormService.selectedPolylgonColor=color;
+    this.positionFormService.polygonPickerEmitter.emit(true)
+  }
   togglePolygonPicked(onPolygonPicked:boolean){
-    //do toggle to button and start draw mode
     this.positionFormService.onPolygonPicked = onPolygonPicked;
     this.positionFormService.polygonPickerEmitter.emit(this.positionFormService.onPolygonPicked)
   }

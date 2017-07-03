@@ -137,11 +137,6 @@ export class OpenlayersPolyline {
       initcoordinates.forEach(
       (coord)=>
         coords.push(coord[0],coord[1]));
-     /* initcoordinates.forEach(coord=>{
-        let coordToPush = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')
-        coordinates.push(coordToPush[0]);
-        coordinates.push(coordToPush[1]);
-      });*/
       that.openlayers.queryParamsHelperService.addPolyline({coords, color});
     });
   }

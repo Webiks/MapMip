@@ -10,7 +10,11 @@
     </button>
     <ul *dropdownMenu class="dropdown-menu"  role="menu" >
       <li role="menuitem">
-        <a class="dropdown-item"  *ngFor="let color of polylineColors"  (click)="changePolylineColor(color)">{{color}}
+        <a class="dropdown-item"  *ngFor="let color of polylineColors"  (click)="changePolylineColor(color)">
+          <!--<img src="../../../../../assets/Icons/glyphicons-98-vector-path-line.png" />-->
+          <svg height="20" width="20">
+            <line x1="0" y1="0" x2="20" y2="20" style="stroke-width:2" [style.stroke]="color"/>
+          </svg>
         </a>
       </li>
 
