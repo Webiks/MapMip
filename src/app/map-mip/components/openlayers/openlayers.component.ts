@@ -14,6 +14,8 @@ import {CalcService} from "../../services/calc-service";
 import {animations, host} from "../../map-mip.component";
 import {AjaxService} from "../../services/ajax.service";
 import {MapMipService} from "../../api/map-mip.service";
+import {OpenlayersPolygons} from "./classes/openlayers.component.polygons";
+import * as OpenLayers from "openlayers";
 
 @Component({
   host: host,
@@ -28,7 +30,6 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
   private _map;
   public currentParams:Params = {};
   public prevParams:Params = {};
-
   public layers:OpenlayersLayers;
   public markers:OpenlayersMarkers;
   public map_view:OpenlayersMapView;
@@ -36,7 +37,10 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
   public map_size:OpenLayersMapSize;
   public map_position:OpenlayersMapPosition;
   public geojson:OpenlayersGeoJson;
+  public polygons: OpenlayersPolygons
   public ol:any;
+
+
   @ViewChild("container") public container;
 
   constructor(public activatedRoute:ActivatedRoute, public queryParamsHelperService:QueryParamsHelperService, public router:Router, public calcService:CalcService, public ajaxService:AjaxService, public positionFormService:PositionFormService, public mapMipService:MapMipService) {
@@ -68,9 +72,10 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
 
 
   initializeMap():void {
+
     this.map = new ol.Map(<any>{
       target: this.container.nativeElement,
-      projection: new ol.proj.Projection(<any>{code:"EPSG:4326", extent: [-180.0000, -90.0000, 180.0000, 90.0000]}),
+      projection: new ol.proj.Projection(<any>{code:"EPSG:4326", extent: [-180.0000, -90.0000, 180.0000, 90.0000]})
     });
     this.ol =  ol;
     this.layers = new OpenlayersLayers(this);
@@ -79,7 +84,9 @@ export class OpenlayersComponent implements OnInit, OnDestroy{
     this.map_position = new OpenlayersMapPosition(this);
     this.map_view = new OpenlayersMapView(this);
     this.geojson = new OpenlayersGeoJson(this);
+    this.polygons = new OpenlayersPolygons(this);
   }
+
 
   get LayersArray() {
     return this.map.getLayers().getArray();

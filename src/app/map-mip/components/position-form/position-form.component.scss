@@ -24,10 +24,6 @@
 
 
 .pos-container{
-  //box-shadow: inset 0px 0px 7px 0px rgb(66, 66, 66);
-  //padding: 30px 60px 20px 60px;
-  //background: rgba(141, 141, 141, 0.27);
-  //border-radius: 4px;
 
   form {
     .form-group.submit{
@@ -35,45 +31,22 @@
     }
     display: flex;
     flex-wrap: wrap;
+
     .input_type {
-      width: 200px;
+      width: 130px;
       padding: 0 15px;
+      &.zoom {
+        width: 70px;
+      }
+      &.heading {
+        width: 90px;
+      }
     }
-    .markers-group {
-      width: 255px;
-      padding: 0 15px;
-    }
-    .layers-group {
-      width: 113px;
-      margin: 0 15px;
-      padding: 0;
-    }
-    .size-group {
-      width: 53px;
-      margin: 0 15px;
-      padding: 0;
-    }
-    .terrain-group {
-      width: 53px;
-      margin: 0 15px;
-      padding: 0;
+    .markers-group, .layers-group, .size-group, .terrain-group, .position-group, .lighting-group, .polygons-group, .flip-switch-group   {
+      margin: 0 5px;
     }
     .b-switch {
-      padding: 0 15px;
-      width: 157px;
-      margin-right: 15px;
-    }
-    .position-group {
-      width: 76px;
-      margin: 0 15px;
-      padding: 0;
-
-    }
-    .lighting-group {
-      width: 20px;
-      margin: 0 15px;
-      padding: 0;
-
+      margin: 2px 5px;
     }
 
     md-input-container{
@@ -88,6 +61,8 @@
 
   }
 }
+
+
 @media screen and (max-width: 767px){
   .panel.panel-default{
     margin-bottom: 0;
@@ -105,15 +80,14 @@
             width: 100%;
           }
         }
-        .layers-group, .markers-group, .size-group, .lighting-group, .terrain-group{
+        .layers-group, .markers-group, .size-group, .lighting-group, .terrain-group, .polygons-group, flip-switch-group{
           width: inherit;
         }
-        .markers-group{
-          width: inherit;
-        }
+
         .group-div{
           margin-top: 2%;
         }
+
         .form-group.submit{
           margin: 0;
           margin-top: 2%;

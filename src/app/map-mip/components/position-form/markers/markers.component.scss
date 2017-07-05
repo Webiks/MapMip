@@ -1,10 +1,27 @@
 $base-color :#277fca;
 
-button.center-btn{
-  color: $base-color;
-  margin: 0px 10px;
-  top: 0px;
+
+div.markers{
+  display: flex;
+
+  button.btn.btn-primary.markers-menu{
+    margin-right: 5px;
+  }
+
+  button.center-btn{
+    color: $base-color;
+    margin: 0px 5px;
+    top: 0px;
+  }
+
+  div.marker-color-picker{
+    margin-left: 5px;
+  }
+
 }
+
+
+
 
 button.top-button{
   margin: 10px 0;

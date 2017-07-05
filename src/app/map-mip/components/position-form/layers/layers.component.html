@@ -1,5 +1,5 @@
 <button class="btn btn-primary layer-btn" (click)="layersModal.show()" type="button">Layers</button>
-<app-switch-layers [(layersArray)]="layersArray" (submitLayersEmitter)="submitLayers()"></app-switch-layers>
+<!--<app-switch-layers [(layersArray)]="layersArray" (submitLayersEmitter)="submitLayers()"></app-switch-layers>-->
 
 <div  bsModal #layersModal="bs-modal" class="modal fade layers-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" (onShow)="initLayersArray()" (keypress)="onKeyPress($event)" aria-hidden="true">
   <div class="modal-dialog modal-md">
@@ -62,12 +62,12 @@
             <!--<div class="params">-->
               <!--<table class="table table-bordered">-->
                 <!--<tbody>-->
-                <!--<template ngFor let-key [ngForOf]="Object.keys(layer_item.layer_obj)">-->
+                <!--<ng-template ngFor let-key [ngForOf]="Object.keys(layer_item.layer_obj)">-->
                   <!--<tr *ngIf="key != 'url' && key != 'source'">-->
                     <!--<th>{{key}}</th>-->
                     <!--<td>{{layer_item.layer_obj[key]}}</td>-->
                   <!--</tr>-->
-                <!--</template>-->
+                <!--</ng-template>-->
                 <!--</tbody>-->
               <!--</table>-->
             <!--</div>-->
@@ -82,7 +82,7 @@
           </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
             <li *ngFor="let example of examples$ | async">
-              <a class="dropdown-item" (click)="layersArray.push({layer_obj:example.layer_obj})">{{example.name}}</a>
+              <a class="dropdown-item" *ngIf="example?.name?.length" (click)="layersArray.push({layer_obj:example.layer_obj})">{{example.name}}</a>
             </li>
           </ul>
         </div>
@@ -311,18 +311,18 @@
       </div>
 
       <div class="modal-body default-modal-body">
-        <template  ngFor let-key [ngForOf]="Object.keys(addObject.default.obj)">
+        <ng-template  ngFor let-key [ngForOf]="Object.keys(addObject.default.obj)">
           <div class="form-group">
             <button *ngIf="key != 'url'" class="glyphicon glyphicon-remove" (click)="deleteKey(addObject.default.obj, key)"></button>
             <label>{{key}}</label>
 
             <input class="form-control" [(ngModel)]="addObject.default.obj[key]" [ngModelOptions]="{standalone: true}"/>
           </div>
-        </template>
+        </ng-template>
       </div>
 
       <div class="modal-footer">
-        <span class="glyphicon glyphicon-exclamation-sign pull-left" [tooltip]="queryParamsHelperService.layerObjecttToUrl(addObject.default.obj)" tooltipClass="url-tooltip"></span>
+        <span class="glyphicon glyphicon-exclamation-sign pull-left" [tooltip]="queryParamsHelperService.layerObjectToUrl(addObject.default.obj)" tooltipClass="url-tooltip"></span>
         <button class="btn btn-default" (click)="defaultModal.hide()" type="button">Cancel</button>
         <button class="btn btn-default" type="submit">{{addObject.default.onEdit() ? 'Save' : 'Add'}}</button>
       </div>

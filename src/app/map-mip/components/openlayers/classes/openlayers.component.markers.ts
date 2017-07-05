@@ -8,22 +8,26 @@ export class OpenlayersMarkers {
 
   public leftClickHandler;
   public queryParamsSubscriber;
+  private vectorSource: ol.source.Vector;
+  private vectorLayer: ol.layer.Vector;
 
-  constructor(private openlayers:OpenlayersComponent){
+  constructor(private openlayers: OpenlayersComponent){
+    this.addMarkerLayer();
+    this.queryParamsSubscriber = openlayers.activatedRoute.queryParams
+      .filter((params: Params) => this.openlayers.queryParamsHelperService.anyMarkersParamsChanges(this.openlayers.prevParams, params))
+      .subscribe(this.setMarkersChanges.bind(this));
 
-    this.queryParamsSubscriber = openlayers.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     openlayers.positionFormService.markerPickerEmitter.subscribe(this.toggleMarkerPicker.bind(this));
     if(openlayers.positionFormService.onPicked) this.toggleMarkerPicker.bind(this)(true);
-
   }
 
-
-  queryParams(params:Params):void {
-    let params_changes:boolean = this.openlayers.queryParamsHelperService.anyMarkersParamsChanges(this.openlayers.prevParams, params);
-    let map_changes:boolean = this.anyMarkersMapChanges(params);
-    if(params_changes && map_changes) {
-      this.setMarkersChanges(params);
-    }
+  addMarkerLayer() {
+    this.vectorSource = new ol.source.Vector(<any>{});
+    this.vectorLayer = new ol.layer.Vector(<any>{
+      source: this.vectorSource
+    });
+    this.vectorLayer.setZIndex(200);
+    this.openlayers.map.addLayer(this.vectorLayer);
   }
 
   destroy() {
@@ -40,7 +44,7 @@ export class OpenlayersMarkers {
     if(checked){
       this.leftClickHandler = this.openlayers.map.on("click", this.leftClickInputAction.bind(this));
     } else {
-      this.openlayers.map.unByKey(this.leftClickHandler );
+      ol.Observable.unByKey(this.leftClickHandler );
     }
   }
 
@@ -68,15 +72,11 @@ export class OpenlayersMarkers {
   }
 
   getMarkersPosition(): Array<any>{
-    return this.openlayers.LayersArray.filter( (layer) => {
-      let geom;
-      if(layer.getSource && layer.getSource().getFeatures && !layer.getSource().Z) geom = layer.getSource().getFeatures()[0].getGeometry();
-      return geom instanceof ol.geom.Point;
-    }) . map(layer => {layer.getSource().getFeatures
-      let position = layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
+    return this.vectorSource.getFeatures().map((feature: ol.Feature) => {
+      let position = (feature.getGeometry() as any).getCoordinates();
       position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
       position = this.openlayers.calcService.toFixes7Obj(position);
-      let color:string = this.openlayers.positionFormService.getMarkerColorByUrl(layer.getStyle().getImage().getSrc());
+      const color:string = this.openlayers.positionFormService.getMarkerColorByUrl((feature.getStyle() as any).getImage().getSrc());
       return {position, color};
     });
   }
@@ -124,44 +124,30 @@ export class OpenlayersMarkers {
 
 
   addIcon(marker){
-    let iconFeature = new ol.Feature({
+
+    const iconFeature = new ol.Feature({
       geometry: new ol.geom.Point(ol.proj.transform(marker.position, 'EPSG:4326', 'EPSG:3857'))
     });
-    let vectorSource = new ol.source.Vector(<any>{
-      features: [iconFeature]
-    });
-    let iconStyle = new ol.style.Style(<any>{
+
+    iconFeature.setStyle(new ol.style.Style(<any>{
       image: new ol.style.Icon(<any>{
         anchor: [0.5, 1],
         src: this.openlayers.positionFormService.getMarkerUrlByColor(marker.color)
-      }),
-    });
-    let vectorLayer = new ol.layer.Vector(<any>{
-      source: vectorSource,
-      style: iconStyle
-    });
-    vectorLayer.setZIndex(200);
-    this.openlayers.map.addLayer(vectorLayer);
+      })
+    }));
+
+    this.vectorSource.addFeature(iconFeature);
   }
 
-  removeIcon(mapMarker):void{
-    let marker_to_remove = this.openlayers.LayersArray.find(
-      layer => {
-        let geom;
-        if (layer.getSource().getFeatures) geom = layer.getSource().getFeatures()[0].getGeometry();
-        if (!(geom instanceof ol.geom.Point)) return false;
-        let position = layer.getSource().getFeatures()[0].getGeometry()['getCoordinates']();
-        position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
-        position = this.openlayers.calcService.toFixes7Obj(position);
-
-        if(layer.getSource()["Z"])
-          if(layer.getSource()["Z"].includes("geojson"))
-            return false;
-
-        let color:string = this.openlayers.positionFormService.getMarkerColorByUrl(layer.getStyle().getImage().getSrc());
-        return _.isEqual(position, mapMarker.position) && _.isEqual(color, mapMarker.color);
-      });
-    this.openlayers.map.removeLayer(marker_to_remove)
+  removeIcon(mapMarker): void {
+    const marker_feature_to_remove = this.vectorSource.getFeatures().find( (feature: ol.Feature) => {
+      let position = (feature.getGeometry() as any).getCoordinates();
+      position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
+      position = this.openlayers.calcService.toFixes7Obj(position);
+      const color:string = this.openlayers.positionFormService.getMarkerColorByUrl((feature.getStyle() as any).getImage().getSrc());
+      return _.isEqual(position, mapMarker.position) && _.isEqual(color, mapMarker.color);
+    });
+    this.vectorSource.removeFeature(marker_feature_to_remove);
   }
 
 }

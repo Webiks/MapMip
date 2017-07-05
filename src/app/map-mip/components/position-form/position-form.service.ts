@@ -45,9 +45,14 @@ export const MARKER_COLORS_HEX:Array<string>=['#277fca','#3c3c3c','#23aa1f','#77
 export class PositionFormService {
 
   public onPicked:boolean;
+  public onPolygonPicked:boolean;
+  public onPolylinePicked:boolean;
+
 
   public selectedColorIndex:number = 0;
   public markerPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public polygonPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public polylinePickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   public mapsCont: any;
   public hideComponent:boolean = true;
 
@@ -84,8 +89,10 @@ export class PositionFormService {
   getMarkerUrlByColor(color:string="blue" ,format:string="png"):string{
     return `http://mapmip.webiks.com/assets/Markers/marker-icon-${color}.${format}`
   }
-  getMarkerColorByUrl(url:string):string{
+  getMarkerColorByUrl(url:string) {
     // return url.replace(location.origin, "").replace("/assets/Markers/marker-icon-", "").replace(".png","");
-    return url.replace("http://mapmip.webiks.com", "").replace("/assets/Markers/marker-icon-", "").replace(".png","");
+    if (url) {
+       return url.replace("http://mapmip.webiks.com", "").replace("/assets/Markers/marker-icon-", "").replace(".png", "");
+  }
   }
 }

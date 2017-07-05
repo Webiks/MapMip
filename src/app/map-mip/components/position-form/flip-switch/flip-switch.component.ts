@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {MapMipService} from "../../../api/map-mip.service";
 
 @Component({
   selector: 'app-flip-switch',
@@ -7,9 +6,23 @@ import {MapMipService} from "../../../api/map-mip.service";
   styleUrls: ['./flip-switch.component.scss']
 })
 export class FlipSwitchComponent implements OnInit {
-  @Input("state") private state: boolean;
+  // private _state: boolean;
 
-  constructor(public mapmipService:MapMipService) { }
+  @Input() state: boolean;
+  @Output() public stateChange = new EventEmitter<boolean>();
+  @Input() public tooltip: string;
+
+  changes(checked: boolean){
+    this.stateChange.emit(checked);
+  }
+  // set state(value: boolean) {
+  //   this._state = value;
+  //   this.stateChange.emit(value);
+  // }
+  // get state() {
+  //   return this._state
+  // }
+
 
   ngOnInit() {
   }

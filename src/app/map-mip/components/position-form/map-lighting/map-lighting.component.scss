@@ -1,10 +1,11 @@
-button.active {
-  color: gold;
-  &:focus{
+
+.lighting{
+  button.active {
+    top: 0;
     color: gold;
+    &:focus{
+      color: gold;
+    }
   }
-}
-#light{
-  margin-left: -52px;
-  margin-top: -1px;
+
 }

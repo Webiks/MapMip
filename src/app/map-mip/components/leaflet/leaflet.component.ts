@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/filter';
 import * as L from 'leaflet';
+//import * as L.Draw 'leaflet-draw';
 import "leaflet-bing-layer/leaflet-bing-layer";
 import "leaflet-ajax/dist/leaflet.ajax";
 import {LeafletLayers} from "./classes/leaflet.component.layers";
@@ -19,6 +20,8 @@ import {CalcService} from "../../services/calc-service";
 import {AjaxService} from "../../services/ajax.service";
 import {animations, host} from "../../map-mip.component";
 import {MapMipService} from "../../api/map-mip.service";
+import {LeafletPolygons} from "./classes/leaflet.component.polygons";
+
 
 @Component({
   host: host,
@@ -40,6 +43,10 @@ export class LeafletComponent implements OnInit, OnDestroy{
   public map_size:LeafletMapSize;
   public map_position:LeafletMapPosition;
   public geojson:LeafletGeoJson;
+  public polygons:LeafletPolygons;
+  public southWest = L.latLng(-87.71179927260242,-180);
+  public northEast = L.latLng(89.45016124669523, 180);
+  public bounds = L.latLngBounds(this.southWest, this.northEast);
 
   @ViewChild("container") public container;
   public L: any;
@@ -59,12 +66,32 @@ export class LeafletComponent implements OnInit, OnDestroy{
     this.map_view = new LeafletMapView(this);
     this.map_position = new LeafletMapPosition(this);
     this.geojson = new LeafletGeoJson(this);
+    this.polygons = new LeafletPolygons(this,this.queryParamsHelperService);
 
+
+    
   }
 
   initializeMap():void {
-    this.map = L.map(this.container.nativeElement);
+
+    this.map = L.map(this.container.nativeElement,{
+      maxZoom: 18,
+      minZoom: 3,
+      maxBounds: [
+        //south west
+        [-87.71179927260242,-180],
+        //north east
+        [89.45016124669523, 180]
+      ]
+    });
     this.L = L;
+    this.map.setView([0,0], 3);
+
+
+
+
+
+
   }
 
   ngOnDestroy(): void {

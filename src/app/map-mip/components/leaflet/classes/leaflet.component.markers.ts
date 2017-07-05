@@ -43,7 +43,7 @@ export class LeafletMarkers {
     let fix_latlng:L.LatLng = this.leaflet.map.layerPointToLatLng(fix_point);
     let position: [number,number] = [fix_latlng.lng, fix_latlng.lat];
     let color:string = this.leaflet.positionFormService.getSelectedColor();
-    this.leaflet.mapMipService.addMarker({position, color});
+    this.leaflet.queryParamsHelperService.addMarker({position, color});
   }
 
   anyMarkersMapChanges(params:Params): boolean{
@@ -107,6 +107,7 @@ export class LeafletMarkers {
 
   getMarkerLayersArray():Array<L.Marker>{  // addition: exclude geojson
     return <Array<L.Marker>> _.filter(this.leaflet.map['_layers'], (l) => l['getLatLng'] && !l.hasOwnProperty("feature")&& !l.hasOwnProperty("_closeButton"))
+
   }
 
   markerExistOnMap(markers_map_positions, paramMarker) {

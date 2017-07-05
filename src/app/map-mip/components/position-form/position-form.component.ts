@@ -51,7 +51,9 @@ export class PositionFormComponent implements OnInit {
     position: {val?: string, permissions: number[], input_type?:string},
     terrain: {val?: string, permissions: number[], input_type?:string},
     geojson: {val?: string, permissions: number[], input_type?:string},
-    lighting: {val?: string, permissions: number[], input_type?:string}
+    lighting: {val?: string, permissions: number[], input_type?:string},
+    polygons: {val?: string, permissions: number[], input_type?:string},
+    polyline: {val?: string, permissions: number[], input_type?:string}
   } = {
     lng:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
     lat:{permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']]},
@@ -68,11 +70,16 @@ export class PositionFormComponent implements OnInit {
     position:{permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-map-position' },
     terrain:{permissions: [Permissions['/cesium']], input_type: 'app-terrain' },
     geojson: {permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']], input_type: 'app-geojson-layer' },
-    lighting:{permissions: [Permissions['/cesium']], input_type: 'app-map-lighting' }
+    lighting:{permissions: [Permissions['/cesium']], input_type: 'app-map-lighting' },
+    polygons: {permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-polygons' },
+    polyline: {permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']], input_type: 'app-polyline' }
   };
 
   constructor(private router:Router, private route:ActivatedRoute, private queryParamsHelperService:QueryParamsHelperService,private positionFormService:PositionFormService, public mapMipService:MapMipService) {}
-
+  removeMe(key, event) {
+    this.params[key].val = event;
+    this.submitForm();
+  }
 
   submitLayers($event: {hide:boolean, modal:ModalDirective, parsed_layer:string}) {
     this.params.layers.val = $event.parsed_layer;
@@ -90,6 +97,14 @@ export class PositionFormComponent implements OnInit {
     });
   }
 
+  submitPolygons($event: {hide:boolean, smModal:ModalDirective, parsed_polygons:string}) {
+    this.params.polygons.val = $event.parsed_polygons;
+
+    this.submitForm().then(()=>{
+      if($event.hide || _.isNil(this.params.polygons.val)) $event.smModal.hide();
+    });
+  }
+
   submitGeojsons($event: {hide:boolean, modal:ModalDirective, parsed_geojson:string}){
     this.params.geojson.val = $event.parsed_geojson;
 
@@ -97,6 +112,7 @@ export class PositionFormComponent implements OnInit {
       if($event.hide || _.isNil(this.params.markers.val)) $event.modal.hide();
     });
   }
+
 
 
   ngOnInit() {
@@ -176,7 +192,12 @@ export class PositionFormComponent implements OnInit {
   keys(obj) {
     return Object.keys(obj);
   }
-
+  get rotateRef() {
+    return this.params.rotate;
+  }
+  get modeD() {
+    return this.params.rotate;
+  }
 }
 
 

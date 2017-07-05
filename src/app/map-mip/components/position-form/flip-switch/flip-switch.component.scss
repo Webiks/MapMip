@@ -7,7 +7,7 @@
 }
 .onoffswitch-label {
   display: block; overflow: hidden; cursor: pointer;
-  border: 2px solid #999999; border-radius: 20px;
+  border: 2px solid #999999; border-radius: 4px;
 }
 .onoffswitch-inner {
   display: block; width: 200%; margin-left: -100%;
@@ -19,7 +19,7 @@
   box-sizing: border-box;
 }
 .onoffswitch-inner:before {
-  content: "Fixed URL";
+  content: "ON";
   padding-left: 5px;
   background-color: #34A7C1; color: #FFFFFF;
 }
@@ -30,16 +30,20 @@
   text-align: center;
 }
 .onoffswitch-switch {
-  display: block; width: 18px; margin: 6px;
+  display: block;
   background: #FFFFFF;
-  position: absolute; top: 0; bottom: 0;
-  right: 56px;
-  border: 2px solid #999999; border-radius: 20px;
+  width: 20px;
+  margin: 5px 2px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right:63px;
+  border: 2px solid #999999; border-radius: 4px;
   transition: all 0.3s ease-in 0s;
 }
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
   margin-left: 0;
 }
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-  right: 0px;
+  right: 3px;
 }
