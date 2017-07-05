@@ -17,7 +17,7 @@ export class PolylineComponent  {
   @Output() submitPolylineEmitter = new EventEmitter();
   @Output("togglePolylinePickedEmitter") togglePolylinePickedEmitter = new EventEmitter();
   public polylineArray=[];
-  public polylineColors=['blue','green','yellow','grey','white','black','purple','orange'];
+  public polylineColors=['blue','green','yellow','grey','black','purple','orange','red'];
   public selectedColor:string='blue';
   constructor(private queryParamsHelperService:QueryParamsHelperService, public positionFormService:PositionFormService) { }
 

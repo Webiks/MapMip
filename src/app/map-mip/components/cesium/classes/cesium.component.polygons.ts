@@ -49,10 +49,11 @@
        if(!this.polygonsExistOnMap(coords)) {
            that.cesium.viewer.entities.add({
              polygon : {
-               hierarchy : new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(coords[0])),
-               material : Cesium.Color.LIGHTSKYBLUE.withAlpha(0.5),
+               hierarchy : Cesium.Cartesian3.fromDegreesArray(coords[0]),
+               material : Cesium.Color.LIGHTSKYBLUE.withAlpha(0.2),
+               extrudedHeight: 0,
                outline : true,
-               outlineColor : Cesium.Color.RED
+               outlineColor : this.getColor(polygon_obj.color)
             }
          });
        }
@@ -83,6 +84,33 @@
    }
      return true;
    }
+
+   getColor(color:string){
+     switch (color){
+       case  'red':
+             return Cesium.Color.RED;
+       case  'blue':
+         return Cesium.Color.BLUE;
+       case  'green':
+         return Cesium.Color.GREEN;
+       case  'yellow':
+         return Cesium.Color.YELLOW;
+       case  'grey':
+         return Cesium.Color.GREY;
+       case  'white':
+         return Cesium.Color.WHITE;
+       case  'black':
+         return Cesium.Color.BLACK;
+       case  'purple':
+         return Cesium.Color.PURPLE;
+       case  'orange':
+         return Cesium.Color.ORANGE;
+       default:
+          Cesium.Color.BLUE;
+
+     }
+   }
+
    togglePolygonPicker(){
      this._positions=[];
 
@@ -90,13 +118,13 @@
        polyline: {
          show: true,
          positions: this.setCallbackProperty(this._positions),
-         material : Cesium.Color.LIGHTSKYBLUE.withAlpha(0.5)
+         material :  Cesium.Color.LIGHTSKYBLUE.withAlpha(0.5)
        },
        polygon : {
          hierarchy: this.setCallbackProperty(this._positions),
          material : Cesium.Color.LIGHTSKYBLUE.withAlpha(0.5),
          outline : true,
-         outlineColor : Cesium.Color.LIGHTSKYBLUE
+         outlineColor :  Cesium.Color.LIGHTSKYBLUE.withAlpha(0.5)
        }
      });
 
@@ -174,7 +202,7 @@
      this._polygonEntity.polyline.show = false;
      this._polygonEntity.polygon.show = true;
      let that = this;
-       that.queryParamsHelperService.addPolygon(that.calcPositions(this._positions));
+       that.queryParamsHelperService.addPolygon({coords:that.calcPositions(this._positions),color:this.cesium.positionFormService.selectedPolylgonColor});
 
    }
    private setCallbackProperty(value, property?)

@@ -19,7 +19,7 @@ export class PolygonsComponent implements OnInit {
   @Output("togglePickedEmitter") togglePickedEmitter = new EventEmitter();
   @Output() submitPolygonsEmitter = new EventEmitter();
   public polygonsArray=[];
-  public polygonColors=['blue','green','yellow','grey','white','black','purple','orange'];
+  public polygonColors=['blue','green','yellow','grey','black','purple','orange','red'];
   public selectedColor:string='blue';
 
   constructor(private queryParamsHelperService:QueryParamsHelperService, public positionFormService:PositionFormService) { }
