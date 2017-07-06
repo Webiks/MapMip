@@ -2,7 +2,7 @@ import {Injectable, EventEmitter} from '@angular/core';
 import {PositionFormService} from "../components/position-form/position-form.service";
 import {NavigationCancel, NavigationExtras, Router, UrlTree} from "@angular/router";
 import {Location} from '@angular/common';
-import {QueryParamsHelperService} from "../services/query-params-helper.service";
+//import {QueryParamsHelperService} from "../services/query-params-helper.service";
 import * as _ from 'lodash';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class MapMipService {
   private _skipLocationChange:boolean = false;
   private default_state:string = '/leaflet';
   public gotoEmitter  = new EventEmitter();
-  constructor(private positionFormService: PositionFormService, public router: Router, private location: Location,private queryParamsHelperService:QueryParamsHelperService){
+  constructor(private positionFormService: PositionFormService, public router: Router, private location: Location/*,private queryParamsHelperService:QueryParamsHelperService*/){
 
     this.router.events.filter(e => e['url'] === '/').subscribe((e) => {
       this.navigate([this.default_state]);
@@ -71,13 +71,13 @@ export class MapMipService {
     urlTree.queryParams["lat"] = lat;
     this.navigateByUrl(urlTree.toString());
   }
-  addMarker(marker){
+/*  addMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let markers_array:Array<any> = this.queryParamsHelperService.markersStrToArray(urlTree.queryParams['markers']);
     markers_array.push(marker);
     urlTree.queryParams['markers'] = this.queryParamsHelperService.markersArrayToStr(markers_array);
     this.navigateByUrl(urlTree.toString())
-  }
+  }*/
 /*  addMarker(marker){
     this.queryParamsHelperService.addMarker(marker);
   }*/
@@ -174,7 +174,7 @@ export class MapMipService {
   /*removeMarkerByPosition(marker){
     this.queryParamsHelperService.removeMarker(marker);
   }*/
-  removeMarker(marker){
+ /* removeMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let markers_array:Array<any> = this.queryParamsHelperService.markersStrToArray(urlTree.queryParams['markers']);
     _.forEach(markers_array,function(m,index){
@@ -186,15 +186,15 @@ export class MapMipService {
     this.navigateByUrl(urlTree.toString());
   }
 
-/*
+/!*
   addGeojson(geojson){
     this.queryParamsHelperService.addGeojson(geojson);
-  }*/
+  }*!/
   addGeojson(geojson){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let geojson_array:Array<any> = this.queryParamsHelperService.geojsonStrToArray(urlTree.queryParams['geojson']);
     geojson_array.push(geojson);
     urlTree.queryParams['geojson'] = this.queryParamsHelperService.geojsonArrayToStr(geojson_array);
     this.navigateByUrl(urlTree.toString())
-  }
+  }*/
 }

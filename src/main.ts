@@ -48,14 +48,36 @@ public mapMipService;
     flyTo(latlng:[number,number],zoom:number){
       switch (window['current'].constructor.name){
         case  "OpenlayersComponent" :
-          return window['current']['map'].getView().setZoom(zoom);
+          var location = window['current'].ol.proj.fromLonLat([latlng[1],latlng[0]]);
+          return window['current']['map'].getView().animate({zoom:zoom},{center: location})
         case  "LeafletComponent" :
           return  window['current']['map'].flyTo(latlng,zoom);
-        // case  "CesiumComponent" : TODO
-        // return  window['current']['map'].setZoom(zoom);
-      }
-
+        case  "CesiumComponent" :
+          return window['current'].viewer.camera.flyTo({
+            destination : Cesium.Cartesian3.fromDegrees(latlng[1], latlng[0], window['current'].viewer.camera.positionCartographic.height)
+          });
+    }
   }
+  panTo(latlng:[number,number]){
+    switch (window['current'].constructor.name){
+      case  "OpenlayersComponent" :
+        var location = window['current'].ol.proj.fromLonLat([latlng[0],latlng[1]]);
+        return window['current']['map'].getView().animate({center: location})
+      case  "LeafletComponent" :
+        return  window['current']['map'].panTo(latlng);
+      case  "CesiumComponent" :
+        return window['current'].viewer.camera.setView({
+          destination : Cesium.Cartesian3.fromDegrees(latlng[1], latlng[0], window['current'].viewer.camera.positionCartographic.height),
+          orientation: {
+            heading : 0.0,
+            pitch : -Cesium.Math.PI_OVER_TWO,
+            roll : 0.0
+          }
+        });
+    }
+  }
+
+
 
 }
 
