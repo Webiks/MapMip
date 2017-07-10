@@ -3,6 +3,7 @@ import {enableProdMode, NgModuleRef} from '@angular/core';
 import { environment } from './environments/environment';
 import { AppModule } from './app/app.module';
 import {current} from "codelyzer/util/syntaxKind";
+import {QueryParamsHelperService} from "./app/map-mip/services/query-params-helper.service";
 
 if (environment.production) {
   enableProdMode();
@@ -11,6 +12,7 @@ if (environment.production) {
 
 class MapmipApi {
 public mapMipService;
+  public queryParamsHelperService:QueryParamsHelperService;
   constructor(element: HTMLElement | string | any) {
     this.initMapmip(element,{skipLocationChange:true})
   }
@@ -35,6 +37,14 @@ public mapMipService;
   changePosition(lat,lon) {
     this.mapMipService.changePosition(lat, lon);
   }
+
+  // mapmip api
+  addMarker(marker){
+    this.queryParamsHelperService.addMarker(marker);
+  }
+
+
+  // leaflet - openLayers - Cesium API
   setZoom(zoom:number) {
     switch (window['current'].constructor.name) {
       case  "OpenlayersComponent" :
@@ -61,7 +71,7 @@ public mapMipService;
   panTo(latlng:[number,number]){
     switch (window['current'].constructor.name){
       case  "OpenlayersComponent" :
-        var location = window['current'].ol.proj.fromLonLat([latlng[0],latlng[1]]);
+        var location = window['current'].ol.proj.fromLonLat([latlng[1],latlng[0]]);
         return window['current']['map'].getView().animate({center: location})
       case  "LeafletComponent" :
         return  window['current']['map'].panTo(latlng);
@@ -77,9 +87,29 @@ public mapMipService;
     }
   }
 
+  fitBounds(latlng:[[number,number],[number,number],[number,number],[number,number]]){
+    switch (window['current'].constructor.name){
+      case  "OpenlayersComponent" :
+        let olBounds = [
+          [latlng[0][1],latlng[0][0]],
+          [latlng[1][1],latlng[1][0]],
+          [latlng[2][1],latlng[2][0]],
+          [latlng[3][1],latlng[3][0]],
+        ];
+        let bounds=window['current'].ol.extent.applyTransform([olBounds[0][0],olBounds[0][1],olBounds[3][0],olBounds[3][1]],window['current'].ol.proj.getTransform("EPSG:4326", "EPSG:3857"))
+        return window['current']['map'].getView().fit(bounds);
+      case  "LeafletComponent" :
+        return  window['current']['map'].fitBounds(latlng);
+      case  "CesiumComponent" :
+        let rectangle = Cesium.Rectangle.fromDegrees(latlng[3][1],latlng[3][0],latlng[2][1],latlng[2][0])
+        window['current'].viewer.camera.setView({
+          destination: rectangle
+        });
+    }
 
+  }
 
-}
+  }
 
 
 

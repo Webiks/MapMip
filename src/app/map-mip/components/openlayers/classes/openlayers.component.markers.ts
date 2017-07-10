@@ -61,7 +61,7 @@ export class OpenlayersMarkers {
     let fix_coordinate:ol.Coordinate = this.openlayers.map.getCoordinateFromPixel(fix_pixel);
     let position:ol.Coordinate = ol.proj.toLonLat(fix_coordinate);
     let color:string = this.openlayers.positionFormService.getSelectedColor();
-    this.openlayers.mapMipService.addMarker({position, color});
+    this.openlayers.queryParamsHelperService.addMarker({position, color});
   }
 
   anyMarkersMapChanges(params:Params):boolean {

@@ -71,16 +71,14 @@ export class MapMipService {
     urlTree.queryParams["lat"] = lat;
     this.navigateByUrl(urlTree.toString());
   }
-/*  addMarker(marker){
+  /*addMarker(marker){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);
     let markers_array:Array<any> = this.queryParamsHelperService.markersStrToArray(urlTree.queryParams['markers']);
     markers_array.push(marker);
     urlTree.queryParams['markers'] = this.queryParamsHelperService.markersArrayToStr(markers_array);
     this.navigateByUrl(urlTree.toString())
   }*/
-/*  addMarker(marker){
-    this.queryParamsHelperService.addMarker(marker);
-  }*/
+
   //cesium specific
   cesiumChangeHeight(height:string){
     let urlTree:UrlTree = this.router.parseUrl(this.router.url);

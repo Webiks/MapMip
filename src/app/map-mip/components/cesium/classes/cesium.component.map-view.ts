@@ -271,7 +271,7 @@ export class CesiumMapView{
 
   setQueryBoundsOnNavigationEnd(state:string):void {
     let extras:NavigationExtras = {};
-    let go_north = state == MapMipService.LEAFLET_PATH ? true : false;
+    let go_north = state == MapMipService.LEAFLET_PATH ;
 
     this.onLeave(go_north).subscribe(()=>{
       let bounds = this.getBounds().toString();
