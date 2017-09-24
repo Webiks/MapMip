@@ -1,5 +1,5 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {PositionFormService, MARKER_COLORS} from "../position-form.service";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MARKER_COLORS, PositionFormService } from '../position-form.service';
 
 @Component({
   selector: 'app-color-picker',
@@ -8,15 +8,16 @@ import {PositionFormService, MARKER_COLORS} from "../position-form.service";
 })
 export class ColorPickerComponent implements OnInit {
 
-  @Input("selectedIndex") private _selectedIndex:number;
-  @Input("Active") Active;
-  @Output("togglePickedEmitter") togglePickedEmitter = new EventEmitter();
-  @Output("selectedIndexChange") selectedIndexChange = new EventEmitter();
-  @Input("disabledAction") disabledAction:boolean;
-  @Input("iconsPerRow") public iconsPerRow:number;
-  @Input("backdrop") public backdrop:boolean;
+  @Input('selectedIndex') private _selectedIndex: number;
+  @Input('Active') Active;
+  @Output('togglePickedEmitter') togglePickedEmitter = new EventEmitter();
+  @Output('selectedIndexChange') selectedIndexChange = new EventEmitter();
+  @Input('disabledAction') disabledAction: boolean;
+  @Input('iconsPerRow') public iconsPerRow: number;
+  @Input('backdrop') public backdrop: boolean;
 
-  constructor(private positionFormService:PositionFormService) { }
+  constructor(private positionFormService: PositionFormService) {
+  }
 
   ngOnInit() {
   }
@@ -25,27 +26,31 @@ export class ColorPickerComponent implements OnInit {
     this._selectedIndex = value;
     this.selectedIndexChange.emit(value);
   }
-  get selectedColor():string {
-    return MARKER_COLORS[this.selectedIndex]["color"];
+
+  get selectedColor(): string {
+    return MARKER_COLORS[this.selectedIndex]['color'];
   }
-  get selectedIndex():number {
+
+  get selectedIndex(): number {
     return this._selectedIndex;
   }
 
-  changeMarkerColor(selectedColorIndex){
+  changeMarkerColor(selectedColorIndex) {
     this.selectedIndex = selectedColorIndex;
-    if(!this.Active) this.togglePickedEmitter.emit(true);
+    if (!this.Active) {
+      this.togglePickedEmitter.emit(true);
+    }
   }
 
-  markerColors(){
+  markerColors() {
     return MARKER_COLORS;
   }
 
-  getMarkerUrlByColor(color:string):string {
+  getMarkerUrlByColor(color: string): string {
     return this.positionFormService.getMarkerUrlByColor(color);
   }
 
-  calcIndex(parentIndex:number, childIndex:number, iconsPerRow:number=1){
+  calcIndex(parentIndex: number, childIndex: number, iconsPerRow: number = 1) {
     return (iconsPerRow * parentIndex) + childIndex;
   }
 

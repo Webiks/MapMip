@@ -2,14 +2,15 @@
   <div class="container-fluid">
 
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" (click)="isCollapsed = !isCollapsed;mapMipService.togglePositionForm(true)" >
+      <button type="button" class="navbar-toggle collapsed"
+              (click)="isCollapsed = !isCollapsed;mapMipService.togglePositionForm(true)">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand">
-        <img src="http://mapmip.webiks.com/assets/Mapmip_logo.png" />
+        <img src="http://mapmip.webiks.com/assets/Mapmip_logo.png"/>
       </a>
     </div>
     <div id="navbar"
@@ -27,13 +28,13 @@
           </a>
         </li>
 
-        <li class="nav-item"  [class.active]="mapMipService.isActive('leaflet')">
-          <a class="nav-link"  (click)="mapMipService.goTo(LEAFLET_PATH);isCollapsed = true">
+        <li class="nav-item" [class.active]="mapMipService.isActive('leaflet')">
+          <a class="nav-link" (click)="mapMipService.goTo(LEAFLET_PATH);isCollapsed = true">
             <img src="http://leafletjs.com/docs/images/logo.png"/>
           </a>
         </li>
 
-        <li class="nav-item"  [class.active]="mapMipService.isActive('openlayers')">
+        <li class="nav-item" [class.active]="mapMipService.isActive('openlayers')">
           <a class="nav-link" (click)="mapMipService.goTo(OPENLAYERS_PATH);isCollapsed = true">
             <img style="width: 24px;height: 24px" src="https://openlayers.org/assets/theme/img/logo70.png">&nbsp;OpenLayers
           </a>
@@ -43,7 +44,8 @@
 
 
       <ul class="nav navbar-nav navbar-right">
-        <li><a class="glyphicon glyphicon-wrench" [class.is-open]="!mapMipService.positionFormHidden()" (click)="togglePositionForm()"><span class="a-text">Tools</span></a></li>
+        <li><a class="glyphicon glyphicon-wrench" [class.is-open]="!mapMipService.positionFormHidden()"
+               (click)="togglePositionForm()"><span class="a-text">Tools</span></a></li>
       </ul>
 
     </div>

@@ -1,9 +1,9 @@
 /* tslint:disable:no-unused-variable */
 
-import {TestBed, async, ComponentFixture} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import {RouterTestingModule} from "@angular/router/testing";
-import {NavbarComponent} from "./navbar/navbar.component";
+import { RouterTestingModule } from '@angular/router/testing';
+import { NavbarComponent } from './navbar/navbar.component';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -16,7 +16,7 @@ describe('AppComponent', () => {
         AppComponent,
         NavbarComponent
       ],
-      imports:[RouterTestingModule]
+      imports: [RouterTestingModule]
     });
     TestBed.compileComponents();
   });
@@ -30,6 +30,6 @@ describe('AppComponent', () => {
 
   it('component should be defined', () => {
     expect(compnent).toBeDefined();
-  })
+  });
 
 });

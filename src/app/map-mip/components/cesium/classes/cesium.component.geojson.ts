@@ -1,15 +1,16 @@
 /**
  * Created by Harel on 14/03/2017.
  */
-import {Params} from "@angular/router";
-import {CesiumComponent} from "../cesium.component";
+import { Params } from '@angular/router';
+import { CesiumComponent } from '../cesium.component';
 import * as _ from 'lodash';
 
 
 export class CesiumGeoJson {
   public queryParamsSubscriber;
-public LineString={color:'',cooridnates:[]};
-public _mainDataSource:Array<any>=[];
+  public LineString = { color: '', cooridnates: [] };
+  public _mainDataSource: Array<any> = [];
+
   constructor(private cesium: CesiumComponent) {
     this.queryParamsSubscriber = cesium.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
   }
@@ -18,73 +19,72 @@ public _mainDataSource:Array<any>=[];
     if (this.cesium.queryParamsHelperService.anyGeoJsonChange(this.cesium.prevParams, this.cesium.currentParams)) {
       let urls = this.cesium.queryParamsHelperService.queryGeoJson(params);
       let that = this;
-      //remove all
-      this.cesium.viewer.dataSources.removeAll()
+      // remove all
+      this.cesium.viewer.dataSources.removeAll();
 
-      //then add the current
+      // then add the current
       _.forEach(urls, function (url) {
-        let promise = Cesium.GeoJsonDataSource.load(url,{
-        });
+        let promise = Cesium.GeoJsonDataSource.load(url, {});
         promise.then(function (dataSource) {
             that.cesium.viewer.dataSources.add(dataSource);
-            let d =dataSource;
+            let d = dataSource;
             let entities = dataSource.entities.values;
             let cartesianArr = dataSource.entities.values[0].polyline.positions.getValue();
-            _.forEach(entities,function (ent) {
+            _.forEach(entities, function (ent) {
               that.cesium.viewer.dataSources.remove(d);
-              var positionArr=[];
+              var positionArr = [];
 
-              _.forEach(cartesianArr,function (cartesian) {
+              _.forEach(cartesianArr, function (cartesian) {
                 var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
                 var latDeg = Cesium.Math.toDegrees(cartographic.latitude).toFixed(7);
-                var lngDeg  = Cesium.Math.toDegrees(cartographic.longitude).toFixed(7);
-                positionArr.push(lngDeg, latDeg)
+                var lngDeg = Cesium.Math.toDegrees(cartographic.longitude).toFixed(7);
+                positionArr.push(lngDeg, latDeg);
               });
-              positionArr = positionArr.map(Number)
+              positionArr = positionArr.map(Number);
 
               var corridorGeometry = new Cesium.CorridorGeometry({
-                positions : Cesium.Cartesian3.fromDegreesArray(positionArr),
-                width : 20,
-                vertexFormat : Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
+                positions: Cesium.Cartesian3.fromDegreesArray(positionArr),
+                width: 20,
+                vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
               });
-              var color = Cesium.Color.fromCssColorString(that.getColor(ent.properties.color || 'azure'))
+              var color = Cesium.Color.fromCssColorString(that.getColor((<any>ent).properties.color || 'azure'));
 
               var coloredCorridorInstance = new Cesium.GeometryInstance({
                 geometry: corridorGeometry,
-                appearance : new Cesium.PerInstanceColorAppearance({
-                  closed : true
+                appearance: new Cesium.PerInstanceColorAppearance({
+                  closed: true
                 }),
-                attributes : {
+                attributes: {
                   color: Cesium.ColorGeometryInstanceAttribute.fromColor(new Cesium.Color(color.red, color.green, color.blue, color.alpha))
                 }
               });
 
               that.cesium.viewer.scene.primitives.add(new Cesium.GroundPrimitive({
-                geometryInstances : [coloredCorridorInstance]
+                geometryInstances: [coloredCorridorInstance]
               }));
-              ent.billboard.image = "http://mapmip.webiks.com/assets/Markers/marker-icon-blue.png";
+              (<any>ent).billboard.image = 'http://mapmip.webiks.com/assets/Markers/marker-icon-blue.png';
             });
 
           }
-        )
+        );
       });
     }
-   }
+  }
 
-  getColor(color){
+  getColor(color) {
     switch (color) {
       case 'red':
-        return  "#ff0000";
+        return '#ff0000';
       case 'blue':
-        return "#0000ff";
+        return '#0000ff';
       case 'azure':
         return '#3285f8';
       case 'green':
-        return  "#00ff00";
+        return '#00ff00';
       case 'yellow':
-        return "#feff43";
+        return '#feff43';
       case 'black':
-        return  "#000000";
+        return '#000000';
     }
   }
 }

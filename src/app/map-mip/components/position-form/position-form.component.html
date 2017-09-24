@@ -10,12 +10,13 @@
   <div class="panel-body">
     <div class="pos-container">
       <form class="row" (submit)="submitForm()">
-        <ng-template ngFor let-key [ngForOf]="keys(params)" >
+        <ng-template ngFor let-key [ngForOf]="keys(params)">
           <ng-template [ngIf]="havePermission(params[key])">
             <div class="group-div">
               <div class="input_type {{key}}" *ngIf="!params[key].input_type">
                 <md-input-container color="primary">
-                  <input mdInput placeholder="{{key}}" [(ngModel)]="params[key].val" [ngModelOptions]="{standalone: true}">
+                  <input mdInput placeholder="{{key}}" [(ngModel)]="params[key].val"
+                         [ngModelOptions]="{standalone: true}">
                 </md-input-container>
               </div>
               <div class="terrain-group" *ngIf="params[key].input_type == 'app-terrain'">
@@ -24,10 +25,10 @@
               <div class="lighting-group" *ngIf="params[key].input_type == 'app-map-lighting'">
                 <app-map-lighting [lighting]="params.lighting.val"></app-map-lighting>
               </div>
-                <!--
-                          <div class="form-group polyline-group" *ngIf="params[key].input_type == 'app-polyline'">
-                            <app-polyline (togglePolylinePickedEmitter) = "submitForm()"  ></app-polyline>
-                          </div>-->
+              <!--
+                        <div class="form-group polyline-group" *ngIf="params[key].input_type == 'app-polyline'">
+                          <app-polyline (togglePolylinePickedEmitter) = "submitForm()"  ></app-polyline>
+                        </div>-->
               <div class="b-switch" *ngIf="params[key].input_type == 'Bswitch'">
                 <!--<bSwitch [switch-label-text]="'aa '" [(ngModel)]="params[key].val" name="{{key}}" (ngModelChange)="submitForm()"></bSwitch>-->
                 <app-flip-switch
@@ -44,10 +45,9 @@
         </ng-template>
 
 
-
-
         <div class="markers-group">
-          <app-markers [lat]="params.lat.val" [lng]="params.lng.val" (submitMarkersEmitter)="submitMarkers($event)"></app-markers>
+          <app-markers [lat]="params.lat.val" [lng]="params.lng.val"
+                       (submitMarkersEmitter)="submitMarkers($event)"></app-markers>
         </div>
 
         <div class="layers-group">
@@ -59,15 +59,18 @@
         </div>
 
         <div class="position-group">
-          <app-map-position [size]="params.size.val" (submitPositionEmitter)="submitForm()" [(position)]="params.position.val"></app-map-position>
+          <app-map-position [size]="params.size.val" (submitPositionEmitter)="submitForm()"
+                            [(position)]="params.position.val"></app-map-position>
         </div>
 
         <div class="layers-group">
-          <app-geojson-layer [geojson]="params.geojson.val" (submitGeoJsonEmitter)="submitGeojsons($event)"></app-geojson-layer>
+          <app-geojson-layer [geojson]="params.geojson.val"
+                             (submitGeoJsonEmitter)="submitGeojsons($event)"></app-geojson-layer>
         </div>
 
         <div class="polygons-group">
-          <app-polygons (togglePickedEmitter)="submitForm()"  (submitPolygonsEmitter)="submitPolygons($event)" [polygons]="params.polygons.val" ></app-polygons>
+          <app-polygons (togglePickedEmitter)="submitForm()" (submitPolygonsEmitter)="submitPolygons($event)"
+                        [polygons]="params.polygons.val"></app-polygons>
         </div>
 
         <div class="polygons-group">

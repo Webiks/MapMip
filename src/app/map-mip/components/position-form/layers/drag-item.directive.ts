@@ -1,45 +1,51 @@
-import {Directive, ElementRef,HostBinding, Input, HostListener, Output, EventEmitter} from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
 
 @Directive({
   selector: '[appDragItem]'
 })
-export class DragItemDirective{
+export class DragItemDirective {
 
-  constructor(private el: ElementRef) {}
+  constructor(private el: ElementRef) {
+  }
 
-  @Input("appDragItem") public data:[number,Array<any>];
+  @Input('appDragItem') public data: [number, Array<any>];
   @Output() onDrop = new EventEmitter();
-  public shift_down:boolean = false;
+  public shift_down: boolean = false;
 
-  @HostListener('dragstart', ['$event']) dragstart($event:DragEvent) {
-    let dragIndex:string = this.data[0].toString();
-    $event.dataTransfer.setData("dragIndex", dragIndex);
-    this.el.nativeElement.classList.add("dragged")
+  @HostListener('dragstart', ['$event'])
+  dragstart($event: DragEvent) {
+    let dragIndex: string = this.data[0].toString();
+    $event.dataTransfer.setData('dragIndex', dragIndex);
+    this.el.nativeElement.classList.add('dragged');
   }
 
   @HostBinding('draggable') draggable = true;
 
-  @HostListener('dragend') dragend() {
-    this.el.nativeElement.classList.remove("dragged")
+  @HostListener('dragend')
+  dragend() {
+    this.el.nativeElement.classList.remove('dragged');
   }
 
-  @HostListener('dragover', ['$event']) dragover($event) {
+  @HostListener('dragover', ['$event'])
+  dragover($event) {
     $event.preventDefault();
-    this.el.nativeElement.classList.add("dragovered")
+    this.el.nativeElement.classList.add('dragovered');
   }
 
-  @HostListener('dragleave') dragleave() {
-    this.el.nativeElement.classList.remove("dragovered")
+  @HostListener('dragleave')
+  dragleave() {
+    this.el.nativeElement.classList.remove('dragovered');
   }
 
 
-  @HostListener('drop', ['$event']) drop($event:DragEvent) {
+  @HostListener('drop', ['$event'])
+  drop($event: DragEvent) {
     let dropIndex = this.data[0];
-    let dragIndex:number = +$event.dataTransfer.getData("dragIndex");
+    let dragIndex: number = +$event.dataTransfer.getData('dragIndex');
     let array = this.data[1];
-    this.el.nativeElement.classList.remove("dragovered");
+    this.el.nativeElement.classList.remove('dragovered');
 
-    if(dropIndex != dragIndex){
+    if (dropIndex != dragIndex) {
       let temp = array[dragIndex];
       array[dragIndex] = array[dropIndex];
       array[dropIndex] = temp;
@@ -47,15 +53,17 @@ export class DragItemDirective{
     }
   }
 
-  @HostListener('keyup', ['$event']) keyup($event){
+  @HostListener('keyup', ['$event'])
+  keyup($event) {
     switch ($event.which) {
-     case 16:
+      case 16:
         this.shift_down = false;
         break;
     }
   }
 
-  @HostListener('keydown', ['$event']) keydown($event){
+  @HostListener('keydown', ['$event'])
+  keydown($event) {
     switch ($event.which) {
       case 38:
         this.keydownDown();
@@ -70,7 +78,7 @@ export class DragItemDirective{
   }
 
   keydownDown() {
-    if(this.shift_down) {
+    if (this.shift_down) {
       this.switchNext();
     } else {
       this.focusNext();
@@ -78,7 +86,7 @@ export class DragItemDirective{
   }
 
   keydownUp() {
-    if(this.shift_down) {
+    if (this.shift_down) {
       this.switchPrev();
     } else {
       this.focusPrev();
@@ -93,7 +101,7 @@ export class DragItemDirective{
     temp = array[dropIndex];
     array[dropIndex] = array[swapIndex];
     array[swapIndex] = temp;
-    setTimeout(()=>{
+    setTimeout(() => {
       this.el.nativeElement.focus();
     }, 0);
   }
@@ -103,27 +111,29 @@ export class DragItemDirective{
     let array = this.data[1];
     let swapIndex, temp;
     swapIndex = (dropIndex - 1) % array.length;
-    if (swapIndex < 0) swapIndex += array.length;
+    if (swapIndex < 0) {
+      swapIndex += array.length;
+    }
     temp = array[dropIndex];
     array[dropIndex] = array[swapIndex];
     array[swapIndex] = temp;
-    setTimeout(()=>{
+    setTimeout(() => {
       this.el.nativeElement.focus();
     }, 0);
   }
 
   focusNext() {
-    let elem:HTMLElement = this.el.nativeElement;
-    let brothers:HTMLCollection = elem.parentElement.children;
+    let elem: HTMLElement = this.el.nativeElement;
+    let brothers: HTMLCollection = elem.parentElement.children;
     let array = [].slice.call(brothers);
     let myindex = array.indexOf(this.el.nativeElement);
     let prev_index = (myindex - 1) < 0 ? array.length + (myindex - 1) : (myindex - 1);
-    array[prev_index ].focus();
+    array[prev_index].focus();
   }
 
-  focusPrev(){
-    let elem:HTMLElement = this.el.nativeElement;
-    let brothers:HTMLCollection = elem.parentElement.children;
+  focusPrev() {
+    let elem: HTMLElement = this.el.nativeElement;
+    let brothers: HTMLCollection = elem.parentElement.children;
     let array = [].slice.call(brothers);
     let myindex = array.indexOf(this.el.nativeElement);
     let next_index = (myindex + 1) % array.length;

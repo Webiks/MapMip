@@ -1,8 +1,8 @@
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MapLayerComponent } from './map-mip.component';
-import {MapMipModule} from "./map-mip.module";
-import {RouterTestingModule} from "@angular/router/testing";
+import { MapMipModule } from './map-mip.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('MapLayerComponent', () => {
   let component: MapLayerComponent;
@@ -11,12 +11,12 @@ describe('MapLayerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[
+      imports: [
         MapMipModule,
         RouterTestingModule
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

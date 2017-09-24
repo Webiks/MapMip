@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-flip-switch',
@@ -12,9 +12,10 @@ export class FlipSwitchComponent implements OnInit {
   @Output() public stateChange = new EventEmitter<boolean>();
   @Input() public tooltip: string;
 
-  changes(checked: boolean){
+  changes(checked: boolean) {
     this.stateChange.emit(checked);
   }
+
   // set state(value: boolean) {
   //   this._state = value;
   //   this.stateChange.emit(value);

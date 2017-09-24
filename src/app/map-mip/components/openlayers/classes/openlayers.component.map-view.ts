@@ -1,30 +1,30 @@
-import {OpenlayersComponent} from "../openlayers.component";
-import {Observer, Observable} from "rxjs";
-import {NavigationEnd, UrlTree, Params, NavigationExtras, NavigationStart} from "@angular/router";
-import * as _ from "lodash"
+import { OpenlayersComponent } from '../openlayers.component';
+import { Observable, Observer } from 'rxjs';
+import { NavigationExtras, Params } from '@angular/router';
+import * as _ from 'lodash';
 import * as ol from 'openlayers';
-import {MapMipService} from "../../../api/map-mip.service";
+import { MapMipService } from '../../../api/map-mip.service';
 
-export class OpenlayersMapView{
-  public go_north:boolean = false;
+export class OpenlayersMapView {
+  public go_north: boolean = false;
   public andRotation: (boolean) => void;
   public DragRotateInteractions: ol.interaction.DragRotate;
   public moveEndEvent;
   public queryParamsSubscriber;
   public gotoEmitterSubscriber;
 
-  constructor(private openlayers:OpenlayersComponent){
+  constructor(private openlayers: OpenlayersComponent) {
 
-    this.DragRotateInteractions = openlayers.map.getInteractions().getArray().find( i => i instanceof ol.interaction.DragRotate);
+    this.DragRotateInteractions = openlayers.map.getInteractions().getArray().find(i => i instanceof ol.interaction.DragRotate);
     this.moveEndEvent = openlayers.map.on('moveend', this.moveEnd.bind(this));
     this.queryParamsSubscriber = openlayers.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
     this.gotoEmitterSubscriber = openlayers.mapMipService.gotoEmitter.subscribe(this.setQueryBoundsOnNavigationEnd.bind(this));
   }
 
-  queryParams(params:Params):void {
-    if(this.openlayers.queryParamsHelperService.hasQueryBounds(params)) {
+  queryParams(params: Params): void {
+    if (this.openlayers.queryParamsHelperService.hasQueryBounds(params)) {
       this.setMapBounds(params);
-    } else if(this.anyParamChanges(params)) {
+    } else if (this.anyParamChanges(params)) {
       this.setMapView(params);
     }
   }
@@ -33,64 +33,64 @@ export class OpenlayersMapView{
     this.queryParamsSubscriber.unsubscribe();
   }
 
-  onLeaveToLeaflet(): Observable <boolean>{
-    return Observable.create( (observer:Observer<boolean>) => {
+  onLeaveToLeaflet(): Observable<boolean> {
+    return Observable.create((observer: Observer<boolean>) => {
       this.andRotation = (complete: boolean) => {
-        observer.next(complete)
+        observer.next(complete);
       };
       if (this.openlayers.map.getView().getRotation() == 0) {
         observer.next(true);
       } else {
         let radian_rotation = this.openlayers.map.getView().getRotation();
         let north = this.openlayers.calcService.toDegrees(radian_rotation) < 180 ? 0 : Cesium.Math.toRadians(360);
-        this.openlayers.map.getView().animate({rotation: north, duration: 500}, this.andRotation);
+        this.openlayers.map.getView().animate({ rotation: north, duration: 500 }, this.andRotation);
       }
-    })
+    });
   };
 
-  setMapView(params:Params):void {
-    let rotate:boolean = isNaN(this.openlayers.queryParamsHelperService.queryRotate(params)) ? true : false;
+  setMapView(params: Params): void {
+    let rotate: boolean = isNaN(this.openlayers.queryParamsHelperService.queryRotate(params)) ? true : false;
 
     this.openlayers.map.setView(new ol.View(<olx.ViewOptions>{
-      center: ol.proj.fromLonLat([this.openlayers.queryParamsHelperService.queryLng(params),this.openlayers.queryParamsHelperService.queryLat(params)]),
+      center: ol.proj.fromLonLat([this.openlayers.queryParamsHelperService.queryLng(params), this.openlayers.queryParamsHelperService.queryLat(params)]),
       zoom: this.openlayers.queryParamsHelperService.queryZoom(params),
       minZoom: 3,
       maxZoom: 19,
       rotation: this.openlayers.calcService.toRadians(360 - this.openlayers.queryParamsHelperService.queryHeading(params))
     }));
 
-    this.DragRotateInteractions.setActive(rotate)
+    this.DragRotateInteractions.setActive(rotate);
   }
 
-  setMapBounds(params:Params):void {
-    let bounds:[number, number, number, number] = this.openlayers.queryParamsHelperService.queryBounds(params);
-    let heading:number = this.openlayers.calcService.toRadians(360 - this.openlayers.queryParamsHelperService.queryHeading(params));
+  setMapBounds(params: Params): void {
+    let bounds: [number, number, number, number] = this.openlayers.queryParamsHelperService.queryBounds(params);
+    let heading: number = this.openlayers.calcService.toRadians(360 - this.openlayers.queryParamsHelperService.queryHeading(params));
 
     this.openlayers.map.getView().fit(this.openlayers.transformExtent(bounds), this.openlayers.map.getSize());
-    this.openlayers.map.getView().setRotation(heading)
+    this.openlayers.map.getView().setRotation(heading);
   }
 
-  anyParamChanges(params:Params):boolean {
-    let longitudeP:number = this.openlayers.queryParamsHelperService.queryLng(params);
-    let latitudeP:number  = this.openlayers.queryParamsHelperService.queryLat(params);
-    let zoomP:number      = this.openlayers.queryParamsHelperService.queryZoom(params);
-    let headingP:number   = 360 - this.openlayers.queryParamsHelperService.queryHeading(params);
-    let rotateP:number    = isNaN(this.openlayers.queryParamsHelperService.queryRotate(params)) ? 1 : 0;
+  anyParamChanges(params: Params): boolean {
+    let longitudeP: number = this.openlayers.queryParamsHelperService.queryLng(params);
+    let latitudeP: number = this.openlayers.queryParamsHelperService.queryLat(params);
+    let zoomP: number = this.openlayers.queryParamsHelperService.queryZoom(params);
+    let headingP: number = 360 - this.openlayers.queryParamsHelperService.queryHeading(params);
+    let rotateP: number = isNaN(this.openlayers.queryParamsHelperService.queryRotate(params)) ? 1 : 0;
 
     let arrayP = [longitudeP, latitudeP, zoomP, headingP, rotateP];
 
-    let longitude:number;
-    let latitude:number;
-    let zoom:number;
-    let heading:number;
-    let rotate:number;
+    let longitude: number;
+    let latitude: number;
+    let zoom: number;
+    let heading: number;
+    let rotate: number;
 
-    try{
+    try {
       longitude = this.openlayers.map.getView().getCenter()[0];
-      latitude  = this.openlayers.map.getView().getCenter()[1];
-      zoom      = this.openlayers.map.getView().getZoom();
-      heading   = this.openlayers.calcService.toDegrees(this.openlayers.map.getView().getRotation());
-      rotate    = this.DragRotateInteractions.getActive() ? 1 : 0;
+      latitude = this.openlayers.map.getView().getCenter()[1];
+      zoom = this.openlayers.map.getView().getZoom();
+      heading = this.openlayers.calcService.toDegrees(this.openlayers.map.getView().getRotation());
+      rotate = this.DragRotateInteractions.getActive() ? 1 : 0;
     } catch (e) {
 
       return true;
@@ -98,19 +98,19 @@ export class OpenlayersMapView{
 
     let array = [longitude, latitude, zoom, heading, rotate];
 
-    arrayP = this.openlayers.calcService.toFixes7Obj(arrayP) ;
-    array = this.openlayers.calcService.toFixes7Obj(array) ;
+    arrayP = this.openlayers.calcService.toFixes7Obj(arrayP);
+    array = this.openlayers.calcService.toFixes7Obj(array);
 
     return !_.isEqual(arrayP, array);
   }
 
-  moveEnd(event):Promise<boolean> {
-    let centerCord:ol.Coordinate = ol.proj.transform(event.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
+  moveEnd(event): Promise<boolean> {
+    let centerCord: ol.Coordinate = ol.proj.transform(event.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
 
     let lng = centerCord[0];
     let lat = centerCord[1];
-    let zoom:number = event.map.getView().getZoom();
-    let heading:number = 360 - this.openlayers.calcService.toDegrees(event.map.getView().getRotation());
+    let zoom: number = event.map.getView().getZoom();
+    let heading: number = 360 - this.openlayers.calcService.toDegrees(event.map.getView().getRotation());
     let markers = this.openlayers.currentParams['markers'];
     let layers = this.openlayers.currentParams['layers'];
     let rotate = this.openlayers.currentParams['rotate'];
@@ -121,24 +121,36 @@ export class OpenlayersMapView{
 
     rotate = rotate == 0 ? 0 : undefined;
 
-    let navigationExtras:NavigationExtras = this.openlayers.queryParamsHelperService.getQuery({lng, lat, zoom, heading, markers, layers,rotate, size, position,geojson,polygons});
-    return this.openlayers.mapMipService.navigate([], navigationExtras)
+    let navigationExtras: NavigationExtras = this.openlayers.queryParamsHelperService.getQuery({
+      lng,
+      lat,
+      zoom,
+      heading,
+      markers,
+      layers,
+      rotate,
+      size,
+      position,
+      geojson,
+      polygons
+    });
+    return this.openlayers.mapMipService.navigate([], navigationExtras);
   };
 
-  getBounds():[number, number, number, number] {
-    let current_rotation:number = this.openlayers.map.getView().getRotation();
+  getBounds(): [number, number, number, number] {
+    let current_rotation: number = this.openlayers.map.getView().getRotation();
     this.openlayers.map.getView().setRotation(0);
-    let bounds:ol.Extent = this.openlayers.map.getView().calculateExtent(this.openlayers.map.getSize());
+    let bounds: ol.Extent = this.openlayers.map.getView().calculateExtent(this.openlayers.map.getSize());
     this.openlayers.map.getView().setRotation(current_rotation);
-    let t_bounds:ol.Extent = ol.proj.transformExtent(bounds, 'EPSG:3857', 'EPSG:4326');
-    let saved_bounds:[number, number, number, number] = t_bounds;
+    let t_bounds: ol.Extent = ol.proj.transformExtent(bounds, 'EPSG:3857', 'EPSG:4326');
+    let saved_bounds: [number, number, number, number] = t_bounds;
     return saved_bounds;
   }
 
-  setQueryBoundsOnNavigationEnd(state:string):void {
-    let extras:NavigationExtras = {};
+  setQueryBoundsOnNavigationEnd(state: string): void {
+    let extras: NavigationExtras = {};
 
-    switch (state){
+    switch (state) {
 
       case MapMipService.CESIUM_PATH:
         let bounds = this.getBounds().toString();
@@ -149,8 +161,8 @@ export class OpenlayersMapView{
         let position = this.openlayers.currentParams['position'];
         let geojson = this.openlayers.currentParams['geojson'];
         let polygons = this.openlayers.currentParams['polygons'];
-        extras.queryParams = {bounds, heading,markers,layers,size,position,polygons};
-        this.openlayers.mapMipService.navigate([state], extras).then(()=>{
+        extras.queryParams = { bounds, heading, markers, layers, size, position, polygons };
+        this.openlayers.mapMipService.navigate([state], extras).then(() => {
           this.gotoEmitterSubscriber.unsubscribe();
         });
         break;
@@ -158,16 +170,15 @@ export class OpenlayersMapView{
       case MapMipService.LEAFLET_PATH:
         this.onLeaveToLeaflet().subscribe(() => {
           let preserveQueryParams: boolean = true;
-          extras = {preserveQueryParams};
+          extras = { preserveQueryParams };
 
-          this.openlayers.mapMipService.navigate([state], extras).then(()=>{
+          this.openlayers.mapMipService.navigate([state], extras).then(() => {
             this.gotoEmitterSubscriber.unsubscribe();
           });
         });
         break;
     }
   }
-
 
 
 }

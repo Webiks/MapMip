@@ -8,9 +8,9 @@ describe('FlipSwitchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FlipSwitchComponent ]
+      declarations: [FlipSwitchComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

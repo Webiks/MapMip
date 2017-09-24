@@ -3,12 +3,12 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
-import {Ng2BootstrapModule} from 'ng2-bootstrap';
+import { Ng2BootstrapModule } from 'ngx-bootstrap';
 import { NavbarComponent } from './navbar/navbar.component';
-import {CommonModule} from '@angular/common';
-import {MapMipModule} from './map-mip/map-mip.module';
-import {MdInputModule} from '@angular/material';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { CommonModule } from '@angular/common';
+import { MapMipModule } from './map-mip/map-mip.module';
+import { MdInputModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -27,4 +27,5 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

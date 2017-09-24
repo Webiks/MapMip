@@ -5,16 +5,16 @@ import * as firebase from 'firebase';
 export class AjaxService {
 
   constructor() {
-    if(firebase.apps.length === 0){
+    if (firebase.apps.length === 0) {
       this.initFirebase();
     }
   }
 
-  initFirebase(){
+  initFirebase() {
     let config = {
-      apiKey: "AIzaSyCWOLHmczhM7SBQIq6XZ3f4sPFyMObJRLs",
-      authDomain: "mapmip-6c74a.firebaseapp.com",
-      databaseURL: "https://mapmip-6c74a.firebaseio.com"
+      apiKey: 'AIzaSyCWOLHmczhM7SBQIq6XZ3f4sPFyMObJRLs',
+      authDomain: 'mapmip-6c74a.firebaseapp.com',
+      databaseURL: 'https://mapmip-6c74a.firebaseio.com'
     };
     firebase.initializeApp(config);
   }
@@ -29,15 +29,16 @@ export class AjaxService {
   //   })
   // }
 
-  getLayerExam():Promise<any> {
-    return <any>firebase.database().ref("array").once("value").then(snapshot => snapshot.val());
+  getLayerExam(): Promise<any> {
+    return <any>firebase.database().ref('array').once('value').then(snapshot => snapshot.val());
   }
 
-  getTerrainsExam():Promise<any> {
-    return <any>firebase.database().ref("terrains").once("value").then(snapshot => snapshot.val());
+  getTerrainsExam(): Promise<any> {
+    return <any>firebase.database().ref('terrains').once('value').then(snapshot => snapshot.val());
   }
-  getGeoJsonExam():Promise<any> {
-    return <any>firebase.database().ref("geojsons").once("value").then(snapshot => snapshot.val());
+
+  getGeoJsonExam(): Promise<any> {
+    return <any>firebase.database().ref('geojsons').once('value').then(snapshot => snapshot.val());
   }
 
 }

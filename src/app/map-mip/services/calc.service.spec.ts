@@ -1,10 +1,10 @@
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, inject } from '@angular/core/testing';
-import {CalcService} from "./calc-service";
+import { inject, TestBed } from '@angular/core/testing';
+import { CalcService } from './calc-service';
 
 describe('CalcServiceService', () => {
-  let calcService:CalcService;
+  let calcService: CalcService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -39,19 +39,19 @@ describe('CalcServiceService', () => {
   });
 
   it('toFixed7Obj should return all number of obj, keeping only 7 decimals ', () => {
-    let obj:{a:number, b:number} = {
+    let obj: { a: number, b: number } = {
       a: 1.123456789,
       b: 9.987654321,
     };
-    let convertedObj:{a:number, b:number} = calcService.toFixes7Obj(obj);
+    let convertedObj: { a: number, b: number } = calcService.toFixes7Obj(obj);
     expect(convertedObj.a).toEqual(1.1234568);
     expect(convertedObj.b).toEqual(9.9876543);
   });
 
-  it("getParsedSubdomainsFromUrl should get url and parse subdomain of it", ()=>{
-    let osm_url = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+  it('getParsedSubdomainsFromUrl should get url and parse subdomain of it', () => {
+    let osm_url = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     let result = calcService.getParsedUrlWithSubdomain(osm_url);
-    expect(result).toEqual("http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png");
+    expect(result).toEqual('http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png');
   });
 
 });

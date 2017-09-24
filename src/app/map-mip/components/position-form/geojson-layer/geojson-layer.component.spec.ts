@@ -8,9 +8,9 @@ describe('GeojsonLayerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GeojsonLayerComponent ]
+      declarations: [GeojsonLayerComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
