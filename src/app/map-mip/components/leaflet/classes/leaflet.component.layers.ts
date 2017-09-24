@@ -45,10 +45,16 @@ export class LeafletLayers {
   }
 
   addBaseLayer(): void {
-    this.getBingLayer({
-      key: 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq',
-      style: 'Aerial'
+    // this.getBingLayer({
+    //   key: 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq',
+    //   style: 'Aerial'
+    // }).addTo(this.leaflet.map);
+    this.getMapboxLayer({
+      url: 'https://api.mapbox.com/styles/v1/',
+      mapid: 'ansyn/cj6x6ya4k116n2sn1r8scuyzc/tiles/256',
+      access_token: 'pk.eyJ1IjoiYW5zeW4iLCJhIjoiY2o2eDZ4b3QyMjI2eTMzbzNzMnk3N2RuZSJ9.SyvUIW3Bi5dA1-RwdzPWcQ',
     }).addTo(this.leaflet.map);
+
   }
 
   addLayersViaUrl(params_layers_array: Array<Object>) {
