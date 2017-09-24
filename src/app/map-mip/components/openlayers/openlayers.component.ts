@@ -12,9 +12,10 @@ import { OpenlayersGeoJson } from './classes/openlayers.component.geojson';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { CalcService } from '../../services/calc-service';
 import { animations } from '../../map-mip.component';
-import { AjaxService } from '../../services/ajax.service';
 import { MapMipService } from '../../api/map-mip.service';
 import { OpenlayersPolygons } from './classes/openlayers.component.polygons';
+import { OpenlayersContextMenu } from './classes/openlayers.component.context-menu';
+import { ContextMenuService } from '../context-menu/services/context-menu.service';
 
 @Component({
   selector: 'app-openlayers',
@@ -24,10 +25,6 @@ import { OpenlayersPolygons } from './classes/openlayers.component.polygons';
 })
 
 export class OpenlayersComponent implements OnInit, OnDestroy {
-  @HostBinding('@routeAnimation')
-  get routeAnimation() {
-    return true;
-  }
 
   private _map;
   public currentParams: Params = {};
@@ -40,12 +37,22 @@ export class OpenlayersComponent implements OnInit, OnDestroy {
   public map_position: OpenlayersMapPosition;
   public geojson: OpenlayersGeoJson;
   public polygons: OpenlayersPolygons;
+  public openlayersContextMenu: OpenlayersContextMenu;
   public ol: any;
 
+  @HostBinding('@routeAnimation') get routeAnimation() {
+    return true;
+  }
 
   @ViewChild('container') public container;
 
-  constructor(public activatedRoute: ActivatedRoute, public queryParamsHelperService: QueryParamsHelperService, public router: Router, public calcService: CalcService, public ajaxService: AjaxService, public positionFormService: PositionFormService, public mapMipService: MapMipService) {
+  constructor(public activatedRoute: ActivatedRoute,
+              public queryParamsHelperService: QueryParamsHelperService,
+              public router: Router,
+              public calcService: CalcService,
+              public positionFormService: PositionFormService,
+              public mapMipService: MapMipService,
+              public contextMenuService: ContextMenuService) {
     window['current'] = this;
     this.queryParamsSubscriber = this.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
 
@@ -87,6 +94,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy {
     this.map_view = new OpenlayersMapView(this);
     this.geojson = new OpenlayersGeoJson(this);
     this.polygons = new OpenlayersPolygons(this);
+    this.openlayersContextMenu = new OpenlayersContextMenu(this);
   }
 
 
@@ -94,7 +102,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy {
     return this.map.getLayers().getArray();
   }
 
-  get map() {
+  get map(): ol.Map {
     return this._map;
   }
 

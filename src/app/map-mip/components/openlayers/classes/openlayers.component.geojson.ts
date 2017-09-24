@@ -93,7 +93,7 @@ export class OpenlayersGeoJson {
 
       // remove all layers first by take from array
       _.forEach(this.geojsonLayers, (geojsonLayer) => {
-        this.openlayers.map.removeLayer(geojsonLayer);
+        this.openlayers.map.removeLayer(<any> geojsonLayer);
       });
       this.geojsonLayers = [];
 
@@ -109,7 +109,7 @@ export class OpenlayersGeoJson {
 
         });
         // add each elem of the array
-        that.openlayers.map.addLayer(that.geojsonLayers[index]);
+        that.openlayers.map.addLayer(<any> that.geojsonLayers[index]);
       });
 
 

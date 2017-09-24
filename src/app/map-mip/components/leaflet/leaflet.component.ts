@@ -23,7 +23,6 @@ import { LeafletPolygons } from './classes/leaflet.component.polygons';
 
 
 @Component({
-  host: host,
   selector: 'app-leaflet',
   templateUrl: './leaflet.component.html',
   styleUrls: ['./leaflet.component.scss'],

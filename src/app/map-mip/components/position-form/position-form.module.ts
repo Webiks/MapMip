@@ -27,7 +27,6 @@ import { MdInputModule } from '@angular/material';
     CommonModule,
     FormsModule,
     Ng2BootstrapModule.forRoot(),
-    JWBootstrapSwitchModule,
     ClickOutsideModule,
     MdInputModule
   ],

@@ -44,11 +44,11 @@ export class OpenlayersLayers {
   }
 
   sortLayers(params_layers_array) {
-    //let layersGroup = this.openlayers.map.getLayers();
-    //let layersArray = layersGroup.a;
+    // let layersGroup = this.openlayers.map.getLayers();
+    // let layersArray = layersGroup.a;
     params_layers_array.forEach((layer_obj, index) => {
       let layer = this.getLayerFromLayerObj(layer_obj);
-      let map_l = this.getTileLayersArray().find(_layer => this.layersEqual(layer, _layer));
+      let map_l = this.getTileLayersArray().find((_layer: any) => this.layersEqual(layer, _layer));
       //  let map_l = layersArray.find(_layer => this.layersEqual(layer, _layer.a.layer ));
       if (map_l) {
         map_l.setZIndex(index);
