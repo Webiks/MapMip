@@ -40,13 +40,3 @@ export const animations: Array<any> = [
     transition('* => void', animate(500, style({ opacity: 0 })))
   ])
 ];
-
-export const host = {
-  '[@routeAnimation]': 'true',
-  '[style.display]': '\'flex\'',
-  '[style.position]': '\'absolute\'',
-  '[style.width]': '\'100%\'',
-  '[style.height]': '\'100%\'',
-  '[style.justify-content]': '\'center\''
-};
-

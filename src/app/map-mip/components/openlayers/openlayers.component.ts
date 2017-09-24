@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as ol from 'openlayers';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import 'rxjs/add/operator/take';
@@ -11,13 +11,12 @@ import { OpenlayersMapPosition } from './classes/openlayers.component.map-positi
 import { OpenlayersGeoJson } from './classes/openlayers.component.geojson';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { CalcService } from '../../services/calc-service';
-import { animations, host } from '../../map-mip.component';
+import { animations } from '../../map-mip.component';
 import { AjaxService } from '../../services/ajax.service';
 import { MapMipService } from '../../api/map-mip.service';
 import { OpenlayersPolygons } from './classes/openlayers.component.polygons';
 
 @Component({
-  host: host,
   selector: 'app-openlayers',
   templateUrl: './openlayers.component.html',
   styleUrls: ['./openlayers.component.scss'],
@@ -25,6 +24,10 @@ import { OpenlayersPolygons } from './classes/openlayers.component.polygons';
 })
 
 export class OpenlayersComponent implements OnInit, OnDestroy {
+  @HostBinding('@routeAnimation')
+  get routeAnimation() {
+    return true;
+  }
 
   private _map;
   public currentParams: Params = {};

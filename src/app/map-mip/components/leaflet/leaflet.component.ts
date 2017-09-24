@@ -1,11 +1,10 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/filter';
 import * as L from 'leaflet';
-//import * as L.Draw 'leaflet-draw';
 import 'leaflet-bing-layer/leaflet-bing-layer';
 import 'leaflet-ajax/dist/leaflet.ajax';
 import { LeafletLayers } from './classes/leaflet.component.layers';
@@ -18,7 +17,7 @@ import { LeafletGeoJson } from './classes/leaflet.component.geojson';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { CalcService } from '../../services/calc-service';
 import { AjaxService } from '../../services/ajax.service';
-import { animations, host } from '../../map-mip.component';
+import { animations } from '../../map-mip.component';
 import { MapMipService } from '../../api/map-mip.service';
 import { LeafletPolygons } from './classes/leaflet.component.polygons';
 
@@ -32,7 +31,10 @@ import { LeafletPolygons } from './classes/leaflet.component.polygons';
 })
 
 export class LeafletComponent implements OnInit, OnDestroy {
-
+  @HostBinding('@routeAnimation')
+  get routeAnimation() {
+    return true;
+  }
   private _map;
   public queryParamsSubscriber;
   public currentParams: Params = {};

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import 'rxjs/add/operator/take';
 import { CesiumLayers } from './classes/cesium.component.layers';
@@ -11,7 +11,7 @@ import { CesiumTerrian } from './classes/cesium.component.terrain';
 import { CesiumMapLighting } from './classes/cesium.component.map-lighting';
 import 'cesium/Build/Cesium/Cesium.js';
 import { CesiumGeoJson } from './classes/cesium.component.geojson';
-import { animations, host } from '../../map-mip.component';
+import { animations } from '../../map-mip.component';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { CalcService } from '../../services/calc-service';
 import { MapMipService } from '../../api/map-mip.service';
@@ -20,7 +20,6 @@ import { CesiumPolyline } from './classes/cesium.component.polyline';
 
 
 @Component({
-  host: host,
   selector: 'app-cesium',
   templateUrl: './cesium.component.html',
   styleUrls: ['./cesium.component.scss'],
@@ -28,7 +27,10 @@ import { CesiumPolyline } from './classes/cesium.component.polyline';
 })
 
 export class CesiumComponent implements OnInit, OnDestroy {
-
+  @HostBinding('@routeAnimation')
+  get routeAnimation() {
+    return true;
+  }
   @ViewChild('container') public container: ElementRef;
 
   public viewer: any;
