@@ -46,7 +46,8 @@ export class LeafletComponent implements OnInit, OnDestroy {
   public northEast = L.latLng(89.45016124669523, 180);
   public bounds = L.latLngBounds(this.southWest, this.northEast);
 
-  @HostBinding('@routeAnimation') get routeAnimation() {
+  @HostBinding('@routeAnimation')
+  get routeAnimation() {
     return true;
   }
 

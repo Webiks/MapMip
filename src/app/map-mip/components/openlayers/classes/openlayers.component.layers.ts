@@ -44,11 +44,11 @@ export class OpenlayersLayers {
   }
 
   sortLayers(params_layers_array) {
-    //let layersGroup = this.openlayers.map.getLayers();
-    //let layersArray = layersGroup.a;
-    params_layers_array.forEach((layer_obj, index) => {
+    // let layersGroup = this.openlayers.map.getLayers();
+    // let layersArray = layersGroup.a;
+    params_layers_array.forEach((layer_obj: any, index: number) => {
       let layer = this.getLayerFromLayerObj(layer_obj);
-      let map_l = this.getTileLayersArray().find(_layer => this.layersEqual(layer, _layer));
+      let map_l = this.getTileLayersArray().find((_layer: any) => this.layersEqual(layer, _layer));
       //  let map_l = layersArray.find(_layer => this.layersEqual(layer, _layer.a.layer ));
       if (map_l) {
         map_l.setZIndex(index);
@@ -72,12 +72,12 @@ export class OpenlayersLayers {
       async (layer_obj: { source: string }, index: number) => {
         if (!this.layerExistOnMap(map_tile_layers, layer_obj)) {
           let layer = this.getLayerFromLayerObj(layer_obj);
-          if (layer_obj.source == 'tms') {
+          if (layer_obj.source === 'tms') {
             await this.setTmsOptions(layer_obj['url'], layer);
           }
           layer.setZIndex(index);
           this.openlayers.map.addLayer(layer);
-          //this.openlayers.map.getLayers().a[index].setZIndex(index);
+          // this.openlayers.map.getLayers().a[index].setZIndex(index);
         }
       });
   }
@@ -161,9 +161,9 @@ export class OpenlayersLayers {
     let source = layer_a.getSource();
     let _source = layer_b.getSource();
     let equal_source = source instanceof _source.constructor;
-    let api_key = _source['c'] == source['c'];
-    let url = _source['jc'] == source['jc'];
-    let style = _source['o'] == source['o'];
+    let api_key = _source['c'] === source['c'];
+    let url = _source['jc'] === source['jc'];
+    let style = _source['o'] === source['o'];
 
     return equal_source && api_key && url && style;
   }

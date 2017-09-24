@@ -16,6 +16,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MapMipService } from './api/map-mip.service';
 import { NewTabComponent } from './components/position-form/new-tab/new-tab.component';
 import { SwitchLayersDirective } from './directives/switch-layers.directive';
+import { ContextMenuModule } from './components/context-menu/context-menu.module';
 
 export const MapMipChildren: Routes = [
   {
@@ -42,7 +43,8 @@ export const MapMipChildren: Routes = [
     ),
     Ng2BootstrapModule.forRoot(),
     PositionFormModule,
-    HttpModule
+    HttpModule,
+    ContextMenuModule
   ],
   declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent, NewTabComponent, SwitchLayersDirective],
   exports: [MapLayerComponent, SwitchLayersDirective],

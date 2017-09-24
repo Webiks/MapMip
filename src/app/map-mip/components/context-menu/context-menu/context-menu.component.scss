@@ -1,0 +1,25 @@
+:host {
+  z-index: 1;
+  position: fixed;
+
+  div.context-menu {
+    visibility: hidden;
+    a {
+      p {
+        cursor: pointer;
+      }
+      &:hover {
+        p {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  &:focus {
+    div.context-menu {
+      visibility: visible;
+    }
+  }
+
+}

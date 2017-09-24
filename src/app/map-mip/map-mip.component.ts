@@ -1,4 +1,4 @@
-import { animate, Component, HostBinding, OnInit, state, style, transition, trigger, ViewChild } from '@angular/core';
+import { animate, Component, OnInit, state, style, transition, trigger, ViewChild } from '@angular/core';
 import { PositionFormService } from './components/position-form/position-form.service';
 import { MapMipService } from './api/map-mip.service';
 
@@ -10,10 +10,6 @@ import { MapMipService } from './api/map-mip.service';
 })
 
 export class MapLayerComponent implements OnInit {
-  @HostBinding('style.height') height = '100%';
-  @HostBinding('style.width') width = '100%';
-  @HostBinding('style.display') display = 'block';
-  @HostBinding('style.position') position = 'relative';
   @ViewChild('mapsCont') mapsCont;
 
   constructor(private positionFormService: PositionFormService, private mapMipService: MapMipService) {
@@ -40,13 +36,3 @@ export const animations: Array<any> = [
     transition('* => void', animate(500, style({ opacity: 0 })))
   ])
 ];
-
-export const host = {
-  '[@routeAnimation]': 'true',
-  '[style.display]': '\'flex\'',
-  '[style.position]': '\'absolute\'',
-  '[style.width]': '\'100%\'',
-  '[style.height]': '\'100%\'',
-  '[style.justify-content]': '\'center\''
-};
-

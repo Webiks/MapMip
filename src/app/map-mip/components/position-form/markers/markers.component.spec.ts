@@ -263,8 +263,8 @@ describe('MarkersComponent', () => {
       expect(component.removeAllMarkers).toHaveBeenCalled();
 
 
-    })
+    });
 
-  })
+  });
 
 });

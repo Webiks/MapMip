@@ -243,5 +243,5 @@ describe('CesiumComponent', () => {
  */
 
 
-  })
+  });
 });
