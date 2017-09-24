@@ -29,7 +29,7 @@ export class OpenlayersGeoJson {
 
 
 
-        //sfeature.get("color")=="red"
+        // sfeature.get("color")=="red"
 
         /*  stroke: new this.openlayers.ol.style.Stroke({
             color: '#3388ff',
@@ -86,13 +86,13 @@ export class OpenlayersGeoJson {
   }
 
   queryParams(params: Params) {
-    var that = this;
+    const that = this;
     if (this.openlayers.queryParamsHelperService.anyGeoJsonChange(this.openlayers.prevParams, this.openlayers.currentParams)) {
       let urls = this.openlayers.queryParamsHelperService.queryGeoJson(params);
 
 
       // remove all layers first by take from array
-      _.forEach(this.geojsonLayers, (geojsonLayer) => {
+      _.forEach(this.geojsonLayers, (geojsonLayer: any) => {
         this.openlayers.map.removeLayer(geojsonLayer);
       });
       this.geojsonLayers = [];
@@ -109,7 +109,7 @@ export class OpenlayersGeoJson {
 
         });
         // add each elem of the array
-        that.openlayers.map.addLayer(that.geojsonLayers[index]);
+        that.openlayers.map.addLayer(<any>that.geojsonLayers[index]);
       });
 
 
@@ -148,7 +148,7 @@ export class OpenlayersGeoJson {
       });
       return geoColStyle;
     }
-    if (feature.getGeometry().getType() == 'LineString') {
+    if (feature.getGeometry().getType() === 'LineString') {
       return new this.openlayers.ol.style.Style({
         stroke: new this.openlayers.ol.style.Stroke({
           color: this.getColor(this.feature),

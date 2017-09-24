@@ -1,3 +1,10 @@
+:host {
+  height: 100%;
+  width: 100%;
+  display: block;
+  position: relative;
+}
+
 .map-layer {
   //position: relative/**/;
   width: 100%;

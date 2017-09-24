@@ -11,7 +11,7 @@ import { CesiumTerrian } from './classes/cesium.component.terrain';
 import { CesiumMapLighting } from './classes/cesium.component.map-lighting';
 import 'cesium/Build/Cesium/Cesium.js';
 import { CesiumGeoJson } from './classes/cesium.component.geojson';
-import { animations, host } from '../../map-mip.component';
+import { animations } from '../../map-mip.component';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { CalcService } from '../../services/calc-service';
 import { MapMipService } from '../../api/map-mip.service';

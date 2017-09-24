@@ -16,6 +16,7 @@ import { AjaxService } from '../../services/ajax.service';
 import { MapMipService } from '../../api/map-mip.service';
 import { OpenlayersPolygons } from './classes/openlayers.component.polygons';
 import { OpenlayersContextMenu } from './classes/openlayers.component.context-menu';
+import { ContextMenuService } from '../context-menu/services/context-menu.service';
 
 @Component({
   selector: 'app-openlayers',
@@ -46,7 +47,13 @@ export class OpenlayersComponent implements OnInit, OnDestroy {
 
   @ViewChild('container') public container;
 
-  constructor(public activatedRoute: ActivatedRoute, public queryParamsHelperService: QueryParamsHelperService, public router: Router, public calcService: CalcService, public ajaxService: AjaxService, public positionFormService: PositionFormService, public mapMipService: MapMipService) {
+  constructor(public activatedRoute: ActivatedRoute,
+              public queryParamsHelperService: QueryParamsHelperService,
+              public router: Router,
+              public calcService: CalcService,
+              public positionFormService: PositionFormService,
+              public mapMipService: MapMipService,
+              public contextMenuService: ContextMenuService) {
     window['current'] = this;
     this.queryParamsSubscriber = this.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
 
