@@ -45,10 +45,16 @@ export class LeafletLayers {
   }
 
   addBaseLayer(): void {
-    this.getBingLayer({
-      key: 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq',
-      style: 'Aerial'
+    // this.getBingLayer({
+    //   key: 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq',
+    //   style: 'Aerial'
+    // }).addTo(this.leaflet.map);
+    this.getMapboxLayer({
+      url: 'https://api.mapbox.com/styles/v1/',
+      mapid: 'ansyn/cj6x6ya4k116n2sn1r8scuyzc/tiles/256',
+      access_token: 'pk.eyJ1IjoiYW5zeW4iLCJhIjoiY2o2eDZ4b3QyMjI2eTMzbzNzMnk3N2RuZSJ9.SyvUIW3Bi5dA1-RwdzPWcQ',
     }).addTo(this.leaflet.map);
+
   }
 
   addLayersViaUrl(params_layers_array: Array<Object>) {
@@ -57,7 +63,7 @@ export class LeafletLayers {
       async (layer_obj: { source: string }) => {
         if (!this.layerExistOnMap(map_tile_layers, layer_obj)) {
           let layer: L.TileLayer = this.getLayerFromLayerObj(layer_obj);
-          if (layer_obj.source === 'tms') {
+          if (layer_obj.source == 'tms') {
             await this.setTmsOptions(layer_obj['url'], layer);
           }
           layer.addTo(this.leaflet.map);
@@ -114,7 +120,7 @@ export class LeafletLayers {
       case 'bing':
         return _.isEqual(_.pick(layer['options'], ['bingMapsKey', 'imagerySet']), _.pick(_layer['options'], ['bingMapsKey', 'imagerySet']));
       default:
-        return _.isEqual(_layer['_url'], layer['_url']) && _.isEqual(_.pickBy(layer['options'], (val, key) => key !== 'zIndex'), _.pickBy(_layer['options'], (val, key) => key !== 'zIndex'));
+        return _.isEqual(_layer['_url'], layer['_url']) && _.isEqual(_.pickBy(layer['options'], (val, key) => key != 'zIndex'), _.pickBy(_layer['options'], (val, key) => key != 'zIndex'));
     }
   }
 
