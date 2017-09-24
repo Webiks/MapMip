@@ -80,9 +80,9 @@ export class LeafletComponent implements OnInit, OnDestroy {
       maxZoom: 18,
       minZoom: 3,
       maxBounds: [
-        //south west
+        // south west
         [-87.71179927260242, -180],
-        //north east
+        // north east
         [89.45016124669523, 180]
       ]
     });

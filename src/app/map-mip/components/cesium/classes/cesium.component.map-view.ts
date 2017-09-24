@@ -228,7 +228,7 @@ export class CesiumMapView {
   };
 
   flyToCenterAndGetBounds(go_north: boolean) {
-    this.cesium.viewer.scene._mapMode2D == 0;
+    this.cesium.viewer.scene._mapMode2D = 0;
 
     const headingDeg = Cesium.Math.toDegrees(this.cesium.viewer.camera.heading);
     const pitchDeg = Cesium.Math.toDegrees(this.cesium.viewer.camera.pitch);
