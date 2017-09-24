@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import 'rxjs/add/operator/take';
 import { CesiumLayers } from './classes/cesium.component.layers';
@@ -20,7 +20,6 @@ import { CesiumPolyline } from './classes/cesium.component.polyline';
 
 
 @Component({
-  host: host,
   selector: 'app-cesium',
   templateUrl: './cesium.component.html',
   styleUrls: ['./cesium.component.scss'],
@@ -28,7 +27,9 @@ import { CesiumPolyline } from './classes/cesium.component.polyline';
 })
 
 export class CesiumComponent implements OnInit, OnDestroy {
-
+  @HostBinding('@routeAnimation') get routeAnimation() {
+    return true;
+  }
   @ViewChild('container') public container: ElementRef;
 
   public viewer: any;

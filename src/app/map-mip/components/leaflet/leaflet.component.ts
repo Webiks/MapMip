@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
@@ -17,13 +17,12 @@ import { LeafletGeoJson } from './classes/leaflet.component.geojson';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { CalcService } from '../../services/calc-service';
 import { AjaxService } from '../../services/ajax.service';
-import { animations, host } from '../../map-mip.component';
+import { animations } from '../../map-mip.component';
 import { MapMipService } from '../../api/map-mip.service';
 import { LeafletPolygons } from './classes/leaflet.component.polygons';
 
 
 @Component({
-  host: host,
   selector: 'app-leaflet',
   templateUrl: './leaflet.component.html',
   styleUrls: ['./leaflet.component.scss'],
@@ -46,6 +45,10 @@ export class LeafletComponent implements OnInit, OnDestroy {
   public southWest = L.latLng(-87.71179927260242, -180);
   public northEast = L.latLng(89.45016124669523, 180);
   public bounds = L.latLngBounds(this.southWest, this.northEast);
+
+  @HostBinding('@routeAnimation') get routeAnimation() {
+    return true;
+  }
 
   @ViewChild('container') public container;
   public L: any;

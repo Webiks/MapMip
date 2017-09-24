@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as ol from 'openlayers';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import 'rxjs/add/operator/take';
@@ -11,13 +11,13 @@ import { OpenlayersMapPosition } from './classes/openlayers.component.map-positi
 import { OpenlayersGeoJson } from './classes/openlayers.component.geojson';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { CalcService } from '../../services/calc-service';
-import { animations, host } from '../../map-mip.component';
+import { animations } from '../../map-mip.component';
 import { AjaxService } from '../../services/ajax.service';
 import { MapMipService } from '../../api/map-mip.service';
 import { OpenlayersPolygons } from './classes/openlayers.component.polygons';
+import { OpenlayersContextMenu } from './classes/openlayers.component.context-menu';
 
 @Component({
-  host: host,
   selector: 'app-openlayers',
   templateUrl: './openlayers.component.html',
   styleUrls: ['./openlayers.component.scss'],
@@ -37,8 +37,12 @@ export class OpenlayersComponent implements OnInit, OnDestroy {
   public map_position: OpenlayersMapPosition;
   public geojson: OpenlayersGeoJson;
   public polygons: OpenlayersPolygons;
+  public openlayersContextMenu: OpenlayersContextMenu;
   public ol: any;
 
+  @HostBinding('@routeAnimation') get routeAnimation() {
+    return true;
+  }
 
   @ViewChild('container') public container;
 
@@ -84,6 +88,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy {
     this.map_view = new OpenlayersMapView(this);
     this.geojson = new OpenlayersGeoJson(this);
     this.polygons = new OpenlayersPolygons(this);
+    this.openlayersContextMenu = new OpenlayersContextMenu(this);
   }
 
 
@@ -91,7 +96,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy {
     return this.map.getLayers().getArray();
   }
 
-  get map() {
+  get map(): ol.Map {
     return this._map;
   }
 
