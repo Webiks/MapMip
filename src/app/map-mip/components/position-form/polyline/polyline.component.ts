@@ -1,7 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {QueryParamsHelperService} from "../../../services/query-params-helper.service";
-import {ActivatedRoute, Params} from "@angular/router";
-import {PositionFormService} from "../position-form.service";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { QueryParamsHelperService } from '../../../services/query-params-helper.service';
+import { ActivatedRoute, Params } from '@angular/router';
+import { PositionFormService } from '../position-form.service';
 
 @Component({
   selector: 'app-polyline',
@@ -9,29 +9,27 @@ import {PositionFormService} from "../position-form.service";
   styleUrls: ['./polyline.component.css']
 })
 export class PolylineComponent implements OnInit {
-  @Input() polyline:string;
-  @Input("Active") Active;
-  @Output("togglePolylinePickedEmitter") togglePolylinePickedEmitter = new EventEmitter();
+  @Input() polyline: string;
+  @Input('Active') Active;
+  @Output('togglePolylinePickedEmitter') togglePolylinePickedEmitter = new EventEmitter();
 
-  constructor(private queryParamsHelperService:QueryParamsHelperService, private route:ActivatedRoute, public positionFormService:PositionFormService) { }
+  constructor(private queryParamsHelperService: QueryParamsHelperService, private route: ActivatedRoute, public positionFormService: PositionFormService) {
+  }
 
   ngOnInit() {
     this.route.queryParams.subscribe(this.queryParams);
   }
-  queryParams: (Params) => void = (params:Params):void => {
 
-  }
+  queryParams: (Params) => void = (params: Params): void => {
 
-  togglePolylinePicked(onPolylinePicked:boolean){
+  };
+
+  togglePolylinePicked(onPolylinePicked: boolean) {
     //do toggle to button and start draw mode
     this.positionFormService.onPolylinePicked = onPolylinePicked;
-    this.positionFormService.polylinePickerEmitter.emit(this.positionFormService.onPolylinePicked)
+    this.positionFormService.polylinePickerEmitter.emit(this.positionFormService.onPolylinePicked);
 
   }
-
-
-
-
 
 
 }

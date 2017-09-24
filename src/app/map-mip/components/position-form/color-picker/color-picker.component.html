@@ -1,11 +1,14 @@
 <div class="btn-group picked-group">
-  <button class="btn btn-default picked-button" [class.active]="Active" (click)="togglePickedEmitter.emit(!Active)" type="button" [disabled]="disabledAction" tooltip="add marker" triggers="hover" container="body">
+  <button class="btn btn-default picked-button" [class.active]="Active" (click)="togglePickedEmitter.emit(!Active)"
+          type="button" [disabled]="disabledAction" tooltip="add marker" triggers="hover" container="body">
     <img [src]="getMarkerUrlByColor(selectedColor)"/>
   </button>
-  <button class="btn btn-default glyphicon glyphicon-option-vertical" (click)="smModal.show()"  tooltip="choose icon" triggers="hover" container="body" type="button"></button>
+  <button class="btn btn-default glyphicon glyphicon-option-vertical" (click)="smModal.show()" tooltip="choose icon"
+          triggers="hover" container="body" type="button"></button>
 </div>
 
-<div bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" [config]="{backdrop: backdrop}">
+<div bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+     aria-hidden="true" [config]="{backdrop: backdrop}">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
@@ -15,8 +18,8 @@
         </button>
       </div>
       <div class="modal-body">
-        <ul >
-          <li *ngFor="let icon of markerColors(); let _index = index" >
+        <ul>
+          <li *ngFor="let icon of markerColors(); let _index = index">
             <a
               [class.is-selected]="_index == selectedIndex"
               (click)="changeMarkerColor(_index) ;smModal.hide()">

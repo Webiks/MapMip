@@ -1,13 +1,10 @@
 <button class="btn btn-danger" (click)="geoJsonModal.show()" type="button">GeoJson</button>
-<div  bsModal #geoJsonModal="bs-modal" class="modal fade layers-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="initializeGeojsonArray()">
+<div bsModal #geoJsonModal="bs-modal" class="modal fade layers-modal" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="initializeGeojsonArray()">
   <div class="modal-dialog modal-md">
 
 
-
-
     <form class="modal-content" (submit)="submitGeoJson()">
-
-
 
 
       <div class="modal-header">
@@ -18,13 +15,10 @@
       </div>
 
 
-
-
-
-
       <div class="modal-body">
         <button class="btn btn-default" type="button" (click)="defaultModal.show()">Add</button>
-        <button class="glyphicon glyphicon-trash btn btn-danger pull-right" type="button" [hidden]="geojson_array.length == 0" (click)="removeAllLayers()"></button>
+        <button class="glyphicon glyphicon-trash btn btn-danger pull-right" type="button"
+                [hidden]="geojson_array.length == 0" (click)="removeAllLayers()"></button>
 
         <ul class="list-group" *ngIf="geojson_array.length > 0">
 
@@ -35,7 +29,8 @@
             <div class="li-row">
               <span class="url">{{geojson_item}}</span>
               <button class="btn btn-info glyphicon glyphicon-pencil" type="button" (click)="editModal(index)"></button>
-              <button class="btn btn-danger glyphicon glyphicon-remove-sign" type="button" (click)="removeGeojson(index)"></button>
+              <button class="btn btn-danger glyphicon glyphicon-remove-sign" type="button"
+                      (click)="removeGeojson(index)"></button>
             </div>
           </li>
         </ul>
@@ -51,7 +46,8 @@
 </div>
 
 
-<div [config]="{backdrop: false}" bsModal #defaultModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div [config]="{backdrop: false}" bsModal #defaultModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <form class="modal-content" (submit)="submitAddGeojson(add_geojson.geojson)">
 
@@ -81,7 +77,7 @@
             </li>
           </ul>
         </div>
-        <span class="glyphicon glyphicon-exclamation-sign pull-left"   tooltipClass="url-tooltip"></span>
+        <span class="glyphicon glyphicon-exclamation-sign pull-left" tooltipClass="url-tooltip"></span>
         <button class="btn btn-default" (click)="defaultModal.hide()" type="button">Cancel</button>
         <button class="btn btn-default" type="submit">{{add_geojson.onEdit() ? 'Save' : 'Add'}}</button>
       </div>

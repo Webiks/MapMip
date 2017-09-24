@@ -5,7 +5,6 @@
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -62,8 +61,8 @@
    inkscape:connector-curvature="0"
    sodipodi:nodetypes="cssscccccssccsssssssssccssccccsscscss" />
 	</g>
-	
-	
+
+
 <path
    style="fill:#ffffff;stroke:#ffffff;stroke-width:0.27118644"
    d="m 32.922034,38.950793 c 0,-1.135825 0.114919,-1.458045 0.677966,-1.900938 l 0.677966,-0.533288 0,-5.28078 c 0,-5.271249 -0.0012,-5.282003 -0.677966,-5.958745 -0.557439,-0.557439 -0.677966,-0.940935 -0.677966,-2.157165 l 0,-1.479199 1.535487,0 c 5.657554,0 8.584338,3.728529 9.71855,12.380791 0.498434,3.802265 0.50348,3.525731 -0.0676,3.704572 -0.261017,0.08174 -1.528694,0.512016 -2.817059,0.956167 -2.037206,0.702306 -4.048032,1.113044 -7.488026,1.529528 l -0.881356,0.106707 0,-1.36765 z"

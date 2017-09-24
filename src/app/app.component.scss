@@ -5,7 +5,7 @@ div.page-container {
   height: calc(100vh - 76px);
 }
 
-@media (max-width: 767px){
+@media (max-width: 767px) {
   div.page-container {
     height: calc(100vh - 72px);
     padding: 0 3vw;

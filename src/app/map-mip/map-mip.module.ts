@@ -1,25 +1,24 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapLayerComponent } from './map-mip.component';
-import {CesiumComponent} from "./components/cesium/cesium.component";
-import {LeafletComponent} from "./components/leaflet/leaflet.component";
-import {OpenlayersComponent} from "./components/openlayers/openlayers.component";
-import {QueryParamsHelperService} from "./services/query-params-helper.service";
-import {FormsModule} from "@angular/forms";
-import {CalcService} from "./services/calc-service";
+import { CesiumComponent } from './components/cesium/cesium.component';
+import { LeafletComponent } from './components/leaflet/leaflet.component';
+import { OpenlayersComponent } from './components/openlayers/openlayers.component';
+import { QueryParamsHelperService } from './services/query-params-helper.service';
+import { FormsModule } from '@angular/forms';
+import { CalcService } from './services/calc-service';
 import { JWBootstrapSwitchModule } from 'jw-bootstrap-switch-ng2';
-import {Ng2BootstrapModule} from "ng2-bootstrap";
-import {PositionFormModule} from "./components/position-form/position-form.module";
-import {AjaxService} from "./services/ajax.service";
-import {HttpModule} from "@angular/http";
-import {MaterialModule} from "@angular/material";
-import {MapLayerApiService} from "./services/map-layer-api.service";
-import {Routes, RouterModule} from "@angular/router";
-import {MapMipService} from "./api/map-mip.service";
+import { Ng2BootstrapModule } from 'ngx-bootstrap';
+import { PositionFormModule } from './components/position-form/position-form.module';
+import { AjaxService } from './services/ajax.service';
+import { HttpModule } from '@angular/http';
+import { MapLayerApiService } from './services/map-layer-api.service';
+import { RouterModule, Routes } from '@angular/router';
+import { MapMipService } from './api/map-mip.service';
 import { NewTabComponent } from './components/position-form/new-tab/new-tab.component';
 import { SwitchLayersDirective } from './directives/switch-layers.directive';
 
-export const MapMipChildren :Routes = [
+export const MapMipChildren: Routes = [
   {
     path: 'cesium',
     component: CesiumComponent
@@ -40,19 +39,19 @@ export const MapMipChildren :Routes = [
     CommonModule,
     FormsModule,
     RouterModule.forRoot(
-      MapMipChildren, {useHash: false}
+      MapMipChildren, { useHash: false }
     ),
     Ng2BootstrapModule.forRoot(),
     JWBootstrapSwitchModule,
     PositionFormModule,
-    HttpModule,
-    MaterialModule
+    HttpModule
   ],
-  declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent,NewTabComponent, SwitchLayersDirective],
+  declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent, NewTabComponent, SwitchLayersDirective],
   exports: [MapLayerComponent, SwitchLayersDirective],
-  providers:[QueryParamsHelperService, CalcService, AjaxService,MapLayerApiService, MapMipService]
+  providers: [QueryParamsHelperService, CalcService, AjaxService, MapLayerApiService, MapMipService]
 })
-export class MapMipModule { }
+export class MapMipModule {
+}
 
 
 

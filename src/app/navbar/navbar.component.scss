@@ -1,24 +1,27 @@
-.navbar-brand{
-  img{
-    margin-top:-5px;
+.navbar-brand {
+  img {
+    margin-top: -5px;
   }
 }
-img{
+
+img {
   width: 90px;
 }
-.glyphicon.glyphicon-wrench{
+
+.glyphicon.glyphicon-wrench {
   font-size: 20px;
   transition: .3s;
-  &.is-open{
-    color:#fff;
+  &.is-open {
+    color: #fff;
     transform: rotate(180deg);
   }
-  .a-text{
+  .a-text {
     display: none;
   }
 }
-@media (max-width: 767px){
-  #navbar.collapse{
+
+@media (max-width: 767px) {
+  #navbar.collapse {
     position: absolute;
     transition: height .3s;
     display: block !important;
@@ -27,10 +30,10 @@ img{
     z-index: 10000;
     background: #222222;
   }
-  .glyphicon.glyphicon-wrench{
-    color:#fff;
+  .glyphicon.glyphicon-wrench {
+    color: #fff;
     font-size: 20px;
-    .a-text{
+    .a-text {
       display: inline-block;
       position: relative;
       bottom: 3px;
@@ -38,14 +41,16 @@ img{
     }
   }
 }
+
 .nav-item {
   .nav-link {
     color: white;
   }
-  &:hover{
+  &:hover {
     background-color: #080808;
   }
 }
-.navbar-inverse{
+
+.navbar-inverse {
   //background-color: #424242;
 }

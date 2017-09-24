@@ -1,16 +1,16 @@
-$tms-btn-background:#a20aa2;
-$tms-btn-border-color:purple;
+$tms-btn-background: #a20aa2;
+$tms-btn-border-color: purple;
 
-button.layer-btn{
+button.layer-btn {
   background: $tms-btn-background;
   border-color: $tms-btn-border-color;
 }
 
-h4{
-  color:#a20aa2;
+h4 {
+  color: #a20aa2;
 }
 
-.layers-modal{
+.layers-modal {
   .modal-body {
     .body-header {
       padding: 15px;
@@ -27,7 +27,7 @@ h4{
         }
       }
     }
-    .remove-all-btn-area{
+    .remove-all-btn-area {
       margin: 10px 0;
       display: flex;
       justify-content: flex-end;
@@ -39,7 +39,7 @@ h4{
         user-select: none;
         cursor: pointer;
 
-        &:focus{
+        &:focus {
           outline: 2px dashed lightblue;
           border-color: transparent;
           z-index: 1;
@@ -56,7 +56,7 @@ h4{
           opacity: .2;
         }
 
-        div.li-row{
+        div.li-row {
           user-select: none;
           display: flex;
           height: 35px;
@@ -66,11 +66,11 @@ h4{
             height: 100%;
             user-select: none;
           }
-          img{
+          img {
             height: 100%;
             user-select: none;
           }
-          span.url{
+          span.url {
             user-select: none;
             width: calc(100% - 125px);
             overflow: hidden;
@@ -89,35 +89,35 @@ h4{
             padding: 5px 10px;
             margin: 0 5px;
             font-size: 12px;
-            &.glyphicon-chevron-right{
+            &.glyphicon-chevron-right {
               transform: rotate(0deg);
               transition: .2s;
               user-select: none;
             }
-            &:disabled{
+            &:disabled {
               opacity: .5;
             }
           }
 
         }
-        .params{
+        .params {
           display: none;
           margin: 1% 0;
-          table{
+          table {
             width: 90%;
             margin: 0 5%;
           }
         }
         &.show-params {
-          div.li-row{
+          div.li-row {
             button {
               opacity: 1;
-              &.glyphicon-chevron-right{
+              &.glyphicon-chevron-right {
                 transform: rotate(90deg);
               }
             }
           }
-          .params{
+          .params {
             display: block;
           }
         }
@@ -125,25 +125,24 @@ h4{
       }
     }
   }
-  .modal-footer{
-    .dropdown{
+  .modal-footer {
+    .dropdown {
       float: left;
     }
   }
 }
 
-
-.modal-dialog.modal-sm.add-tms{
-  .modal-body{
-    .url-group{
+.modal-dialog.modal-sm.add-tms {
+  .modal-body {
+    .url-group {
       display: flex;
-      label{
+      label {
         display: flex;
         flex-direction: column;
         justify-content: center;
         flex-grow: 1;
       }
-      button{
+      button {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -154,7 +153,7 @@ h4{
         height: 100%;
         font-size: 15px;
       }
-      input{
+      input {
         flex-grow: 2;
         width: auto;
       }
@@ -166,13 +165,13 @@ h4{
         font-size: 15px;
         padding: 4px;
         display: flex;
-        span{
+        span {
           flex-grow: 4;
           display: flex;
           justify-content: center;
           flex-direction: column;
         }
-        button{
+        button {
           flex-grow: 0;
           border-radius: 7px;
           margin: 0 2px;
@@ -183,31 +182,32 @@ h4{
   }
 }
 
-.add-query{
-  .add-query-control{
+.add-query {
+  .add-query-control {
     display: flex;
-    button{
+    button {
       margin: 0 5px;
     }
   }
 }
 
-.modal-body.default-modal-body{
+.modal-body.default-modal-body {
   max-height: 306px;
   overflow: auto;
-  button.glyphicon.glyphicon-remove{
+  button.glyphicon.glyphicon-remove {
     color: darkred;
   }
-  span.glyphicon.glyphicon-exclamation-sign.pull-left{
+  span.glyphicon.glyphicon-exclamation-sign.pull-left {
     margin: 9px;
   }
 }
-@media screen and (max-width: 767px){
-  app-switch-layers{
+
+@media screen and (max-width: 767px) {
+  app-switch-layers {
     display: none;
   }
 
-  .layers-modal{
+  .layers-modal {
     .modal-body {
       .body-header {
         flex-wrap: wrap;

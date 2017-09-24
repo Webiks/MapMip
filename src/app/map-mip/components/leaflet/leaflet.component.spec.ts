@@ -1,36 +1,34 @@
 /* tslint:disable:no-unused-variable */
-import {async, ComponentFixture, TestBed, inject} from '@angular/core/testing';
+import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { LeafletComponent } from './leaflet.component';
-import {RouterTestingModule} from "@angular/router/testing";
-import {QueryParamsHelperService} from "../../services/query-params-helper.service";
-import {CalcService} from "../../services/calc-service";
-import {Params, Router, NavigationExtras} from "@angular/router";
-import {LeafletLayers} from "./classes/leaflet.component.layers";
-import {AjaxService} from "../../services/ajax.service";
-import {HttpModule} from "@angular/http";
-import {LeafletMarkers} from "./classes/leaflet.component.markers";
-import {PositionFormService} from "../position-form/position-form.service";
+import { RouterTestingModule } from '@angular/router/testing';
+import { QueryParamsHelperService } from '../../services/query-params-helper.service';
+import { CalcService } from '../../services/calc-service';
+import { Params, Router } from '@angular/router';
+import { AjaxService } from '../../services/ajax.service';
+import { HttpModule } from '@angular/http';
+import { PositionFormService } from '../position-form/position-form.service';
 
 describe('LeafletComponent', () => {
   let component: LeafletComponent;
   let fixture: ComponentFixture<LeafletComponent>;
-  let queryParamsHelperService:QueryParamsHelperService;
-  let router:Router;
-  let positionFormService:PositionFormService;
+  let queryParamsHelperService: QueryParamsHelperService;
+  let router: Router;
+  let positionFormService: PositionFormService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[
+      imports: [
         RouterTestingModule,
         HttpModule
       ],
-      declarations: [ LeafletComponent ],
+      declarations: [LeafletComponent],
       providers: [QueryParamsHelperService, CalcService, AjaxService, PositionFormService]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([QueryParamsHelperService, Router, PositionFormService],(_queryParamsHelperService:QueryParamsHelperService, _router:Router, _positionFormService:PositionFormService) => {
+  beforeEach(inject([QueryParamsHelperService, Router, PositionFormService], (_queryParamsHelperService: QueryParamsHelperService, _router: Router, _positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(LeafletComponent);
     component = fixture.componentInstance;
     queryParamsHelperService = _queryParamsHelperService;
@@ -43,11 +41,11 @@ describe('LeafletComponent', () => {
     expect(component).toBeDefined();
   });
 
-  it('queryParams: should save currentParmas with the newParmas and prevParams with currentParams', ()=>{
-    let currentParams:Params = {
+  it('queryParams: should save currentParmas with the newParmas and prevParams with currentParams', () => {
+    let currentParams: Params = {
       yaya: 'tata'
     };
-    let newParams:Params = {
+    let newParams: Params = {
       tata: 'yaya'
     };
     component.currentParams = currentParams;
@@ -56,7 +54,7 @@ describe('LeafletComponent', () => {
     expect(component.currentParams).toEqual(newParams);
   });
 
-  it("should ngOnDestory remove unsubscribe queryParamsSubscriber, and call layers,markers and map-view destroy functions", ()=>{
+  it('should ngOnDestory remove unsubscribe queryParamsSubscriber, and call layers,markers and map-view destroy functions', () => {
     spyOn(component.queryParamsSubscriber, 'unsubscribe');
     spyOn(component.markers, 'destroy');
     spyOn(component.map_view, 'destroy');

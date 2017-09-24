@@ -1,12 +1,11 @@
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { AjaxService } from './ajax.service';
-import {HttpModule, Http} from "@angular/http";
-import * as xml2js from 'xml2js';
+import { Http, HttpModule } from '@angular/http';
 
-let ajaxService:AjaxService;
-let http:Http;
+let ajaxService: AjaxService;
+let http: Http;
 
 describe('AjaxService', () => {
   beforeEach(() => {
@@ -15,9 +14,9 @@ describe('AjaxService', () => {
       imports: [HttpModule]
     });
   });
-  beforeEach(inject([AjaxService, Http], (_ajaxService: AjaxService, _http:Http)  => {
+  beforeEach(inject([AjaxService, Http], (_ajaxService: AjaxService, _http: Http) => {
     ajaxService = _ajaxService;
-    http = _http
+    http = _http;
   }));
 
   it('should be defined', () => {

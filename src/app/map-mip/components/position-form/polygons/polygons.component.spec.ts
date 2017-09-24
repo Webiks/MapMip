@@ -8,9 +8,9 @@ describe('PolygonsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PolygonsComponent ]
+      declarations: [PolygonsComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,11 +1,9 @@
-import {
-  Component, OnInit, ViewChild, Input, OnChanges, SimpleChanges, Output, EventEmitter,HostListener
-} from '@angular/core';
-import {  style, animate, transition, trigger} from '@angular/animations'
-import {ModalDirective} from "ng2-bootstrap";
-import {QueryParamsHelperService} from "../../../services/query-params-helper.service";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { ModalDirective } from 'ngx-bootstrap';
+import { QueryParamsHelperService } from '../../../services/query-params-helper.service';
 import * as _ from 'lodash';
-import {AjaxService} from "../../../services/ajax.service";
+import { AjaxService } from '../../../services/ajax.service';
 
 
 @Component({
@@ -13,12 +11,12 @@ import {AjaxService} from "../../../services/ajax.service";
     trigger(
       'error', [
         transition(':enter', [
-          style({opacity: 0}),
-          animate('250ms', style({opacity: 1}))
+          style({ opacity: 0 }),
+          animate('250ms', style({ opacity: 1 }))
         ]),
         transition(':leave', [
-          style({opacity: 1}),
-          animate('250ms', style({opacity: 0}))
+          style({ opacity: 1 }),
+          animate('250ms', style({ opacity: 0 }))
         ])
       ]
     )
@@ -29,36 +27,36 @@ import {AjaxService} from "../../../services/ajax.service";
   styleUrls: ['./layers.component.scss']
 })
 export class LayersComponent implements OnInit, OnChanges {
-  @ViewChild('layersModal') public layersModal:ModalDirective;
-  @ViewChild('addModal') public addModal:ModalDirective;
-  @ViewChild('addQueryModal') public addQueryModal:ModalDirective;
-  @ViewChild('mapboxModal') public mapboxModal:ModalDirective;
-  @ViewChild('tmsModal') public tmsModal:ModalDirective;
-  @ViewChild('bingModal') public bingModal:ModalDirective;
-  @ViewChild('osmModal') public osmModal:ModalDirective;
-  @ViewChild('defaultModal') public defaultModal:ModalDirective;
+  @ViewChild('layersModal') public layersModal: ModalDirective;
+  @ViewChild('addModal') public addModal: ModalDirective;
+  @ViewChild('addQueryModal') public addQueryModal: ModalDirective;
+  @ViewChild('mapboxModal') public mapboxModal: ModalDirective;
+  @ViewChild('tmsModal') public tmsModal: ModalDirective;
+  @ViewChild('bingModal') public bingModal: ModalDirective;
+  @ViewChild('osmModal') public osmModal: ModalDirective;
+  @ViewChild('defaultModal') public defaultModal: ModalDirective;
 
-  @Input('layersString') public layersString:string;
+  @Input('layersString') public layersString: string;
   @Output() submitLayersEmitter = new EventEmitter();
-  public layersArray:Array<Object> = [];
-  Object:any = Object;
+  public layersArray: Array<Object> = [];
+  Object: any = Object;
   public examples$ = this.ajaxService.getLayerExam();
 
   public source_images = {
     mapbox: 'http://2rct3i2488gxf9jvb1lqhek9-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/mapbox-logo-256.png',
     bing: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Bing_logo_(2013).svg/2000px-Bing_logo_(2013).svg.png',
     tms: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/GDALLogoColor.svg/150px-GDALLogoColor.svg.png',
-    openstreetmap:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Openstreetmap_logo.svg/256px-Openstreetmap_logo.svg.png'
+    openstreetmap: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Openstreetmap_logo.svg/256px-Openstreetmap_logo.svg.png'
   };
 
   public addObject = {
     mapbox: {
       obj: {
-        source:'mapbox',
+        source: 'mapbox',
         format: '',
         access_token: '',
         mapid: '',
-        url:'https://api.mapbox.com/v4/'
+        url: 'https://api.mapbox.com/v4/'
       },
       required: {
         format: false,
@@ -69,7 +67,7 @@ export class LayersComponent implements OnInit, OnChanges {
       modal: 'mapboxModal',
       init() {
         this.obj = {
-          source:'mapbox',
+          source: 'mapbox',
           format: '',
           url: 'https://api.mapbox.com/v4/',
           access_token: '',
@@ -82,15 +80,15 @@ export class LayersComponent implements OnInit, OnChanges {
         };
         this.edit_index = -1;
       },
-      onEdit():boolean {
-        return this.edit_index != -1
+      onEdit(): boolean {
+        return this.edit_index !== -1;
       }
     },
     openstreetmap: {
       obj: {
-        source:'openstreetmap',
+        source: 'openstreetmap',
         format: '',
-        url:''
+        url: ''
       },
       required: {
         format: false,
@@ -99,7 +97,7 @@ export class LayersComponent implements OnInit, OnChanges {
       modal: 'osmModal',
       init() {
         this.obj = {
-          source:'openstreetmap',
+          source: 'openstreetmap',
           format: '',
           url: '',
         };
@@ -108,15 +106,15 @@ export class LayersComponent implements OnInit, OnChanges {
         };
         this.edit_index = -1;
       },
-      onEdit():boolean {
-        return this.edit_index != -1
+      onEdit(): boolean {
+        return this.edit_index !== -1;
       }
     },
     tms: {
       obj: {
-        source:'tms',
-        format:'',
-        url:''
+        source: 'tms',
+        format: '',
+        url: ''
       },
       required: {
         format: false,
@@ -125,8 +123,8 @@ export class LayersComponent implements OnInit, OnChanges {
       modal: 'tmsModal',
       init() {
         this.obj = {
-          source:'tms',
-          format:'',
+          source: 'tms',
+          format: '',
           url: ''
         };
         this.required = {
@@ -134,46 +132,43 @@ export class LayersComponent implements OnInit, OnChanges {
         };
         this.edit_index = -1;
       },
-      onEdit():boolean {
-        return this.edit_index != -1
+      onEdit(): boolean {
+        return this.edit_index !== -1;
       }
     },
     bing: {
       obj: {
-        source:'bing',
-        url:'',
+        source: 'bing',
+        url: '',
         key: '',
         style: Cesium.BingMapsStyle.AERIAL
       },
-      required: {
-      },
+      required: {},
       styles: _.map(Cesium.BingMapsStyle, (bing_style) => bing_style),
       edit_index: -1,
       modal: 'bingModal',
       init() {
         this.obj = {
-          source:'bing',
+          source: 'bing',
           url: '',
           key: '',
           style: Cesium.BingMapsStyle.AERIAL
         };
-        this.required = {
-        };
+        this.required = {};
         this.edit_index = -1;
       },
-      onEdit():boolean {
-        return this.edit_index != -1
+      onEdit(): boolean {
+        return this.edit_index !== -1;
       }
     },
 
     default: {
       obj: {
-        url:''
+        url: ''
       },
       edit_index: -1,
       modal: 'defaultModal',
-      required: {
-      },
+      required: {},
       init() {
         this.obj = {
           url: ''
@@ -181,65 +176,70 @@ export class LayersComponent implements OnInit, OnChanges {
         this.required = {};
         this.edit_index = -1;
       },
-      onEdit():boolean {
-        return this.edit_index != -1
+      onEdit(): boolean {
+        return this.edit_index !== -1;
       }
     }
   };
 
 
-  constructor(public queryParamsHelperService:QueryParamsHelperService, private ajaxService:AjaxService) {}
+  constructor(public queryParamsHelperService: QueryParamsHelperService, private ajaxService: AjaxService) {
+  }
 
-  submitLayers(hide:boolean=false) {
+  submitLayers(hide = false) {
     let modal = this.layersModal;
 
-    if(this.canApply()) {
-      let parsed_layer:string = this.queryParamsHelperService.queryLayersObjectToString(this.layersArray.map(tmsArrayObj => tmsArrayObj['layer_obj']));
-      this.submitLayersEmitter .emit({hide, modal, parsed_layer});
+    if (this.canApply()) {
+      let parsed_layer: string = this.queryParamsHelperService.queryLayersObjectToString(this.layersArray.map(tmsArrayObj => tmsArrayObj['layer_obj']));
+      this.submitLayersEmitter.emit({ hide, modal, parsed_layer });
     } else {
-      if(hide){
+      if (hide) {
         modal.hide();
       }
     }
   }
 
   onKeyPress($event) {
-    if($event.which == 13){
+    if ($event.which === 13) {
       this.submitLayers();
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(!_.isNil(changes['layersString'])) {
+    if (!_.isNil(changes['layersString'])) {
       this.initLayersArray();
     }
   }
 
-  editModal(layer_item, index:number) {
-    let source = layer_item.layer_obj.source ? layer_item.layer_obj.source : "default";
+  editModal(layer_item, index: number) {
+    let source = layer_item.layer_obj.source ? layer_item.layer_obj.source : 'default';
     let add_obj = this.addObject[source];
     add_obj.obj = _.cloneDeep(layer_item.layer_obj);
     add_obj.edit_index = index;
-    _.forEach(add_obj.required, (val, key, obj) => {obj[key] = !_.isEmpty(add_obj.obj[key])})
+    _.forEach(add_obj.required, (val, key: string, obj) => {
+      obj[key] = !_.isEmpty(add_obj.obj[key]);
+    });
     this[add_obj.modal].show();
   }
 
-  submitAddLayer(layer_obj){
-    let source = layer_obj.source ? layer_obj.source : "default";
+  submitAddLayer(layer_obj) {
+    let source = layer_obj.source ? layer_obj.source : 'default';
     let add_obj = this.addObject[source];
-    if(layer_obj.source == "default") delete layer_obj.source;
+    if (layer_obj.source === 'default') {
+      delete layer_obj.source;
+    }
 
-    _.forEach(layer_obj, (val, key, obj) => {
+    _.forEach(layer_obj, (val, key: string, obj) => {
         if (!_.isNil(add_obj.required[key]) && !add_obj.required[key]) {
-          delete obj[key]
+          delete obj[key];
         }
       }
     );
 
-    if(add_obj.onEdit()) {
+    if (add_obj.onEdit()) {
       this.layersArray[add_obj.edit_index]['layer_obj'] = layer_obj;
     } else {
-      this.layersArray.push({layer_obj})
+      this.layersArray.push({ layer_obj });
     }
 
     this[add_obj.modal].hide();
@@ -249,31 +249,31 @@ export class LayersComponent implements OnInit, OnChanges {
     layer_item.expand = !layer_item.expand;
   }
 
-  initLayersArray(){
-    let layersArray = this.queryParamsHelperService.queryLayersStringToObjects({layers:this.layersString});
-    layersArray = layersArray.map( layer_obj => new Object({layer_obj}) ) ;
-    if(!_.isEqual(this.layersArray, layersArray)) {
+  initLayersArray() {
+    let layersArray = this.queryParamsHelperService.queryLayersStringToObjects({ layers: this.layersString });
+    layersArray = layersArray.map(layer_obj => new Object({ layer_obj }));
+    if (!_.isEqual(this.layersArray, layersArray)) {
       this.layersArray = layersArray;
     }
   }
 
-  removeTms(index:number) {
+  removeTms(index: number) {
     this.layersArray.splice(index, 1);
   }
 
 
-  canApply():boolean{
-    let before_change = this.queryParamsHelperService.queryLayersStringToObjects({layers:this.layersString});
+  canApply(): boolean {
+    let before_change = this.queryParamsHelperService.queryLayersStringToObjects({ layers: this.layersString });
     let after_change = this.layersArray.map(layerItem => layerItem['layer_obj']);
 
     return !_.isEqual(before_change, after_change);
   }
 
-  deleteKey(obj:{},key:string){
+  deleteKey(obj: {}, key: string) {
     delete obj[key];
   }
 
-  removeAllLayers(){
+  removeAllLayers() {
     this.layersArray = [];
   }
 

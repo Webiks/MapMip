@@ -8,9 +8,9 @@ describe('PolylineComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PolylineComponent ]
+      declarations: [PolylineComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
