@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Ng2BootstrapModule } from 'ngx-bootstrap';
 import { PositionFormComponent } from './position-form.component';
 import { MarkersComponent } from './markers/markers.component';
-import { JWBootstrapSwitchModule } from 'jw-bootstrap-switch-ng2';
 import { LayersComponent } from './layers/layers.component';
 import { PositionFormService } from './position-form.service';
 import { ColorPickerComponent } from './color-picker/color-picker.component';
@@ -28,11 +27,27 @@ import { MdInputModule } from '@angular/material';
     CommonModule,
     FormsModule,
     Ng2BootstrapModule.forRoot(),
-    JWBootstrapSwitchModule,
     ClickOutsideModule,
     MdInputModule
   ],
-  declarations: [PositionFormComponent, MarkersComponent, LayersComponent, ColorPickerComponent, MapSizeComponent, MapPositionComponent, TerrainComponent, DragItemDirective, ReversePipe, SwitchLayersComponent, MapLightingComponent, ColorPickerPipe, GeojsonLayerComponent, FlipSwitchComponent, PolygonsComponent, PolylineComponent],
+  declarations: [
+    PositionFormComponent,
+    MarkersComponent,
+    LayersComponent,
+    ColorPickerComponent,
+    MapSizeComponent,
+    MapPositionComponent,
+    TerrainComponent,
+    DragItemDirective,
+    ReversePipe,
+    SwitchLayersComponent,
+    MapLightingComponent,
+    ColorPickerPipe,
+    GeojsonLayerComponent,
+    FlipSwitchComponent,
+    PolygonsComponent,
+    PolylineComponent
+  ],
   exports: [PositionFormComponent],
   providers: [PositionFormService]
 })
