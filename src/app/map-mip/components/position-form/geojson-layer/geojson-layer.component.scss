@@ -1,32 +1,30 @@
-$base-color :#277fca;
+$base-color: #277fca;
 
-.control-buttons{
+.control-buttons {
   margin: 10px 0;
   display: flex;
   justify-content: flex-end;
-  button{
+  button {
     margin: 0 10px;
   }
 }
 
-
-button.center-btn{
+button.center-btn {
   color: $base-color;
   margin: 0px 10px;
   top: 0px;
 }
 
-button.top-button{
+button.top-button {
   margin: 10px 0;
 }
 
-
-div.modal-body{
-  button{
+div.modal-body {
+  button {
     margin: 10px 0;
   }
 
-  div.li-row{
+  div.li-row {
     user-select: none;
     display: flex;
     position: relative;
@@ -35,11 +33,11 @@ div.modal-body{
       height: 100%;
       user-select: none;
     }
-    img{
+    img {
       height: 100%;
       user-select: none;
     }
-    span.url{
+    span.url {
       user-select: none;
       width: calc(100% - 125px);
       overflow: hidden;
@@ -58,12 +56,12 @@ div.modal-body{
       padding: 5px 10px;
       margin: 0 5px;
       font-size: 12px;
-      &.glyphicon-chevron-right{
+      &.glyphicon-chevron-right {
         transform: rotate(0deg);
         transition: .2s;
         user-select: none;
       }
-      &:disabled{
+      &:disabled {
         opacity: .5;
       }
     }

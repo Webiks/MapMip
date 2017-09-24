@@ -17,11 +17,11 @@
 <ng-template #popTemplate>
   <form (clickOutside)="pop.hide()" exclude="button#terrain_pop" (submit)="submitTerrain(pop)">
     <div class="popView" class="popover-terrain">
-      <input #input type="text" class="form-control" [(ngModel)]="terrainUrl"  [ngModelOptions]="{standalone: true}">
+      <input #input type="text" class="form-control" [(ngModel)]="terrainUrl" [ngModelOptions]="{standalone: true}">
     </div>
     <div class="control-buttons pull-right">
       <div class="btn-group" dropdown dropdown-append-to-body>
-        <button id="btn-append-to-body" type="button" class="btn btn-primary" dropdownToggle >
+        <button id="btn-append-to-body" type="button" class="btn btn-primary" dropdownToggle>
           Examples <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
@@ -35,8 +35,6 @@
     </div>
   </form>
 </ng-template>
-
-
 
 
 <!--

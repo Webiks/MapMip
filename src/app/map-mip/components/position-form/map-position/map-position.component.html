@@ -3,7 +3,8 @@
 <ng-template #popTemplate>
   <div (clickOutside)="pop.hide()" exclude="button#position_pop">
     <div class="popView" (window:resize)="onResize($event)" [ngStyle]="popViewStyle" #popView>
-      <div class="drag" #drag (window:mouseup)="mouseUp($event)" (window:mousemove)="onMouseMove($event)" (mousedown)="onMouseDown($event)" [ngStyle]="dragStyle">
+      <div class="drag" #drag (window:mouseup)="mouseUp($event)" (window:mousemove)="onMouseMove($event)"
+           (mousedown)="onMouseDown($event)" [ngStyle]="dragStyle">
       </div>
     </div>
     <button type="button" class="btn btn-warning glyphicon glyphicon-screenshot" (click)="centerPosition()"></button>

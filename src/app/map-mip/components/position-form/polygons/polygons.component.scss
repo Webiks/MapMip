@@ -1,20 +1,21 @@
 $polygons-color: #009688;
-$polygons-border-color: #016a60;;
+$polygons-border-color: #016a60;
+;
 
-div.polygon-row{
+div.polygon-row {
   display: flex;
   overflow: hidden;
-  *{
+  * {
     margin: 0 3px;
   }
-  span{
+  span {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 }
 
-div.polygons{
+div.polygons {
   display: flex;
 
   button.btn.btn-primary.polygons-menu {
@@ -23,10 +24,10 @@ div.polygons{
     margin-right: 5px;
   }
 
-  button.btn.btn-default.glyphicon.glyphicon-pencil.draw-polygons{
+  button.btn.btn-default.glyphicon.glyphicon-pencil.draw-polygons {
     color: $polygons-color;
     border-color: $polygons-border-color;
-    top:0px;
+    top: 0px;
     margin-left: 5px;
   }
 }

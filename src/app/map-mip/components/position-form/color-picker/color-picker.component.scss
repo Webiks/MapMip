@@ -1,51 +1,51 @@
-.picked-group{
-  button.picked-button{
-    img{
+.picked-group {
+  button.picked-button {
+    img {
       height: 18px;
     }
-    &.active{
+    &.active {
       background: rgba(50, 134, 203, 0.35);
     }
   }
-  button.glyphicon-option-vertical{
+  button.glyphicon-option-vertical {
     position: relative;
     top: 0px;
     margin: 0px;
   }
 }
 
-ul{
+ul {
   min-width: inherit;
   max-height: 270px;
   overflow: auto;
-  -webkit-padding-start:0px;
-  li{
+  -webkit-padding-start: 0px;
+  li {
     display: inline-flex;
-    a{
+    a {
       padding: 1px 1px;
       border: 1px solid transparent;
       border-radius: 4px;
 
-
-      &:hover{
+      &:hover {
         border-color: #cccccc;
         background-color: #337ab7;
 
       }
 
-      &.is-selected{
+      &.is-selected {
         border-color: #cccccc;
         background-color: #337ab7;
 
       }
 
-      img{
-        width:29px;
-        height:38px;
+      img {
+        width: 29px;
+        height: 38px;
       }
     }
   }
 }
-.modal-sm{
+
+.modal-sm {
 
 }

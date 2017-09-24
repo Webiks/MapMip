@@ -1,13 +1,14 @@
 <div class="polygons">
-    <button class="btn btn-primary polygons-menu" (click)="smModal.show()" type="button">Polygons</button>
-  <button class="btn btn-default glyphicon glyphicon-pencil draw-polygons" [class.active]="Active" (click)=" togglePolygonPicked(!Active)"  type="button" tooltip="Draw Polygon" triggers="hover"></button>
+  <button class="btn btn-primary polygons-menu" (click)="smModal.show()" type="button">Polygons</button>
+  <button class="btn btn-default glyphicon glyphicon-pencil draw-polygons" [class.active]="Active"
+          (click)=" togglePolygonPicked(!Active)" type="button" tooltip="Draw Polygon" triggers="hover"></button>
 </div>
-
 
 
 <!-- dialogs -->
 
-<div [config]="{backdrop: false}" bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="cloneEditedPolygons()">
+<div [config]="{backdrop: false}" bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="cloneEditedPolygons()">
   <div class="modal-dialog modal-md">
     <form class="modal-content" (submit)="submitPolygons(true)">
 
@@ -19,14 +20,16 @@
       </div>
 
       <div class="modal-body">
-        <button class="glyphicon glyphicon-trash btn btn-danger pull-right top-button" type="button" [hidden]="polygonsArray.length == 0" (click)="removeAllPolygons()"></button>
+        <button class="glyphicon glyphicon-trash btn btn-danger pull-right top-button" type="button"
+                [hidden]="polygonsArray.length == 0" (click)="removeAllPolygons()"></button>
 
         <ul class="list-group" *ngIf="polygonsArray.length > 0">
-          <li class="list-group-item" *ngFor="let polygon of polygonsArray; let i = index" >
+          <li class="list-group-item" *ngFor="let polygon of polygonsArray; let i = index">
 
             <div class="polygon-row">
 
-              <button class="btn btn-danger glyphicon glyphicon-remove-sign" type="button" (click)="rmvPolygon(i)"></button>
+              <button class="btn btn-danger glyphicon glyphicon-remove-sign" type="button"
+                      (click)="rmvPolygon(i)"></button>
 
               <span class="position">
                 {{polygon.coords}}

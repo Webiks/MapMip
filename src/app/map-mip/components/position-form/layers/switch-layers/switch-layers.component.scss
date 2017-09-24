@@ -1,13 +1,14 @@
-$tms-btn-background:#a20aa2;
-$tms-btn-border-color:purple;
+$tms-btn-background: #a20aa2;
+$tms-btn-border-color: purple;
 
-button.switch-layer-btn{
+button.switch-layer-btn {
   color: $tms-btn-background;
-  &.selected{
+  &.selected {
     background: rgb(245, 231, 246);
   }
 }
-.layers-alert{
+
+.layers-alert {
   position: fixed;
   z-index: 2000;
   width: 100%;

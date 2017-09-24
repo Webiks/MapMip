@@ -1,19 +1,22 @@
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LayersComponent } from './layers.component';
-import {QueryParamsHelperService} from "../../../services/query-params-helper.service";
-import {CalcService} from "../../../services/calc-service";
+import { QueryParamsHelperService } from '../../../services/query-params-helper.service';
+import { CalcService } from '../../../services/calc-service';
 import {
-  Ng2BootstrapModule, ComponentLoaderFactory, PositioningService, BsDropdownModule,
+  BsDropdownModule,
+  ComponentLoaderFactory,
+  Ng2BootstrapModule,
+  PositioningService,
   TooltipConfig
-} from "ng2-bootstrap";
-import {HttpModule} from "@angular/http";
-import {AjaxService} from "../../../services/ajax.service";
-import {RouterTestingModule} from "@angular/router/testing";
-import {fake_Ajax_Service} from "../position-form.component.spec";
-import {SwitchLayersComponent} from "./switch-layers/switch-layers.component";
-import {ReversePipe} from "../reverse.pipe";
-import {DragItemDirective} from "./drag-item.directive";
+} from 'ngx-bootstrap';
+import { HttpModule } from '@angular/http';
+import { AjaxService } from '../../../services/ajax.service';
+import { RouterTestingModule } from '@angular/router/testing';
+import { fake_Ajax_Service } from '../position-form.component.spec';
+import { SwitchLayersComponent } from './switch-layers/switch-layers.component';
+import { ReversePipe } from '../reverse.pipe';
+import { DragItemDirective } from './drag-item.directive';
 
 describe('LayersComponent', () => {
   let component: LayersComponent;
@@ -21,11 +24,14 @@ describe('LayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[RouterTestingModule, Ng2BootstrapModule, HttpModule],
-      declarations: [ LayersComponent , SwitchLayersComponent, ReversePipe, DragItemDirective],
-      providers:[QueryParamsHelperService, CalcService, {provide: AjaxService, useValue: fake_Ajax_Service},ComponentLoaderFactory,PositioningService,BsDropdownModule,TooltipConfig]
+      imports: [RouterTestingModule, Ng2BootstrapModule, HttpModule],
+      declarations: [LayersComponent, SwitchLayersComponent, ReversePipe, DragItemDirective],
+      providers: [QueryParamsHelperService, CalcService, {
+        provide: AjaxService,
+        useValue: fake_Ajax_Service
+      }, ComponentLoaderFactory, PositioningService, BsDropdownModule, TooltipConfig]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -38,16 +44,16 @@ describe('LayersComponent', () => {
     expect(component).toBeDefined();
   });
 
-  it('delete key should rmv key from object by getting the object and the key', ()=>{
-    let obj =  {key1: 'val1', key2: 'val2'};
+  it('delete key should rmv key from object by getting the object and the key', () => {
+    let obj = { key1: 'val1', key2: 'val2' };
     expect(Object.keys(obj).length).toEqual(2);
     component.deleteKey(obj, 'key1');
     expect(Object.keys(obj).length).toEqual(1);
     expect(obj.key1).toBeUndefined();
   });
 
-  it('expandParams should get item and toggle "expand" value', ()=>{
-    let tms_obj = {expand: false};
+  it('expandParams should get item and toggle "expand" value', () => {
+    let tms_obj = { expand: false };
     component.expandParams(tms_obj);
     expect(tms_obj.expand).toBeTruthy();
     component.expandParams(tms_obj);

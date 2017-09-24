@@ -1,29 +1,25 @@
-$base-color :#277fca;
+$base-color: #277fca;
 
-
-div.markers{
+div.markers {
   display: flex;
 
-  button.btn.btn-primary.markers-menu{
+  button.btn.btn-primary.markers-menu {
     margin-right: 5px;
   }
 
-  button.center-btn{
+  button.center-btn {
     color: $base-color;
     margin: 0px 5px;
     top: 0px;
   }
 
-  div.marker-color-picker{
+  div.marker-color-picker {
     margin-left: 5px;
   }
 
 }
 
-
-
-
-button.top-button{
+button.top-button {
   margin: 10px 0;
 }
 
@@ -32,8 +28,8 @@ ul {
   overflow: auto;
   li.list-group-item {
     padding: 6px;
-    div.li-row{
-      img{
+    div.li-row {
+      img {
         margin: 0 10px;
       }
       display: flex;
@@ -43,10 +39,10 @@ ul {
         width: 75%;
         height: 100%;
       }
-      img{
+      img {
         height: 100%;
       }
-      span.position{
+      span.position {
         width: calc(100% - 125px);
         overflow: hidden;
         text-align: center;
@@ -63,11 +59,11 @@ ul {
         padding: 5px 10px;
         margin: 0 5px;
         font-size: 12px;
-        &.glyphicon-chevron-right{
+        &.glyphicon-chevron-right {
           transform: rotate(0deg);
           transition: .2s;
         }
-        &:disabled{
+        &:disabled {
           opacity: .5;
         }
       }
@@ -75,17 +71,20 @@ ul {
     }
   }
 }
-.input-and-picker{
+
+.input-and-picker {
   display: flex;
   justify-content: space-around;
-  input{
+  input {
     width: 65%;
   }
 }
-h6{
+
+h6 {
   width: 70%;
 }
-h4.modal-title{
-  color:#337ab7;
+
+h4.modal-title {
+  color: #337ab7;
 }
 

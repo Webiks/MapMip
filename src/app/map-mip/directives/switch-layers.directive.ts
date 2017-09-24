@@ -1,7 +1,7 @@
-import {Directive, HostListener} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {QueryParamsHelperService} from "../services/query-params-helper.service";
-import {MapMipService} from "../api/map-mip.service";
+import { Directive, HostListener } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { QueryParamsHelperService } from '../services/query-params-helper.service';
+import { MapMipService } from '../api/map-mip.service';
 
 @Directive({
   selector: '[appSwitchLayers]'
@@ -17,12 +17,13 @@ export class SwitchLayersDirective {
       .subscribe((params) => {
         this.prev_params = params;
         this.layersArray = this.queryParamsHelperService.queryLayersStringToObjects(params);
-      })
+      });
   }
 
 
-  @HostListener("window:keypress", ["$event"]) keypress($event) {
-    if($event.which == 32 && this.active){
+  @HostListener('window:keypress', ['$event'])
+  keypress($event) {
+    if ($event.which == 32 && this.active) {
       this.switchLayers();
     }
   }
@@ -33,7 +34,7 @@ export class SwitchLayersDirective {
       var prev = (index - 1) < 0 ? array.length + (index - 1) : (index - 1);
       return array[prev];
     });
-    const parsed_layer:string = this.queryParamsHelperService.queryLayersObjectToString(newLayersArray);
+    const parsed_layer: string = this.queryParamsHelperService.queryLayersObjectToString(newLayersArray);
     const urlTree = this.router.parseUrl(this.router.url);
     urlTree.queryParams.layers = parsed_layer;
     return this.mapMipService.navigateByUrl(urlTree.toString());
