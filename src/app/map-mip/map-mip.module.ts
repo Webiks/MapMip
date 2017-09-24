@@ -7,7 +7,6 @@ import { OpenlayersComponent } from './components/openlayers/openlayers.componen
 import { QueryParamsHelperService } from './services/query-params-helper.service';
 import { FormsModule } from '@angular/forms';
 import { CalcService } from './services/calc-service';
-import { JWBootstrapSwitchModule } from 'jw-bootstrap-switch-ng2';
 import { Ng2BootstrapModule } from 'ngx-bootstrap';
 import { PositionFormModule } from './components/position-form/position-form.module';
 import { AjaxService } from './services/ajax.service';

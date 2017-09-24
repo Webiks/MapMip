@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Ng2BootstrapModule } from 'ngx-bootstrap';
 import { PositionFormComponent } from './position-form.component';
 import { MarkersComponent } from './markers/markers.component';
-import { JWBootstrapSwitchModule } from 'jw-bootstrap-switch-ng2';
 import { LayersComponent } from './layers/layers.component';
 import { PositionFormService } from './position-form.service';
 import { ColorPickerComponent } from './color-picker/color-picker.component';
