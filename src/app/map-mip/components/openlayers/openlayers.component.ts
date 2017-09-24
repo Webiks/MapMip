@@ -40,7 +40,8 @@ export class OpenlayersComponent implements OnInit, OnDestroy {
   public openlayersContextMenu: OpenlayersContextMenu;
   public ol: any;
 
-  @HostBinding('@routeAnimation') get routeAnimation() {
+  @HostBinding('@routeAnimation')
+  get routeAnimation() {
     return true;
   }
 

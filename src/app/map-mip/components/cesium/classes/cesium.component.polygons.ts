@@ -255,7 +255,7 @@ export class CesiumPolygons {
       }
 
       return value;
-    }, false)
+    }, false);
   }
 
 }

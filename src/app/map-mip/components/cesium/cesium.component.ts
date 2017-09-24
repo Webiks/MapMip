@@ -31,6 +31,7 @@ export class CesiumComponent implements OnInit, OnDestroy {
   get routeAnimation() {
     return true;
   }
+
   @ViewChild('container') public container: ElementRef;
 
   public viewer: any;

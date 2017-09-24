@@ -14,7 +14,7 @@ export class OpenlayersContextMenu {
       let coordinates = this.map.getCoordinateFromPixel([event.offsetX, event.offsetY]);
       const projection = this.map.getView().getProjection();
       coordinates = ol.proj.toLonLat(coordinates, projection);
-      openlayers.contextMenuService.openEmitter.emit({coordinates, event});
+      openlayers.contextMenuService.openEmitter.emit({ coordinates, event });
     });
   }
 

@@ -34,6 +34,7 @@ export class LeafletComponent implements OnInit, OnDestroy {
   get routeAnimation() {
     return true;
   }
+
   private _map;
   public queryParamsSubscriber;
   public currentParams: Params = {};
