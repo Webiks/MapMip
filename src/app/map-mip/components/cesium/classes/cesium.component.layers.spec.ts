@@ -4,7 +4,6 @@ import { PositionFormService } from '../../position-form/position-form.service';
 import { CalcService } from '../../../services/calc-service';
 import { QueryParamsHelperService } from '../../../services/query-params-helper.service';
 import { Params, Router } from '@angular/router';
-//import {GeneralCanDeactivateService} from "../../../services/general-can-deactivate.service";
 import { RouterTestingModule } from '@angular/router/testing';
 import { CesiumLayers } from './cesium.component.layers';
 import * as _ from 'lodash';
@@ -44,8 +43,8 @@ describe('CesiumComponent', () => {
     });
 
     it('queryParams: setLayersChanges should to have been call if: noTileLayerRes is "true" or anyLayersChanges is "true"', () => {
-      let anyLayersChangesRes: boolean = false;
-      let noTileLayerRes: boolean = false;
+      let anyLayersChangesRes = false;
+      let noTileLayerRes = false;
       spyOn(layers, 'noTileLayer').and.callFake(() => noTileLayerRes);
       spyOn(queryParamsHelperService, 'anyLayersChanges').and.callFake(() => anyLayersChangesRes);
       spyOn(layers, 'setLayersChanges');
@@ -78,14 +77,14 @@ describe('CesiumComponent', () => {
     });
     it('should getLayerFromLayerObj call the right get Layer functions via layer_obj.source', () => {
       let layer_obj: { source: string } = <any>{};
-      spyOn(layers, 'getMapboxLayer');
+      spyOn(CesiumLayers, 'getMapboxLayer');
       spyOn(layers, 'getOpenstreetmapLayer');
       spyOn(layers, 'getBingLayer');
       spyOn(layers, 'getTmsLayer');
       spyOn(layers, 'getUrlTemplateLayer');
       layer_obj.source = 'mapbox';
       layers.getLayerFromLayerObj(layer_obj);
-      expect(layers.getMapboxLayer).toHaveBeenCalledWith(layer_obj);
+      expect(CesiumLayers.getMapboxLayer).toHaveBeenCalledWith(layer_obj);
       layer_obj.source = 'bing';
       layers.getLayerFromLayerObj(layer_obj);
       expect(layers.getBingLayer).toHaveBeenCalledWith(layer_obj);
@@ -105,7 +104,7 @@ describe('CesiumComponent', () => {
       let params: Params = {};
       let fake_parmas_layers_array: Array<Object> = [1, 2, 3];
       let fake_map_layers_array: Array<Object> = [4, 5, 6];
-      let noTileLayerRes: boolean = false;
+      let noTileLayerRes = false;
 
       spyOn(queryParamsHelperService, 'queryLayers').and.callFake(() => fake_parmas_layers_array);
       component.viewer.imageryLayers._layers = fake_map_layers_array;
@@ -161,9 +160,9 @@ describe('CesiumComponent', () => {
     });
 
     it('parseMapBoxUrl should check if format or mapid are empty and remove them from url', () => {
-      let layer_obj = { source: 'mapbox', url: 'mapbox_url' }; //empty format empty mapid
-      let mapbox_url = 'mapbox_url/undefined/{z}/{x}/{y}.png'; //'undefined/'(miss mapid) and '.png'(default format) ;
-      let fix_url = layers.parseMapBoxUrl(layer_obj, mapbox_url);
+      let layer_obj = { source: 'mapbox', url: 'mapbox_url' }; // empty format empty mapid
+      let mapbox_url = 'mapbox_url/undefined/{z}/{x}/{y}.png'; // 'undefined/'(miss mapid) and '.png'(default format) ;
+      let fix_url = CesiumLayers.parseMapBoxUrl(layer_obj, mapbox_url);
       expect(fix_url).toEqual('mapbox_url/{z}/{x}/{y}');
     });
 
@@ -202,4 +201,3 @@ describe('CesiumComponent', () => {
 
 
 });
-

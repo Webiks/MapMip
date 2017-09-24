@@ -5,6 +5,42 @@ import * as _ from 'lodash';
 export class CesiumLayers {
   public queryParamsSubscriber;
 
+  static parseMapBoxUrl(layer_obj, url: string): string {
+    if (_.isEmpty(layer_obj.format)) {
+      url = url.replace('.png', '');
+    }
+    if (_.isEmpty(layer_obj.mapid)) {
+      url = url.replace('undefined/', '');
+    }
+    return url;
+  }
+
+  static getMapboxLayer(layer_obj) {
+    return new Cesium.MapboxImageryProvider({
+      url: layer_obj['url'],
+      mapId: layer_obj['mapid'],
+      accessToken: layer_obj['access_token'],
+      format: layer_obj['format'] ? layer_obj['format'] : undefined,
+      proxy: {
+        getURL: (url: string) => this.parseMapBoxUrl(layer_obj, url)
+      }
+    });
+  }
+
+  static baseLayer() {
+    return this.getMapboxLayer({
+      url: 'https://api.mapbox.com/styles/v1/',
+      mapid: 'ansyn/cj6x6ya4k116n2sn1r8scuyzc/tiles/256',
+      access_token: 'pk.eyJ1IjoiYW5zeW4iLCJhIjoiY2o2eDZ4b3QyMjI2eTMzbzNzMnk3N2RuZSJ9.SyvUIW3Bi5dA1-RwdzPWcQ',
+    });
+    // return this.getBingLayer({
+    //   url: 'https://dev.virtualearth.net',
+    //   key: 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq',
+    //   style: 'Aerial'
+    // });
+  }
+
+
   constructor(private cesium: CesiumComponent) {
     this.queryParamsSubscriber = cesium.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
   }
@@ -22,7 +58,7 @@ export class CesiumLayers {
   getLayerFromLayerObj(layer_obj: { source: string }) {
     switch (layer_obj.source) {
       case 'mapbox':
-        return this.getMapboxLayer(layer_obj);
+        return CesiumLayers.getMapboxLayer(layer_obj);
       case 'openstreetmap':
         return this.getOpenstreetmapLayer(layer_obj);
       case 'bing':
@@ -42,17 +78,6 @@ export class CesiumLayers {
     });
   }
 
-  getMapboxLayer(layer_obj) {
-    return new Cesium.MapboxImageryProvider({
-      url: layer_obj['url'],
-      mapId: layer_obj['mapid'],
-      accessToken: layer_obj['access_token'],
-      format: layer_obj['format'] ? layer_obj['format'] : undefined,
-      proxy: {
-        getURL: (url: string) => this.parseMapBoxUrl(layer_obj, url)
-      }
-    });
-  }
 
   getTmsLayer(layer_obj) {
     return new Cesium.createTileMapServiceImageryProvider({
@@ -66,7 +91,7 @@ export class CesiumLayers {
       url: layer_obj['url'],
       format: layer_obj['format'],
       proxy: {
-        getURL: (url: string) => this.parseMapBoxUrl(layer_obj, url)
+        getURL: (url: string) => CesiumLayers.parseMapBoxUrl(layer_obj, url)
       }
     });
   }
@@ -137,31 +162,18 @@ export class CesiumLayers {
   imageryProvidersEqual(imageryLayer, _imageryProvider, index): boolean {
     let imageryProvider = imageryLayer.imageryProvider;
     return imageryProvider instanceof _imageryProvider.constructor
-      && index == imageryLayer._layerIndex
-      && imageryProvider['_url'] == _imageryProvider['_url']
-      && imageryProvider['_accessToken'] == _imageryProvider['_accessToken'] // MapboxImageryProvider
-      && imageryProvider['_mapId'] == _imageryProvider['_mapId'] // MapboxImageryProvider
-      && imageryProvider['_mapStyle'] == _imageryProvider['_mapStyle'] // BingImageryProvider
-      && imageryProvider['_key'] == _imageryProvider['_key']; // BingImageryProvider
+      && index === imageryLayer._layerIndex
+      && imageryProvider['_url'] === _imageryProvider['_url']
+      && imageryProvider['_accessToken'] === _imageryProvider['_accessToken'] // MapboxImageryProvider
+      && imageryProvider['_mapId'] === _imageryProvider['_mapId'] // MapboxImageryProvider
+      && imageryProvider['_mapStyle'] === _imageryProvider['_mapStyle'] // BingImageryProvider
+      && imageryProvider['_key'] === _imageryProvider['_key']; // BingImageryProvider
   }
 
-  parseMapBoxUrl(layer_obj, url: string): string {
-    if (_.isEmpty(layer_obj.format)) {
-      url = url.replace('.png', '');
-    }
-    if (_.isEmpty(layer_obj.mapid)) {
-      url = url.replace('undefined/', '');
-    }
-    return url;
-  }
 
   addBaseLayer(): void {
-    let bing_layer = this.getBingLayer({
-      url: 'https://dev.virtualearth.net',
-      key: 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq',
-      style: 'Aerial'
-    });
-    this.cesium.viewer.imageryLayers.addImageryProvider(bing_layer);
+    const baseLayer = CesiumLayers.baseLayer();
+    this.cesium.viewer.imageryLayers.addImageryProvider(baseLayer);
   }
 
 }

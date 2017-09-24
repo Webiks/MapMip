@@ -88,6 +88,7 @@ export class CesiumComponent implements OnInit, OnDestroy {
 
     this.viewer = new Cesium.Viewer(this.container.nativeElement, {
       baseLayerPicker: false,
+      imageryProvider: CesiumLayers.baseLayer()
     });
   }
 
