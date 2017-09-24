@@ -1,4 +1,4 @@
-import { animate, Component, HostBinding, OnInit, state, style, transition, trigger, ViewChild } from '@angular/core';
+import { animate, Component, OnInit, state, style, transition, trigger, ViewChild } from '@angular/core';
 import { PositionFormService } from './components/position-form/position-form.service';
 import { MapMipService } from './api/map-mip.service';
 

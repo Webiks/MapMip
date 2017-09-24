@@ -9,4 +9,5 @@ import { ContextMenuService } from './services/context-menu.service';
   exports: [ContextMenuComponent],
   providers: [ContextMenuService]
 })
-export class ContextMenuModule { }
+export class ContextMenuModule {
+}

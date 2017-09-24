@@ -262,7 +262,7 @@ export class CesiumPolyline {
       }
 
       return value;
-    }, false)
+    }, false);
   }
 
 }

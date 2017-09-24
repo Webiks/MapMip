@@ -27,9 +27,11 @@ import { CesiumPolyline } from './classes/cesium.component.polyline';
 })
 
 export class CesiumComponent implements OnInit, OnDestroy {
-  @HostBinding('@routeAnimation') get routeAnimation() {
+  @HostBinding('@routeAnimation')
+  get routeAnimation() {
     return true;
   }
+
   @ViewChild('container') public container: ElementRef;
 
   public viewer: any;

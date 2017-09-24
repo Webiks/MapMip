@@ -12,7 +12,6 @@ import { OpenlayersGeoJson } from './classes/openlayers.component.geojson';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { CalcService } from '../../services/calc-service';
 import { animations } from '../../map-mip.component';
-import { AjaxService } from '../../services/ajax.service';
 import { MapMipService } from '../../api/map-mip.service';
 import { OpenlayersPolygons } from './classes/openlayers.component.polygons';
 import { OpenlayersContextMenu } from './classes/openlayers.component.context-menu';
@@ -41,7 +40,8 @@ export class OpenlayersComponent implements OnInit, OnDestroy {
   public openlayersContextMenu: OpenlayersContextMenu;
   public ol: any;
 
-  @HostBinding('@routeAnimation') get routeAnimation() {
+  @HostBinding('@routeAnimation')
+  get routeAnimation() {
     return true;
   }
 

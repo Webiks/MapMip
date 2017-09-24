@@ -8,14 +8,13 @@
       p {
         cursor: pointer;
       }
-      &:hover{
+      &:hover {
         p {
           text-decoration: underline;
         }
       }
     }
   }
-
 
   &:focus {
     div.context-menu {
