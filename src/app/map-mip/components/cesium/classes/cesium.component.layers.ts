@@ -5,7 +5,23 @@ import * as _ from 'lodash';
 export class CesiumLayers {
   public queryParamsSubscriber;
 
-  static parseMapBoxUrl(layer_obj, url: string): string {
+  static getBingLayer(layer_obj) {
+    return new Cesium.BingMapsImageryProvider({
+      url: layer_obj['url'],
+      key: layer_obj['key'],
+      mapStyle: layer_obj['style'],
+    });
+  }
+
+  static baseLayer() {
+    return this.getBingLayer({
+      url: 'https://dev.virtualearth.net',
+      key: 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq',
+      style: 'AerialWithLabels'
+    });
+  }
+
+  parseMapBoxUrl(layer_obj, url: string): string {
     if (_.isEmpty(layer_obj.format)) {
       url = url.replace('.png', '');
     }
@@ -15,7 +31,7 @@ export class CesiumLayers {
     return url;
   }
 
-  static getMapboxLayer(layer_obj) {
+  getMapboxLayer(layer_obj) {
     return new Cesium.MapboxImageryProvider({
       url: layer_obj['url'],
       mapId: layer_obj['mapid'],
@@ -25,19 +41,6 @@ export class CesiumLayers {
         getURL: (url: string) => this.parseMapBoxUrl(layer_obj, url)
       }
     });
-  }
-
-  static baseLayer() {
-    return this.getMapboxLayer({
-      url: 'https://api.mapbox.com/styles/v1/',
-      mapid: 'ansyn/cj6x6ya4k116n2sn1r8scuyzc/tiles/256',
-      access_token: 'pk.eyJ1IjoiYW5zeW4iLCJhIjoiY2o2eDZ4b3QyMjI2eTMzbzNzMnk3N2RuZSJ9.SyvUIW3Bi5dA1-RwdzPWcQ',
-    });
-    // return this.getBingLayer({
-    //   url: 'https://dev.virtualearth.net',
-    //   key: 'Ag9RlBTbfJQMhFG3fxO9fLAbYMO8d5sevTe-qtDsAg6MjTYYFMFfFFrF2SrPIZNq',
-    //   style: 'Aerial'
-    // });
   }
 
 
@@ -58,26 +61,17 @@ export class CesiumLayers {
   getLayerFromLayerObj(layer_obj: { source: string }) {
     switch (layer_obj.source) {
       case 'mapbox':
-        return CesiumLayers.getMapboxLayer(layer_obj);
+        return this.getMapboxLayer(layer_obj);
       case 'openstreetmap':
         return this.getOpenstreetmapLayer(layer_obj);
       case 'bing':
-        return this.getBingLayer(layer_obj);
+        return CesiumLayers.getBingLayer(layer_obj);
       case 'tms':
         return this.getTmsLayer(layer_obj);
       default:
         return this.getUrlTemplateLayer(layer_obj);
     }
   }
-
-  getBingLayer(layer_obj) {
-    return new Cesium.BingMapsImageryProvider({
-      url: layer_obj['url'],
-      key: layer_obj['key'],
-      mapStyle: layer_obj['style'],
-    });
-  }
-
 
   getTmsLayer(layer_obj) {
     return new Cesium.createTileMapServiceImageryProvider({
@@ -91,7 +85,7 @@ export class CesiumLayers {
       url: layer_obj['url'],
       format: layer_obj['format'],
       proxy: {
-        getURL: (url: string) => CesiumLayers.parseMapBoxUrl(layer_obj, url)
+        getURL: (url: string) => this.parseMapBoxUrl(layer_obj, url)
       }
     });
   }

@@ -25,7 +25,11 @@ describe('CesiumComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(inject([Router, QueryParamsHelperService, CalcService, PositionFormService], (_router: Router, _queryParamsHelperService: QueryParamsHelperService, _calcService: CalcService, _positionFormService: PositionFormService) => {
+  beforeEach(inject([Router, QueryParamsHelperService, CalcService, PositionFormService], (_router: Router,
+     _queryParamsHelperService: QueryParamsHelperService,
+     _calcService: CalcService,
+     _positionFormService: PositionFormService) => {
+
     fixture = TestBed.createComponent(CesiumComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -65,29 +69,29 @@ describe('CesiumComponent', () => {
 
     it('addBaseLayer should get bing layer and add layer to viewer imageryProviders', () => {
       let fake_base_layer = { name: 'bing_base_layer' };
-      spyOn(layers, 'getBingLayer').and.callFake(() => fake_base_layer);
+      spyOn(CesiumLayers, 'getBingLayer').and.callFake(() => fake_base_layer);
       spyOn(component.viewer.imageryLayers, 'addImageryProvider');
       layers.addBaseLayer();
       expect(component.viewer.imageryLayers.addImageryProvider).toHaveBeenCalledWith(fake_base_layer);
     });
     it('getBingLayer should return BingImageryProvider with mapStyle key and url', () => {
       let layer_obj = { url: 'fake_url', style: 'fake_style', key: 'fake_key' };
-      let bing_layer = layers.getBingLayer(layer_obj);
+      let bing_layer = CesiumLayers.getBingLayer(layer_obj);
       expect(bing_layer instanceof Cesium.BingMapsImageryProvider).toBeTruthy();
     });
     it('should getLayerFromLayerObj call the right get Layer functions via layer_obj.source', () => {
       let layer_obj: { source: string } = <any>{};
-      spyOn(CesiumLayers, 'getMapboxLayer');
+      spyOn(layers, 'getMapboxLayer');
       spyOn(layers, 'getOpenstreetmapLayer');
-      spyOn(layers, 'getBingLayer');
+      spyOn(CesiumLayers, 'getBingLayer');
       spyOn(layers, 'getTmsLayer');
       spyOn(layers, 'getUrlTemplateLayer');
       layer_obj.source = 'mapbox';
       layers.getLayerFromLayerObj(layer_obj);
-      expect(CesiumLayers.getMapboxLayer).toHaveBeenCalledWith(layer_obj);
+      expect(this.getMapboxLayer).toHaveBeenCalledWith(layer_obj);
       layer_obj.source = 'bing';
       layers.getLayerFromLayerObj(layer_obj);
-      expect(layers.getBingLayer).toHaveBeenCalledWith(layer_obj);
+      expect(CesiumLayers.getBingLayer).toHaveBeenCalledWith(layer_obj);
       layer_obj.source = 'openstreetmap';
       layers.getLayerFromLayerObj(layer_obj);
       expect(layers.getOpenstreetmapLayer).toHaveBeenCalledWith(layer_obj);
@@ -144,9 +148,6 @@ describe('CesiumComponent', () => {
       map_layers.filter = () => map_layers;
       spyOn(component.viewer.imageryLayers, 'remove');
 
-      // spyOn(layers, 'layerExistOnParams').and.callFake( imageryProvider => _.isEqual(imageryProvider, layer_a.imageryProvider) ); // layer_a return false
-      // spyOn(layers, 'getLayerFromLayerObj').and.callFake(layer => layer);
-
       layers.removeLayersViaUrl(map_layers);
 
       expect(component.viewer.imageryLayers.remove).toHaveBeenCalledTimes(2);
@@ -162,7 +163,7 @@ describe('CesiumComponent', () => {
     it('parseMapBoxUrl should check if format or mapid are empty and remove them from url', () => {
       let layer_obj = { source: 'mapbox', url: 'mapbox_url' }; // empty format empty mapid
       let mapbox_url = 'mapbox_url/undefined/{z}/{x}/{y}.png'; // 'undefined/'(miss mapid) and '.png'(default format) ;
-      let fix_url = CesiumLayers.parseMapBoxUrl(layer_obj, mapbox_url);
+      let fix_url = this.parseMapBoxUrl(layer_obj, mapbox_url);
       expect(fix_url).toEqual('mapbox_url/{z}/{x}/{y}');
     });
 
