@@ -20,7 +20,7 @@ import { GeojsonLayerComponent } from './geojson-layer/geojson-layer.component';
 import { FlipSwitchComponent } from './flip-switch/flip-switch.component';
 import { PolygonsComponent } from './polygons/polygons.component';
 import { PolylineComponent } from './polyline/polyline.component';
-import { MdInputModule } from '@angular/material';
+import { MatInputModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -28,7 +28,7 @@ import { MdInputModule } from '@angular/material';
     FormsModule,
     Ng2BootstrapModule.forRoot(),
     ClickOutsideModule,
-    MdInputModule
+    MatInputModule
   ],
   declarations: [
     PositionFormComponent,
