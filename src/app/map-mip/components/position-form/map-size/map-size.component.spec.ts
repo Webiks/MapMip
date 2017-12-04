@@ -6,7 +6,6 @@ import { QueryParamsHelperService } from '../../../services/query-params-helper.
 import { RouterTestingModule } from '@angular/router/testing';
 import { CalcService } from '../../../services/calc-service';
 import { PositionFormModule } from '../position-form.module';
-import { Ng2BootstrapModule } from 'ngx-bootstrap';
 
 describe('MapSizeComponent', () => {
   let component: MapSizeComponent;
@@ -17,7 +16,6 @@ describe('MapSizeComponent', () => {
       imports: [
         PositionFormModule,
         RouterTestingModule,
-        Ng2BootstrapModule.forRoot()
       ],
       providers: [QueryParamsHelperService, CalcService]
     })

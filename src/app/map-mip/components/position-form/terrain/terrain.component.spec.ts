@@ -4,7 +4,7 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { TerrainComponent } from './terrain.component';
 import { CalcService } from '../../../services/calc-service';
 import { QueryParamsHelperService } from '../../../services/query-params-helper.service';
-import { Ng2BootstrapModule, PopoverDirective } from 'ngx-bootstrap';
+import { PopoverDirective } from 'ngx-bootstrap';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AjaxService } from '../../../services/ajax.service';
 import { fake_Ajax_Service } from '../position-form.component.spec';
@@ -18,8 +18,7 @@ describe('TerrainComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
-        Ng2BootstrapModule.forRoot()
+        RouterTestingModule
       ],
       declarations: [TerrainComponent],
       providers: [QueryParamsHelperService, CalcService, { provide: AjaxService, useValue: fake_Ajax_Service }]

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Ng2BootstrapModule } from 'ngx-bootstrap';
 import { PositionFormComponent } from './position-form.component';
 import { MarkersComponent } from './markers/markers.component';
 import { LayersComponent } from './layers/layers.component';
@@ -21,14 +20,17 @@ import { FlipSwitchComponent } from './flip-switch/flip-switch.component';
 import { PolygonsComponent } from './polygons/polygons.component';
 import { PolylineComponent } from './polyline/polyline.component';
 import { MatInputModule } from '@angular/material';
+import { ModalModule, PopoverModule, TooltipModule } from 'ngx-bootstrap';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    Ng2BootstrapModule.forRoot(),
     ClickOutsideModule,
-    MatInputModule
+    MatInputModule,
+    ModalModule,
+    TooltipModule,
+    PopoverModule
   ],
   declarations: [
     PositionFormComponent,

@@ -3,7 +3,6 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 
 import { MapPositionComponent } from './map-position.component';
 import { PositionFormService } from '../position-form.service';
-import { Ng2BootstrapModule } from 'ngx-bootstrap';
 import { QueryParamsHelperService } from '../../../services/query-params-helper.service';
 import { CalcService } from '../../../services/calc-service';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -18,7 +17,7 @@ describe('MapPositionComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MapPositionComponent],
       providers: [PositionFormService, QueryParamsHelperService, CalcService],
-      imports: [Ng2BootstrapModule.forRoot(), RouterTestingModule]
+      imports: [RouterTestingModule]
 
     })
       .compileComponents();
