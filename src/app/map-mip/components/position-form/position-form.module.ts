@@ -20,7 +20,7 @@ import { FlipSwitchComponent } from './flip-switch/flip-switch.component';
 import { PolygonsComponent } from './polygons/polygons.component';
 import { PolylineComponent } from './polyline/polyline.component';
 import { MatInputModule } from '@angular/material';
-import { ModalModule, PopoverModule, TooltipModule } from 'ngx-bootstrap';
+import { BsDropdownModule, ModalModule, PopoverModule, TooltipModule } from 'ngx-bootstrap';
 
 @NgModule({
   imports: [
@@ -28,9 +28,10 @@ import { ModalModule, PopoverModule, TooltipModule } from 'ngx-bootstrap';
     FormsModule,
     ClickOutsideModule,
     MatInputModule,
-    ModalModule,
-    TooltipModule,
-    PopoverModule
+    ModalModule.forRoot(),
+    TooltipModule.forRoot(),
+    PopoverModule.forRoot(),
+    BsDropdownModule.forRoot()
   ],
   declarations: [
     PositionFormComponent,
