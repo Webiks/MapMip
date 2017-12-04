@@ -169,8 +169,7 @@ export class OpenlayersMapView {
 
       case MapMipService.LEAFLET_PATH:
         this.onLeaveToLeaflet().subscribe(() => {
-          let preserveQueryParams = true;
-          extras = { preserveQueryParams };
+          extras = { queryParamsHandling: 'preserve' };
 
           this.openlayers.mapMipService.navigate([state], extras).then(() => {
             this.gotoEmitterSubscriber.unsubscribe();

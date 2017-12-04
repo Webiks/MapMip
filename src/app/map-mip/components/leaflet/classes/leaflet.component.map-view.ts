@@ -121,8 +121,7 @@ export class LeafletMapView {
         extras.queryParams = { bounds, markers, layers, size, position, geojson, polygons };
         break;
       case MapMipService.OPENLAYERS_PATH:
-        let preserveQueryParams: boolean = true;
-        extras = { preserveQueryParams };
+        extras = { queryParamsHandling: 'preserve' };
         break;
     }
     this.leaflet.mapMipService.navigate([state], extras).then(() => {
