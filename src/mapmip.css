@@ -2,6 +2,7 @@
 /*@import url("https://unpkg.com/leaflet@1.0.3/dist/leaflet.css");*/
 /*@import url("https://openlayers.org/en/v4.0.1/css/ol.css");*/
 /*@import url("http://cesiumjs.org/releases/1.30/Build/Cesium/Widgets/widgets.css");*/
+@import url("~font-awesome/css/font-awesome.min.css");
 @import url("~bootstrap/dist/css/bootstrap.min.css");
 @import url("~leaflet/dist/leaflet.css");
 @import url("~openlayers/css/ol.css");

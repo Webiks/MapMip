@@ -28,6 +28,7 @@
     "cesium": "1.30.0",
     "core-js": "^2.4.1",
     "firebase": "^3.6.9",
+    "font-awesome": "^4.7.0",
     "gulp-concat": "^2.6.1",
     "leaflet": "^1.0.2",
     "leaflet-ajax": "^2.1.0",
