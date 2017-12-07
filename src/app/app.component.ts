@@ -8,7 +8,7 @@ import { MapMipService } from './map-mip/api/map-mip.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(private router: Router, private mapmip: MapMipService) {
+  constructor(private router: Router) {
     router.events.filter(e => e instanceof NavigationEnd).subscribe((e) => {
       parent.postMessage(window.location.href, '*');
     });

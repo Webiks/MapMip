@@ -3,7 +3,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import 'rxjs/add/operator/take';
 import { CesiumLayers } from './classes/cesium.component.layers';
 import { CesiumMarkers } from './classes/cesium.component.markers';
-import { PositionFormService } from '../position-form/position-form.service';
+import { PositionFormService } from '../../position-form/position-form.service';
 import { CesiumMapView } from './classes/cesium.component.map-view';
 import { CesiumMapSize } from './classes/cesium.component.map-size';
 import { CesiumMapPosition } from './classes/cesium.component.map-position';

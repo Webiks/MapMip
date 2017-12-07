@@ -2,7 +2,6 @@
 @import url("https://unpkg.com/leaflet@1.0.3/dist/leaflet.css");
 @import url("https://openlayers.org/en/v4.0.1/css/ol.css");
 @import url("http://cesiumjs.org/releases/1.30/Build/Cesium/Widgets/widgets.css");
-@import url("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap2/bootstrap-switch.min.css");
 @import url("~@angular/material/prebuilt-themes/deeppurple-amber.css");
 
 .url-tooltip div.tooltip-inner{
@@ -42,23 +41,6 @@ popover-container.popover{
 .mat-form-field-ripple{
   background-color: white !important;
 }
-.bootstrap-switch{
-  background: white;
-}
-
 .modal-open .modal{
   overflow: visible !important;
-}
-.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary{
-  background: yellowgreen;
-}
-.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary:hover{
-  background: #81ac2a;
-}
-.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-default{
-  background: #ab0808;
-  color: white;
-}
-div.bootstrap-switch{
-  border-radius: 4px;
 }

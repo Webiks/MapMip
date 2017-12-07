@@ -5,9 +5,8 @@ import { Observable, Observer } from 'rxjs';
 import { MapMipService } from '../../../api/map-mip.service';
 
 export class CesiumMapView {
-  public queryParamsSubscriber;
-  public gotoEmitterSubscriber;
-
+  queryParamsSubscriber;
+  gotoEmitterSubscriber;
 
   constructor(private cesium: CesiumComponent) {
     cesium.viewer.camera.moveEnd.addEventListener(this.moveEnd.bind(this));
@@ -29,9 +28,9 @@ export class CesiumMapView {
 
   anyParamChanges(params: Params): boolean {
 
-    let longitudeP: number = this.cesium.queryParamsHelperService.queryLng(params);// || this.getCenter().lng;
-    let latitudeP: number = this.cesium.queryParamsHelperService.queryLat(params);// || this.getCenter().lat;
-    let heightP: number = this.cesium.queryParamsHelperService.queryHeight(params);// || this.viewer.camera.positionCartographic.height;
+    let longitudeP: number = this.cesium.queryParamsHelperService.queryLng(params); // || this.getCenter().lng;
+    let latitudeP: number = this.cesium.queryParamsHelperService.queryLat(params); // || this.getCenter().lat;
+    let heightP: number = this.cesium.queryParamsHelperService.queryHeight(params); // || this.viewer.camera.positionCartographic.height;
     let headingRadiansP: number = this.cesium.queryParamsHelperService.queryHeading(params) % 360;
     let pitchRadiansP: number = this.cesium.queryParamsHelperService.queryPitch(params) % 360;
     let rollRadiansP: number = this.cesium.queryParamsHelperService.queryRoll(params) % 360;
@@ -53,7 +52,7 @@ export class CesiumMapView {
     let lighting: number = this.cesium.viewer.scene.globe.enableLighting ? 1 : 0;
 
 
-    if (this.cesium.viewer.scene.mode == Cesium.SceneMode.SCENE3D || this.cesium.viewer.scene._mapMode2D == 1) {
+    if (this.cesium.viewer.scene.mode === Cesium.SceneMode.SCENE3D || this.cesium.viewer.scene._mapMode2D == 1) {
       rotate = NaN;
     } else {
       rotate = 1;
@@ -77,7 +76,7 @@ export class CesiumMapView {
     let mode3d: number = this.cesium.queryParamsHelperService.queryMode3d(params);
     let rotate: number = isNaN(this.cesium.queryParamsHelperService.queryRotate(params)) ? 1 : 0;
 
-    this.cesium.viewer.scene.mode = mode3d == 0 ? Cesium.SceneMode.SCENE2D : Cesium.SceneMode.SCENE3D;
+    this.cesium.viewer.scene.mode = mode3d === 0 ? Cesium.SceneMode.SCENE2D : Cesium.SceneMode.SCENE3D;
     this.cesium.viewer.scene._mapMode2D = rotate;
 
     this.cesium.viewer.camera.setView({
@@ -96,7 +95,7 @@ export class CesiumMapView {
 
   }
 
-  moveEnd(e?) {
+  moveEnd() {
     if (!this.anyParamChanges(this.cesium.currentParams)) {
       return;
     }
@@ -292,7 +291,7 @@ export class CesiumMapView {
 
   setQueryBoundsOnNavigationEnd(state: string): void {
     let extras: NavigationExtras = {};
-    let go_north = state == MapMipService.LEAFLET_PATH ? true : false;
+    let go_north = state === MapMipService.LEAFLET_PATH ? true : false;
 
     this.onLeave(go_north).subscribe(() => {
       let bounds = this.getBounds().toString();
@@ -306,7 +305,7 @@ export class CesiumMapView {
 
       extras.queryParams = { bounds, markers, layers, size, position, geojson, polygons, polyline };
 
-      if (state == MapMipService.OPENLAYERS_PATH) {
+      if (state === MapMipService.OPENLAYERS_PATH) {
         let heading = this.cesium.queryParamsHelperService.queryHeading(this.cesium.currentParams);
         extras.queryParams['heading'] = heading;
       }

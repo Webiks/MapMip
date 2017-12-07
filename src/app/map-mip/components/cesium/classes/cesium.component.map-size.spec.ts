@@ -1,17 +1,16 @@
-/**
- * Created by Harel on 01/02/2017.
- */
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { QueryParamsHelperService } from '../../../services/query-params-helper.service';
-import { PositionFormService } from '../../position-form/position-form.service';
+import { PositionFormService } from '../../../position-form/position-form.service';
 import { CalcService } from '../../../services/calc-service';
 import { HttpModule } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CesiumComponent } from '../cesium.component';
 import { CesiumMapSize } from './cesium.component.map-size';
+import { MapMipService } from '../../../api/map-mip.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
-fdescribe('CesiumComponent', () => {
+describe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
   let queryParamsHelperService: QueryParamsHelperService;
@@ -20,10 +19,11 @@ fdescribe('CesiumComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        HttpModule
+        HttpModule,
+        BrowserAnimationsModule
       ],
       declarations: [CesiumComponent],
-      providers: [QueryParamsHelperService, /*GeneralCanDeactivateService,*/ CalcService, PositionFormService]
+      providers: [QueryParamsHelperService, MapMipService, CalcService, PositionFormService]
     })
       .compileComponents();
   }));

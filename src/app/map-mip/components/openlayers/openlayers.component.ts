@@ -6,7 +6,7 @@ import { OpenlayersLayers } from './classes/openlayers.component.layers';
 import { OpenlayersMarkers } from './classes/openlayers.component.markers';
 import { OpenlayersMapView } from './classes/openlayers.component.map-view';
 import { OpenLayersMapSize } from './classes/openlayers.component.map-size';
-import { PositionFormService } from '../position-form/position-form.service';
+import { PositionFormService } from '../../position-form/position-form.service';
 import { OpenlayersMapPosition } from './classes/openlayers.component.map-position';
 import { OpenlayersGeoJson } from './classes/openlayers.component.geojson';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NavigationExtras, Params, Router, UrlTree } from '@angular/router';
 import * as _ from 'lodash';
-import { CalcService } from './calc-service';
 import { MapMipService } from '../api/map-mip.service';
 import * as rison from 'rison';
 
@@ -10,7 +9,7 @@ export class QueryParamsHelperService {
 
   public polygons_array: Array<any> = [];
 
-  constructor(private calcService: CalcService, private router: Router, private mapMipService: MapMipService) {
+  constructor(private router: Router, private mapMipService: MapMipService) {
   }
 
   queryBounds(params: Params): [number, number, number, number] {

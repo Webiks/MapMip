@@ -1,39 +1,37 @@
 import { CesiumComponent } from '../cesium.component';
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { PositionFormService } from '../../position-form/position-form.service';
+import { PositionFormService } from '../../../position-form/position-form.service';
 import { CalcService } from '../../../services/calc-service';
 import { QueryParamsHelperService } from '../../../services/query-params-helper.service';
-import { Params, Router } from '@angular/router';
+import { Params } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CesiumLayers } from './cesium.component.layers';
 import * as _ from 'lodash';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MapMipService } from '../../../api/map-mip.service';
 
 describe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
-  let router: Router;
   let queryParamsHelperService: QueryParamsHelperService;
   let calcService: CalcService;
   let positionFormService: PositionFormService;
 
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, BrowserAnimationsModule],
       declarations: [CesiumComponent],
-      providers: [QueryParamsHelperService/*, GeneralCanDeactivateService*/, CalcService, PositionFormService]
+      providers: [QueryParamsHelperService, MapMipService, CalcService, PositionFormService]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([Router, QueryParamsHelperService, CalcService, PositionFormService], (_router: Router,
-     _queryParamsHelperService: QueryParamsHelperService,
-     _calcService: CalcService,
-     _positionFormService: PositionFormService) => {
+  beforeEach(inject([QueryParamsHelperService, CalcService, PositionFormService], (_queryParamsHelperService: QueryParamsHelperService, _calcService: CalcService, _positionFormService: PositionFormService) => {
 
     fixture = TestBed.createComponent(CesiumComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = _router;
     queryParamsHelperService = _queryParamsHelperService;
     calcService = _calcService;
     positionFormService = _positionFormService;
@@ -74,11 +72,13 @@ describe('CesiumComponent', () => {
       layers.addBaseLayer();
       expect(component.viewer.imageryLayers.addImageryProvider).toHaveBeenCalledWith(fake_base_layer);
     });
+
     it('getBingLayer should return BingImageryProvider with mapStyle key and url', () => {
       let layer_obj = { url: 'fake_url', style: 'fake_style', key: 'fake_key' };
       let bing_layer = CesiumLayers.getBingLayer(layer_obj);
       expect(bing_layer instanceof Cesium.BingMapsImageryProvider).toBeTruthy();
     });
+
     it('should getLayerFromLayerObj call the right get Layer functions via layer_obj.source', () => {
       let layer_obj: { source: string } = <any>{};
       spyOn(layers, 'getMapboxLayer');
@@ -88,7 +88,7 @@ describe('CesiumComponent', () => {
       spyOn(layers, 'getUrlTemplateLayer');
       layer_obj.source = 'mapbox';
       layers.getLayerFromLayerObj(layer_obj);
-      expect(this.getMapboxLayer).toHaveBeenCalledWith(layer_obj);
+      expect(layers.getMapboxLayer).toHaveBeenCalledWith(layer_obj);
       layer_obj.source = 'bing';
       layers.getLayerFromLayerObj(layer_obj);
       expect(CesiumLayers.getBingLayer).toHaveBeenCalledWith(layer_obj);
@@ -102,7 +102,6 @@ describe('CesiumComponent', () => {
       layers.getLayerFromLayerObj(layer_obj);
       expect(layers.getUrlTemplateLayer).toHaveBeenCalledWith(layer_obj);
     });
-
 
     it('setLayersChanges: should call addTmsLayersViaUrl and removeTmsLayersViaUrl and addBaseLayer if no tile layers in map', () => {
       let params: Params = {};
@@ -163,7 +162,7 @@ describe('CesiumComponent', () => {
     it('parseMapBoxUrl should check if format or mapid are empty and remove them from url', () => {
       let layer_obj = { source: 'mapbox', url: 'mapbox_url' }; // empty format empty mapid
       let mapbox_url = 'mapbox_url/undefined/{z}/{x}/{y}.png'; // 'undefined/'(miss mapid) and '.png'(default format) ;
-      let fix_url = this.parseMapBoxUrl(layer_obj, mapbox_url);
+      let fix_url = layers.parseMapBoxUrl(layer_obj, mapbox_url);
       expect(fix_url).toEqual('mapbox_url/{z}/{x}/{y}');
     });
 
@@ -175,7 +174,6 @@ describe('CesiumComponent', () => {
       index = 0;
       expect(layers.imageryProvidersEqual(imageryLayer, imageryProvider, index)).toBeTruthy();
     });
-
 
     it('layerExistOnMap should get layer_obj and return  return if exist of map', () => {
       let layer_obj_a = { imageryProvider: { _url: 'fake_url_a' }, _layerIndex: 0 };

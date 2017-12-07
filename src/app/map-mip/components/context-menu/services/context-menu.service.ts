@@ -5,8 +5,4 @@ export type ContextMenuEvent = { coordinates: [number, number], event: MouseEven
 @Injectable()
 export class ContextMenuService {
   openEmitter = new EventEmitter<ContextMenuEvent>();
-
-  constructor() {
-  }
-
 }

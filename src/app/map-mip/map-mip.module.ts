@@ -7,13 +7,13 @@ import { OpenlayersComponent } from './components/openlayers/openlayers.componen
 import { QueryParamsHelperService } from './services/query-params-helper.service';
 import { FormsModule } from '@angular/forms';
 import { CalcService } from './services/calc-service';
-import { PositionFormModule } from './components/position-form/position-form.module';
+import { PositionFormModule } from './position-form/position-form.module';
 import { AjaxService } from './services/ajax.service';
 import { HttpModule } from '@angular/http';
 import { MapLayerApiService } from './services/map-layer-api.service';
 import { RouterModule, Routes } from '@angular/router';
 import { MapMipService } from './api/map-mip.service';
-import { NewTabComponent } from './components/position-form/new-tab/new-tab.component';
+import { NewTabComponent } from './position-form/new-tab/new-tab.component';
 import { SwitchLayersDirective } from './directives/switch-layers.directive';
 import { ContextMenuModule } from './components/context-menu/context-menu.module';
 

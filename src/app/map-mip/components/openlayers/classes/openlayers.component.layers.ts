@@ -2,6 +2,8 @@ import { Params } from '@angular/router';
 import { OpenlayersComponent } from '../openlayers.component';
 import * as _ from 'lodash';
 import * as ol from 'openlayers';
+import 'cesium/Build/Cesium/Cesium.js';
+declare const Cesium;
 
 export class OpenlayersLayers {
   public queryParamsSubscriber;

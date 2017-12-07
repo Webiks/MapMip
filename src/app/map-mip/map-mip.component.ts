@@ -1,6 +1,5 @@
 import { animate, Component, OnInit, state, style, transition, trigger, ViewChild } from '@angular/core';
-import { PositionFormService } from './components/position-form/position-form.service';
-import { MapMipService } from './api/map-mip.service';
+import { PositionFormService } from './position-form/position-form.service';
 
 
 @Component({
@@ -12,7 +11,7 @@ import { MapMipService } from './api/map-mip.service';
 export class MapLayerComponent implements OnInit {
   @ViewChild('mapsCont') mapsCont;
 
-  constructor(private positionFormService: PositionFormService, private mapMipService: MapMipService) {
+  constructor(private positionFormService: PositionFormService) {
 
   }
 

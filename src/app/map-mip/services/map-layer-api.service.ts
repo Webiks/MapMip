@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { QueryParamsHelperService } from './query-params-helper.service';
 import { Router, UrlTree } from '@angular/router';
 import { MapMipService } from '../api/map-mip.service';
-import { MarkersComponent } from '../components/position-form/markers/markers.component';
-import { GeojsonLayerComponent } from '../components/position-form/geojson-layer/geojson-layer.component';
+import { MarkersComponent } from '../position-form/markers/markers.component';
+import { GeojsonLayerComponent } from '../position-form/geojson-layer/geojson-layer.component';
 
 @Injectable()
 export class MapLayerApiService {
 
-  constructor(private queryParamsHelperService: QueryParamsHelperService, private router: Router, private mapmipService: MapMipService, private markersComponent: MarkersComponent, private geojsonComponent: GeojsonLayerComponent) {
+  constructor(private queryParamsHelperService: QueryParamsHelperService, private router: Router, private mapmipService: MapMipService) {
 
   }
 
