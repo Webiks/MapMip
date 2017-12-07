@@ -10,7 +10,7 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand">
-        <img src="http://mapmip.webiks.com/assets/Mapmip_logo.png"/>
+        <img src="/assets/Navbar/Mapmip_logo.png"/>
       </a>
     </div>
     <div id="navbar"
@@ -24,19 +24,19 @@
 
         <li class="nav-item" [class.active]="mapMipService.isActive('cesium')">
           <a class="nav-link" (click)="mapMipService.goTo(CESIUM_PATH);isCollapsed = true">
-            <img src="https://www.cesium.com/images/logos/cesium/cesium_color_white_on_black.png"/>
+            <img src="/assets/Navbar/cesium_color_white_on_black.png"/>
           </a>
         </li>
 
         <li class="nav-item" [class.active]="mapMipService.isActive('leaflet')">
           <a class="nav-link" (click)="mapMipService.goTo(LEAFLET_PATH);isCollapsed = true">
-            <img src="http://leafletjs.com/docs/images/logo.png"/>
+            <img src="/assets/Navbar/logo.png"/>
           </a>
         </li>
 
         <li class="nav-item" [class.active]="mapMipService.isActive('openlayers')">
           <a class="nav-link" (click)="mapMipService.goTo(OPENLAYERS_PATH);isCollapsed = true">
-            <img style="width: 24px;height: 24px" src="https://openlayers.org/assets/theme/img/logo70.png">&nbsp;OpenLayers
+            <img style="width: 24px;height: 24px" src="/assets/Navbar/logo70.png">&nbsp;OpenLayers
           </a>
         </li>
 

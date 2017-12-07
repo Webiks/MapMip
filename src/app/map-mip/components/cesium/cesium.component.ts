@@ -83,7 +83,7 @@ export class CesiumComponent implements OnInit, OnDestroy {
   };
 
   initializeMap(): void {
-    window['CESIUM_BASE_URL'] = 'http://mapmip.webiks.com/assets/Cesium';
+    window['CESIUM_BASE_URL'] = 'assets/Cesium';
     Cesium.BingMapsApi.defaultKey = 'AnjT_wAj_juA_MsD8NhcEAVSjCYpV-e50lUypkWm1JPxVu0XyVqabsvD3r2DQpX-';
 
     this.viewer = new Cesium.Viewer(this.container.nativeElement, {

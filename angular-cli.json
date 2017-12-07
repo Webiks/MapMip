@@ -9,6 +9,11 @@
       "root": "src",
       "outDir": "dist",
       "assets": [
+        {
+          "glob": "**/*",
+          "input": "../node_modules/cesium/Build/Cesium/",
+          "output": "./assets/Cesium/"
+        },
         "assets",
         "favicon.ico",
         "mapmip.css"

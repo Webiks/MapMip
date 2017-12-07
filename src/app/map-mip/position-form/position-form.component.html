@@ -43,43 +43,43 @@
         </ng-template>
 
 
-        <!--<div class="markers-group">-->
-          <!--<app-markers [lat]="params.lat.val" [lng]="params.lng.val"-->
-                       <!--(submitMarkersEmitter)="submitMarkers($event)"></app-markers>-->
-        <!--</div>-->
+        <div class="markers-group">
+          <app-markers [lat]="params.lat.val" [lng]="params.lng.val"
+                       (submitMarkersEmitter)="submitMarkers($event)"></app-markers>
+        </div>
 
-        <!--<div class="layers-group">-->
-          <!--<app-layers [layersString]="params.layers.val" (submitLayersEmitter)="submitLayers($event)"></app-layers>-->
-        <!--</div>-->
+        <div class="layers-group">
+          <app-layers [layersString]="params.layers.val" (submitLayersEmitter)="submitLayers($event)"></app-layers>
+        </div>
 
-        <!--<div class="size-group">-->
-          <!--<app-map-size (submitSizeEmitter)="submitForm()" [(size)]="params.size.val"></app-map-size>-->
-        <!--</div>-->
+        <div class="size-group">
+          <app-map-size (submitSizeEmitter)="submitForm()" [(size)]="params.size.val"></app-map-size>
+        </div>
 
-        <!--<div class="position-group">-->
-          <!--<app-map-position [size]="params.size.val" (submitPositionEmitter)="submitForm()"-->
-                            <!--[(position)]="params.position.val"></app-map-position>-->
-        <!--</div>-->
+        <div class="position-group">
+          <app-map-position [size]="params.size.val" (submitPositionEmitter)="submitForm()"
+                            [(position)]="params.position.val"></app-map-position>
+        </div>
 
-        <!--<div class="layers-group">-->
-          <!--<app-geojson-layer [geojson]="params.geojson.val"-->
-                             <!--(submitGeoJsonEmitter)="submitGeojsons($event)"></app-geojson-layer>-->
-        <!--</div>-->
+        <div class="layers-group">
+          <app-geojson-layer [geojson]="params.geojson.val"
+                             (submitGeoJsonEmitter)="submitGeojsons($event)"></app-geojson-layer>
+        </div>
 
-        <!--<div class="polygons-group">-->
-          <!--<app-polygons (togglePickedEmitter)="submitForm()" (submitPolygonsEmitter)="submitPolygons($event)"-->
-                        <!--[polygons]="params.polygons.val"></app-polygons>-->
-        <!--</div>-->
+        <div class="polygons-group">
+          <app-polygons (togglePickedEmitter)="submitForm()" (submitPolygonsEmitter)="submitPolygons($event)"
+                        [polygons]="params.polygons.val"></app-polygons>
+        </div>
 
-        <!--<div class="polygons-group">-->
-          <!--<app-flip-switch [(state)]="mapMipService.skipLocationChange" tooltip="Fixed Url"></app-flip-switch>-->
-        <!--</div>-->
+        <div class="polygons-group">
+          <app-flip-switch [(state)]="mapMipService.skipLocationChange" tooltip="Fixed Url"></app-flip-switch>
+        </div>
 
-        <!--<div class="form-group submit">-->
-          <!--<button type="button" class="btn btn-info submit-mobile" (click)="submitForm();close()">Submit</button>-->
-        <!--</div>-->
+        <div class="form-group submit">
+          <button type="button" class="btn btn-info submit-mobile" (click)="submitForm();close()">Submit</button>
+        </div>
 
-        <!--<button type="submit" style="display: none"></button>-->
+        <button type="submit" style="display: none"></button>
 
       </form>
 
