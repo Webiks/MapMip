@@ -145,7 +145,7 @@ export class PositionFormComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe((params: Params) => {
       // params
-      _.forEach(this.params, (obj, key,) => {
+      _.forEach(this.params, (obj, key) => {
         switch (key) {
           case 'mode3d':
             obj.val = params['mode3d'] == 0 ? false : true;

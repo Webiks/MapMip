@@ -62,7 +62,7 @@ export class CesiumGeoJson {
               that.cesium.viewer.scene.primitives.add(new Cesium.GroundPrimitive({
                 geometryInstances: [coloredCorridorInstance]
               }));
-              (<any>ent).billboard.image = 'http://mapmip.webiks.com/assets/Markers/marker-icon-blue.png';
+              (<any>ent).billboard.image = '/assets/Markers/marker-icon-blue.png';
             });
 
           }

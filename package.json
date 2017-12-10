@@ -26,7 +26,7 @@
     "@angular/platform-browser-dynamic": "^5.0.0",
     "@angular/router": "^5.0.0",
     "bootstrap": "^3.3.7",
-    "cesium": "1.30.0",
+    "cesium": "^1.40.0",
     "core-js": "^2.4.1",
     "firebase": "^3.6.9",
     "font-awesome": "^4.7.0",

@@ -24,7 +24,10 @@ describe('TerrainComponent', () => {
         PopoverModule.forRoot()
       ],
       declarations: [TerrainComponent],
-      providers: [QueryParamsHelperService, CalcService, { provide: AjaxService, useValue: fake_Ajax_Service }, PositionFormService, MapMipService]
+      providers: [QueryParamsHelperService, CalcService, {
+        provide: AjaxService,
+        useValue: fake_Ajax_Service
+      }, PositionFormService, MapMipService]
     })
       .compileComponents();
   }));

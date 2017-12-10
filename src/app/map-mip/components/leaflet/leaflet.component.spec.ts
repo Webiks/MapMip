@@ -1,11 +1,9 @@
-
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { LeafletComponent } from './leaflet.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { CalcService } from '../../services/calc-service';
 import { Params, Router } from '@angular/router';
-import { AjaxService } from '../../services/ajax.service';
 import { HttpModule } from '@angular/http';
 import { PositionFormService } from '../../position-form/position-form.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';

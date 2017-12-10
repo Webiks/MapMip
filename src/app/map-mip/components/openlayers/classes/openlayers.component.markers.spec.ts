@@ -2,7 +2,7 @@ import { OpenlayersComponent } from '../openlayers.component';
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { PositionFormService } from '../../../position-form/position-form.service';
 import { QueryParamsHelperService } from '../../../services/query-params-helper.service';
-import { Params, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { CalcService } from '../../../services/calc-service';
 import { HttpModule } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';

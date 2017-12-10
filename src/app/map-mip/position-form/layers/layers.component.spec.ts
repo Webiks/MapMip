@@ -13,7 +13,7 @@ import { DragItemDirective } from './drag-item.directive';
 import { FormsModule } from '@angular/forms';
 import { MapMipService } from '../../api/map-mip.service';
 import { PositionFormService } from '../position-form.service';
-import 'cesium/Build/Cesium/Cesium.js';
+
 declare const Cesium;
 
 describe('LayersComponent', () => {

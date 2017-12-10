@@ -34,7 +34,7 @@ export class MapPositionComponent implements OnChanges {
 
   public drag_obj = {
     posX: null,
-    posY: null,
+    posY: null
   };
 
 

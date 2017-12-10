@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { PositionFormService } from '../position-form.service';
 

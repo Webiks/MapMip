@@ -14,7 +14,8 @@ module.exports = function (config) {
     ],
     files: [
       { pattern: './src/test.ts', watched: false },
-      { pattern: './src/assets/Markers/*.png', watched: false }
+      { pattern: './src/assets/Markers/*.png', watched: false },
+      { pattern: './node_modules/Cesium/Build/Cesium/Cesium.js', watched: false }
     ],
     proxies: {
       "/assets/": "/base/src/assets/"

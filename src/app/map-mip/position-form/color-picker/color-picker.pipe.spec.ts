@@ -1,5 +1,3 @@
-
-
 import { ColorPickerPipe } from './color-picker.pipe';
 
 describe('ColorPickerPipe', () => {

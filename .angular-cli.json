@@ -29,7 +29,7 @@
           "mapmip.css"
       ],
       "scripts": [
-
+        "../node_modules/cesium/Build/Cesium/Cesium.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

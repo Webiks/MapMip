@@ -16,7 +16,8 @@
 
               <div class="input_type {{key}}" *ngIf="!params[key].input_type">
                 <mat-input-container color="primary">
-                  <input matInput placeholder="{{key}}" [(ngModel)]="params[key].val" [ngModelOptions]="{standalone: true}">
+                  <input matInput placeholder="{{key}}" [(ngModel)]="params[key].val"
+                         [ngModelOptions]="{standalone: true}">
                 </mat-input-container>
               </div>
 

@@ -2,7 +2,7 @@ import { Params } from '@angular/router';
 import { OpenlayersComponent } from '../openlayers.component';
 import * as _ from 'lodash';
 import * as ol from 'openlayers';
-import 'cesium/Build/Cesium/Cesium.js';
+
 declare const Cesium;
 
 export class OpenlayersLayers {
@@ -124,7 +124,7 @@ export class OpenlayersLayers {
         layer.setSource(new ol.source.XYZ(<any>{
           url: layer.getSource().jc,
           minZoom,
-          maxZoom,
+          maxZoom
         }));
         res(response);
       });

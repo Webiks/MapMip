@@ -91,7 +91,7 @@ export class LayersComponent implements OnInit, OnChanges {
         url: ''
       },
       required: {
-        format: false,
+        format: false
       },
       edit_index: -1,
       modal: 'osmModal',
@@ -99,10 +99,10 @@ export class LayersComponent implements OnInit, OnChanges {
         this.obj = {
           source: 'openstreetmap',
           format: '',
-          url: '',
+          url: ''
         };
         this.required = {
-          format: false,
+          format: false
         };
         this.edit_index = -1;
       },
@@ -117,7 +117,7 @@ export class LayersComponent implements OnInit, OnChanges {
         url: ''
       },
       required: {
-        format: false,
+        format: false
       },
       edit_index: -1,
       modal: 'tmsModal',
@@ -128,7 +128,7 @@ export class LayersComponent implements OnInit, OnChanges {
           url: ''
         };
         this.required = {
-          format: false,
+          format: false
         };
         this.edit_index = -1;
       },
