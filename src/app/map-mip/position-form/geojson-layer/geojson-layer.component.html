@@ -1,0 +1,87 @@
+<button class="btn btn-danger" (click)="geoJsonModal.show()" type="button">GeoJson</button>
+<div bsModal #geoJsonModal="bs-modal" class="modal fade layers-modal" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true" (onShow)="initializeGeojsonArray()">
+  <div class="modal-dialog modal-md">
+
+
+    <form class="modal-content" (submit)="submitGeoJson()">
+
+
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="geoJsonModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">GeoJson</h4>
+      </div>
+
+
+      <div class="modal-body">
+        <button class="btn btn-default" type="button" (click)="defaultModal.show()">Add</button>
+        <button class="glyphicon glyphicon-trash btn btn-danger pull-right" type="button"
+                [hidden]="geojson_array.length == 0" (click)="removeAllLayers()"></button>
+
+        <ul class="list-group" *ngIf="geojson_array.length > 0">
+
+          <li class="list-group-item" *ngFor="let geojson_item of geojson_array;let index = index"
+              [class.show-params]="geojson_item.expand"
+              tabindex="0">
+
+            <div class="li-row">
+              <span class="url">{{geojson_item}}</span>
+              <button class="btn btn-info glyphicon glyphicon-pencil" type="button" (click)="editModal(index)"></button>
+              <button class="btn btn-danger glyphicon glyphicon-remove-sign" type="button"
+                      (click)="removeGeojson(index)"></button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-default" (click)="geoJsonModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" type="submit">Ok</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+<div [config]="{backdrop: false}" bsModal #defaultModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <form class="modal-content" (submit)="submitAddGeojson(add_geojson.geojson)">
+
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="defaultModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body default-modal-body">
+        <div class="form-group">
+
+          <label>GeoJson URL: </label>
+
+          <input class="form-control" [(ngModel)]="add_geojson.geojson" [ngModelOptions]="{standalone: true}"/>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="btn-group" dropdown dropdown-append-to-body>
+          <button id="btn-append-to-body" type="button" class="btn btn-primary" dropdownToggle>
+            Examples <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
+            <li *ngFor="let example of examples$ | async">
+              <a class="dropdown-item" (click)="addGeojsonExample(example.url)">{{example.name}}</a>
+            </li>
+          </ul>
+        </div>
+        <span class="glyphicon glyphicon-exclamation-sign pull-left"></span>
+        <button class="btn btn-default" (click)="defaultModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" type="submit">{{add_geojson.onEdit() ? 'Save' : 'Add'}}</button>
+      </div>
+
+    </form>
+  </div>
+</div>

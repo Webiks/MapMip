@@ -1,16 +1,17 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { PositionFormService } from '../components/position-form/position-form.service';
+import { PositionFormService } from '../position-form/position-form.service';
 import { NavigationCancel, NavigationExtras, Router, UrlTree } from '@angular/router';
 import { Location } from '@angular/common';
+import 'rxjs/add/operator/filter';
 
 @Injectable()
 export class MapMipService {
-  static LEAFLET_PATH: string = '/leaflet';
-  static OPENLAYERS_PATH: string = '/openlayers';
-  static CESIUM_PATH: string = '/cesium';
+  static LEAFLET_PATH = '/leaflet';
+  static OPENLAYERS_PATH = '/openlayers';
+  static CESIUM_PATH = '/cesium';
 
-  private _skipLocationChange: boolean = false;
-  private default_state: string = '/leaflet';
+  private _skipLocationChange = false;
+  private default_state = '/leaflet';
   public gotoEmitter = new EventEmitter();
 
   constructor(private positionFormService: PositionFormService, public router: Router, private location: Location) {

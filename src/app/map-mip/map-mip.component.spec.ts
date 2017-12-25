@@ -1,20 +1,24 @@
-/* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MapLayerComponent } from './map-mip.component';
-import { MapMipModule } from './map-mip.module';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MockComponent } from '../utils/mock-component';
+import { PositionFormService } from './position-form/position-form.service';
 
 describe('MapLayerComponent', () => {
   let component: MapLayerComponent;
   let fixture: ComponentFixture<MapLayerComponent>;
   let element: any;
+  const MockComponents = [
+    MockComponent({ selector: 'app-position-form' }),
+    MockComponent({ selector: 'app-context-menu' }),
+    MockComponent({ selector: 'app-new-tab' })
+  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MapMipModule,
-        RouterTestingModule
-      ]
+      imports: [RouterTestingModule],
+      providers: [PositionFormService],
+      declarations: [MapLayerComponent, ...MockComponents]
     })
       .compileComponents();
   }));

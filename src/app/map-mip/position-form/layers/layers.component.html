@@ -1,0 +1,383 @@
+<button class="btn btn-primary layer-btn" (click)="layersModal.show()" type="button">Layers</button>
+<!--<app-switch-layers [(layersArray)]="layersArray" (submitLayersEmitter)="submitLayers()"></app-switch-layers>-->
+
+<div bsModal #layersModal="bs-modal" class="modal fade layers-modal" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" (onShow)="initLayersArray()" (keypress)="onKeyPress($event)"
+     aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <form class="modal-content" (ngSubmit)="submitLayers()">
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="layersModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Layers</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="body-header">
+
+          <button class="btn btn-default mapbox-btn" type="button" (click)="mapboxModal.show()">
+            <img
+              src="http://2rct3i2488gxf9jvb1lqhek9-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/mapbox-logo-256.png"/>
+          </button>
+
+          <button class="btn btn-default mapbox-btn" type="button" (click)="osmModal.show()">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Openstreetmap_logo.svg/256px-Openstreetmap_logo.svg.png"/>
+          </button>
+
+          <button class="btn btn-default" type="button" (click)="tmsModal.show()">
+            TMS
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/GDALLogoColor.svg/150px-GDALLogoColor.svg.png"/>
+          </button>
+
+
+          <button class="btn btn-default mapbox-btn" type="button" (click)="bingModal.show()">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Bing_logo_(2013).svg/2000px-Bing_logo_(2013).svg.png"/>
+          </button>
+
+          <button class="btn btn-default" type="button" (click)="defaultModal.show()">
+            Default
+          </button>
+        </div>
+
+        <div class="remove-all-btn-area">
+          <button class="glyphicon glyphicon-trash btn btn-danger" type="button" [hidden]="layersArray.length == 0"
+                  (click)="removeAllLayers()"></button>
+        </div>
+
+        <ul class="list-group" *ngIf="layersArray.length > 0">
+          <li class="list-group-item" *ngFor="let layer_item of layersArray | reverse; let i = index"
+              [class.show-params]="layer_item.expand"
+              [appDragItem]="[layersArray.length - 1 - i , layersArray]"
+              (onEnter)="submitLayers()"
+              tabindex="0">
+
+            <div class="li-row">
+              <img *ngIf="source_images[layer_item.layer_obj.source]"
+                   [src]="source_images[layer_item.layer_obj.source]"/>
+              <!--<button class="btn btn-default glyphicon glyphicon-chevron-right" type="button" (click)="expandParams(layer_item)" [disabled]="Object.keys(layer_item.layer_obj).length < 2"></button>-->
+              <span class="url">{{layer_item.layer_obj.url}}</span>
+              <button class="btn btn-info glyphicon glyphicon-pencil" type="button"
+                      (click)="editModal(layer_item, layersArray.length - 1 - i)"></button>
+              <button class="btn btn-danger glyphicon glyphicon-remove-sign" type="button"
+                      (click)="removeTms(layersArray.length - 1 - i)"></button>
+            </div>
+
+
+            <!--<div class="params">-->
+            <!--<table class="table table-bordered">-->
+            <!--<tbody>-->
+            <!--<ng-template ngFor let-key [ngForOf]="Object.keys(layer_item.layer_obj)">-->
+            <!--<tr *ngIf="key != 'url' && key != 'source'">-->
+            <!--<th>{{key}}</th>-->
+            <!--<td>{{layer_item.layer_obj[key]}}</td>-->
+            <!--</tr>-->
+            <!--</ng-template>-->
+            <!--</tbody>-->
+            <!--</table>-->
+            <!--</div>-->
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+
+        <div class="btn-group" dropdown dropdown-append-to-body>
+          <button id="btn-append-to-body" type="button" class="btn btn-primary" dropdownToggle>
+            Examples <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
+            <li *ngFor="let example of examples$ | async">
+              <a class="dropdown-item" *ngIf="example?.name?.length"
+                 (click)="layersArray.push({layer_obj:example.layer_obj})">{{example.name}}</a>
+            </li>
+          </ul>
+        </div>
+
+        <button class="btn btn-default" (click)="layersModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" [disabled]="!canApply()" (click)="initLayersArray()" type="button">Restore
+        </button>
+        <button class="btn btn-default" [disabled]="!canApply()" type="submit">Apply</button>
+        <button class="btn btn-default" (click)="submitLayers(true)" type="button">Ok</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!--<div [config]="{backdrop: false}" bsModal #addModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="addObject.edit_index = -1;addObject.layer_obj = {}">-->
+<!--<div class="modal-dialog modal-sm add-tms">-->
+<!--<form class="modal-content" (ngSubmit)="submitAddLayer(addObject.layer_obj)">-->
+<!--<div class="modal-header">-->
+<!--<button type="button" class="close" aria-label="Close" (click)="addModal.hide()">-->
+<!--<span aria-hidden="true">&times;</span>-->
+<!--</button>-->
+<!--<h4 class="modal-title">{{addObject.on_edit() ? 'Edit' : 'Add'}} Layer</h4>-->
+<!--</div>-->
+<!--<div class="modal-body">-->
+<!--<div class="form-group url-group">-->
+<!--<label>url:</label>-->
+<!--<input class="form-control" [(ngModel)]="addObject.layer_obj.url" [ngModelOptions]="{standalone: true}">-->
+<!--<button class="btn btn-default glyphicon glyphicon-plus-sign tms-btn" (click)="addQueryModal.show()" type="button"></button>-->
+<!--</div>-->
+<!--<ul class="list-group">-->
+<!--<div *ngFor="let key of Object.keys(addObject.layer_obj)">-->
+<!--<li class="list-group-item query-item" *ngIf="key != 'url'">-->
+<!--<span>{{key}}: {{addObject.layer_obj[key]}}</span>-->
+<!--<button class="btn btn-info glyphicon glyphicon-pencil" (click)="editQuery({key: key, val: addObject.layer_obj[key]})" type="button"></button>-->
+<!--<button class="btn btn-danger glyphicon glyphicon-remove-sign" (click)="deleteKey(addObject.layer_obj, key)" type="button"></button>-->
+<!--</li>-->
+<!--</div>-->
+<!--</ul>-->
+<!--</div>-->
+
+<!--<div class="modal-footer">-->
+<!--<button class="btn btn-default" (click)="addModal.hide()" type="button">Cancel</button>-->
+<!--<button class="btn btn-default" type="submit">{{addObject.on_edit() ? 'Save' : 'Add'}}</button>-->
+<!--</div>-->
+
+<!--</form>-->
+
+<!--</div>-->
+<!--</div>-->
+
+<div [config]="{backdrop: false}" bsModal #mapboxModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="addObject.mapbox.init()">
+  <div class="modal-dialog modal-sm">
+    <form class="modal-content" (submit)="submitAddLayer(addObject.mapbox.obj)">
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="mapboxModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Url:</label>
+          <input class="form-control" [(ngModel)]="addObject.mapbox.obj.url" [ngModelOptions]="{standalone: true}"/>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox">
+            <label><input type="checkbox" value="" [(ngModel)]="addObject.mapbox.required.mapid"
+                          [ngModelOptions]="{standalone: true}"><b>MapId:</b></label>
+          </div>
+          <input class="form-control" [disabled]="!addObject.mapbox.required.mapid"
+                 [(ngModel)]="addObject.mapbox.obj.mapid" class="form-control" [ngModelOptions]="{standalone: true}"/>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox">
+            <label><input type="checkbox" value="" [(ngModel)]="addObject.mapbox.required.access_token"
+                          [ngModelOptions]="{standalone: true}"><b>AccessToken:</b></label>
+          </div>
+          <input class="form-control" [disabled]="!addObject.mapbox.required.access_token"
+                 [(ngModel)]="addObject.mapbox.obj.access_token" class="form-control"
+                 [ngModelOptions]="{standalone: true}"/>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox">
+            <label><input type="checkbox" value="" [(ngModel)]="addObject.mapbox.required.format"
+                          [ngModelOptions]="{standalone: true}"><b>Format:</b></label>
+          </div>
+          <input class="form-control" [disabled]="!addObject.mapbox.required.format"
+                 [(ngModel)]="addObject.mapbox.obj.format" class="form-control" [ngModelOptions]="{standalone: true}"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" (click)="mapboxModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" type="submit">{{addObject.mapbox.onEdit() ? 'Save' : 'Add'}}</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+<div [config]="{backdrop: false}" bsModal #osmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="addObject.openstreetmap.init()">
+  <div class="modal-dialog modal-sm">
+    <form class="modal-content" (submit)="submitAddLayer(addObject.openstreetmap.obj)">
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="osmModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group">
+          <label>Url:</label>
+          <input class="form-control" [(ngModel)]="addObject.openstreetmap.obj.url"
+                 [ngModelOptions]="{standalone: true}"/>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox">
+            <label><input type="checkbox" value="" [(ngModel)]="addObject.openstreetmap.required.format"
+                          [ngModelOptions]="{standalone: true}"><b>Format:</b></label>
+          </div>
+          <input class="form-control" [disabled]="!addObject.openstreetmap.required.format"
+                 [(ngModel)]="addObject.openstreetmap.obj.format" class="form-control"
+                 [ngModelOptions]="{standalone: true}"/>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" (click)="osmModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" type="submit">Add</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+<div [config]="{backdrop: false}" bsModal #tmsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="addObject.tms.init()">
+  <div class="modal-dialog modal-sm">
+    <form class="modal-content" (submit)="submitAddLayer(addObject.tms.obj)">
+
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="tmsModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Url:</label>
+          <input class="form-control" [(ngModel)]="addObject.tms.obj.url" [ngModelOptions]="{standalone: true}"/>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox">
+            <label><input type="checkbox" value="" [(ngModel)]="addObject.tms.required.format"
+                          [ngModelOptions]="{standalone: true}"><b>Format:</b></label>
+          </div>
+          <input class="form-control" [disabled]="!addObject.tms.required.format" [(ngModel)]="addObject.tms.obj.format"
+                 class="form-control" [ngModelOptions]="{standalone: true}"/>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-default" (click)="tmsModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" type="submit">{{addObject.tms.onEdit() ? 'Save' : 'Add'}}</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+<div [config]="{backdrop: false}" bsModal #bingModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="addObject.bing.init()">
+  <div class="modal-dialog modal-sm">
+    <form class="modal-content" (submit)="submitAddLayer(addObject.bing.obj)">
+
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="bingModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="form-group">
+          <label>Url:</label>
+          <input class="form-control" [(ngModel)]="addObject.bing.obj.url" [ngModelOptions]="{standalone: true}"/>
+        </div>
+
+        <div class="form-group">
+          <label>Key:</label>
+          <input class="form-control" [(ngModel)]="addObject.bing.obj.key" [ngModelOptions]="{standalone: true}"/>
+        </div>
+
+        <div class="form-group" dropdown dropdown-append-to-body2>
+          <label>Style:</label>
+          <input readonly class="form-control" [(ngModel)]="addObject.bing.obj.style" dropdownToggle
+                 [ngModelOptions]="{standalone: true}"/>
+
+          <ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
+            <li *ngFor="let style_key of addObject.bing.styles">
+              <a class="dropdown-item" (click)="addObject.bing.obj.style = style_key">{{style_key}}</a>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" (click)="bingModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" type="submit">{{addObject.bing.onEdit() ? 'Save' : 'Add'}}</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+<div [config]="{backdrop: false}" bsModal #defaultModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="addObject.default.init()">
+  <div class="modal-dialog modal-sm">
+    <form class="modal-content" (submit)="submitAddLayer(addObject.default.obj)">
+
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="defaultModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+        <div class="form-group">
+          <button class="btn btn-default glyphicon glyphicon-plus-sign tms-btn" type="button"
+                  (click)="addQueryModal.show()"></button>
+        </div>
+      </div>
+
+      <div class="modal-body default-modal-body">
+        <ng-template ngFor let-key [ngForOf]="Object.keys(addObject.default.obj)">
+          <div class="form-group">
+            <button *ngIf="key != 'url'" class="glyphicon glyphicon-remove"
+                    (click)="deleteKey(addObject.default.obj, key)"></button>
+            <label>{{key}}</label>
+
+            <input class="form-control" [(ngModel)]="addObject.default.obj[key]" [ngModelOptions]="{standalone: true}"/>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="modal-footer">
+        <span class="glyphicon glyphicon-exclamation-sign pull-left"
+              [tooltip]="queryParamsHelperService.layerObjectToUrl(addObject.default.obj)">
+        </span>
+        <button class="btn btn-default" (click)="defaultModal.hide()" type="button">Cancel</button>
+        <button class="btn btn-default" type="submit">{{addObject.default.onEdit() ? 'Save' : 'Add'}}</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+<div [config]="{backdrop: false}" bsModal #addQueryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true" (onHide)="input_key.value = ''">
+  <div class="modal-dialog modal-sm">
+    <form class="modal-content"
+          (submit)="input_key.value ? addObject.default.obj[input_key.value] = '' : false ; addQueryModal.hide();">
+
+      <div class="modal-body add-query">
+        <div class="form-group">
+          <label>Key</label>
+          <div class="add-query-control">
+            <input class="form-control" #input_key/>
+            <button class="btn btn-default glyphicon glyphicon-ok" type="submit"></button>
+            <button class="btn btn-default glyphicon glyphicon-remove" type="button"
+                    (click)="addQueryModal.hide()"></button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+

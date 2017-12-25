@@ -1,14 +1,15 @@
 import { LeafletComponent } from '../leaflet.component';
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { PositionFormService } from '../../position-form/position-form.service';
+import { PositionFormService } from '../../../position-form/position-form.service';
 import { Params, Router } from '@angular/router';
 import { QueryParamsHelperService } from '../../../services/query-params-helper.service';
-import { AjaxService } from '../../../services/ajax.service';
 import { CalcService } from '../../../services/calc-service';
 import { HttpModule } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LeafletMarkers } from './leaflet.component.markers';
 import * as L from 'leaflet';
+import { MapMipService } from '../../../api/map-mip.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('LeafletComponent', () => {
   let component: LeafletComponent;
@@ -21,10 +22,11 @@ describe('LeafletComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
+        BrowserAnimationsModule,
         HttpModule
       ],
       declarations: [LeafletComponent],
-      providers: [QueryParamsHelperService, CalcService, AjaxService, PositionFormService]
+      providers: [QueryParamsHelperService, CalcService, PositionFormService, MapMipService]
     })
       .compileComponents();
   }));
@@ -47,8 +49,8 @@ describe('LeafletComponent', () => {
     });
 
     it('queryParams: setMarkersChanges: should have been call only when both params_changes and map_changes are "true" ', () => {
-      let params_changes: boolean = true;
-      let map_changes: boolean = true;
+      let params_changes = true;
+      let map_changes = true;
 
       spyOn(markers, 'anyMarkersMapChanges').and.callFake(() => map_changes);
       spyOn(queryParamsHelperService, 'anyMarkersParamsChanges').and.callFake(() => params_changes);

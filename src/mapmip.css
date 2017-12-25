@@ -1,8 +1,13 @@
-@import url("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css");
-@import url("https://unpkg.com/leaflet@1.0.3/dist/leaflet.css");
-@import url("https://openlayers.org/en/v4.0.1/css/ol.css");
-@import url("http://cesiumjs.org/releases/1.30/Build/Cesium/Widgets/widgets.css");
-@import url("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap2/bootstrap-switch.min.css");
+/*@import url("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css");*/
+/*@import url("https://unpkg.com/leaflet@1.0.3/dist/leaflet.css");*/
+/*@import url("https://openlayers.org/en/v4.0.1/css/ol.css");*/
+/*@import url("http://cesiumjs.org/releases/1.30/Build/Cesium/Widgets/widgets.css");*/
+@import url("~font-awesome/css/font-awesome.min.css");
+@import url("~bootstrap/dist/css/bootstrap.min.css");
+@import url("~leaflet/dist/leaflet.css");
+@import url("~openlayers/css/ol.css");
+@import url("~cesium/Build/Cesium/Widgets/widgets.css");
+@import url("~@angular/material/prebuilt-themes/deeppurple-amber.css");
 
 .url-tooltip div.tooltip-inner{
   max-width: none !important;
@@ -26,33 +31,21 @@ app-terrain .popover-title {
 popover-container.popover{
   max-width: none;
 }
-.mat-primary{
-  background: #337ab7 !important;
+.mat-form-field-infix{
+  width: auto !important;
+}
+.mat-primary, .mat-form-field-placeholder{
+  color: #c5cdea !important;
+}
+.mat-primary.mat-focused, .mat-primary.mat-focused .mat-form-field-placeholder {
   color: white !important;
 }
-.mat-input-placeholder.mat-focused{
-  color: white;
+.mat-form-field-underline{
+  background-color: #c5cdea !important;
 }
-.mat-input-ripple.mat-focused{
-  background: white;
+.mat-form-field-ripple{
+  background-color: white !important;
 }
-.bootstrap-switch{
-  background: white;
-}
-
 .modal-open .modal{
   overflow: visible !important;
-}
-.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary{
-  background: yellowgreen;
-}
-.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary:hover{
-  background: #81ac2a;
-}
-.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-default{
-  background: #ab0808;
-  color: white;
-}
-div.bootstrap-switch{
-  border-radius: 4px;
 }

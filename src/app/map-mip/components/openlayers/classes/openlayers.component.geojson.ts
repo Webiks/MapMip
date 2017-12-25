@@ -12,13 +12,13 @@ export class OpenlayersGeoJson {
   public myMultiStyle = {
     'Point': new this.openlayers.ol.style.Style({
       image: new this.openlayers.ol.style.Icon({
-        src: 'http://mapmip.webiks.com/assets/Markers/marker-icon-blue.png',
+        src: '/assets/Markers/marker-icon-blue.png',
         anchor: [0.5, 1]
       })
     }),
     'MultiPoint': new this.openlayers.ol.style.Style({
       image: new this.openlayers.ol.style.Icon({
-        src: 'http://mapmip.webiks.com/assets/Markers/marker-icon-blue.png',
+        src: '/assets/Markers/marker-icon-blue.png',
         anchor: [0.5, 1]
       })
     }),

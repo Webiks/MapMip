@@ -3,13 +3,12 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import 'rxjs/add/operator/take';
 import { CesiumLayers } from './classes/cesium.component.layers';
 import { CesiumMarkers } from './classes/cesium.component.markers';
-import { PositionFormService } from '../position-form/position-form.service';
+import { PositionFormService } from '../../position-form/position-form.service';
 import { CesiumMapView } from './classes/cesium.component.map-view';
 import { CesiumMapSize } from './classes/cesium.component.map-size';
 import { CesiumMapPosition } from './classes/cesium.component.map-position';
 import { CesiumTerrian } from './classes/cesium.component.terrain';
 import { CesiumMapLighting } from './classes/cesium.component.map-lighting';
-import 'cesium/Build/Cesium/Cesium.js';
 import { CesiumGeoJson } from './classes/cesium.component.geojson';
 import { animations } from '../../map-mip.component';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
@@ -17,7 +16,6 @@ import { CalcService } from '../../services/calc-service';
 import { MapMipService } from '../../api/map-mip.service';
 import { CesiumPolygons } from './classes/cesium.component.polygons';
 import { CesiumPolyline } from './classes/cesium.component.polyline';
-
 
 @Component({
   selector: 'app-cesium',
@@ -83,7 +81,7 @@ export class CesiumComponent implements OnInit, OnDestroy {
   };
 
   initializeMap(): void {
-    window['CESIUM_BASE_URL'] = 'http://mapmip.webiks.com/assets/Cesium';
+    window['CESIUM_BASE_URL'] = 'assets/Cesium';
     Cesium.BingMapsApi.defaultKey = 'AnjT_wAj_juA_MsD8NhcEAVSjCYpV-e50lUypkWm1JPxVu0XyVqabsvD3r2DQpX-';
 
     this.viewer = new Cesium.Viewer(this.container.nativeElement, {

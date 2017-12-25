@@ -1,0 +1,90 @@
+<div class="blackscreen" (click)="close()"></div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Tools&nbsp;<span class="glyphicon glyphicon-wrench"></span>
+    <button aria-label="Close" class="close" type="button" (click)="close()">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+
+  <div class="panel-body">
+    <div class="pos-container">
+      <form class="row" (submit)="submitForm()">
+        <ng-template ngFor let-key [ngForOf]="keys(params)">
+          <ng-template [ngIf]="havePermission(params[key])">
+            <div class="group-div">
+
+              <div class="input_type {{key}}" *ngIf="!params[key].input_type">
+                <mat-input-container color="primary">
+                  <input matInput placeholder="{{key}}" [(ngModel)]="params[key].val"
+                         [ngModelOptions]="{standalone: true}">
+                </mat-input-container>
+              </div>
+
+              <div class="terrain-group" *ngIf="params[key].input_type == 'app-terrain'">
+                <app-terrain (submitTerrainEmitter)="submitForm()" [(terrain)]="params.terrain.val"></app-terrain>
+              </div>
+
+              <div class="lighting-group" *ngIf="params[key].input_type == 'app-map-lighting'">
+                <app-map-lighting [lighting]="params.lighting.val"></app-map-lighting>
+              </div>
+
+              <div class="b-switch" *ngIf="params[key].input_type == 'Bswitch'">
+                <app-flip-switch
+                  [(state)]="params[key].val"
+                  [tooltip]="key"
+                  (stateChange)="submitForm()">
+                </app-flip-switch>
+
+              </div>
+
+            </div>
+
+          </ng-template>
+        </ng-template>
+
+
+        <div class="markers-group">
+          <app-markers [lat]="params.lat.val" [lng]="params.lng.val"
+                       (submitMarkersEmitter)="submitMarkers($event)"></app-markers>
+        </div>
+
+        <div class="layers-group">
+          <app-layers [layersString]="params.layers.val" (submitLayersEmitter)="submitLayers($event)"></app-layers>
+        </div>
+
+        <div class="size-group">
+          <app-map-size (submitSizeEmitter)="submitForm()" [(size)]="params.size.val"></app-map-size>
+        </div>
+
+        <div class="position-group">
+          <app-map-position [size]="params.size.val" (submitPositionEmitter)="submitForm()"
+                            [(position)]="params.position.val"></app-map-position>
+        </div>
+
+        <div class="layers-group">
+          <app-geojson-layer [geojson]="params.geojson.val"
+                             (submitGeoJsonEmitter)="submitGeojsons($event)"></app-geojson-layer>
+        </div>
+
+        <div class="polygons-group">
+          <app-polygons (togglePickedEmitter)="submitForm()" (submitPolygonsEmitter)="submitPolygons($event)"
+                        [polygons]="params.polygons.val"></app-polygons>
+        </div>
+
+        <div class="polygons-group">
+          <app-flip-switch [(state)]="mapMipService.skipLocationChange" tooltip="Fixed Url"></app-flip-switch>
+        </div>
+
+        <div class="form-group submit">
+          <button type="button" class="btn btn-info submit-mobile" (click)="submitForm();close()">Submit</button>
+        </div>
+
+        <button type="submit" style="display: none"></button>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>

@@ -1,5 +1,3 @@
-/* tslint:disable:no-unused-variable */
-
 import { inject, TestBed } from '@angular/core/testing';
 import { CalcService } from './calc-service';
 
@@ -41,7 +39,7 @@ describe('CalcServiceService', () => {
   it('toFixed7Obj should return all number of obj, keeping only 7 decimals ', () => {
     let obj: { a: number, b: number } = {
       a: 1.123456789,
-      b: 9.987654321,
+      b: 9.987654321
     };
     let convertedObj: { a: number, b: number } = calcService.toFixes7Obj(obj);
     expect(convertedObj.a).toEqual(1.1234568);

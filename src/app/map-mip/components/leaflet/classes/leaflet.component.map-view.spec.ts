@@ -1,14 +1,15 @@
 import { LeafletComponent } from '../leaflet.component';
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { PositionFormService } from '../../position-form/position-form.service';
+import { PositionFormService } from '../../../position-form/position-form.service';
 import { NavigationExtras, Params, Router } from '@angular/router';
 import { QueryParamsHelperService } from '../../../services/query-params-helper.service';
-import { AjaxService } from '../../../services/ajax.service';
 import { CalcService } from '../../../services/calc-service';
 import { HttpModule } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LeafletMapView } from './leaflet.component.map-view';
 import * as L from 'leaflet';
+import { MapMipService } from '../../../api/map-mip.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('LeafletComponent', () => {
   let component: LeafletComponent;
@@ -21,13 +22,15 @@ describe('LeafletComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
+        BrowserAnimationsModule,
         HttpModule
       ],
       declarations: [LeafletComponent],
-      providers: [QueryParamsHelperService, CalcService, AjaxService, PositionFormService]
+      providers: [QueryParamsHelperService, CalcService, PositionFormService, MapMipService]
     })
       .compileComponents();
   }));
+
 
   beforeEach(inject([QueryParamsHelperService, Router, PositionFormService], (_queryParamsHelperService: QueryParamsHelperService, _router: Router, _positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(LeafletComponent);
@@ -64,7 +67,7 @@ describe('LeafletComponent', () => {
       });
 
       it('params with no "bounds" should make setMapView to have been call, only when anyParamChanges return "true"', () => {
-        let anyParamsChangesReturnValue: boolean = false;
+        let anyParamsChangesReturnValue = false;
         spyOn(map_view, 'setMapView');
         spyOn(map_view, 'anyParamChanges').and.callFake(() => anyParamsChangesReturnValue);
 
@@ -82,8 +85,8 @@ describe('LeafletComponent', () => {
     });
 
     it('moveEnd: should get lat,lng and zoom parameters from "event" and markers from currentParams and should call router.navigate only when anyParamChanges=true', () => {
-      let anyParamChangesRes: boolean = false;
-      spyOn(router, 'navigate');
+      let anyParamChangesRes = false;
+      spyOn(component.mapMipService, 'navigate');
       spyOn(map_view, 'anyParamChanges').and.callFake(() => anyParamChangesRes);
 
       component.currentParams = { markers: '(1,2,3)' };
@@ -108,11 +111,11 @@ describe('LeafletComponent', () => {
         markers: '(1,2,3)',
         layers: undefined
       });
-      expect(router.navigate).not.toHaveBeenCalledWith([], navigationExtras);
+      expect(component.mapMipService.navigate).not.toHaveBeenCalledWith([], navigationExtras);
 
       anyParamChangesRes = true;
       map_view.moveEnd(event);
-      expect(router.navigate).toHaveBeenCalledWith([], navigationExtras);
+      expect(component.mapMipService.navigate).toHaveBeenCalledWith([], navigationExtras);
     });
 
     it('setMapView should get params and use them to call map.setView with params values', () => {
@@ -158,7 +161,7 @@ describe('LeafletComponent', () => {
       let latlngBounds: L.LatLngBounds = L.latLngBounds([[1, 2], [3, 4]]);
       spyOn(component.map, 'getBounds').and.returnValue(latlngBounds);
       let boundsRes: [number, number, number, number] = map_view.getBounds();
-      expect(boundsRes).toEqual([2, 1, 4, 3]);
+      expect(boundsRes).toEqual([2, 3, 4, 1]);
     });
 
   });

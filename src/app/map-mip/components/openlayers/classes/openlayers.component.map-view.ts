@@ -6,7 +6,7 @@ import * as ol from 'openlayers';
 import { MapMipService } from '../../../api/map-mip.service';
 
 export class OpenlayersMapView {
-  public go_north: boolean = false;
+  public go_north = false;
   public andRotation: (boolean) => void;
   public DragRotateInteractions: ol.interaction.DragRotate;
   public moveEndEvent;
@@ -38,7 +38,7 @@ export class OpenlayersMapView {
       this.andRotation = (complete: boolean) => {
         observer.next(complete);
       };
-      if (this.openlayers.map.getView().getRotation() == 0) {
+      if (this.openlayers.map.getView().getRotation() === 0) {
         observer.next(true);
       } else {
         let radian_rotation = this.openlayers.map.getView().getRotation();
@@ -66,7 +66,7 @@ export class OpenlayersMapView {
     let bounds: [number, number, number, number] = this.openlayers.queryParamsHelperService.queryBounds(params);
     let heading: number = this.openlayers.calcService.toRadians(360 - this.openlayers.queryParamsHelperService.queryHeading(params));
 
-    this.openlayers.map.getView().fit(this.openlayers.transformExtent(bounds), this.openlayers.map.getSize());
+    this.openlayers.map.getView().fit(this.openlayers.transformExtent(bounds), { size: this.openlayers.map.getSize() });
     this.openlayers.map.getView().setRotation(heading);
   }
 
@@ -119,7 +119,7 @@ export class OpenlayersMapView {
     let geojson = this.openlayers.currentParams['geojson'];
     let polygons = this.openlayers.currentParams['polygons'];
 
-    rotate = rotate == 0 ? 0 : undefined;
+    rotate = rotate === 0 ? 0 : undefined;
 
     let navigationExtras: NavigationExtras = this.openlayers.queryParamsHelperService.getQuery({
       lng,
@@ -169,8 +169,7 @@ export class OpenlayersMapView {
 
       case MapMipService.LEAFLET_PATH:
         this.onLeaveToLeaflet().subscribe(() => {
-          let preserveQueryParams: boolean = true;
-          extras = { preserveQueryParams };
+          extras = { queryParamsHandling: 'preserve' };
 
           this.openlayers.mapMipService.navigate([state], extras).then(() => {
             this.gotoEmitterSubscriber.unsubscribe();

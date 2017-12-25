@@ -9,14 +9,13 @@ import 'leaflet-bing-layer/leaflet-bing-layer';
 import 'leaflet-ajax/dist/leaflet.ajax';
 import { LeafletLayers } from './classes/leaflet.component.layers';
 import { LeafletMarkers } from './classes/leaflet.component.markers';
-import { PositionFormService } from '../position-form/position-form.service';
+import { PositionFormService } from '../../position-form/position-form.service';
 import { LeafletMapView } from './classes/leaflet.component.map-view';
 import { LeafletMapSize } from './classes/leaflet.component.map-size';
 import { LeafletMapPosition } from './classes/leaflet.component.map-position';
 import { LeafletGeoJson } from './classes/leaflet.component.geojson';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { CalcService } from '../../services/calc-service';
-import { AjaxService } from '../../services/ajax.service';
 import { animations } from '../../map-mip.component';
 import { MapMipService } from '../../api/map-mip.service';
 import { LeafletPolygons } from './classes/leaflet.component.polygons';
@@ -54,7 +53,7 @@ export class LeafletComponent implements OnInit, OnDestroy {
   public L: any;
 
 
-  constructor(public router: Router, public activatedRoute: ActivatedRoute, public queryParamsHelperService: QueryParamsHelperService, public calcService: CalcService, public ajaxService: AjaxService, public positionFormService: PositionFormService, public mapMipService: MapMipService) {
+  constructor(public router: Router, public activatedRoute: ActivatedRoute, public queryParamsHelperService: QueryParamsHelperService, public calcService: CalcService, public positionFormService: PositionFormService, public mapMipService: MapMipService) {
     window['current'] = this;
     this.queryParamsSubscriber = this.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
 

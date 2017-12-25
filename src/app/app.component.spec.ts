@@ -1,20 +1,21 @@
-/* tslint:disable:no-unused-variable */
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NavbarComponent } from './navbar/navbar.component';
+import { MockComponent } from './utils/mock-component';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
   let compnent: AppComponent;
   let element: any;
+  const navbar = MockComponent({ selector: 'app-navbar' });
+  const mapmip = MockComponent({ selector: 'map-mip' });
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
-        NavbarComponent
+        navbar,
+        mapmip
       ],
       imports: [RouterTestingModule]
     });

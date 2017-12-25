@@ -1,18 +1,20 @@
-/* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NavbarComponent } from './navbar.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CollapseModule } from 'ngx-bootstrap';
+import { MapMipService } from '../map-mip/api/map-mip.service';
+import { PositionFormService } from '../map-mip/position-form/position-form.service';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
-  let element: any;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [NavbarComponent],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule, CollapseModule],
+      providers: [MapMipService, PositionFormService]
     })
       .compileComponents();
   }));

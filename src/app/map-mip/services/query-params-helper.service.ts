@@ -1,17 +1,15 @@
 import { Injectable } from '@angular/core';
 import { NavigationExtras, Params, Router, UrlTree } from '@angular/router';
 import * as _ from 'lodash';
-import { CalcService } from './calc-service';
 import { MapMipService } from '../api/map-mip.service';
-
-declare let rison;
+import * as rison from 'rison';
 
 @Injectable()
 export class QueryParamsHelperService {
 
   public polygons_array: Array<any> = [];
 
-  constructor(private calcService: CalcService, private router: Router, private mapMipService: MapMipService) {
+  constructor(private router: Router, private mapMipService: MapMipService) {
   }
 
   queryBounds(params: Params): [number, number, number, number] {
@@ -54,7 +52,7 @@ export class QueryParamsHelperService {
   }
 
   queryMode3d(params: Params) {
-    return +params['mode3d'] == 0 ? 0 : 1;
+    return +params['mode3d'] === 0 ? 0 : 1;
   }
 
   queryRotate(params: Params): number {
@@ -78,7 +76,7 @@ export class QueryParamsHelperService {
   }
 
   queryLighting(params: Params): number {
-    if (+params['lighting'] != 1) {
+    if (+params['lighting'] !== 1) {
       return 0;
     }
     return 1;
@@ -202,7 +200,7 @@ export class QueryParamsHelperService {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
     let markers_array: Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
     _.forEach(markers_array, function (m, index) {
-      if (marker.position[0] == m.position[0] && marker.position[1] == m.position[1] && marker.color == m.color) {
+      if (marker.position[0] === m.position[0] && marker.position[1] === m.position[1] && marker.color === m.color) {
         markers_array.splice(index, 1);
       }
     });
@@ -234,7 +232,7 @@ export class QueryParamsHelperService {
     let decode_array = this.queryLayersStrings(params);
     decode_array.forEach(layer_obj => {
       _.forEach(layer_obj, (val, key, obj) => {
-        obj[key] = decodeURIComponent(val);
+        obj[key] = decodeURIComponent(<any>val);
       });
     });
     return decode_array;
@@ -281,7 +279,7 @@ export class QueryParamsHelperService {
     let url = obj.url;
     delete obj.url;
     Object.keys(obj).forEach((val, index, array) => {
-      if (index == 0) {
+      if (index === 0) {
         url += '?';
       } else {
         url += '&';
@@ -299,7 +297,7 @@ export class QueryParamsHelperService {
     return markers;
   }
 
-  polygonsStrToArray(polygonStr: string = ''): Array<any> {
+  polygonsStrToArray(polygonStr = ''): Array<any> {
     return rison.decode_array(polygonStr);
   }
 
@@ -307,21 +305,21 @@ export class QueryParamsHelperService {
     return rison.encode_array(polygonArray);
   }
 
-  polylineStrToArray(polylineStr: string = ''): Array<any> {
+  polylineStrToArray(polylineStr = ''): Array<any> {
 
     return rison.decode_array(polylineStr);
   }
 
-  markersStrToArray(markersStr: string = '') {
+  markersStrToArray(markersStr = '') {
     if (_.isEmpty(markersStr)) {
       return [];
     }
     let markersArrayStr: Array<string> = markersStr.split(' ').join('').split('),(').map(
       (str, index, array) => {
-        if (index == 0) {
+        if (index === 0) {
           str = str.replace('(', '');
         }
-        if (index == array.length - 1) {
+        if (index === array.length - 1) {
           str = str.replace(')', '');
         }
         return str;
@@ -341,16 +339,16 @@ export class QueryParamsHelperService {
     return markersArrayObject;
   }
 
-  geojsonStrToArray(geojsonStr: string = '') {
+  geojsonStrToArray(geojsonStr: string) {
     if (_.isEmpty(geojsonStr)) {
       return [];
     }
     let geojsonArrayStr: Array<string> = geojsonStr.split(' ').join('').split('),(').map(
       (str, index, array) => {
-        if (index == 0) {
+        if (index === 0) {
           str = str.replace('(', '');
         }
-        if (index == array.length - 1) {
+        if (index === array.length - 1) {
           str = str.replace(')', '');
         }
         return str;
@@ -364,11 +362,11 @@ export class QueryParamsHelperService {
     let url_str = '';
 
     markersArray.forEach((markersObj, index, array) => {
-      let one_array_str: string = '';
+      let one_array_str = '';
       one_array_str += markersObj.position;
       one_array_str = markersObj.color ? one_array_str + ',' + markersObj.color : one_array_str;
       one_array_str = '(' + one_array_str + '),';
-      one_array_str = index == (array.length - 1) ? one_array_str.replace('),', ')') : one_array_str;
+      one_array_str = index === (array.length - 1) ? one_array_str.replace('),', ')') : one_array_str;
       url_str += one_array_str;
     });
 
@@ -379,10 +377,10 @@ export class QueryParamsHelperService {
     let url_str = '';
 
     geojsonArray.forEach((geojsonObj, index, array) => {
-      let one_array_str: string = '';
+      let one_array_str = '';
       one_array_str += geojsonObj;
       one_array_str = '(' + geojsonObj + '),';
-      one_array_str = index == (array.length - 1) ? one_array_str.replace('),', ')') : one_array_str;
+      one_array_str = index === (array.length - 1) ? one_array_str.replace('),', ')') : one_array_str;
       url_str += one_array_str;
     });
 
@@ -397,10 +395,10 @@ export class QueryParamsHelperService {
 
 
   getQuery(queryObj): NavigationExtras {
-    queryObj.roll = queryObj.roll % 360 == 0 ? undefined : queryObj.roll;
-    queryObj.heading = queryObj.heading % 360 == 0 ? undefined : queryObj.heading;
-    queryObj.pitch = queryObj.pitch == -90 ? undefined : queryObj.pitch;
-    queryObj.mode3d = queryObj.mode3d == 0 ? queryObj.mode3d : undefined;
+    queryObj.roll = queryObj.roll % 360 === 0 ? undefined : queryObj.roll;
+    queryObj.heading = queryObj.heading % 360 === 0 ? undefined : queryObj.heading;
+    queryObj.pitch = queryObj.pitch === -90 ? undefined : queryObj.pitch;
+    queryObj.mode3d = queryObj.mode3d === 0 ? queryObj.mode3d : undefined;
     // queryObj.rotate  = queryObj.rotate == 1 ? 1 : undefined;
     queryObj.markers = _.isEmpty(queryObj.markers) ? undefined : queryObj.markers;
     queryObj.layers = _.isEmpty(queryObj.layers) ? undefined : queryObj.layers;

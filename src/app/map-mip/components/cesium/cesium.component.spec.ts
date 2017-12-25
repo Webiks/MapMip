@@ -1,15 +1,15 @@
-/* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { CesiumComponent } from './cesium.component';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
-//import {GeneralCanDeactivateService} from "../../services/general-can-deactivate.service";
 import { CalcService } from '../../services/calc-service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Params, Router } from '@angular/router';
-import { PositionFormService } from '../position-form/position-form.service';
+import { PositionFormService } from '../../position-form/position-form.service';
+import { MapMipService } from '../../api/map-mip.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
-describe('CesiumComponent', () => {
+xdescribe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
   let router: Router;
@@ -19,9 +19,9 @@ describe('CesiumComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, BrowserAnimationsModule],
       declarations: [CesiumComponent],
-      providers: [QueryParamsHelperService/*, GeneralCanDeactivateService*/, CalcService, PositionFormService]
+      providers: [QueryParamsHelperService, MapMipService, CalcService, PositionFormService]
     })
       .compileComponents();
   }));

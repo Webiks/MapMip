@@ -9,7 +9,7 @@ export class CesiumLayers {
     return new Cesium.BingMapsImageryProvider({
       url: layer_obj['url'],
       key: layer_obj['key'],
-      mapStyle: layer_obj['style'],
+      mapStyle: layer_obj['style']
     });
   }
 

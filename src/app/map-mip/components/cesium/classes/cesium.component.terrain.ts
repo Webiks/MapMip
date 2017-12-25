@@ -1,6 +1,3 @@
-/**
- * Created by Harel on 09/02/2017.
- */
 import { Params } from '@angular/router';
 import { CesiumComponent } from '../cesium.component';
 

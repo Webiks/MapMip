@@ -1,16 +1,14 @@
-/**
- * Created by Harel on 01/02/2017.
- */
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { QueryParamsHelperService } from '../../../services/query-params-helper.service';
-import { PositionFormService } from '../../position-form/position-form.service';
-import { AjaxService } from '../../../services/ajax.service';
+import { PositionFormService } from '../../../position-form/position-form.service';
 import { CalcService } from '../../../services/calc-service';
 import { HttpModule } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OpenlayersComponent } from '../openlayers.component';
-//import {GeneralCanDeactivateService} from "../../../services/general-can-deactivate.service";
 import { OpenlayersMapPosition } from './openlayers.component.map-position';
+import { MapMipService } from '../../../api/map-mip.service';
+import { ContextMenuModule } from '../../context-menu/context-menu.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 describe('OpenLayersComponent', () => {
@@ -20,12 +18,9 @@ describe('OpenLayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        HttpModule
-      ],
+      imports: [RouterTestingModule, HttpModule, ContextMenuModule, BrowserAnimationsModule],
       declarations: [OpenlayersComponent],
-      providers: [QueryParamsHelperService, CalcService, AjaxService, PositionFormService/*,GeneralCanDeactivateService*/]
+      providers: [QueryParamsHelperService, CalcService, PositionFormService, MapMipService]
     })
       .compileComponents();
   }));
