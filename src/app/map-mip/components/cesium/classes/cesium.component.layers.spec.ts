@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MapMipService } from '../../../api/map-mip.service';
 
-describe('CesiumComponent', () => {
+xdescribe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
   let queryParamsHelperService: QueryParamsHelperService;

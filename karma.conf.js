@@ -14,18 +14,17 @@ module.exports = function (config) {
     ],
     files: [
       { pattern: './src/test.ts', watched: false },
-      { pattern: './src/assets/Markers/*.png', watched: false },
+      { pattern: './src/assets/**/*', watched: false, included: false, served: true, nocache: false },
       { pattern: './node_modules/Cesium/Build/Cesium/Cesium.js', watched: false }
     ],
     proxies: {
-      "/assets/": "/base/src/assets/"
+      '/assets/': '/base/src/assets/'
     },
     preprocessors: {
       './src/test.ts': ['@angular/cli']
     },
     mime: {
-      'text/x-typescript': ['ts', 'tsx'],
-      'image/png': ['png']
+      'text/x-typescript': ['ts', 'tsx']
     },
     remapIstanbulReporter: {
       reports: {

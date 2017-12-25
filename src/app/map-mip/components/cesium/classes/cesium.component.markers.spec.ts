@@ -10,7 +10,7 @@ import { MapMipService } from '../../../api/map-mip.service';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('CesiumComponent', () => {
+xdescribe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
   let queryParamsHelperService: QueryParamsHelperService;
