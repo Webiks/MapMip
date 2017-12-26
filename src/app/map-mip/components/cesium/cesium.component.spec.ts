@@ -12,7 +12,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 xdescribe('CesiumComponent', () => {
   let component: CesiumComponent;
   let fixture: ComponentFixture<CesiumComponent>;
-  let router: Router;
   let queryParamsHelperService: QueryParamsHelperService;
   let calcService: CalcService;
   let positionFormService: PositionFormService;
@@ -26,11 +25,10 @@ xdescribe('CesiumComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(inject([Router, QueryParamsHelperService, CalcService, PositionFormService], (_router: Router, _queryParamsHelperService: QueryParamsHelperService, _calcService: CalcService, _positionFormService: PositionFormService) => {
+  beforeEach(inject([QueryParamsHelperService, CalcService, PositionFormService], (_queryParamsHelperService: QueryParamsHelperService, _calcService: CalcService, _positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(CesiumComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = _router;
     queryParamsHelperService = _queryParamsHelperService;
     calcService = _calcService;
     positionFormService = _positionFormService;

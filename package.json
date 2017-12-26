@@ -15,13 +15,13 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^5.0.0",
-    "@angular/cdk": "^5.0.0-rc.2",
+    "@angular/cdk": "^5.0.0",
     "@angular/common": "^5.0.0",
     "@angular/compiler": "^5.0.0",
     "@angular/core": "^5.0.0",
     "@angular/forms": "^5.0.0",
     "@angular/http": "^5.0.0",
-    "@angular/material": "^5.0.0-rc.2",
+    "@angular/material": "^5.0.0",
     "@angular/platform-browser": "^5.0.0",
     "@angular/platform-browser-dynamic": "^5.0.0",
     "@angular/router": "^5.0.0",
@@ -30,7 +30,6 @@
     "core-js": "^2.4.1",
     "firebase": "^3.6.9",
     "font-awesome": "^4.7.0",
-    "gulp-concat": "^2.6.1",
     "leaflet": "^1.0.2",
     "leaflet-ajax": "^2.1.0",
     "leaflet-bing-layer": "^3.1.0",
@@ -41,7 +40,6 @@
     "openlayers": "^4.1.0",
     "rison": "^0.1.1",
     "rxjs": "^5.5.2",
-    "ts-helpers": "^1.1.1",
     "xml2js": "^0.4.17",
     "zone.js": "^0.8.14"
   },
@@ -71,6 +69,7 @@
     "protractor": "~5.1.2",
     "ts-node": "~3.2.0",
     "tslint": "~5.7.0",
-    "typescript": "~2.4.2"
+    "typescript": "~2.4.2",
+    "gulp-concat": "^2.6.1"
   }
 }
