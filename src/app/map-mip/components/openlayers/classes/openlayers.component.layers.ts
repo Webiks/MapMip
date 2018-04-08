@@ -2,6 +2,7 @@ import { Params } from '@angular/router';
 import { OpenlayersComponent } from '../openlayers.component';
 import * as _ from 'lodash';
 import * as ol from 'openlayers';
+import { olx } from 'openlayers';
 
 declare const Cesium;
 
