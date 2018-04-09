@@ -2,6 +2,7 @@ import { Params } from '@angular/router';
 import { CesiumComponent } from '../cesium.component';
 import * as _ from 'lodash';
 import { SafeStyle } from '@angular/platform-browser';
+import { MapMipMarker } from '../../../services/query-params-helper.service';
 
 export class CesiumMarkers {
 
@@ -63,48 +64,41 @@ export class CesiumMarkers {
   }
 
   leftClickInputAction(event: { position: { x: number, y: number } }): void {
-
-    //event.position.x+=18;
-    if (this.cesium.positionFormService.getSelectedMarkerWidth() == 36) {
-      event.position.x += this.cesium.positionFormService.getSelectedMarkerWidth() / 2;
-
-      event.position.y += this.cesium.positionFormService.getSelectedMarkerHeight();
-    }
-    else {
-      event.position.x += 3.5 + this.cesium.positionFormService.getSelectedMarkerWidth() / 2;
-
-      event.position.y += this.cesium.positionFormService.getSelectedMarkerHeight();
-    }
-
     if (this.marker_picker.not_allowed) {
       return;
     }
 
-
-    let position: [any];
-// terrain case
-    if (this.cesium.viewer.terrainProvider.hasOwnProperty('_url')) {
-      var pickedObject = this.cesium.viewer.scene.pick(event.position); // Tr
-      let positionCartesian3 = this.cesium.viewer.scene.pickPosition(event.position); // Tr
-      let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
-      let lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
-      let latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
-      position = [lngDeg, latDeg];
-    }
-    else {
-      let positionCartesian3 = this.cesium.viewer.camera.pickEllipsoid(event.position);
-      let positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
-      let lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
-      let latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
-      position = [lngDeg, latDeg];
+    if (this.onTerrainState()) {
+      const height = this.cesium.positionFormService.getSelectedMarkerHeight();
+      let width = this.cesium.positionFormService.getSelectedMarkerWidth() / 2;
+      if (width !== 18 ) { width += 3.5 }
+      event.position.y += height;
+      event.position.x += width;
     }
 
-    let color: string = this.cesium.positionFormService.getSelectedColor();
-    let marker_picker = { position };
-    if (color != 'blue') {
-      marker_picker['color'] = color;
+
+    const position: number[] = this.getLngLatViaPosition(event.position);
+    const color: string = this.cesium.positionFormService.getSelectedColor();
+    const marker: MapMipMarker = color !== 'blue' ? { position, color } : { position };
+    this.cesium.queryParamsHelperService.addMarker({ ...marker });
+  }
+
+  getLngLatViaPosition(position): number[] {
+    let positionCartesian3;
+    if (this.onTerrainState()) {
+      positionCartesian3 = this.cesium.viewer.scene.pickPosition(position);
+    } else {
+      positionCartesian3 = this.cesium.viewer.camera.pickEllipsoid(position);
     }
-    this.cesium.queryParamsHelperService.addMarker(marker_picker);
+    const positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
+    const lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
+    const latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
+    return [lngDeg, latDeg];
+
+  }
+
+  onTerrainState(): boolean {
+    return !(this.cesium.viewer.terrainProvider instanceof Cesium.EllipsoidTerrainProvider);
   }
 
   anyMarkersMapChanges(params: Params): boolean {
@@ -162,9 +156,9 @@ export class CesiumMarkers {
       position: Cesium.Cartesian3.fromDegrees(...marker.position),
       billboard: {
         image: this.cesium.positionFormService.getMarkerUrlByColor(marker.color),
-        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+        horizontalOrigin: this.onTerrainState() ? Cesium.HorizontalOrigin.CENTER : Cesium.HorizontalOrigin.LEFT,
+        verticalOrigin: this.onTerrainState() ? Cesium.VerticalOrigin.BOTTOM : Cesium.VerticalOrigin.TOP,
+        heightReference: this.onTerrainState() ? Cesium.HeightReference.CLAMP_TO_GROUND : Cesium.HeightReference.NONE
       }
     });
   }

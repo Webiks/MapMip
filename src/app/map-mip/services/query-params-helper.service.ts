@@ -4,6 +4,11 @@ import * as _ from 'lodash';
 import { MapMipService } from '../api/map-mip.service';
 import * as rison from 'rison';
 
+export interface MapMipMarker {
+  position: number[];
+  color?: string;
+}
+
 @Injectable()
 export class QueryParamsHelperService {
 
@@ -142,7 +147,7 @@ export class QueryParamsHelperService {
     return !_.isEqual(prevSize, currentSize);
   };
 
-  addMarker(marker) {
+  addMarker(marker: MapMipMarker) {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
     let markers_array: Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
     markers_array.push(marker);
