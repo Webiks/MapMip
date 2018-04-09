@@ -1,5 +1,6 @@
 export const config = {
   production: false,
   initialRoute: '/cesium',
-  skipLocationChange: false
+  skipLocationChange: false,
+  hidePositionForm: false
 };

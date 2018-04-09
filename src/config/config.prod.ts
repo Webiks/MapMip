@@ -1,5 +1,6 @@
 export const config = {
   production: true,
   initialRoute: '/leaflet',
-  skipLocationChange: false
+  skipLocationChange: false,
+  hidePositionForm: true
 };
