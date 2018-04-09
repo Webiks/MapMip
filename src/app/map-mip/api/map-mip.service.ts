@@ -3,6 +3,7 @@ import { PositionFormService } from '../position-form/position-form.service';
 import { NavigationCancel, NavigationExtras, Router, UrlTree } from '@angular/router';
 import { Location } from '@angular/common';
 import 'rxjs/add/operator/filter';
+import { config } from '../../../config/config';
 
 @Injectable()
 export class MapMipService {
@@ -10,8 +11,8 @@ export class MapMipService {
   static OPENLAYERS_PATH = '/openlayers';
   static CESIUM_PATH = '/cesium';
 
-  private _skipLocationChange = false;
-  private default_state = '/leaflet';
+  private _skipLocationChange = config.skipLocationChange;
+  private default_state = config.initialRoute;
   public gotoEmitter = new EventEmitter();
 
   constructor(private positionFormService: PositionFormService, public router: Router, private location: Location) {
