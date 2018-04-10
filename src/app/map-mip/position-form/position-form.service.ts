@@ -1,9 +1,9 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
-import MARKERS_COLOR_JSON from '../../../assets/Markers/Markers.json';
+import * as MARKERS_COLOR_JSON from '../../../assets/Markers/Markers.json';
 import { config } from '../../../config/config';
 
-export const MARKER_COLORS = MARKERS_COLOR_JSON;
+export const MARKER_COLORS: any = MARKERS_COLOR_JSON;
 export const MARKER_COLORS_HEX: Array<string> = ['#277fca', '#3c3c3c', '#23aa1f', '#777777', '#cb832c', '#cbc32c', '#c92139', '#9b29ca'];
 
 @Injectable()

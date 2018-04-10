@@ -94,7 +94,7 @@ describe('LeafletComponent', () => {
       spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(() => params_markers);
       spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers);
       expect(markers.anyMarkersMapChanges(params)).toBeFalsy();
-      params_markers[1]['color'] = 'red';
+      params_markers[1].icon = 'red';
       expect(markers.anyMarkersMapChanges({})).toBeTruthy();
     });
 

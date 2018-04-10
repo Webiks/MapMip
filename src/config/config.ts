@@ -6,6 +6,6 @@ export const config = {
   defaultLabel: '',
   defaultMarker: {
     icon: 'blue',
-    label: ''
+    label: undefined
   }
 };

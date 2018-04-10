@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import  { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
 import * as _ from 'lodash';
 import { MapMipMarker, QueryParamsHelperService } from '../../services/query-params-helper.service';
@@ -122,9 +122,9 @@ export class MarkersComponent implements OnInit {
 
   markerCenter() {
     let position: [number, number] = [this.lng, this.lat];
-    let center_marker = { position };
+    let center_marker: MapMipMarker = { position };
     if (this.positionFormService.getSelectedColor() !== config.defaultMarker.icon) {
-      center_marker['color'] = this.positionFormService.getSelectedColor();
+      center_marker.icon = this.positionFormService.getSelectedColor();
     }
     this.queryParamsHelperService.addMarker(center_marker);
   }

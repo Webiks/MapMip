@@ -34,7 +34,7 @@ export class ColorPickerComponent {
   }
 
   get selectedColor(): string {
-    return MARKER_COLORS[this.selectedIndex]['color'];
+    return MARKER_COLORS[this.selectedIndex].icon;
   }
 
   get selectedIndex(): number {

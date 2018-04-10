@@ -282,7 +282,7 @@ xdescribe('CesiumComponent', () => {
       expect(component.viewer.entities.add).toHaveBeenCalledWith({
         position: Cesium.Cartesian3.fromDegrees(...marker.position),
         billboard: {
-          image: component.positionFormService.getMarkerUrlByColor(marker['color']),
+          image: component.positionFormService.getMarkerUrlByColor(marker.icon),
           horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
           verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
           heightReference: Cesium.HeightReference.CLAMP_TO_GROUND

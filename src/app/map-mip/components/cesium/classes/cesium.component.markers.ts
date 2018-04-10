@@ -173,18 +173,18 @@ export class CesiumMarkers {
     });
   }
 
-  removeMarker(marker: { position: any, color: string }) {
+  removeMarker(marker: MapMipMarker) {
     let entity_to_remove = this.getEntityByMarker(marker);
     this.cesium.viewer.entities.remove(entity_to_remove);
   }
 
   getEntityByMarker(mapMarkerObj: MapMipMarker) {
     return this.cesium.viewer.entities.values.find(entity => {
-      let e_position = this.cesium.calcService.toFixes7Obj(entity.position.getValue());
-      let e_icon: string = this.getColorFromBillboardEntity(entity);
-      let e_label: string = this.getLabelFromBillboardEntity(entity);
+      let position = this.cesium.calcService.toFixes7Obj(entity.position.getValue());
+      let icon: string = this.getColorFromBillboardEntity(entity);
+      let label: string = this.getLabelFromBillboardEntity(entity);
       mapMarkerObj.position = this.cesium.calcService.toFixes7Obj(mapMarkerObj.position);
-      return _.isEqual(e_position, mapMarkerObj.position) && e_icon === mapMarkerObj.icon && (!e_label && !mapMarkerObj.label || e_label === mapMarkerObj.label);
+      return _.isEqual( { position, icon, label }, mapMarkerObj);
     });
   }
 
@@ -199,7 +199,8 @@ export class CesiumMarkers {
   markerExistOnMap(map_markers, paramsMarker: MapMipMarker): boolean {
     let paramObjToCheck = {
       position: this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramsMarker.position)),
-      color: paramsMarker.icon || config.defaultMarker.icon
+      icon: paramsMarker.icon || config.defaultMarker.icon,
+      label: paramsMarker.label || config.defaultMarker.label
     };
     let exist_point = map_markers.find(markerObj => _.isEqual(paramObjToCheck, markerObj));
     return !_.isEmpty(exist_point);
