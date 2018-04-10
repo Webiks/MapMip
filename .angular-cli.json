@@ -31,7 +31,7 @@
       "scripts": [
         "../node_modules/cesium/Build/Cesium/Cesium.js"
       ],
-      "environmentSource": "environments/environment.ts",
+      "environmentSource": "config/config.ts",
       "environments": {
         "dev": "config/config.ts",
         "prod": "config/config.prod.ts"
