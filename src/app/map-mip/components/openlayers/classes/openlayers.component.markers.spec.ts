@@ -84,7 +84,7 @@ describe('OpenlayersComponent', () => {
     it('anyMarkersMapChanges: should get params and compere between markers on params and markers on map', () => {
       let params = {};
       let params_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50] }];
-      let map_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50], color: config.defaultMarker.color }];
+      let map_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50], color: config.defaultMarker.icon }];
       spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(() => params_markers);
       spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers);
       expect(markers.anyMarkersMapChanges(params)).toBeFalsy();
@@ -100,12 +100,12 @@ describe('OpenlayersComponent', () => {
       markers.addIcon(marker_b);
       expect(markers.getMarkersPosition().length).toEqual(2);
       expect(markers.getMarkersPosition()[0]).toEqual({ position: [20, 30], color: 'red' });
-      expect(markers.getMarkersPosition()[1]).toEqual({ position: [40, 50], color: config.defaultMarker.color });
+      expect(markers.getMarkersPosition()[1]).toEqual({ position: [40, 50], color: config.defaultMarker.icon });
     });
 
     it('setMarkersChanges: should call addMarkersViaUrl with params_markers_position and call removeMarkersViaUrl with map_markers_positions', () => {
       let params_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50] }];
-      let map_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50], color: config.defaultMarker.color }];
+      let map_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50], color: config.defaultMarker.icon }];
       spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(() => params_markers);
       spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers);
       spyOn(markers, 'addMarkersViaUrl');
@@ -136,13 +136,13 @@ describe('OpenlayersComponent', () => {
     it('markerExistOnMap: should get one {position,color} and return if there is marker on map with that {position,color}', () => {
       let existMarkerObj = { position: [60, 50] };
       let notExistMarkerObj = { position: [60, 50], color: 'red' };
-      let map_markers = [{ position: [60, 50], color: config.defaultMarker.color }];
+      let map_markers = [{ position: [60, 50], color: config.defaultMarker.icon }];
       expect(markers.markerExistOnMap(map_markers, existMarkerObj)).toBeTruthy();
       expect(markers.markerExistOnMap(map_markers, notExistMarkerObj)).toBeFalsy();
     });
 
     it('markerExistOnParams: should get one position and return if there is marker on params with that position', () => {
-      let existMarkerObj = { position: [60, 50], color: config.defaultMarker.color };
+      let existMarkerObj = { position: [60, 50], color: config.defaultMarker.icon };
       let notExistMarkerObj = { position: [60, 50], color: 'red' };
       let params_markers = [{ position: [60, 50] }];
       expect(markers.markerExistOnParams(params_markers, existMarkerObj)).toBeTruthy();

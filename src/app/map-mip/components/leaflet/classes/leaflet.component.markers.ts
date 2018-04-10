@@ -47,15 +47,15 @@ export class LeafletMarkers {
     let fix_point: L.Point = L.point(event.layerPoint.x + this.leaflet.positionFormService.getSelectedMarkerWidth() / 2, event.layerPoint.y + this.leaflet.positionFormService.getSelectedMarkerHeight());
     let fix_latlng: L.LatLng = this.leaflet.map.layerPointToLatLng(fix_point);
     let position: [number, number] = [fix_latlng.lng, fix_latlng.lat];
-    let color: string = this.leaflet.positionFormService.getSelectedColor();
-    this.leaflet.queryParamsHelperService.addMarker({ position, color });
+    let icon: string = this.leaflet.positionFormService.getSelectedColor();
+    this.leaflet.queryParamsHelperService.addMarker({ position, icon });
   }
 
   anyMarkersMapChanges(params: Params): boolean {
     let queryMarkersPositions: Array<any> = this.leaflet.queryParamsHelperService.queryMarkersNoHeight(params);
     let mapMarkerPositions: Array<any> = this.getMarkersPosition();
     queryMarkersPositions.forEach(Pmarker => {
-      Pmarker.color = Pmarker.color || config.defaultMarker.color;
+      Pmarker.icon = Pmarker.icon || config.defaultMarker.icon;
     });
     return !_.isEqual(mapMarkerPositions, queryMarkersPositions);
   }
@@ -64,8 +64,8 @@ export class LeafletMarkers {
     return <Array<any>> this.getMarkerLayersArray().map((layer: L.Marker) => {
       let latlng = layer.getLatLng();
       let position = [+latlng.lng.toFixed(7), +latlng.lat.toFixed(7)];
-      let color = this.leaflet.positionFormService.getMarkerColorByUrl(layer['_icon'].src);
-      return { position, color };
+      let icon = this.leaflet.positionFormService.getMarkerColorByUrl(layer['_icon'].src);
+      return { position, icon };
     });
   }
 
@@ -96,7 +96,7 @@ export class LeafletMarkers {
 
   getBaseMarker(marker) {
     let icon = L.icon(<L.IconOptions>{
-      iconUrl: this.leaflet.positionFormService.getMarkerUrlByColor(marker.color),
+      iconUrl: this.leaflet.positionFormService.getMarkerUrlByColor(marker.icon),
       // shadowUrl: '/assets/Markers/marker-shadow.png',
       iconAnchor: [this.leaflet.positionFormService.getSelectedMarkerWidth() / 2, this.leaflet.positionFormService.getSelectedMarkerHeight()]
     });
@@ -107,8 +107,8 @@ export class LeafletMarkers {
     return this.getMarkerLayersArray().find(
       (layer: L.Marker) => {
         let position = [layer.getLatLng().lng, layer.getLatLng().lat];
-        let color = this.leaflet.positionFormService.getMarkerColorByUrl(layer['_icon'].src);
-        return _.isEqual(markerObj, { position, color });
+        let icon = this.leaflet.positionFormService.getMarkerColorByUrl(layer['_icon'].src);
+        return _.isEqual(markerObj, { position, icon });
       });
   }
 
@@ -118,14 +118,14 @@ export class LeafletMarkers {
   }
 
   markerExistOnMap(markers_map_positions, paramMarker) {
-    paramMarker.color = paramMarker.color || config.defaultMarker.color;
+    paramMarker.icon = paramMarker.icon || config.defaultMarker.icon;
     let exist_point = markers_map_positions.find(mapMarker => _.isEqual(mapMarker, paramMarker));
     return !_.isEmpty(exist_point);
   }
 
   markerExistOnParams(params_markers_position, mapMarker) {
     let exist_point = params_markers_position.find(paramMarker => {
-      paramMarker.color = paramMarker.color || config.defaultMarker.color;;
+      paramMarker.icon = paramMarker.icon || config.defaultMarker.icon;
       return _.isEqual(paramMarker, mapMarker);
     });
     return !_.isEmpty(exist_point);

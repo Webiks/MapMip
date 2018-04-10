@@ -4,7 +4,7 @@ export const config = {
   skipLocationChange: false,
   hidePositionForm: true,
   defaultMarker: {
-    color: 'blue',
+    icon: 'blue',
     label: ''
   }
 };

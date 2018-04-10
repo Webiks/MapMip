@@ -79,9 +79,9 @@ export class CesiumMarkers {
       event.position.x += width;
     }
     const position: number[] = this.getLngLatViaPosition(event.position);
-    const color: string = this.cesium.positionFormService.getSelectedColor();
+    const icon: string = this.cesium.positionFormService.getSelectedColor();
     const label = this.cesium.positionFormService.markerLabel;
-    this.cesium.queryParamsHelperService.addMarker({ position, label, color });
+    this.cesium.queryParamsHelperService.addMarker({ position, label, icon });
   }
 
   getLngLatViaPosition(position): number[] {
@@ -108,7 +108,7 @@ export class CesiumMarkers {
 
     queryMarkersCartographicDegreesPositions.forEach((paramMarkerObj) => {
       paramMarkerObj.position = this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramMarkerObj.position));
-      paramMarkerObj.color = paramMarkerObj.color || config.defaultMarker.color;
+      paramMarkerObj.icon = paramMarkerObj.icon || config.defaultMarker.icon;
       paramMarkerObj.label = paramMarkerObj.label || '';
     });
 
@@ -121,9 +121,9 @@ export class CesiumMarkers {
 
     let cartesianPositions = points.map((entity) => {
       const position = this.cesium.calcService.toFixes7Obj(entity.position.getValue());
-      const color: string = this.getColorFromBillboardEntity(entity);
+      const icon: string = this.getColorFromBillboardEntity(entity);
       const label: string = this.getLabelFromBillboardEntity(entity);
-      return { position, color, label };
+      return { position, icon, label };
     });
 
     return cartesianPositions;
@@ -158,7 +158,7 @@ export class CesiumMarkers {
     this.cesium.viewer.entities.add({
       position: Cesium.Cartesian3.fromDegrees(...marker.position),
       billboard: {
-        image: this.cesium.positionFormService.getMarkerUrlByColor(marker.color),
+        image: this.cesium.positionFormService.getMarkerUrlByColor(marker.icon),
         horizontalOrigin: this.onTerrainState() ? Cesium.HorizontalOrigin.CENTER : Cesium.HorizontalOrigin.LEFT,
         verticalOrigin: this.onTerrainState() ? Cesium.VerticalOrigin.BOTTOM : Cesium.VerticalOrigin.TOP,
         heightReference: this.onTerrainState() ? Cesium.HeightReference.CLAMP_TO_GROUND : Cesium.HeightReference.NONE
@@ -174,16 +174,17 @@ export class CesiumMarkers {
   }
 
   removeMarker(marker: { position: any, color: string }) {
-    let entity_to_remove = this.getEntityByPositionAndColor(marker);
+    let entity_to_remove = this.getEntityByMarker(marker);
     this.cesium.viewer.entities.remove(entity_to_remove);
   }
 
-  getEntityByPositionAndColor(mapMarkerObj: { position: any, color: string }) {
+  getEntityByMarker(mapMarkerObj: MapMipMarker) {
     return this.cesium.viewer.entities.values.find(entity => {
       let e_position = this.cesium.calcService.toFixes7Obj(entity.position.getValue());
-      let e_color: string = this.getColorFromBillboardEntity(entity);
+      let e_icon: string = this.getColorFromBillboardEntity(entity);
+      let e_label: string = this.getLabelFromBillboardEntity(entity);
       mapMarkerObj.position = this.cesium.calcService.toFixes7Obj(mapMarkerObj.position);
-      return _.isEqual(e_position, mapMarkerObj.position) && _.isEqual(e_color, mapMarkerObj.color);
+      return _.isEqual(e_position, mapMarkerObj.position) && e_icon === mapMarkerObj.icon && (!e_label && !mapMarkerObj.label || e_label === mapMarkerObj.label);
     });
   }
 
@@ -192,28 +193,28 @@ export class CesiumMarkers {
   }
 
   getLabelFromBillboardEntity(entity): string {
-    return entity.label.text.getValue();
+    return entity.label.text && entity.label.text.getValue();
   }
 
-  markerExistOnMap(map_markers, paramsMarker: { position: any, color?: string }): boolean {
+  markerExistOnMap(map_markers, paramsMarker: MapMipMarker): boolean {
     let paramObjToCheck = {
       position: this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramsMarker.position)),
-      color: paramsMarker.color || config.defaultMarker.color
+      color: paramsMarker.icon || config.defaultMarker.icon
     };
     let exist_point = map_markers.find(markerObj => _.isEqual(paramObjToCheck, markerObj));
     return !_.isEmpty(exist_point);
   }
 
-  markerExistOnParams(markers_params_positions, mapMarkerObj: { position: any, color: string, label: string }) {
+  markerExistOnParams(markers_params_positions, mapMarkerObj: MapMipMarker) {
     return markers_params_positions.some(paramsMarkerObj => {
       const fromMap = [
         this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramsMarkerObj.position)),
-        paramsMarkerObj.color || config.defaultMarker.color,
+        paramsMarkerObj.icon || config.defaultMarker.icon,
         paramsMarkerObj.label || config.defaultMarker.label
       ];
       const fromParams = [
         this.cesium.calcService.toFixes7Obj(mapMarkerObj.position),
-        mapMarkerObj.color,
+        mapMarkerObj.icon,
         mapMarkerObj.label
       ];
       return _.isEqual(fromMap, fromParams);

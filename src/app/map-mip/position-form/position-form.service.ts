@@ -33,20 +33,11 @@ export class PositionFormService {
   }
 
   getSelectedColor(index: number = this.selectedColorIndex): string {
-    return MARKER_COLORS[index].color;
+    return MARKER_COLORS[index].icon;
   }
 
-  getSelectedColorIndex(color: string = this.getSelectedColor()): number {
-    // return MARKER_COLORS.indexOf(color);
-    return this.search(color, MARKER_COLORS);
-  }
-
-  search(nameKey: string, myArray: Array<any>): number {
-    for (let i = 0; i < myArray.length; i++) {
-      if (myArray[i].color === nameKey) {
-        return i;
-      }
-    }
+  getSelectedColorIndex(icon: string = this.getSelectedColor()): number {
+    return MARKER_COLORS.findIndex((marker) => marker.icon === icon);
   }
 
   getSelectedColorHEX(index: number = this.selectedColorIndex): string {
@@ -57,7 +48,7 @@ export class PositionFormService {
     return this.domSanitizer.bypassSecurityTrustStyle(`url(/assets/Markers/marker-icon-${this.getSelectedColor()}.cur), default`);
   }
 
-  getMarkerUrlByColor(color = config.defaultMarker.color, format = 'png'): string {
+  getMarkerUrlByColor(color = config.defaultMarker.icon, format = 'png'): string {
     return `/assets/Markers/marker-icon-${color}.${format}`;
   }
 

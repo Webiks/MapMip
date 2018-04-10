@@ -6,7 +6,7 @@ import { MARKER_COLORS, PositionFormService } from '../position-form.service';
   templateUrl: './color-picker.component.html',
   styleUrls: ['./color-picker.component.scss']
 })
-export class ColorPickerComponent implements OnInit {
+export class ColorPickerComponent {
   @Input('selectedIndex') private _selectedIndex = 0;
   @Input('Active') Active;
   @Output('togglePickedEmitter') togglePickedEmitter = new EventEmitter();
@@ -19,10 +19,7 @@ export class ColorPickerComponent implements OnInit {
   @Input() label = '';
 
 
-  constructor(private positionFormService: PositionFormService) {
-  }
-
-  ngOnInit() {
+  constructor(public positionFormService: PositionFormService) {
   }
 
   submitLabel(popDirective, label) {

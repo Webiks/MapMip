@@ -62,15 +62,15 @@ export class OpenlayersMarkers {
     }
     let fix_coordinate: ol.Coordinate = this.openlayers.map.getCoordinateFromPixel(fix_pixel);
     let position: ol.Coordinate = ol.proj.toLonLat(fix_coordinate);
-    let color: string = this.openlayers.positionFormService.getSelectedColor();
-    this.openlayers.queryParamsHelperService.addMarker({ position, color });
+    let icon: string = this.openlayers.positionFormService.getSelectedColor();
+    this.openlayers.queryParamsHelperService.addMarker({ position, icon });
   }
 
   anyMarkersMapChanges(params: Params): boolean {
     let queryMarkersPositions: Array<any> = this.openlayers.queryParamsHelperService.queryMarkersNoHeight(params);
     let mapMarkerPositions: Array<any> = this.getMarkersPosition();
     queryMarkersPositions.forEach(Pmarker => {
-      Pmarker.color = Pmarker.color || config.defaultMarker.color;
+      Pmarker.icon = Pmarker.icon || config.defaultMarker.icon;
     });
     return !_.isEqual(mapMarkerPositions, queryMarkersPositions);
   }
@@ -80,8 +80,8 @@ export class OpenlayersMarkers {
       let position = (feature.getGeometry() as any).getCoordinates();
       position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
       position = this.openlayers.calcService.toFixes7Obj(position);
-      const color: string = this.openlayers.positionFormService.getMarkerColorByUrl((feature.getStyle() as any).getImage().getSrc());
-      return { position, color };
+      const icon: string = this.openlayers.positionFormService.getMarkerColorByUrl((feature.getStyle() as any).getImage().getSrc());
+      return { position, icon };
     });
   }
 
@@ -110,14 +110,14 @@ export class OpenlayersMarkers {
   }
 
   markerExistOnMap(markers_map_positions, paramMarker) {
-    paramMarker.color = paramMarker.color || config.defaultMarker.color;
+    paramMarker.icon = paramMarker.icon || config.defaultMarker.icon;
     let exist_point = markers_map_positions.find(positionArray => _.isEqual(positionArray, paramMarker));
     return !_.isEmpty(exist_point);
   }
 
   markerExistOnParams(params_markers_position, mapMarker) {
     let exist_point = params_markers_position.find(paramMarker => {
-      paramMarker.color = paramMarker.color || config.defaultMarker.color;
+      paramMarker.icon = paramMarker.icon || config.defaultMarker.icon;
       return _.isEqual(paramMarker, mapMarker);
     });
     return !_.isEmpty(exist_point);
@@ -133,7 +133,7 @@ export class OpenlayersMarkers {
     iconFeature.setStyle(new ol.style.Style(<any>{
       image: new ol.style.Icon(<any>{
         anchor: [0.5, 1],
-        src: this.openlayers.positionFormService.getMarkerUrlByColor(marker.color)
+        src: this.openlayers.positionFormService.getMarkerUrlByColor(marker.icon)
       })
     }));
 
@@ -146,7 +146,7 @@ export class OpenlayersMarkers {
       position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
       position = this.openlayers.calcService.toFixes7Obj(position);
       const color: string = this.openlayers.positionFormService.getMarkerColorByUrl((feature.getStyle() as any).getImage().getSrc());
-      return _.isEqual(position, mapMarker.position) && _.isEqual(color, mapMarker.color);
+      return _.isEqual(position, mapMarker.position) && _.isEqual(color, mapMarker.icon);
     });
     this.vectorSource.removeFeature(marker_feature_to_remove);
   }

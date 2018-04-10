@@ -48,11 +48,11 @@
       </div>
       <div class="modal-body">
         <ul>
-          <li *ngFor="let icon of markerColors(); let _index = index">
+          <li *ngFor="let marker of markerColors(); let _index = index">
             <a
               [class.is-selected]="_index == selectedIndex"
               (click)="changeMarkerColor(_index) ;smModal.hide()">
-              <img [src]="getMarkerUrlByColor(icon.color)"/>
+              <img [src]="getMarkerUrlByColor(marker.icon)"/>
             </a>
           </li>
         </ul>

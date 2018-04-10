@@ -7,7 +7,7 @@ import { config } from '../../../config/config';
 
 export interface MapMipMarker {
   position: number[];
-  color?: string;
+  icon?: string;
   label?: string;
 }
 
@@ -179,7 +179,7 @@ export class QueryParamsHelperService {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
     let markers_array: Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
     _.forEach(markers_array, function (m, index) {
-      if (marker.position[0] === m.position[0] && marker.position[1] === m.position[1] && marker.color === m.color) {
+      if (marker.position[0] === m.position[0] && marker.position[1] === m.position[1] && marker.icon === m.icon) {
         markers_array.splice(index, 1);
       }
     });

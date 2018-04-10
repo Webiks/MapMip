@@ -63,7 +63,7 @@ export class MarkersComponent implements OnInit {
   };
 
   markerToEditedMarker(marker: MapMipMarker): MapMipEditedMarker {
-    const color = marker.color || config.defaultMarker.color;
+    const color = marker.icon || config.defaultMarker.icon;
     const colorIndex = this.positionFormService.getSelectedColorIndex(color);
     const position = marker.position.toString();
     const label = marker.label || '';
@@ -72,9 +72,9 @@ export class MarkersComponent implements OnInit {
 
   editedMarkerToMarker(marker: MapMipEditedMarker): MapMipMarker {
     const position = marker.position.split(',').map(Number);
-    const color = this.positionFormService.getSelectedColor(marker.colorIndex);
+    const icon = this.positionFormService.getSelectedColor(marker.colorIndex);
     const label = marker.label;
-    return <MapMipMarker> { position, color, label };
+    return <MapMipMarker> { position, icon, label };
   }
 
   cloneEditedMarkers() {
@@ -123,7 +123,7 @@ export class MarkersComponent implements OnInit {
   markerCenter() {
     let position: [number, number] = [this.lng, this.lat];
     let center_marker = { position };
-    if (this.positionFormService.getSelectedColor() !== config.defaultMarker.color) {
+    if (this.positionFormService.getSelectedColor() !== config.defaultMarker.icon) {
       center_marker['color'] = this.positionFormService.getSelectedColor();
     }
     this.queryParamsHelperService.addMarker(center_marker);

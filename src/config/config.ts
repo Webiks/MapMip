@@ -5,7 +5,7 @@ export const config = {
   hidePositionForm: false,
   defaultLabel: '',
   defaultMarker: {
-    color: 'blue',
+    icon: 'blue',
     label: ''
   }
 };
