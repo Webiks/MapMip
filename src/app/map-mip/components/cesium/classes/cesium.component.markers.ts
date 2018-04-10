@@ -3,6 +3,7 @@ import { CesiumComponent } from '../cesium.component';
 import * as _ from 'lodash';
 import { SafeStyle } from '@angular/platform-browser';
 import { MapMipMarker } from '../../../services/query-params-helper.service';
+import { config } from '../../../../../config/config';
 
 export class CesiumMarkers {
 
@@ -71,17 +72,16 @@ export class CesiumMarkers {
     if (this.onTerrainState()) {
       const height = this.cesium.positionFormService.getSelectedMarkerHeight();
       let width = this.cesium.positionFormService.getSelectedMarkerWidth() / 2;
-      if (width !== 18 ) { width += 3.5 }
+      if (width !== 18) {
+        width += 3.5;
+      }
       event.position.y += height;
       event.position.x += width;
     }
-
-
     const position: number[] = this.getLngLatViaPosition(event.position);
     const color: string = this.cesium.positionFormService.getSelectedColor();
     const label = this.cesium.positionFormService.markerLabel;
-    const marker: MapMipMarker = color !== 'blue' ? { position, label, color } : { position, label };
-    this.cesium.queryParamsHelperService.addMarker(marker);
+    this.cesium.queryParamsHelperService.addMarker({ position, label, color });
   }
 
   getLngLatViaPosition(position): number[] {
@@ -108,7 +108,8 @@ export class CesiumMarkers {
 
     queryMarkersCartographicDegreesPositions.forEach((paramMarkerObj) => {
       paramMarkerObj.position = this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramMarkerObj.position));
-      paramMarkerObj.color = paramMarkerObj.color ? paramMarkerObj.color : 'blue';
+      paramMarkerObj.color = paramMarkerObj.color || 'blue';
+      paramMarkerObj.label = paramMarkerObj.label || '';
     });
 
     return !_.isEqual(mapMarkerCartesienPositions, queryMarkersCartographicDegreesPositions);
@@ -119,9 +120,10 @@ export class CesiumMarkers {
     let points = this.cesium.viewer.entities.values.filter((one) => one.billboard);
 
     let cartesianPositions = points.map((entity) => {
-      let position = this.cesium.calcService.toFixes7Obj(entity.position.getValue());
-      let color: string = this.getColorFromBillboardEntity(entity);
-      return { position, color };
+      const position = this.cesium.calcService.toFixes7Obj(entity.position.getValue());
+      const color: string = this.getColorFromBillboardEntity(entity);
+      const label: string = this.getLabelFromBillboardEntity(entity);
+      return { position, color, label };
     });
 
     return cartesianPositions;
@@ -189,6 +191,10 @@ export class CesiumMarkers {
     return this.cesium.positionFormService.getMarkerColorByUrl(entity.billboard.image.getValue());
   }
 
+  getLabelFromBillboardEntity(entity): string {
+    return entity.label.text.getValue();
+  }
+
   markerExistOnMap(map_markers, paramsMarker: { position: any, color?: string }): boolean {
     let paramObjToCheck = {
       position: this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramsMarker.position)),
@@ -198,21 +204,20 @@ export class CesiumMarkers {
     return !_.isEmpty(exist_point);
   }
 
-  markerExistOnParams(markers_params_positions, mapMarkerObj: { position: any, color: string }) {
-    let exist_marker = markers_params_positions.find(paramsMarkerObj => {
-
-      let paramPosition = Cesium.Cartesian3.fromDegrees(...paramsMarkerObj.position);
-      let paramColor = paramsMarkerObj.color ? paramsMarkerObj.color : 'blue';
-
-      let mapPosition = mapMarkerObj.position;
-      let mapColor = mapMarkerObj.color;
-
-      paramPosition = this.cesium.calcService.toFixes7Obj(paramPosition);
-      mapPosition = this.cesium.calcService.toFixes7Obj(mapPosition);
-      return _.isEqual(mapPosition, paramPosition) && _.isEqual(paramColor, mapColor);
+  markerExistOnParams(markers_params_positions, mapMarkerObj: { position: any, color: string, label: string }) {
+    return markers_params_positions.some(paramsMarkerObj => {
+      const fromMap = [
+        this.cesium.calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...paramsMarkerObj.position)),
+        paramsMarkerObj.color || config.defaultMarker.color,
+        paramsMarkerObj.label || config.defaultMarker.label
+      ];
+      const fromParams = [
+        this.cesium.calcService.toFixes7Obj(mapMarkerObj.position),
+        mapMarkerObj.color,
+        mapMarkerObj.label
+      ];
+      return _.isEqual(fromMap, fromParams);
     });
-
-    return !_.isNil(exist_marker);
   }
 
 

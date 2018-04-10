@@ -74,9 +74,14 @@ ul {
 
 .input-and-picker {
   display: flex;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  * {
+    margin: 5px 0;
+  }
   input {
-    width: 65%;
+    width: 100%;
   }
 }
 

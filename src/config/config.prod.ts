@@ -2,5 +2,9 @@ export const config = {
   production: true,
   initialRoute: '/leaflet',
   skipLocationChange: false,
-  hidePositionForm: true
+  hidePositionForm: true,
+  defaultMarker: {
+    color: 'blue',
+    label: ''
+  }
 };

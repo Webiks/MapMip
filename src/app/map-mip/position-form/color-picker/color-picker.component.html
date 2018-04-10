@@ -7,31 +7,24 @@
   <button class="btn btn-default glyphicon glyphicon-option-vertical" (click)="smModal.show()" tooltip="choose icon"
           triggers="hover" container="body" type="button"></button>
 
-  <button class="btn btn-default"
+  <button class="btn btn-default label-btn"
           id="labelpicker"
-          tooltip="Marker label"
+          tooltip="Choose label"
           container="body"
           placement="bottom"
           #pop="bs-popover"
           [popover]="labelTemplate"
           popoverTitle="Marker Label"
           type="button">
-    {{label || 'No Label' }}
+    {{'🏷️' + ' ' + label || '🏷️' }}
   </button>
 
 
   <ng-template #labelTemplate>
     <form (clickOutside)="pop.hide()" exclude="button#labelpicker"  (ngSubmit)="submitLabel(pop, labelInput.value)">
-      <div class="popView" #popView>
-        <div>
-        </div>
-      </div>
-
       <input [value]="label" placeholder="Label" #labelInput/>
-
       <button
-        type="button"
-
+        type="submit"
         class="btn btn-success">
         OK
       </button>
