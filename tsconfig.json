@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": "",
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -12,11 +11,7 @@
     "sourceMap": true,
     "target": "es6",
     "typeRoots": [
-      "../node_modules/@types"
+      "./node_modules/@types"
     ]
-  },
-  "exclude": [
-    "test.ts",
-    "**/*.spec.ts"
-  ]
+  }
 }
