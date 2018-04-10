@@ -3,8 +3,44 @@
           type="button" [disabled]="disabledAction" tooltip="add marker" triggers="hover" container="body">
     <img [src]="getMarkerUrlByColor(selectedColor)"/>
   </button>
+
   <button class="btn btn-default glyphicon glyphicon-option-vertical" (click)="smModal.show()" tooltip="choose icon"
           triggers="hover" container="body" type="button"></button>
+
+  <button class="btn btn-default"
+          id="labelpicker"
+          tooltip="Marker label"
+          container="body"
+          placement="bottom"
+          #pop="bs-popover"
+          [popover]="labelTemplate"
+          popoverTitle="Marker Label"
+          type="button">
+    {{label || 'No Label' }}
+  </button>
+
+
+  <ng-template #labelTemplate>
+    <form (clickOutside)="pop.hide()" exclude="button#labelpicker"  (ngSubmit)="submitLabel(pop, labelInput.value)">
+      <div class="popView" #popView>
+        <div>
+        </div>
+      </div>
+
+      <input [value]="label" placeholder="Label" #labelInput/>
+
+      <button
+        type="button"
+
+        class="btn btn-success">
+        OK
+      </button>
+
+    </form>
+  </ng-template>
+
+
+
 </div>
 
 <div bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"

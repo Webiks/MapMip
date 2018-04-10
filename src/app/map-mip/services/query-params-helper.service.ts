@@ -7,6 +7,7 @@ import * as rison from 'rison';
 export interface MapMipMarker {
   position: number[];
   color?: string;
+  label?: string;
 }
 
 @Injectable()
@@ -221,7 +222,7 @@ export class QueryParamsHelperService {
     this.mapMipService.navigateByUrl(urlTree.toString());
   }
 
-  queryMarkers(params: Params): Array<{ position: number[], color: string }> {
+  queryMarkers(params: Params): Array<MapMipMarker> {
     return this.markersStrToArray(params['markers']);
   }
 
@@ -311,37 +312,24 @@ export class QueryParamsHelperService {
   }
 
   polylineStrToArray(polylineStr = ''): Array<any> {
-
     return rison.decode_array(polylineStr);
   }
 
-  markersStrToArray(markersStr = '') {
-    if (_.isEmpty(markersStr)) {
-      return [];
-    }
-    let markersArrayStr: Array<string> = markersStr.split(' ').join('').split('),(').map(
-      (str, index, array) => {
-        if (index === 0) {
-          str = str.replace('(', '');
-        }
-        if (index === array.length - 1) {
-          str = str.replace(')', '');
-        }
-        return str;
-      });
+  markersStrToArray(markersStr = rison.encode([])): MapMipMarker[] {
+    return rison.decode(markersStr);
+  }
 
-    let markersArrayObject: Array<any> = markersArrayStr.map((one: string) => {
-      let split_array: Array<any> = one.split(',');
-      let position = split_array.filter(i => !isNaN(+i)).map(i => +(+i).toFixed(7));
-      let color: string = split_array.find(i => isNaN(+i));
-      let marker_obj = { position };
-      if (color) {
-        marker_obj['color'] = color;
+  markersArrayToStr(markersArray: MapMipMarker[] = []): string {
+    markersArray.forEach(this.parseMarker);
+    return rison.encode(markersArray);
+  }
+
+  parseMarker(marker: MapMipMarker): void {
+    Object.keys(marker).forEach((key) => {
+      if (!marker[key]) {
+        delete marker[key];
       }
-      return marker_obj;
     });
-
-    return markersArrayObject;
   }
 
   geojsonStrToArray(geojsonStr: string) {
@@ -362,21 +350,6 @@ export class QueryParamsHelperService {
     return geojsonArrayStr;
   }
 
-
-  markersArrayToStr(markersArray: Array<any>): string {
-    let url_str = '';
-
-    markersArray.forEach((markersObj, index, array) => {
-      let one_array_str = '';
-      one_array_str += markersObj.position;
-      one_array_str = markersObj.color ? one_array_str + ',' + markersObj.color : one_array_str;
-      one_array_str = '(' + one_array_str + '),';
-      one_array_str = index === (array.length - 1) ? one_array_str.replace('),', ')') : one_array_str;
-      url_str += one_array_str;
-    });
-
-    return url_str;
-  }
 
   geojsonArrayToStr(geojsonArray: Array<any>): string {
     let url_str = '';

@@ -12,7 +12,7 @@ export class PositionFormService {
   public onPicked: boolean;
   public onPolygonPicked: boolean;
   public onPolylinePicked: boolean;
-
+  public markerLabel = '';
 
   public selectedColorIndex = 0;
   public markerPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();

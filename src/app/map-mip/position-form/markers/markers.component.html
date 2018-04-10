@@ -5,8 +5,11 @@
           [style.color]="positionFormService.getSelectedColorHEX()" (click)="markerCenter()" type="button"
           tooltip="add centered marker" triggers="hover"></button>
   <div class="marker-color-picker">
+
     <app-color-picker (togglePickedEmitter)="togglePicked($event)" [Active]="positionFormService.onPicked"
-                      [(selectedIndex)]="positionFormService.selectedColorIndex"></app-color-picker>
+                      [(selectedIndex)]="positionFormService.selectedColorIndex"
+                      [(label)]="positionFormService.markerLabel">
+    </app-color-picker>
   </div>
 
 </div>

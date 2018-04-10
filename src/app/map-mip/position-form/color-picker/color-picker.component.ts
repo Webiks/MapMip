@@ -15,10 +15,20 @@ export class ColorPickerComponent implements OnInit {
   @Input('iconsPerRow') public iconsPerRow: number;
   @Input('backdrop') public backdrop: boolean;
 
+  @Output() labelChange = new EventEmitter();
+  @Input() label = '';
+
+
   constructor(private positionFormService: PositionFormService) {
   }
 
   ngOnInit() {
+  }
+
+  submitLabel(popDirective, label) {
+    this.label = label;
+    this.labelChange.emit(label);
+    popDirective.hide();
   }
 
   set selectedIndex(value) {
@@ -49,7 +59,7 @@ export class ColorPickerComponent implements OnInit {
     return this.positionFormService.getMarkerUrlByColor(color);
   }
 
-  calcIndex(parentIndex: number, childIndex: number, iconsPerRow: number = 1) {
+  calcIndex(parentIndex: number, childIndex: number, iconsPerRow = 1) {
     return (iconsPerRow * parentIndex) + childIndex;
   }
 

@@ -79,8 +79,9 @@ export class CesiumMarkers {
 
     const position: number[] = this.getLngLatViaPosition(event.position);
     const color: string = this.cesium.positionFormService.getSelectedColor();
-    const marker: MapMipMarker = color !== 'blue' ? { position, color } : { position };
-    this.cesium.queryParamsHelperService.addMarker({ ...marker });
+    const label = this.cesium.positionFormService.markerLabel;
+    const marker: MapMipMarker = color !== 'blue' ? { position, label, color } : { position, label };
+    this.cesium.queryParamsHelperService.addMarker(marker);
   }
 
   getLngLatViaPosition(position): number[] {
@@ -151,13 +152,20 @@ export class CesiumMarkers {
     });
   }
 
-  addMarker(marker: { position: any, color?: string }): void {
+  addMarker(marker: MapMipMarker): void {
     this.cesium.viewer.entities.add({
       position: Cesium.Cartesian3.fromDegrees(...marker.position),
       billboard: {
         image: this.cesium.positionFormService.getMarkerUrlByColor(marker.color),
         horizontalOrigin: this.onTerrainState() ? Cesium.HorizontalOrigin.CENTER : Cesium.HorizontalOrigin.LEFT,
         verticalOrigin: this.onTerrainState() ? Cesium.VerticalOrigin.BOTTOM : Cesium.VerticalOrigin.TOP,
+        heightReference: this.onTerrainState() ? Cesium.HeightReference.CLAMP_TO_GROUND : Cesium.HeightReference.NONE
+      },
+      label: {
+        text: marker.label,
+        showBackground: true,
+        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
         heightReference: this.onTerrainState() ? Cesium.HeightReference.CLAMP_TO_GROUND : Cesium.HeightReference.NONE
       }
     });
