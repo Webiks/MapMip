@@ -3,6 +3,7 @@ import { Params } from '@angular/router';
 import * as _ from 'lodash';
 import { SafeStyle } from '@angular/platform-browser';
 import * as L from 'leaflet';
+import { config } from '../../../../../config/config';
 
 export class LeafletMarkers {
   public queryParamsSubscriber;
@@ -54,7 +55,7 @@ export class LeafletMarkers {
     let queryMarkersPositions: Array<any> = this.leaflet.queryParamsHelperService.queryMarkersNoHeight(params);
     let mapMarkerPositions: Array<any> = this.getMarkersPosition();
     queryMarkersPositions.forEach(Pmarker => {
-      Pmarker.color = Pmarker.color ? Pmarker.color : 'blue';
+      Pmarker.color = Pmarker.color || config.defaultMarker.color;
     });
     return !_.isEqual(mapMarkerPositions, queryMarkersPositions);
   }
@@ -117,14 +118,14 @@ export class LeafletMarkers {
   }
 
   markerExistOnMap(markers_map_positions, paramMarker) {
-    paramMarker.color = paramMarker.color ? paramMarker.color : 'blue';
+    paramMarker.color = paramMarker.color || config.defaultMarker.color;
     let exist_point = markers_map_positions.find(mapMarker => _.isEqual(mapMarker, paramMarker));
     return !_.isEmpty(exist_point);
   }
 
   markerExistOnParams(params_markers_position, mapMarker) {
     let exist_point = params_markers_position.find(paramMarker => {
-      paramMarker.color = paramMarker.color ? paramMarker.color : 'blue';
+      paramMarker.color = paramMarker.color || config.defaultMarker.color;;
       return _.isEqual(paramMarker, mapMarker);
     });
     return !_.isEmpty(exist_point);

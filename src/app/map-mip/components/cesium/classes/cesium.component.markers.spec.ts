@@ -9,6 +9,7 @@ import { CesiumMarkers } from './cesium.component.markers';
 import { MapMipService } from '../../../api/map-mip.service';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { config } from '../../../../../config/config';
 
 xdescribe('CesiumComponent', () => {
   let component: CesiumComponent;
@@ -88,7 +89,7 @@ xdescribe('CesiumComponent', () => {
       let params_marker1 = { position: [30, 20], color: 'green' };
       let params_marker2 = { position: [60, 50, 40] };
       let map_marker1 = { position: Cesium.Cartesian3.fromDegrees(...[30, 20]), color: 'green' };
-      let map_marker2 = { position: Cesium.Cartesian3.fromDegrees(...[60, 50, 40]), color: 'blue' };
+      let map_marker2 = { position: Cesium.Cartesian3.fromDegrees(...[60, 50, 40]), color: config.defaultMarker.color };
       let params_markers = [params_marker1, params_marker2];
       let map_markers = [map_marker1, map_marker2];
       spyOn(queryParamsHelperService, 'queryMarkers').and.callFake(() => params_markers);
@@ -117,7 +118,7 @@ xdescribe('CesiumComponent', () => {
     it('removeMarkersViaUrl should get positions array from map. for each position remvoe marker if not exists on params', () => {
       let markers_map_positions = [
         { position: Cesium.Cartesian3.fromDegrees(...[1, 2, 3]), color: 'red' },
-        { position: Cesium.Cartesian3.fromDegrees(...[4, 5, 6]), color: 'blue' }
+        { position: Cesium.Cartesian3.fromDegrees(...[4, 5, 6]), color: config.defaultMarker.color }
       ];
       let markers_params_positions = [
         { position: [1, 2, 3], color: 'red' }
@@ -130,7 +131,7 @@ xdescribe('CesiumComponent', () => {
     it('markerExistOnMap: should get one position and return if there is marker on map with that position', () => {
       let markers_map_positions = [
         { position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[1, 2, 3])), color: 'red' },
-        { position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[4, 5, 6])), color: 'blue' }
+        { position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[4, 5, 6])), color: config.defaultMarker.color }
       ];
       let paramMarkerObj = {
         position: [1, 2, 3],
@@ -159,7 +160,7 @@ xdescribe('CesiumComponent', () => {
       };
       let blueMapMarkerObj = {
         position: Cesium.Cartesian3.fromDegrees(...[4, 5, 6]),
-        color: 'blue'
+        color: config.defaultMarker.color
       };
       let notExistMapMarkerObj = {
         position: Cesium.Cartesian3.fromDegrees(...[7, 8, 9]),
@@ -179,7 +180,7 @@ xdescribe('CesiumComponent', () => {
       };
       let map_marker2 = {
         position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[60, 50, 40])),
-        color: 'blue'
+        color: config.defaultMarker.color
       };
       let params_markers = [params_marker1, params_marker2];
       let map_markers = [map_marker1, map_marker2];
@@ -290,7 +291,7 @@ xdescribe('CesiumComponent', () => {
     });
 
     it('should removeMarker rmv billboard marker from entities', () => {
-      let marker = { position: Cesium.Cartesian3.fromDegrees(...[1, 2, 3]), color: 'blue' };
+      let marker = { position: Cesium.Cartesian3.fromDegrees(...[1, 2, 3]), color: config.defaultMarker.color };
       spyOn(markers, 'getEntityByPositionAndColor').and.callFake(() => marker);
       spyOn(component.viewer.entities, 'remove');
       markers.removeMarker(marker);

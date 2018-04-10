@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import { MapMipMarker, QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { PositionFormService } from '../position-form.service';
+import { config } from '../../../../config/config';
 
 export interface MapMipEditedMarker {
   colorIndex: number;
@@ -62,7 +63,7 @@ export class MarkersComponent implements OnInit {
   };
 
   markerToEditedMarker(marker: MapMipMarker): MapMipEditedMarker {
-    const color = marker.color || 'blue';
+    const color = marker.color || config.defaultMarker.color;
     const colorIndex = this.positionFormService.getSelectedColorIndex(color);
     const position = marker.position.toString();
     const label = marker.label || '';
@@ -122,7 +123,7 @@ export class MarkersComponent implements OnInit {
   markerCenter() {
     let position: [number, number] = [this.lng, this.lat];
     let center_marker = { position };
-    if (this.positionFormService.getSelectedColor() !== 'blue') {
+    if (this.positionFormService.getSelectedColor() !== config.defaultMarker.color) {
       center_marker['color'] = this.positionFormService.getSelectedColor();
     }
     this.queryParamsHelperService.addMarker(center_marker);

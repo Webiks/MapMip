@@ -3,6 +3,7 @@ import { NavigationExtras, Params, Router, UrlTree } from '@angular/router';
 import * as _ from 'lodash';
 import { MapMipService } from '../api/map-mip.service';
 import * as rison from 'rison';
+import { config } from '../../../config/config';
 
 export interface MapMipMarker {
   position: number[];
@@ -298,7 +299,7 @@ export class QueryParamsHelperService {
 
   parseMarker(marker: MapMipMarker): void {
     Object.keys(marker).forEach((key) => {
-      if (!marker[key]) { // or default! 'blue'
+      if (!marker[key] || marker[key] === config.defaultMarker[key]) {
         delete marker[key];
       }
     });

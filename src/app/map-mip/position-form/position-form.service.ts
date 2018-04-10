@@ -57,7 +57,7 @@ export class PositionFormService {
     return this.domSanitizer.bypassSecurityTrustStyle(`url(/assets/Markers/marker-icon-${this.getSelectedColor()}.cur), default`);
   }
 
-  getMarkerUrlByColor(color = 'blue', format = 'png'): string {
+  getMarkerUrlByColor(color = config.defaultMarker.color, format = 'png'): string {
     return `/assets/Markers/marker-icon-${color}.${format}`;
   }
 
