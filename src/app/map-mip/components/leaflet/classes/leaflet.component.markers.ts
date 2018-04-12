@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import { SafeStyle } from '@angular/platform-browser';
 import * as L from 'leaflet';
 import { config } from '../../../../../config/config';
+import { MapMipMarker } from '../../../services/query-params-helper.service';
 
 export class LeafletMarkers {
   public queryParamsSubscriber;
@@ -48,7 +49,8 @@ export class LeafletMarkers {
     let fix_latlng: L.LatLng = this.leaflet.map.layerPointToLatLng(fix_point);
     let position: [number, number] = [fix_latlng.lng, fix_latlng.lat];
     let icon: string = this.leaflet.positionFormService.getSelectedColor();
-    this.leaflet.queryParamsHelperService.addMarker({ position, icon });
+    let label: string = this.leaflet.positionFormService.markerLabel;
+    this.leaflet.queryParamsHelperService.addMarker({ position, icon, label });
   }
 
   anyMarkersMapChanges(params: Params): boolean {
@@ -61,12 +63,17 @@ export class LeafletMarkers {
   }
 
   getMarkersPosition(): Array<any> {
-    return <Array<any>> this.getMarkerLayersArray().map((layer: L.Marker) => {
-      let latlng = layer.getLatLng();
-      let position = [+latlng.lng.toFixed(7), +latlng.lat.toFixed(7)];
-      let icon = this.leaflet.positionFormService.getMarkerColorByUrl(layer['_icon'].src);
-      return { position, icon };
-    });
+    return <Array<any>> this.getMarkerLayersArray().map(this.parseLayerToMarker.bind(this));
+  }
+
+  parseLayerToMarker(layer: L.Marker): MapMipMarker {
+    let latlng = layer.getLatLng();
+    let position = [+latlng.lng.toFixed(7), +latlng.lat.toFixed(7)];
+    let icon = this.leaflet.positionFormService.getMarkerColorByUrl(layer['_icon'].src);
+    const labelSpan = layer.getElement().querySelector('.my-div-span');
+    const label = labelSpan && labelSpan.textContent;
+    return { position, icon, label };
+
   }
 
   setMarkersChanges(params: Params): void {
@@ -94,22 +101,26 @@ export class LeafletMarkers {
     });
   }
 
-  getBaseMarker(marker) {
-    let icon = L.icon(<L.IconOptions>{
-      iconUrl: this.leaflet.positionFormService.getMarkerUrlByColor(marker.icon),
-      // shadowUrl: '/assets/Markers/marker-shadow.png',
+  getBaseMarker(marker: MapMipMarker) {
+    const icon = new L.DivIcon({
+      className: 'my-div-icon',
+      html: this.getIconHtml(marker),
       iconAnchor: [this.leaflet.positionFormService.getSelectedMarkerWidth() / 2, this.leaflet.positionFormService.getSelectedMarkerHeight()]
     });
-    return L.marker([marker.position[1], marker.position[0]], { icon: icon });
+    return L.marker([marker.position[1], marker.position[0]], { icon });
   }
 
-  getMarkerViaMarkerObj(markerObj) {
-    return this.getMarkerLayersArray().find(
-      (layer: L.Marker) => {
-        let position = [layer.getLatLng().lng, layer.getLatLng().lat];
-        let icon = this.leaflet.positionFormService.getMarkerColorByUrl(layer['_icon'].src);
-        return _.isEqual(markerObj, { position, icon });
-      });
+  getIconHtml(marker) {
+    const img = `<img class="my-div-image" src="${this.leaflet.positionFormService.getMarkerUrlByColor(marker.icon)}"/>`;
+    const label = marker.label ? `<span class="my-div-span">${marker.label}</span>` : '';
+    return img + label;
+  }
+
+  getMarkerViaMarkerObj(markerObj: MapMipMarker) {
+    return this.getMarkerLayersArray().find((layer: L.Marker) => {
+      const marker = this.parseLayerToMarker(layer);
+      return _.isEqual(markerObj, marker);
+    });
   }
 
   getMarkerLayersArray(): Array<L.Marker> {  // addition: exclude geojson
@@ -119,6 +130,7 @@ export class LeafletMarkers {
 
   markerExistOnMap(markers_map_positions, paramMarker) {
     paramMarker.icon = paramMarker.icon || config.defaultMarker.icon;
+    paramMarker.label = paramMarker.label || config.defaultMarker.label;
     let exist_point = markers_map_positions.find(mapMarker => _.isEqual(mapMarker, paramMarker));
     return !_.isEmpty(exist_point);
   }
@@ -126,6 +138,7 @@ export class LeafletMarkers {
   markerExistOnParams(params_markers_position, mapMarker) {
     let exist_point = params_markers_position.find(paramMarker => {
       paramMarker.icon = paramMarker.icon || config.defaultMarker.icon;
+      paramMarker.label = paramMarker.label || config.defaultMarker.label;
       return _.isEqual(paramMarker, mapMarker);
     });
     return !_.isEmpty(exist_point);
