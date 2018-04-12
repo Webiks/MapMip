@@ -196,7 +196,7 @@ export class QueryParamsHelperService {
   }
 
   queryMarkers(params: Params): Array<MapMipMarker> {
-    return this.markersStrToArray(params['markers']);
+    return this.markersStrToArray(params['markers']).map(this.markerIncludeDefaults.bind(this));
   }
 
 
@@ -293,16 +293,24 @@ export class QueryParamsHelperService {
   }
 
   markersArrayToStr(markersArray: MapMipMarker[] = []): string {
-    markersArray.forEach(this.parseMarker.bind(this));
+    markersArray.forEach(this.markerExcludeDefaults.bind(this));
     return rison.encode(markersArray);
   }
 
-  parseMarker(marker: MapMipMarker): void {
+  markerExcludeDefaults(marker: MapMipMarker): void {
     Object.keys(marker).forEach((key) => {
       if (!marker[key] || marker[key] === config.defaultMarker[key]) {
         delete marker[key];
       }
     });
+  }
+
+  markerIncludeDefaults(marker: MapMipMarker): MapMipMarker {
+    return {
+      ...marker,
+      icon: marker.icon || config.defaultMarker.icon,
+      label: marker.label || config.defaultMarker.label,
+    }
   }
 
   geojsonStrToArray(geojsonStr: string) {

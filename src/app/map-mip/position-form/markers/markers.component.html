@@ -38,6 +38,7 @@
 
             <div class="li-row">
               <img src="/assets/Markers/marker-icon-{{positionFormService.getSelectedColor(marker.colorIndex)}}.png">
+              <span class="marker-label" [hidden]="!marker.label">{{marker.label}}</span>
               <span class="position">{{marker.position}}</span>
               <button class="btn btn-info glyphicon glyphicon-pencil" type="button" (click)="editMarker(i)"></button>
               <button class="btn btn-danger glyphicon glyphicon-remove-sign" type="button"

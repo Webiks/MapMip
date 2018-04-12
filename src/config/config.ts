@@ -3,9 +3,8 @@ export const config = {
   initialRoute: '/cesium',
   skipLocationChange: true,
   hidePositionForm: false,
-  defaultLabel: '',
   defaultMarker: {
     icon: 'blue',
-    label: undefined
+    label: ''
   }
 };

@@ -76,41 +76,27 @@ export class OpenlayersMarkers {
   }
 
   setMarkersChanges(params: Params): void {
-    let params_markers_positions: Array<any> = this.openlayers.queryParamsHelperService.queryMarkersNoHeight(params);
-    let map_markers_positions: Array<any> = this.getMarkersPosition();
+    let paramsMarkers: Array<any> = this.openlayers.queryParamsHelperService.queryMarkersNoHeight(params);
+    const mapMarkers: Array<any> = this.getMarkersPosition();
 
-    this.addMarkersViaUrl(params_markers_positions, map_markers_positions);
-    this.removeMarkersViaUrl(params_markers_positions, map_markers_positions);
+    this.addMarkersViaUrl(paramsMarkers, mapMarkers);
+    this.removeMarkersViaUrl(paramsMarkers, mapMarkers);
   }
 
-  addMarkersViaUrl(params_markers_positions, map_markers_positions) {
-    params_markers_positions.forEach(marker => {
-      if (!this.markerExistOnMap(map_markers_positions, marker)) {
-        this.addIcon(marker);
-      }
-    });
+  addMarkersViaUrl(paramsMarkers, mapMarkers) {
+    paramsMarkers
+      .filter((marker) => !this.isMarkerExistOnArray(mapMarkers, marker))
+      .forEach( this.addIcon.bind(this));
   }
 
-  removeMarkersViaUrl(params_markers_positions, map_markers_positions) {
-    map_markers_positions.forEach((mapMarker) => {
-      if (!this.markerExistOnParams(params_markers_positions, mapMarker)) {
-        this.removeIcon(mapMarker);
-      }
-    });
+  removeMarkersViaUrl(paramsMarkers, mapMarkers: MapMipMarker[]) {
+    mapMarkers
+      .filter((marker) => !this.isMarkerExistOnArray(paramsMarkers, marker))
+      .forEach(this.removeMarker.bind((this)));
   }
 
-  markerExistOnMap(markers_map_positions, paramMarker) {
-    paramMarker.icon = paramMarker.icon || config.defaultMarker.icon;
-    let exist_point = markers_map_positions.find(positionArray => _.isEqual(positionArray, paramMarker));
-    return !_.isEmpty(exist_point);
-  }
-
-  markerExistOnParams(params_markers_position, mapMarker) {
-    let exist_point = params_markers_position.find(paramMarker => {
-      paramMarker.icon = paramMarker.icon || config.defaultMarker.icon;
-      return _.isEqual(paramMarker, mapMarker);
-    });
-    return !_.isEmpty(exist_point);
+  isMarkerExistOnArray(markers, marker) {
+    return markers.some(_marker => _.isEqual(_marker, marker));
   }
 
 
@@ -158,7 +144,7 @@ export class OpenlayersMarkers {
     return { position, icon, label }
   }
 
-  removeIcon(mapMarker): void {
+  removeMarker(mapMarker: MapMipMarker): void {
     const marker_feature_to_remove = this.vectorSource.getFeatures()
       .find((feature: ol.Feature) => {
         const marker = this.parseFeatureToMarker(feature);
