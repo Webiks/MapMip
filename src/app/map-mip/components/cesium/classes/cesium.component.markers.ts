@@ -72,9 +72,6 @@ export class CesiumMarkers {
     if (this.onTerrainState()) {
       const height = this.cesium.positionFormService.getSelectedMarkerHeight();
       let width = this.cesium.positionFormService.getSelectedMarkerWidth() / 2;
-      if (width !== 18) {
-        width += 3.5;
-      }
       event.position.y += height;
       event.position.x += width;
     }

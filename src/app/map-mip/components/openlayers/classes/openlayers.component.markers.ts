@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import * as ol from 'openlayers';
 import { SafeStyle } from '@angular/platform-browser';
 import { config } from '../../../../../config/config';
+import { MapMipMarker } from '../../../services/query-params-helper.service';
 
 export class OpenlayersMarkers {
 
@@ -52,18 +53,12 @@ export class OpenlayersMarkers {
   }
 
   leftClickInputAction(event: { pixel: ol.Pixel }) {
-    let fix_pixel: ol.Pixel;
-    if (this.openlayers.positionFormService.getSelectedMarkerWidth() === 60) {
-      fix_pixel = [event.pixel[0] + 3.5 + this.openlayers.positionFormService.getSelectedMarkerWidth() / 2,
-        event.pixel[1] + this.openlayers.positionFormService.getSelectedMarkerHeight()];
-    } else {
-      fix_pixel = [event.pixel[0] + this.openlayers.positionFormService.getSelectedMarkerWidth() / 2,
-        event.pixel[1] + this.openlayers.positionFormService.getSelectedMarkerHeight()];
-    }
-    let fix_coordinate: ol.Coordinate = this.openlayers.map.getCoordinateFromPixel(fix_pixel);
-    let position: ol.Coordinate = ol.proj.toLonLat(fix_coordinate);
-    let icon: string = this.openlayers.positionFormService.getSelectedColor();
-    this.openlayers.queryParamsHelperService.addMarker({ position, icon });
+    const fix_coordinate: ol.Coordinate = this.openlayers.map.getCoordinateFromPixel(event.pixel);
+    const position: ol.Coordinate = ol.proj.toLonLat(fix_coordinate);
+    const icon: string = this.openlayers.positionFormService.getSelectedColor();
+    const label: string = this.openlayers.positionFormService.markerLabel || config.defaultMarker.label;
+
+    this.openlayers.queryParamsHelperService.addMarker({ position, icon, label });
   }
 
   anyMarkersMapChanges(params: Params): boolean {
@@ -71,18 +66,13 @@ export class OpenlayersMarkers {
     let mapMarkerPositions: Array<any> = this.getMarkersPosition();
     queryMarkersPositions.forEach(Pmarker => {
       Pmarker.icon = Pmarker.icon || config.defaultMarker.icon;
+      Pmarker.label = Pmarker.label || config.defaultMarker.label;
     });
     return !_.isEqual(mapMarkerPositions, queryMarkersPositions);
   }
 
   getMarkersPosition(): Array<any> {
-    return this.vectorSource.getFeatures().map((feature: ol.Feature) => {
-      let position = (feature.getGeometry() as any).getCoordinates();
-      position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
-      position = this.openlayers.calcService.toFixes7Obj(position);
-      const icon: string = this.openlayers.positionFormService.getMarkerColorByUrl((feature.getStyle() as any).getImage().getSrc());
-      return { position, icon };
-    });
+    return this.vectorSource.getFeatures().map(this.parseFeatureToMarker.bind(this));
   }
 
   setMarkersChanges(params: Params): void {
@@ -124,29 +114,55 @@ export class OpenlayersMarkers {
   }
 
 
-  addIcon(marker) {
+  addIcon(marker: MapMipMarker) {
 
     const iconFeature = new ol.Feature({
-      geometry: new ol.geom.Point(ol.proj.transform(marker.position, 'EPSG:4326', 'EPSG:3857'))
+      geometry: new ol.geom.Point(ol.proj.transform(<[number, number]>marker.position, 'EPSG:4326', 'EPSG:3857'))
     });
 
     iconFeature.setStyle(new ol.style.Style(<any>{
       image: new ol.style.Icon(<any>{
-        anchor: [0.5, 1],
+        anchor: [0, 0],
         src: this.openlayers.positionFormService.getMarkerUrlByColor(marker.icon)
+      }),
+
+      text: new ol.style.Text({
+        text: marker.label,
+        font: '30px sans-serif',
+        textAlign: 'left',
+        textBaseline: 'bottom',
+        backgroundFill: new ol.style.Fill({
+          color: 'rgba(47, 47, 47, 0.78)'
+        }),
+        fill: new ol.style.Fill({
+          color: 'white',
+        }),
+        stroke: new ol.style.Stroke({
+          color: 'black',
+          width: 3
+        })
       })
     }));
 
     this.vectorSource.addFeature(iconFeature);
   }
 
+  parseFeatureToMarker(feature: ol.Feature): MapMipMarker {
+    const featureStyle: any = feature.getStyle();
+    const src = featureStyle.getImage().getSrc();
+    const label = featureStyle.getText().getText();
+    let position = (feature.getGeometry() as any).getCoordinates();
+    position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
+    position = this.openlayers.calcService.toFixes7Obj(position);
+    const icon: string = this.openlayers.positionFormService.getMarkerColorByUrl(src);
+    return { position, icon, label }
+  }
+
   removeIcon(mapMarker): void {
-    const marker_feature_to_remove = this.vectorSource.getFeatures().find((feature: ol.Feature) => {
-      let position = (feature.getGeometry() as any).getCoordinates();
-      position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
-      position = this.openlayers.calcService.toFixes7Obj(position);
-      const color: string = this.openlayers.positionFormService.getMarkerColorByUrl((feature.getStyle() as any).getImage().getSrc());
-      return _.isEqual(position, mapMarker.position) && _.isEqual(color, mapMarker.icon);
+    const marker_feature_to_remove = this.vectorSource.getFeatures()
+      .find((feature: ol.Feature) => {
+        const marker = this.parseFeatureToMarker(feature);
+        return _.isEqual(mapMarker, marker);
     });
     this.vectorSource.removeFeature(marker_feature_to_remove);
   }

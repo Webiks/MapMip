@@ -5,6 +5,7 @@ import { SafeStyle } from '@angular/platform-browser';
 import * as L from 'leaflet';
 import { config } from '../../../../../config/config';
 import { MapMipMarker } from '../../../services/query-params-helper.service';
+import { MARKER_COLORS } from '../../../position-form/position-form.service';
 
 export class LeafletMarkers {
   public queryParamsSubscriber;
@@ -45,8 +46,7 @@ export class LeafletMarkers {
   }
 
   leftClickInputAction(event: { layerPoint: L.Point }) {
-    let fix_point: L.Point = L.point(event.layerPoint.x + this.leaflet.positionFormService.getSelectedMarkerWidth() / 2, event.layerPoint.y + this.leaflet.positionFormService.getSelectedMarkerHeight());
-    let fix_latlng: L.LatLng = this.leaflet.map.layerPointToLatLng(fix_point);
+    let fix_latlng: L.LatLng = this.leaflet.map.layerPointToLatLng(event.layerPoint);
     let position: [number, number] = [fix_latlng.lng, fix_latlng.lat];
     let icon: string = this.leaflet.positionFormService.getSelectedColor();
     let label: string = this.leaflet.positionFormService.markerLabel;
@@ -102,10 +102,12 @@ export class LeafletMarkers {
   }
 
   getBaseMarker(marker: MapMipMarker) {
+    const baseMarker = MARKER_COLORS.find(({ icon }) => icon === marker.icon);
     const icon = new L.DivIcon({
       className: 'my-div-icon',
       html: this.getIconHtml(marker),
-      iconAnchor: [this.leaflet.positionFormService.getSelectedMarkerWidth() / 2, this.leaflet.positionFormService.getSelectedMarkerHeight()]
+      iconSize: [baseMarker.width, baseMarker.height],
+      iconAnchor: [0, 0]
     });
     return L.marker([marker.position[1], marker.position[0]], { icon });
   }
