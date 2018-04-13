@@ -12,6 +12,13 @@ export interface MapMipEditedMarker {
   position: string
 }
 
+export interface MarkersEditObj {
+  marker: MapMipEditedMarker;
+  edit_index: number;
+  onEdit(): void;
+  init(): void;
+}
+
 @Component({
   selector: 'app-markers',
   templateUrl: './markers.component.html',
@@ -26,10 +33,11 @@ export class MarkersComponent implements OnInit {
   @Input() public lat: number;
   @Output() submitMarkersEmitter = new EventEmitter();
 
-  public edit_obj = {
+  public edit_obj: MarkersEditObj = {
     marker: {
       position: '',
-      colorIndex: 0
+      colorIndex: this.positionFormService.selectedColorIndex,
+      label: this.positionFormService.markerLabel
     },
     edit_index: -1,
     onEdit() {
@@ -38,7 +46,8 @@ export class MarkersComponent implements OnInit {
     init() {
       this.marker = {
         position: '',
-        colorIndex: 0
+        colorIndex: this.positionFormService.selectedColorIndex,
+        label: this.positionFormService.markerLabel
       };
       this.edit_index = -1;
     }
