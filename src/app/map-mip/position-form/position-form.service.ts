@@ -14,7 +14,7 @@ export class PositionFormService {
   public onPolylinePicked: boolean;
   public markerLabel = config.defaultMarker.label;
 
-  public selectedColorIndex = MARKER_COLORS.findIndex(({ icon }) => icon === config.defaultMarker.icon);
+  public selectedColorIndex = this.getSelectedColorIndex(config.defaultMarker.icon);
   public markerPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   public polygonPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   public polylinePickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
