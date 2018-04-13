@@ -144,17 +144,17 @@ export class PositionFormComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe((params: Params) => {
-      // params
-      _.forEach(this.params, (obj, key) => {
+      this.keys(this.params).forEach(key => {
+        let obj = this.params[key];
         switch (key) {
           case 'mode3d':
-            obj.val = params['mode3d'] == 0 ? false : true;
+            obj.val = params['mode3d'] === 0 ? false : true;
             break;
           case 'rotate':
             if (this.router.isActive('/openlayers', false)) {
-              obj.val = params['rotate'] == 0 ? false : true;
+              obj.val = params['rotate'] === 0 ? false : true;
             } else {
-              obj.val = params['rotate'] == 1 ? true : false;
+              obj.val = params['rotate'] === 1 ? true : false;
             }
             break;
           default:
@@ -191,17 +191,17 @@ export class PositionFormComponent implements OnInit {
   havePermission(obj: { permissions: number[] }): boolean {
     let urlTreeCurrent: UrlTree = this.router.parseUrl(this.router.url);
     let havePermission = false;
-
-    _.forEach(obj.permissions, (num: number) => {
+    this.keys(obj.permissions).forEach(key => {
+      const num = obj.permissions[key];
       let url: string = Permissions[num];
       let urlTreeCheck: UrlTree = this.router.parseUrl(url);
       let path_premission: string = urlTreeCheck.root.children['primary'].segments[0].path;
 
       let url_router: string = this.router.url;
       let urlTreeCheckRouter: UrlTree = this.router.parseUrl(url_router);
-      let path_router: string = urlTreeCheckRouter.root.children['primary'].segments[0].path;
+      let path_router: string = _.get(urlTreeCheckRouter, 'root.children.primary.segments[0].path');
 
-      if (path_router.includes(path_premission)) {
+      if (path_premission && path_router && path_router.includes(path_premission)) {
         havePermission = true;
         _.forEach(urlTreeCheck.queryParams, (val, key) => {
           if (urlTreeCheck.queryParams[key] !== urlTreeCurrent.queryParams[key]) {

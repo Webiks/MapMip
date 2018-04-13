@@ -1,256 +1,256 @@
 [
   {
-    "color": "blue",
+    "icon": "blue",
     "width": 36,
     "height": 48
   },
   {
-    "color": "black",
+    "icon": "black",
     "width": 36,
     "height": 48
   },
   {
-    "color": "green",
+    "icon": "green",
     "width": 36,
     "height": 48
   },
   {
-    "color": "gray",
+    "icon": "gray",
     "width": 36,
     "height": 48
   },
   {
-    "color": "orange",
+    "icon": "orange",
     "width": 36,
     "height": 48
   },
   {
-    "color": "yellow",
+    "icon": "yellow",
     "width": 36,
     "height": 48
   },
   {
-    "color": "red",
+    "icon": "red",
     "width": 36,
     "height": 48
   },
   {
-    "color": "violet",
+    "icon": "violet",
     "width": 36,
     "height": 48
   },
   {
-    "color": "coffee",
+    "icon": "coffee",
     "width": 36,
     "height": 48
   },
   {
-    "color": "star",
+    "icon": "star",
     "width": 36,
     "height": 48
   },
   {
-    "color": "home",
+    "icon": "home",
     "width": 36,
     "height": 48
   },
   {
-    "color": "airport",
+    "icon": "airport",
     "width": 36,
     "height": 48
   },
   {
-    "color": "tools",
+    "icon": "tools",
     "width": 36,
     "height": 48
   },
   {
-    "color": "train",
+    "icon": "train",
     "width": 36,
     "height": 48
   },
   {
-    "color": "tree",
+    "icon": "tree",
     "width": 36,
     "height": 48
   },
   {
-    "color": "lock",
+    "icon": "lock",
     "width": 36,
     "height": 48
   },
   {
-    "color": "hazard",
+    "icon": "hazard",
     "width": 36,
     "height": 48
   },
   {
-    "color": "hotel",
+    "icon": "hotel",
     "width": 36,
     "height": 48
   },
   {
-    "color": "gov",
+    "icon": "gov",
     "width": 36,
     "height": 48
   },
   {
-    "color": "dollar",
+    "icon": "dollar",
     "width": 36,
     "height": 48
   },
   {
-    "color": "conversation",
+    "icon": "conversation",
     "width": 36,
     "height": 48
   },
   {
-    "color": "rest",
+    "icon": "rest",
     "width": 36,
     "height": 48
   },
   {
-    "color": "man",
+    "icon": "man",
     "width": 36,
     "height": 48
   },
   {
-    "color": "fire",
+    "icon": "fire",
     "width": 36,
     "height": 48
   },
   {
-    "color": "coffee2",
+    "icon": "coffee2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "conversation2",
+    "icon": "conversation2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "dollar2",
+    "icon": "dollar2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "fire2",
+    "icon": "fire2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "gov2",
+    "icon": "gov2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "hazard2",
+    "icon": "hazard2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "home2",
+    "icon": "home2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "hotel2",
+    "icon": "hotel2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "lock2",
+    "icon": "lock2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "man2",
+    "icon": "man2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "rest2",
+    "icon": "rest2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "star2",
+    "icon": "star2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "tools2",
+    "icon": "tools2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "train2",
+    "icon": "train2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "tree2",
+    "icon": "tree2",
     "width": 36,
     "height": 48
   },
   {
-    "color": "fire_",
+    "icon": "fire_",
     "width": 36,
     "height": 48
   },
   {
-    "color": "fire1a",
-    "width": 60,
+    "icon": "fire1a",
+    "width": 67,
     "height": 80
   },
   {
-    "color": "fire1b",
-    "width": 60,
+    "icon": "fire1b",
+    "width": 67,
     "height": 80
   },
   {
-    "color": "fire4a",
+    "icon": "fire4a",
     "width": 36,
     "height": 48
   },
   {
-    "color": "fire4b",
+    "icon": "fire4b",
     "width": 36,
     "height": 48
   },
   {
-    "color": "fire5",
+    "icon": "fire5",
     "width": 36,
     "height": 48
   },
   {
-    "color": "lock1a",
-    "width": 60,
+    "icon": "lock1a",
+    "width": 67,
     "height": 80
   },
   {
-    "color": "lock1b",
-    "width": 60,
+    "icon": "lock1b",
+    "width": 67,
     "height": 80
   },
   {
-    "color": "lock4a",
+    "icon": "lock4a",
     "width": 36,
     "height": 48
   },
   {
-    "color": "lock4b",
+    "icon": "lock4b",
     "width": 36,
     "height": 48
   },
   {
-    "color": "lock5",
+    "icon": "lock5",
     "width": 36,
     "height": 48
   },
   {
-    "color": "lock5c",
+    "icon": "lock5c",
     "width": 36,
     "height": 48
   }

@@ -9,6 +9,7 @@ import { BsDropdownModule, ModalModule } from 'ngx-bootstrap';
 import { MapMipService } from '../../api/map-mip.service';
 import { MockComponent } from '../../../utils/mock-component';
 import { FormsModule } from '@angular/forms';
+import { config } from '../../../../config/config';
 
 describe('MarkersComponent', () => {
   let component: MarkersComponent;
@@ -68,7 +69,7 @@ describe('MarkersComponent', () => {
       component.queryParams(params);
       expect(component.markers_array).toEqual([{
         position: '1,2,3',
-        colorIndex: positionFormService.getSelectedColorIndex('blue')
+        colorIndex: positionFormService.getSelectedColorIndex(config.defaultMarker.icon)
       }, { position: '4,5', colorIndex: positionFormService.getSelectedColorIndex('red') }, {
         position: '6,7,8',
         colorIndex: positionFormService.getSelectedColorIndex('green')
@@ -97,8 +98,8 @@ describe('MarkersComponent', () => {
     it('parseMarkers: should get "edited_markers_array",map only str, return the string result from queryParamsHelperService', () => {
 
       let edited_markers_array = [
-        { position: '1,2', colorIndex: positionFormService.getSelectedColorIndex('blue') },
-        { position: '4,5,6', colorIndex: positionFormService.getSelectedColorIndex('blue') },
+        { position: '1,2', colorIndex: positionFormService.getSelectedColorIndex(config.defaultMarker.icon) },
+        { position: '4,5,6', colorIndex: positionFormService.getSelectedColorIndex(config.defaultMarker.icon) },
         { position: '7,8', colorIndex: positionFormService.getSelectedColorIndex('green') },
         { position: '7,8,9', colorIndex: positionFormService.getSelectedColorIndex('green') }
       ];

@@ -46,6 +46,8 @@ ul {
   }
 }
 
-.modal-sm {
-
+button.label-btn {
+  max-width: 95px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

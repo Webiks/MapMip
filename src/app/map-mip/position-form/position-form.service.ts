@@ -1,9 +1,9 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
-import MARKERS_COLOR_JSON from '../../../assets/Markers/Markers.json';
+import * as MARKERS_COLOR_JSON from '../../../assets/Markers/Markers.json';
 import { config } from '../../../config/config';
 
-export const MARKER_COLORS = MARKERS_COLOR_JSON;
+export const MARKER_COLORS: any = MARKERS_COLOR_JSON;
 export const MARKER_COLORS_HEX: Array<string> = ['#277fca', '#3c3c3c', '#23aa1f', '#777777', '#cb832c', '#cbc32c', '#c92139', '#9b29ca'];
 
 @Injectable()
@@ -12,9 +12,9 @@ export class PositionFormService {
   public onPicked: boolean;
   public onPolygonPicked: boolean;
   public onPolylinePicked: boolean;
+  public markerLabel = config.defaultMarker.label;
 
-
-  public selectedColorIndex = 0;
+  public selectedColorIndex = MARKER_COLORS.findIndex(({ icon }) => icon === config.defaultMarker.icon);
   public markerPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   public polygonPickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   public polylinePickerEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -33,20 +33,11 @@ export class PositionFormService {
   }
 
   getSelectedColor(index: number = this.selectedColorIndex): string {
-    return MARKER_COLORS[index].color;
+    return MARKER_COLORS[index].icon;
   }
 
-  getSelectedColorIndex(color: string = this.getSelectedColor()): number {
-    // return MARKER_COLORS.indexOf(color);
-    return this.search(color, MARKER_COLORS);
-  }
-
-  search(nameKey: string, myArray: Array<any>): number {
-    for (let i = 0; i < myArray.length; i++) {
-      if (myArray[i].color === nameKey) {
-        return i;
-      }
-    }
+  getSelectedColorIndex(icon: string = this.getSelectedColor()): number {
+    return MARKER_COLORS.findIndex((marker) => marker.icon === icon);
   }
 
   getSelectedColorHEX(index: number = this.selectedColorIndex): string {
@@ -57,7 +48,7 @@ export class PositionFormService {
     return this.domSanitizer.bypassSecurityTrustStyle(`url(/assets/Markers/marker-icon-${this.getSelectedColor()}.cur), default`);
   }
 
-  getMarkerUrlByColor(color = 'blue', format = 'png'): string {
+  getMarkerUrlByColor(color = config.defaultMarker.icon, format = 'png'): string {
     return `/assets/Markers/marker-icon-${color}.${format}`;
   }
 

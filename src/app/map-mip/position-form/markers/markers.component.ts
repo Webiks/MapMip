@@ -1,9 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import  { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
 import * as _ from 'lodash';
-import { QueryParamsHelperService } from '../../services/query-params-helper.service';
+import { MapMipMarker, QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { PositionFormService } from '../position-form.service';
+import { config } from '../../../../config/config';
+
+export interface MapMipEditedMarker {
+  colorIndex: number;
+  label: string;
+  position: string
+}
 
 @Component({
   selector: 'app-markers',
@@ -37,8 +44,8 @@ export class MarkersComponent implements OnInit {
     }
   };
 
-  public markers_array;
-  public edited_markers_array;
+  public markers_array: MapMipEditedMarker[] = [];
+  public edited_markers_array: MapMipEditedMarker[] = [];
 
   constructor(private queryParamsHelperService: QueryParamsHelperService, private route: ActivatedRoute, public positionFormService: PositionFormService) {
   }
@@ -48,37 +55,40 @@ export class MarkersComponent implements OnInit {
   }
 
   queryParams: (Params) => void = (params: Params): void => {
-    this.markers_array = this.queryParamsHelperService.queryMarkers({ markers: params['markers'] });
-
-    this.markers_array = this.markers_array.map(marker => {
-      let color = marker['color'] ? marker['color'] : 'blue';
-      let colorIndex = this.positionFormService.getSelectedColorIndex(color);
-      let position = marker['position'].toString();
-      return { position, colorIndex };
-    });
+    this.markers_array = this.queryParamsHelperService
+      .queryMarkers(params)
+      .map(this.markerToEditedMarker.bind(this));
 
     this.cloneEditedMarkers();
   };
+
+  markerToEditedMarker(marker: MapMipMarker): MapMipEditedMarker {
+    const color = marker.icon || config.defaultMarker.icon;
+    const colorIndex = this.positionFormService.getSelectedColorIndex(color);
+    const position = marker.position.toString();
+    const label = marker.label || '';
+    return { position, colorIndex, label };
+  }
+
+  editedMarkerToMarker(marker: MapMipEditedMarker): MapMipMarker {
+    const position = marker.position.split(',').map(Number);
+    const icon = this.positionFormService.getSelectedColor(marker.colorIndex);
+    const label = marker.label;
+    return <MapMipMarker> { position, icon, label };
+  }
 
   cloneEditedMarkers() {
     this.edited_markers_array = _.cloneDeep(this.markers_array);
   }
 
-  rmvMarker(index: number) {
-    this.edited_markers_array.splice(index, 1);
+  rmvMarker(index: number, array = this.edited_markers_array): void {
+    array.splice(index, 1);
   }
 
-  parseMarkers(edited_markers_array) {
-    let markersArrayToStr = edited_markers_array.map(marker => {
-      let position = marker.position.split(',');
-      let color = this.positionFormService.getSelectedColor(marker.colorIndex);
-      let map_marker = { position };
-      if (color !== 'blue') {
-        map_marker['color'] = color;
-      }
-      return map_marker;
-    });
-    return this.queryParamsHelperService.markersArrayToStr(markersArrayToStr);
+  parseMarkers(editedMarker: MapMipEditedMarker[]): string {
+    let markers = editedMarker
+      .map<MapMipMarker>(this.editedMarkerToMarker.bind(this));
+    return this.queryParamsHelperService.markersArrayToStr(markers);
   }
 
   canApply(): boolean {
@@ -93,7 +103,7 @@ export class MarkersComponent implements OnInit {
     });
   }
 
-  submitAddMarkers(markerObj) {
+  submitAddMarkers(markerObj: MapMipEditedMarker) {
     if (this.edit_obj.onEdit()) {
       this.edited_markers_array[this.edit_obj.edit_index] = markerObj;
     } else {
@@ -112,9 +122,9 @@ export class MarkersComponent implements OnInit {
 
   markerCenter() {
     let position: [number, number] = [this.lng, this.lat];
-    let center_marker = { position };
-    if (this.positionFormService.getSelectedColor() !== 'blue') {
-      center_marker['color'] = this.positionFormService.getSelectedColor();
+    let center_marker: MapMipMarker = { position };
+    if (this.positionFormService.getSelectedColor() !== config.defaultMarker.icon) {
+      center_marker.icon = this.positionFormService.getSelectedColor();
     }
     this.queryParamsHelperService.addMarker(center_marker);
   }

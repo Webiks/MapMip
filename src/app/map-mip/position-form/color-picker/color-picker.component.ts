@@ -6,7 +6,7 @@ import { MARKER_COLORS, PositionFormService } from '../position-form.service';
   templateUrl: './color-picker.component.html',
   styleUrls: ['./color-picker.component.scss']
 })
-export class ColorPickerComponent implements OnInit {
+export class ColorPickerComponent {
   @Input('selectedIndex') private _selectedIndex = 0;
   @Input('Active') Active;
   @Output('togglePickedEmitter') togglePickedEmitter = new EventEmitter();
@@ -15,10 +15,17 @@ export class ColorPickerComponent implements OnInit {
   @Input('iconsPerRow') public iconsPerRow: number;
   @Input('backdrop') public backdrop: boolean;
 
-  constructor(private positionFormService: PositionFormService) {
+  @Output() labelChange = new EventEmitter();
+  @Input() label = '';
+
+
+  constructor(public positionFormService: PositionFormService) {
   }
 
-  ngOnInit() {
+  submitLabel(popDirective, label) {
+    this.label = label;
+    this.labelChange.emit(label);
+    popDirective.hide();
   }
 
   set selectedIndex(value) {
@@ -27,7 +34,7 @@ export class ColorPickerComponent implements OnInit {
   }
 
   get selectedColor(): string {
-    return MARKER_COLORS[this.selectedIndex]['color'];
+    return MARKER_COLORS[this.selectedIndex].icon;
   }
 
   get selectedIndex(): number {
@@ -49,7 +56,7 @@ export class ColorPickerComponent implements OnInit {
     return this.positionFormService.getMarkerUrlByColor(color);
   }
 
-  calcIndex(parentIndex: number, childIndex: number, iconsPerRow: number = 1) {
+  calcIndex(parentIndex: number, childIndex: number, iconsPerRow = 1) {
     return (iconsPerRow * parentIndex) + childIndex;
   }
 

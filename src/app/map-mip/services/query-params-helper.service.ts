@@ -3,10 +3,12 @@ import { NavigationExtras, Params, Router, UrlTree } from '@angular/router';
 import * as _ from 'lodash';
 import { MapMipService } from '../api/map-mip.service';
 import * as rison from 'rison';
+import { config } from '../../../config/config';
 
 export interface MapMipMarker {
   position: number[];
-  color?: string;
+  icon?: string;
+  label?: string;
 }
 
 @Injectable()
@@ -171,41 +173,13 @@ export class QueryParamsHelperService {
     polygons_array.push({ coords });
     urlTree.queryParams['polygons'] = rison.encode_array(polygons_array);
     this.mapMipService.navigateByUrl(urlTree.toString());
-
-
-    // if(this.polygons_array.length === 0 && urlTree.queryParams['polygons']!== undefined){
-    //   this.polygons_array.push(urlTree.queryParams['polygons']);
-    // }
-    // if(coords.constructor.name =="String") {
-    //   let posArr = this.polygonsStrToArray(positions);
-    //   this.polygons_array.push(posArr);
-    // }
-    // if(coords.constructor.name =="Array") {
-    //   this.polygons_array.push(positions);
-    // }
-    // let polygonsString = this.polygonsArrayToStr(this.polygons_array);
-    // polygonsString = polygonsString.replace('((','(');
-    // polygonsString = polygonsString.replace('))',')');
-    // urlTree.queryParams['polygons'] = polygonsString;
-    // this.mapMipService.navigateByUrl(urlTree.toString())
-  }
-
-  addPolygonStr(positions) {
-    let urlTree: UrlTree = this.router.parseUrl(this.router.url);
-    if (this.polygons_array.length === 0 && urlTree.queryParams['polygons'] !== undefined) {
-      this.polygons_array.push(urlTree.queryParams['polygons']);
-    }
-    let posArr = this.polygonsStrToArray(positions);
-    this.polygons_array.push(posArr);
-
-    this.mapMipService.navigateByUrl(urlTree.toString());
   }
 
   removeMarker(marker) {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
     let markers_array: Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
     _.forEach(markers_array, function (m, index) {
-      if (marker.position[0] === m.position[0] && marker.position[1] === m.position[1] && marker.color === m.color) {
+      if (marker.position[0] === m.position[0] && marker.position[1] === m.position[1] && marker.icon === m.icon) {
         markers_array.splice(index, 1);
       }
     });
@@ -221,8 +195,8 @@ export class QueryParamsHelperService {
     this.mapMipService.navigateByUrl(urlTree.toString());
   }
 
-  queryMarkers(params: Params): Array<{ position: number[], color: string }> {
-    return this.markersStrToArray(params['markers']);
+  queryMarkers(params: Params): Array<MapMipMarker> {
+    return this.markersStrToArray(params['markers']).map(this.markerIncludeDefaults.bind(this));
   }
 
 
@@ -306,42 +280,37 @@ export class QueryParamsHelperService {
     return rison.decode_array(polygonStr);
   }
 
-  polygonsArrayToStr(polygonArray: Array<any>): string {
-    return rison.encode_array(polygonArray);
+  polygonsArrayToStr(polygonArray = []): string {
+    return rison.encode(polygonArray);
   }
 
-  polylineStrToArray(polylineStr = ''): Array<any> {
-
-    return rison.decode_array(polylineStr);
+  polylineStrToArray(polylineStr = rison.encode([])): Array<any> {
+    return rison.decode(polylineStr);
   }
 
-  markersStrToArray(markersStr = '') {
-    if (_.isEmpty(markersStr)) {
-      return [];
-    }
-    let markersArrayStr: Array<string> = markersStr.split(' ').join('').split('),(').map(
-      (str, index, array) => {
-        if (index === 0) {
-          str = str.replace('(', '');
-        }
-        if (index === array.length - 1) {
-          str = str.replace(')', '');
-        }
-        return str;
-      });
+  markersStrToArray(markersStr = rison.encode([])): MapMipMarker[] {
+    return rison.decode(markersStr);
+  }
 
-    let markersArrayObject: Array<any> = markersArrayStr.map((one: string) => {
-      let split_array: Array<any> = one.split(',');
-      let position = split_array.filter(i => !isNaN(+i)).map(i => +(+i).toFixed(7));
-      let color: string = split_array.find(i => isNaN(+i));
-      let marker_obj = { position };
-      if (color) {
-        marker_obj['color'] = color;
+  markersArrayToStr(markersArray: MapMipMarker[] = []): string {
+    markersArray.forEach(this.markerExcludeDefaults.bind(this));
+    return rison.encode(markersArray);
+  }
+
+  markerExcludeDefaults(marker: MapMipMarker): void {
+    Object.keys(marker).forEach((key) => {
+      if (!marker[key] || marker[key] === config.defaultMarker[key]) {
+        delete marker[key];
       }
-      return marker_obj;
     });
+  }
 
-    return markersArrayObject;
+  markerIncludeDefaults(marker: MapMipMarker): MapMipMarker {
+    return {
+      ...marker,
+      icon: marker.icon || config.defaultMarker.icon,
+      label: marker.label || config.defaultMarker.label,
+    }
   }
 
   geojsonStrToArray(geojsonStr: string) {
@@ -362,21 +331,6 @@ export class QueryParamsHelperService {
     return geojsonArrayStr;
   }
 
-
-  markersArrayToStr(markersArray: Array<any>): string {
-    let url_str = '';
-
-    markersArray.forEach((markersObj, index, array) => {
-      let one_array_str = '';
-      one_array_str += markersObj.position;
-      one_array_str = markersObj.color ? one_array_str + ',' + markersObj.color : one_array_str;
-      one_array_str = '(' + one_array_str + '),';
-      one_array_str = index === (array.length - 1) ? one_array_str.replace('),', ')') : one_array_str;
-      url_str += one_array_str;
-    });
-
-    return url_str;
-  }
 
   geojsonArrayToStr(geojsonArray: Array<any>): string {
     let url_str = '';

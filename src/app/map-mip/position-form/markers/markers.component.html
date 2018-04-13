@@ -5,8 +5,11 @@
           [style.color]="positionFormService.getSelectedColorHEX()" (click)="markerCenter()" type="button"
           tooltip="add centered marker" triggers="hover"></button>
   <div class="marker-color-picker">
+
     <app-color-picker (togglePickedEmitter)="togglePicked($event)" [Active]="positionFormService.onPicked"
-                      [(selectedIndex)]="positionFormService.selectedColorIndex"></app-color-picker>
+                      [(selectedIndex)]="positionFormService.selectedColorIndex"
+                      [(label)]="positionFormService.markerLabel">
+    </app-color-picker>
   </div>
 
 </div>
@@ -35,6 +38,7 @@
 
             <div class="li-row">
               <img src="/assets/Markers/marker-icon-{{positionFormService.getSelectedColor(marker.colorIndex)}}.png">
+              <span class="marker-label" [hidden]="!marker.label">{{marker.label}}</span>
               <span class="position">{{marker.position}}</span>
               <button class="btn btn-info glyphicon glyphicon-pencil" type="button" (click)="editMarker(i)"></button>
               <button class="btn btn-danger glyphicon glyphicon-remove-sign" type="button"
@@ -65,12 +69,15 @@
       <div class="modal-body">
         <div class="form-group">
           <div class="input-and-picker">
+            <app-color-picker [(selectedIndex)]="edit_obj.marker.colorIndex" [(label)]="edit_obj.marker.label"></app-color-picker>
+
             <input class="form-control text-center" [(ngModel)]="edit_obj.marker.position"
                    [ngModelOptions]="{standalone: true}"
                    [style.border-color]="edit_obj.marker.position && !markerStrRegex(edit_obj.marker.position) ? 'red' : '#66afe9'">
-            <app-color-picker [(selectedIndex)]="edit_obj.marker.colorIndex"></app-color-picker>
+
+            <h6 class="modal-subtitle text-info text-center">Number,Number,(Number)</h6>
+
           </div>
-          <h6 class="modal-subtitle text-info text-center">Number,Number,(Number)</h6>
         </div>
       </div>
       <div class="modal-footer">
