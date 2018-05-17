@@ -6,7 +6,7 @@
   "homepage": "https://webiks.github.io/mapmip/",
   "scripts": {
     "predeploy": "ng build",
-    "deploy": "gh-pages --repo https://$GITHUB_TOKEN@github.com/webiks/tb-admin-app.git -d dist",
+    "deploy": "gh-pages --repo https://$GITHUB_TOKEN@github.com/webiks/mapmip.git -d dist",
     "ng": "ng",
     "start": "ng serve",
     "lint": "tslint \"src/**/*.ts\" --project src/tsconfig.json --type-check && tslint \"e2e/**/*.ts\" --project e2e/tsconfig.json --type-check",
