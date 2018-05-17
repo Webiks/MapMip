@@ -3,22 +3,21 @@ language: node_js
 node_js:
   - 'node'
 
-before_install:
-  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
-
 install:
   - npm install
-
-deploy:
-  provider: script
-  script: "npm run deploy"
-  on:
-    branch: master
-
 
 cache:
   directories:
      - ./node_modules
+
+deploy:
+  provider: script
+  script: "npm run deploy"
+  skip_cleanup: true
+  on:
+    branch: master
+
+
 
 notifications:
   email: false

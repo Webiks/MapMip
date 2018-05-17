@@ -13,6 +13,7 @@
     "test": "echo \"Error: fix tests\"",
     "test:single-run": "ng test --single-run",
     "build:prod": "ng build --prod --sourcemap",
+    "build": "ng build",
     "pree2e": "webdriver-manager update --standalone false --gecko false",
     "e2e": "protractor"
   },
