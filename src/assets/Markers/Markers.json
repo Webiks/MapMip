@@ -253,5 +253,10 @@
     "icon": "lock5c",
     "width": 36,
     "height": 48
+  },
+  {
+    "icon": "plane",
+    "width": 36,
+    "height": 48
   }
 ]
