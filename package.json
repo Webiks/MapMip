@@ -5,8 +5,8 @@
   "angular-cli": {},
   "homepage": "http://mapmip.webiks.com/",
   "scripts": {
-    "predeploy": "ng build --prod --base-href=\"http://mapmip.webiks.com/\"",
-    "deploy": "gh-pages --repo https://$GITHUB_TOKEN@github.com/webiks/mapmip.git -d dist --remove '!CNAME'",
+    "predeploy": "ng build --prod --base-href=\"http://mapmip.webiks.com/\" && echo mapmip.webiks.com > dist/CNAME ",
+    "deploy": "gh-pages --repo https://$GITHUB_TOKEN@github.com/webiks/mapmip.git -d dist",
     "ng": "ng",
     "start": "ng serve",
     "lint": "tslint \"src/**/*.ts\" --project src/tsconfig.json --type-check && tslint \"e2e/**/*.ts\" --project e2e/tsconfig.json --type-check",
