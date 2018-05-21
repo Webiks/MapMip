@@ -8,6 +8,6 @@ export const config = {
     label: ''
   },
   router: {
-    useHash: true
+    useHash: false
   }
 };
