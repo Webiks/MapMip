@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "angular-cli": {},
-  "homepage": "https://webiks.github.io/mapmip/",
+  "homepage": "http://mapmip.webiks.com/",
   "scripts": {
     "predeploy": "ng build",
     "deploy": "gh-pages --repo https://$GITHUB_TOKEN@github.com/webiks/mapmip.git -d dist",
