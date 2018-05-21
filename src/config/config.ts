@@ -6,5 +6,8 @@ export const config = {
   defaultMarker: {
     icon: 'blue',
     label: ''
+  },
+  router: {
+    useHash: true
   }
 };
