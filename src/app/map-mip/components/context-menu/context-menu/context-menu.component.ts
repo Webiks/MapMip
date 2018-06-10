@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostBinding, HostListener, OnInit, Renderer2 } from '@angular/core';
 import { ContextMenuEvent, ContextMenuService } from '../services/context-menu.service';
+import { config } from '../../../../../config/config';
 
 @Component({
   selector: 'app-context-menu',
@@ -8,7 +9,10 @@ import { ContextMenuEvent, ContextMenuService } from '../services/context-menu.s
 })
 export class ContextMenuComponent implements OnInit {
   coordinates;
-  baseLink = 'http://ansyn.io?/#/?context=Area Analysis&geopoint=';
+
+  get baseLink () {
+    return config.contextMenuHref;
+  }
 
   @HostBinding('attr.tabindex')
   get tabindex() {

@@ -6,5 +6,6 @@ export const config = {
   defaultMarker: {
     icon: 'blue',
     label: ''
-  }
+  },
+  contextMenuHref: 'http://ansyn.io?/#/?context=AreaAnalysis&geopoint='
 };
