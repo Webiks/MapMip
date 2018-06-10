@@ -7,5 +7,5 @@ export const config = {
     icon: 'blue',
     label: ''
   },
-  contextMenuHref: 'http://ansyn.io?/#/?context=AreaAnalysis&geopoint='
+  contextMenuHref: 'http://ansyn.io?/#/?context=areaAnalysis&geopoint='
 };
