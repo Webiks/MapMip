@@ -16,6 +16,7 @@ import { MapMipService } from './api/map-mip.service';
 import { NewTabComponent } from './position-form/new-tab/new-tab.component';
 import { SwitchLayersDirective } from './directives/switch-layers.directive';
 import { ContextMenuModule } from './components/context-menu/context-menu.module';
+import { config } from '../../config/config';
 
 export const MapMipChildren: Routes = [
   {
@@ -38,7 +39,7 @@ export const MapMipChildren: Routes = [
     CommonModule,
     FormsModule,
     RouterModule.forRoot(
-      MapMipChildren, { useHash: false }
+      MapMipChildren, { useHash: config.router.useHash }
     ),
     PositionFormModule,
     HttpModule,
