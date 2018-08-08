@@ -35,5 +35,6 @@ deploy:
   bucket: $AWS_S3_BUCKET
   skip_cleanup: true
   local_dir: dist
+  acl: public_read
   on:
     branch: travis-ci-s3
