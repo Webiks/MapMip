@@ -16,7 +16,6 @@ before_script:
   - sleep 3 # give xvfb some time to start
 
 script:
-  - npm run test:single-run
   - npm run build:prod
 
 cache:
