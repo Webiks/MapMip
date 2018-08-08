@@ -37,4 +37,4 @@ deploy:
   local_dir: dist
   acl: public_read
   on:
-    branch: travis-ci-s3
+    branch: travis-ci-s3-test
