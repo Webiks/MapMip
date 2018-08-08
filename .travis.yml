@@ -16,7 +16,6 @@ before_script:
   - sleep 3 # give xvfb some time to start
 
 script:
-  - npm run test:single-run
   - npm run build:prod
 
 cache:
@@ -25,3 +24,17 @@ cache:
 
 notifications:
   email: false
+
+before_deploy:
+  - npm run build:prod
+
+deploy:
+  provider: s3
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  bucket: $AWS_S3_BUCKET
+  skip_cleanup: true
+  local_dir: dist
+  acl: public_read
+  on:
+    branch: travis-ci-s3
