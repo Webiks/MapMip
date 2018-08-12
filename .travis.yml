@@ -32,7 +32,6 @@ deploy:
   bucket: mapmiptest.webiks.com
   skip_cleanup: true
   local_dir: dist
-  acl: public_read
   region: $AWS_S3_BUCKET_REGION
   on:
     branch: travis-ci-s3-test
