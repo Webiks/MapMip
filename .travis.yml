@@ -33,6 +33,6 @@ deploy:
   skip_cleanup: true
   local_dir: dist
   acl: public_read
-  region: s3-website-us-west-2
+  region: $AWS_S3_BUCKET_REGION
   on:
     branch: travis-ci-s3-test
