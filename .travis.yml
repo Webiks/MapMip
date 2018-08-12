@@ -25,17 +25,13 @@ cache:
 notifications:
   email: false
 
-before_deploy:
-  - npm run build:prod
-
 deploy:
   provider: s3
   access_key_id: $AWS_ACCESS_KEY_ID
   secret_access_key: $AWS_SECRET_ACCESS_KEY
-  bucket: $AWS_S3_BUCKET
+  bucket: http://mapmiptest.webiks.com.s3-website-us-west-2.amazonaws.com
   skip_cleanup: true
   local_dir: dist
   acl: public_read
-  region: $AWS_S3_BUCKET_REGION
   on:
     branch: travis-ci-s3-test
