@@ -29,9 +29,10 @@ deploy:
   provider: s3
   access_key_id: $AWS_ACCESS_KEY_ID
   secret_access_key: $AWS_SECRET_ACCESS_KEY
-  bucket: http://mapmiptest.webiks.com.s3-website-us-west-2.amazonaws.com
+  bucket: mapmiptest.webiks.com
   skip_cleanup: true
   local_dir: dist
   acl: public_read
+  region: s3-website-us-west-2
   on:
     branch: travis-ci-s3-test
