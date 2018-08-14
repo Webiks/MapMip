@@ -3,39 +3,36 @@ language: node_js
 node_js:
   - 'node'
 
-#before_install:
-#  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+before_install:
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
 
-#install:
-#  - npm install
+install:
+  - npm install
 
 # Init GUI
-#before_script:
-#  - "export DISPLAY=:99.0"
-#  - "sh -e /etc/init.d/xvfb start"
-#  - sleep 3 # give xvfb some time to start
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
 
  script:
-   - echo "25255asdsaddasasdasdsadasdsadsadasd"
-#   - npm run build
-#
-#cache:
-#  directories:
-#     - ./node_modules
+   - npm run test
+
+cache:
+  directories:
+     - ./node_modules
 
 notifications:
   email: false
 
 before_deploy:
-  - rm -r dist
-  - mkdir dist
-  - echo "test" > dist/index.html
+  - aws ecr get-login --no-include-email --region us-west-2
+  - npm run build
+  - pip install --user awscli
 
 deploy:
-  provider: s3
-  access_key_id: $AWS_ACCESS_KEY_ID
-  secret_access_key: $AWS_SECRET_ACCESS_KEY
-  bucket: mapmiptest.webiks.com
+  provider: script
+  script: aws s3 cp /dist/ s3://mapmiptest.webiks.com/ --recursive
   skip_cleanup: true
   local_dir: dist
   region: $AWS_S3_BUCKET_REGION
