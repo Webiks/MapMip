@@ -16,7 +16,7 @@ node_js:
 #  - sleep 3 # give xvfb some time to start
 
  script:
-   - echo "Hi"
+   - echo "Hjhji"
 #   - npm run build
 #
 #cache:
