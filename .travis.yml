@@ -15,9 +15,8 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
 
-script:
-  - npm run test:single-run
-  - npm run build:prod
+ script:
+   - npm run test
 
 cache:
   directories:
@@ -26,3 +25,14 @@ cache:
 notifications:
   email: false
 
+before_deploy:
+  - npm run build
+  - pip install --user awscli
+  - aws ecr get-login --no-include-email --region us-west-2
+
+deploy:
+  provider: script
+  script: aws s3 cp /dist/ s3://mapmiptest.webiks.com/ --recursive
+  skip_cleanup: true
+  on:
+    branch: master
