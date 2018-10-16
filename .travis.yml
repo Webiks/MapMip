@@ -15,8 +15,8 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
 
- script:
-   - npm run test
+script:
+ - npm run test
 
 cache:
   directories:
@@ -26,7 +26,7 @@ notifications:
   email: false
 
 before_deploy:
-  - npm run build
+  - npm run build:prod
   - pip install --user awscli
   - aws ecr get-login --no-include-email --region us-west-2
 

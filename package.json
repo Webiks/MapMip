@@ -9,7 +9,7 @@
     "lint": "tslint \"src/**/*.ts\" --project src/tsconfig.json --type-check && tslint \"e2e/**/*.ts\" --project e2e/tsconfig.json --type-check",
     "test": "echo \"Tests not working\" ",
     "test:single-run": "ng test --single-run",
-    "build:prod": "ng build --prod --sourcemap",
+    "build:prod": "ng build --prod",
     "pree2e": "webdriver-manager update --standalone false --gecko false",
     "e2e": "protractor"
   },
