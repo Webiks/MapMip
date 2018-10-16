@@ -1,22 +1,18 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "tsconfig",
-    "declaration": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "lib": ["es6", "dom"],
-    "mapRoot": "./",
-    "module": "es6",
-    "moduleResolution": "node",
-    "outDir": "../dist/out-tsc",
-    "sourceMap": true,
-    "target": "es6",
-    "typeRoots": [
-      "./node_modules/@types"
+    "outDir": "../out-tsc/spec",
+    "types": [
+      "jasmine",
+      "node"
     ]
   },
-  "exclude": [
-    "src/test.ts",
-    "**/*.spec.ts"
+  "files": [
+    "test.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "**/*.spec.ts",
+    "**/*.d.ts"
   ]
 }
