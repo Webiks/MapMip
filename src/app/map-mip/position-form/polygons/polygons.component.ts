@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChange, ViewChild, OnChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { PositionFormService } from '../position-form.service';
 import { ModalDirective } from 'ngx-bootstrap';
@@ -26,7 +26,7 @@ export class PolygonsComponent implements OnInit, OnChanges {
   ngOnInit() {
   }
 
-  ngOnChanges(simpleChange: SimpleChange): void {
+  ngOnChanges(simpleChange: SimpleChanges): void {
     if (simpleChange[ 'polygons' ]) {
       this.cloneEditedPolygons();
     }
