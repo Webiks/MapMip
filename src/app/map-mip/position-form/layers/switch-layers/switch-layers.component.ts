@@ -4,7 +4,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 @Component({
   selector: 'app-switch-layers',
   templateUrl: './switch-layers.component.html',
-  styleUrls: [ './switch-layers.component.scss' ],
+  styleUrls: ['./switch-layers.component.scss'],
   animations: [
     trigger('fadeInOut',
       [
@@ -29,7 +29,7 @@ export class SwitchLayersComponent {
   @Output() public layersArrayChange = new EventEmitter();
   @Output() submitLayersEmitter = new EventEmitter();
 
-  @HostListener('window:keypress', [ '$event' ])
+  @HostListener('window:keypress', ['$event'])
   keypress($event) {
     if ($event.which === 32 && this.active) {
       this.switch();
@@ -45,7 +45,7 @@ export class SwitchLayersComponent {
   switch() {
     let newLayersArray = this.layersArray.map((val, index: number, array) => {
       const prev = (index - 1) < 0 ? array.length + (index - 1) : (index - 1);
-      return array[ prev ];
+      return array[prev];
     });
     this.layersArrayChange.emit(newLayersArray);
   }

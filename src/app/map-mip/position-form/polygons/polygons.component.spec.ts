@@ -13,9 +13,9 @@ describe('PolygonsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterTestingModule, ModalModule.forRoot() ],
-      providers: [ QueryParamsHelperService, PositionFormService, CalcService, MapMipService ],
-      declarations: [ PolygonsComponent ]
+      imports: [RouterTestingModule, ModalModule.forRoot()],
+      providers: [QueryParamsHelperService, PositionFormService, CalcService, MapMipService],
+      declarations: [PolygonsComponent]
     })
       .compileComponents();
   }));

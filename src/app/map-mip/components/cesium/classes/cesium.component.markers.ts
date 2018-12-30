@@ -91,7 +91,7 @@ export class CesiumMarkers {
     const positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
     const lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
     const latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
-    return [ lngDeg, latDeg ];
+    return [lngDeg, latDeg];
 
   }
 

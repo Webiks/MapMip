@@ -25,7 +25,7 @@ export function MockComponent(options: Component): Component {
       constructor() {
         if (options.outputs) {
           options.outputs.forEach((output: string) => {
-            this[ output ] = new EventEmitter();
+            this[output] = new EventEmitter();
           });
         }
       }

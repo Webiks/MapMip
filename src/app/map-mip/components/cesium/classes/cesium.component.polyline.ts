@@ -89,7 +89,7 @@ export class CesiumPolyline {
           name: 'PolylineDrawer' + that.polyline_id,
           polyline: {
             show: true,
-            positions: Cesium.Cartesian3.fromDegreesArray((coords[ 0 ])),
+            positions: Cesium.Cartesian3.fromDegreesArray((coords[0])),
             material: Cesium.Color.LIGHTSKYBLUE
           }
 
@@ -257,7 +257,7 @@ export class CesiumPolyline {
 
       // handle reference binding
       if (!isUndefined(property)) {
-        return value[ property ];
+        return value[property];
       }
 
       return value;

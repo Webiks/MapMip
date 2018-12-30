@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 @Component({
   selector: 'app-flip-switch',
   templateUrl: './flip-switch.component.html',
-  styleUrls: [ './flip-switch.component.scss' ]
+  styleUrls: ['./flip-switch.component.scss']
 })
 export class FlipSwitchComponent implements OnInit {
   // private _state: boolean;

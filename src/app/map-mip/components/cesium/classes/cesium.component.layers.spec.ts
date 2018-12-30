@@ -20,14 +20,14 @@ xdescribe('CesiumComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterTestingModule, BrowserAnimationsModule ],
-      declarations: [ CesiumComponent ],
-      providers: [ QueryParamsHelperService, MapMipService, CalcService, PositionFormService ]
+      imports: [RouterTestingModule, BrowserAnimationsModule],
+      declarations: [CesiumComponent],
+      providers: [QueryParamsHelperService, MapMipService, CalcService, PositionFormService]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([ QueryParamsHelperService, CalcService, PositionFormService ], (_queryParamsHelperService: QueryParamsHelperService, _calcService: CalcService, _positionFormService: PositionFormService) => {
+  beforeEach(inject([QueryParamsHelperService, CalcService, PositionFormService], (_queryParamsHelperService: QueryParamsHelperService, _calcService: CalcService, _positionFormService: PositionFormService) => {
 
     fixture = TestBed.createComponent(CesiumComponent);
     component = fixture.componentInstance;
@@ -105,8 +105,8 @@ xdescribe('CesiumComponent', () => {
 
     it('setLayersChanges: should call addTmsLayersViaUrl and removeTmsLayersViaUrl and addBaseLayer if no tile layers in map', () => {
       let params: Params = {};
-      let fake_parmas_layers_array: Array<Object> = [ 1, 2, 3 ];
-      let fake_map_layers_array: Array<Object> = [ 4, 5, 6 ];
+      let fake_parmas_layers_array: Array<Object> = [1, 2, 3];
+      let fake_map_layers_array: Array<Object> = [4, 5, 6];
       let noTileLayerRes = false;
 
       spyOn(queryParamsHelperService, 'queryLayers').and.callFake(() => fake_parmas_layers_array);
@@ -128,7 +128,7 @@ xdescribe('CesiumComponent', () => {
     it('addLayersViaUrl should add layers that exists on params but not exists on map', () => {
       let layer_a = { url: 'layer_a_url', source: 'mapbox' };
       let layer_b = { url: 'layer_b_url', source: 'bing' };
-      let params_layers = [ layer_a, layer_b ];
+      let params_layers = [layer_a, layer_b];
 
       spyOn(layers, 'layerExistOnMap').and.callFake((layer) => _.isEqual(layer, layer_a)); // layer_b return false
       spyOn(layers, 'getLayerFromLayerObj').and.callFake((layer) => layer);
@@ -143,7 +143,7 @@ xdescribe('CesiumComponent', () => {
     it('removeLayersViaUrl should remove layers that exists on map but not exists on params', () => {
       let layer_a = { imageryProvider: { url: 'layer_a_url' } };
       let layer_b = { imageryProvider: { url: 'layer_b_url' } };
-      let map_layers = [ layer_a, layer_b ];
+      let map_layers = [layer_a, layer_b];
       map_layers.filter = () => map_layers;
       spyOn(component.viewer.imageryLayers, 'remove');
 
@@ -153,7 +153,7 @@ xdescribe('CesiumComponent', () => {
     });
 
     it('no tile layer should return true if _layers array is empty', () => {
-      component.viewer.imageryLayers._layers = [ 1, 2, 3 ];
+      component.viewer.imageryLayers._layers = [1, 2, 3];
       expect(layers.noTileLayer()).toBeFalsy();
       component.viewer.imageryLayers._layers = [];
       expect(layers.noTileLayer()).toBeTruthy();
@@ -179,7 +179,7 @@ xdescribe('CesiumComponent', () => {
       let layer_obj_a = { imageryProvider: { _url: 'fake_url_a' }, _layerIndex: 0 };
       let layer_obj_b = { imageryProvider: { _url: 'fake_url_b' }, _layerIndex: 1 };
       let layer_obj_c = { imageryProvider: { _url: 'fake_url_c' }, _layerIndex: 2 };
-      component.viewer.imageryLayers._layers = [ layer_obj_a, layer_obj_b ];
+      component.viewer.imageryLayers._layers = [layer_obj_a, layer_obj_b];
       expect(layers.layerExistOnMap(layer_obj_a.imageryProvider, 0)).toBeTruthy();
       expect(layers.layerExistOnMap(layer_obj_b.imageryProvider, 1)).toBeTruthy();
       expect(layers.layerExistOnMap(layer_obj_c.imageryProvider, 2)).toBeFalsy();
@@ -188,7 +188,7 @@ xdescribe('CesiumComponent', () => {
     it('layerExistOnParams should get imageryProvider and return if exist of params', () => {
       let imageryLayer = { imageryProvider: { _url: 'fake_url' }, _layerIndex: 0 };
       let imageryProviderRes = _.cloneDeep(imageryLayer.imageryProvider);
-      let params_layers_obj = [ imageryLayer ];
+      let params_layers_obj = [imageryLayer];
       spyOn(queryParamsHelperService, 'queryLayers').and.callFake(() => params_layers_obj);
       spyOn(layers, 'getLayerFromLayerObj').and.callFake(layer_obj => imageryProviderRes);
       expect(layers.layerExistOnParams(imageryLayer)).toBeTruthy();

@@ -16,7 +16,7 @@ describe('MapSizeComponent', () => {
         PositionFormModule,
         RouterTestingModule
       ],
-      providers: [ QueryParamsHelperService, CalcService, MapMipService ]
+      providers: [QueryParamsHelperService, CalcService, MapMipService]
     })
       .compileComponents();
   }));
@@ -32,7 +32,7 @@ describe('MapSizeComponent', () => {
   });
 
   it('onSizeChange should call sizeChanges.emit and submitSizeEmitter.emit', () => {
-    component.sizeArr = [ 20, 30 ];
+    component.sizeArr = [20, 30];
     spyOn(component.sizeChange, 'emit');
     spyOn(component.submitSizeEmitter, 'emit');
     component.onSizeChange();
@@ -51,7 +51,7 @@ describe('MapSizeComponent', () => {
   it('setSizeArr should convert sizeArr from size(string)', () => {
     component.size = '40,20';
     component.setSizeArr();
-    expect(component.sizeArr).toEqual([ 40, 20 ]);
+    expect(component.sizeArr).toEqual([40, 20]);
   });
 
 

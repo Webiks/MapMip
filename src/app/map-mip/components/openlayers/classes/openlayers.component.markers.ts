@@ -103,12 +103,12 @@ export class OpenlayersMarkers {
   addIcon(marker: MapMipMarker) {
 
     const iconFeature = new ol.Feature({
-      geometry: new ol.geom.Point(ol.proj.transform(<[ number, number ]>marker.position, 'EPSG:4326', 'EPSG:3857'))
+      geometry: new ol.geom.Point(ol.proj.transform(<[number, number]>marker.position, 'EPSG:4326', 'EPSG:3857'))
     });
 
     iconFeature.setStyle(new ol.style.Style(<any>{
       image: new ol.style.Icon(<any>{
-        anchor: [ 0, 0 ],
+        anchor: [0, 0],
         src: this.openlayers.positionFormService.getMarkerUrlByColor(marker.icon)
       }),
 

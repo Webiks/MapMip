@@ -4,7 +4,7 @@ import { MapMipService } from '../map-mip/api/map-mip.service';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: [ './navbar.component.scss' ]
+  styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
   isCollapsed = true;

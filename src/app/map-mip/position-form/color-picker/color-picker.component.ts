@@ -4,7 +4,7 @@ import { MARKER_COLORS, PositionFormService } from '../position-form.service';
 @Component({
   selector: 'app-color-picker',
   templateUrl: './color-picker.component.html',
-  styleUrls: [ './color-picker.component.scss' ]
+  styleUrls: ['./color-picker.component.scss']
 })
 export class ColorPickerComponent {
   private _selectedIndex = 0;
@@ -40,7 +40,7 @@ export class ColorPickerComponent {
   }
 
   get selectedColor(): string {
-    return MARKER_COLORS[ this.selectedIndex ].icon;
+    return MARKER_COLORS[this.selectedIndex].icon;
   }
 
   changeMarkerColor(selectedColorIndex) {

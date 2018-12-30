@@ -24,15 +24,15 @@ describe('OpenlayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterTestingModule, HttpModule, ContextMenuModule, BrowserAnimationsModule ],
-      declarations: [ OpenlayersComponent ],
-      providers: [ QueryParamsHelperService, CalcService, PositionFormService, MapMipService ]
+      imports: [RouterTestingModule, HttpModule, ContextMenuModule, BrowserAnimationsModule],
+      declarations: [OpenlayersComponent],
+      providers: [QueryParamsHelperService, CalcService, PositionFormService, MapMipService]
     })
       .compileComponents();
   }));
 
 
-  beforeEach(inject([ CalcService, Router, QueryParamsHelperService, PositionFormService ], (_calcService: CalcService, _router: Router, _queryParamsHelperService: QueryParamsHelperService, _positionFormService: PositionFormService) => {
+  beforeEach(inject([CalcService, Router, QueryParamsHelperService, PositionFormService], (_calcService: CalcService, _router: Router, _queryParamsHelperService: QueryParamsHelperService, _positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(OpenlayersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -109,8 +109,8 @@ describe('OpenlayersComponent', () => {
 
     it('setLayersChanges: should call addTmsLayersViaUrl and removeTmsLayersViaUrl and addBaseLayer if no tile layers in map', () => {
       let params: Params = {};
-      let fake_parmas_layers_array: Array<Object> = [ 1, 2, 3 ];
-      let fake_map_layers_array: Array<Object> = [ 4, 5, 6 ];
+      let fake_parmas_layers_array: Array<Object> = [1, 2, 3];
+      let fake_map_layers_array: Array<Object> = [4, 5, 6];
       let noTileLayerRes = false;
 
       spyOn(queryParamsHelperService, 'queryLayers').and.callFake(() => fake_parmas_layers_array);
@@ -136,7 +136,7 @@ describe('OpenlayersComponent', () => {
     xit('addLayersViaUrl should add layers that exists on params but not exists on map', () => {
       let layer_a = { url: 'layer_a_url', source: 'mapbox' };
       let layer_b = { url: 'layer_b_url', source: 'bing' };
-      let params_layers = [ layer_a, layer_b ];
+      let params_layers = [layer_a, layer_b];
 
       spyOn(layers, 'layerExistOnMap').and.callFake((layer) => _.isEqual(layer, layer_a)); // layer_b return false
       spyOn(layers, 'getLayerFromLayerObj').and.callFake(() => layer_b);
@@ -149,7 +149,7 @@ describe('OpenlayersComponent', () => {
     it('removeLayersViaUrl should remove layers that exists on map but not exists on params', () => {
       let layer_a = { url: 'layer_a_url' };
       let layer_b = { url: 'layer_b_url' };
-      let map_layers = [ layer_a, layer_b ];
+      let map_layers = [layer_a, layer_b];
 
       spyOn(layers, 'layerExistOnParams').and.callFake(([], layer) => _.isEqual(layer, layer_b)); // layer_a return false
       spyOn(layers, 'getLayerFromLayerObj').and.callFake(() => layer_a);
@@ -162,7 +162,7 @@ describe('OpenlayersComponent', () => {
     });
 
     it('noTileLayer should return true if getTileLayersArray array is empty', () => {
-      let getTileLayersArrayRes = [ 1, 2, 3 ];
+      let getTileLayersArrayRes = [1, 2, 3];
       spyOn(layers, 'getTileLayersArray').and.callFake(() => getTileLayersArrayRes);
       expect(layers.noTileLayer()).toBeFalsy();
       getTileLayersArrayRes = [];
@@ -210,7 +210,7 @@ describe('OpenlayersComponent', () => {
       let layer_obj_b = { source: 'openstreetmap', url: 'fake_url_b' };
       let layer_obj_c = { source: 'mapbox', url: 'fake_url_c' };
 
-      let params_layer_array = [ layer_obj_a, layer_obj_b ];
+      let params_layer_array = [layer_obj_a, layer_obj_b];
       let layer_to_check: ol.layer.Layer = layers.getLayerFromLayerObj(layer_obj_a);
       expect(layers.layerExistOnParams(params_layer_array, layer_to_check)).toBeTruthy();
       layer_to_check = layers.getLayerFromLayerObj(layer_obj_b);

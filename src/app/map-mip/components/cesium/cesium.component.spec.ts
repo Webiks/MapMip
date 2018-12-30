@@ -18,14 +18,14 @@ xdescribe('CesiumComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterTestingModule, BrowserAnimationsModule ],
-      declarations: [ CesiumComponent ],
-      providers: [ QueryParamsHelperService, MapMipService, CalcService, PositionFormService ]
+      imports: [RouterTestingModule, BrowserAnimationsModule],
+      declarations: [CesiumComponent],
+      providers: [QueryParamsHelperService, MapMipService, CalcService, PositionFormService]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([ QueryParamsHelperService, CalcService, PositionFormService ], (_queryParamsHelperService: QueryParamsHelperService, _calcService: CalcService, _positionFormService: PositionFormService) => {
+  beforeEach(inject([QueryParamsHelperService, CalcService, PositionFormService], (_queryParamsHelperService: QueryParamsHelperService, _calcService: CalcService, _positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(CesiumComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

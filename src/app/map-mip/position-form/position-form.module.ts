@@ -51,8 +51,8 @@ import { BsDropdownModule, ModalModule, PopoverModule, TooltipModule } from 'ngx
     PolygonsComponent,
     PolylineComponent
   ],
-  exports: [ PositionFormComponent ],
-  providers: [ PositionFormService ]
+  exports: [PositionFormComponent],
+  providers: [PositionFormService]
 })
 export class PositionFormModule {
 }

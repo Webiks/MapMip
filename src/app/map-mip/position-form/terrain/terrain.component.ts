@@ -6,7 +6,7 @@ import { AjaxService } from '../../services/ajax.service';
 @Component({
   selector: 'app-terrain',
   templateUrl: './terrain.component.html',
-  styleUrls: [ './terrain.component.scss' ]
+  styleUrls: ['./terrain.component.scss']
 })
 export class TerrainComponent implements OnChanges, OnInit {
 
@@ -35,7 +35,7 @@ export class TerrainComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes[ 'terrain' ]) {
+    if (changes['terrain']) {
       this.setTerrain();
     }
   }

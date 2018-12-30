@@ -17,8 +17,8 @@ export class MapMipService {
 
   constructor(private positionFormService: PositionFormService, public router: Router, private location: Location) {
 
-    this.router.events.filter(e => e[ 'url' ] === '/').subscribe((e) => {
-      this.navigate([ this.default_state ]);
+    this.router.events.filter(e => e['url'] === '/').subscribe((e) => {
+      this.navigate([this.default_state]);
     });
 
     this.router.events.filter(e => e instanceof NavigationCancel).subscribe((e) => {

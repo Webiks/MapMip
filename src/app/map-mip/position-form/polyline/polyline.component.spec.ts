@@ -10,9 +10,9 @@ describe('PolylineComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterTestingModule ],
-      providers: [ PositionFormService, CalcService ],
-      declarations: [ PolylineComponent ]
+      imports: [RouterTestingModule],
+      providers: [PositionFormService, CalcService],
+      declarations: [PolylineComponent]
     })
       .compileComponents();
   }));

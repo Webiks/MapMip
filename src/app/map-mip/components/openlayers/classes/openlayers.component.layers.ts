@@ -76,7 +76,7 @@ export class OpenlayersLayers {
         if (!this.layerExistOnMap(map_tile_layers, layer_obj)) {
           let layer = this.getLayerFromLayerObj(layer_obj);
           if (layer_obj.source === 'tms') {
-            await this.setTmsOptions(layer_obj[ 'url' ], layer);
+            await this.setTmsOptions(layer_obj['url'], layer);
           }
           layer.setZIndex(index);
           this.openlayers.map.addLayer(layer);
@@ -102,15 +102,15 @@ export class OpenlayersLayers {
   }
 
   parseMapboxUrl(mapbox_obj): string {
-    return `${mapbox_obj[ 'url' ]}${mapbox_obj[ 'mapid' ] ? mapbox_obj[ 'mapid' ] + '/' : ''}{z}/{x}/{y}${mapbox_obj[ 'format' ] ? '.' + mapbox_obj[ 'format' ] : ''}?access_token=${mapbox_obj[ 'access_token' ]}`;
+    return `${mapbox_obj['url']}${mapbox_obj['mapid'] ? mapbox_obj['mapid'] + '/' : ''}{z}/{x}/{y}${mapbox_obj['format'] ? '.' + mapbox_obj['format'] : ''}?access_token=${mapbox_obj['access_token']}`;
   }
 
   parseOpenstreetmapUrl(osm_obj) {
-    return `${osm_obj[ 'url' ]}/{z}/{x}/{y}${osm_obj[ 'format' ] ? '.' + osm_obj[ 'format' ] : ''}`;
+    return `${osm_obj['url']}/{z}/{x}/{y}${osm_obj['format'] ? '.' + osm_obj['format'] : ''}`;
   }
 
   parseTmsUrl(layer_obj): string {
-    return `${layer_obj[ 'url' ]}/{z}/{x}/{-y}${layer_obj[ 'format' ] ? '.' + layer_obj[ 'format' ] : ''}`;
+    return `${layer_obj['url']}/{z}/{x}/{-y}${layer_obj['format'] ? '.' + layer_obj['format'] : ''}`;
   }
 
   setTmsOptions(url, layer) {
@@ -164,9 +164,9 @@ export class OpenlayersLayers {
     let source = layer_a.getSource();
     let _source = layer_b.getSource();
     let equal_source = source instanceof _source.constructor;
-    let api_key = _source[ 'c' ] === source[ 'c' ];
-    let url = _source[ 'jc' ] === source[ 'jc' ];
-    let style = _source[ 'o' ] === source[ 'o' ];
+    let api_key = _source['c'] === source['c'];
+    let url = _source['jc'] === source['jc'];
+    let style = _source['o'] === source['o'];
 
     return equal_source && api_key && url && style;
   }
@@ -178,7 +178,7 @@ export class OpenlayersLayers {
       source: new ol.source.XYZ(<olx.source.XYZOptions> {
         url: osm_url
       }),
-      extent: ol.proj.transformExtent([ -180.0000, -90.0000, 180.0000, 90.0000 ], 'EPSG:4326', 'EPSG:3857')
+      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')
     });
 
   }
@@ -190,17 +190,17 @@ export class OpenlayersLayers {
       source: new ol.source.XYZ(<olx.source.XYZOptions> {
         url: mapbox_url
       }),
-      extent: ol.proj.transformExtent([ -180.0000, -90.0000, 180.0000, 90.0000 ], 'EPSG:4326', 'EPSG:3857')
+      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')
     });
   }
 
   getBingLayer(bing_obj): ol.layer.Tile {
     return new ol.layer.Tile(<any>{
       source: new ol.source.BingMaps(<any>{
-        key: bing_obj[ 'key' ],
-        imagerySet: bing_obj[ 'style' ]
+        key: bing_obj['key'],
+        imagerySet: bing_obj['style']
       }),
-      extent: ol.proj.transformExtent([ -180.0000, -90.0000, 180.0000, 90.0000 ], 'EPSG:4326', 'EPSG:3857')
+      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')
     });
   }
 
@@ -210,7 +210,7 @@ export class OpenlayersLayers {
       source: new ol.source.XYZ(<olx.source.XYZOptions> {
         url: tms_url
       }),
-      extent: ol.proj.transformExtent([ -180.0000, -90.0000, 180.0000, 90.0000 ], 'EPSG:4326', 'EPSG:3857')
+      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')
     });
     return layer;
   }
@@ -218,9 +218,9 @@ export class OpenlayersLayers {
   getDefaultLayer(default_obj) {
     return new ol.layer.Tile(<olx.layer.TileOptions>{
       source: new ol.source.XYZ(<olx.source.XYZOptions> {
-        url: `${this.openlayers.calcService.getParsedUrlWithSubdomain(default_obj[ 'url' ])}`
+        url: `${this.openlayers.calcService.getParsedUrlWithSubdomain(default_obj['url'])}`
       }),
-      extent: ol.proj.transformExtent([ -180.0000, -90.0000, 180.0000, 90.0000 ], 'EPSG:4326', 'EPSG:3857')
+      extent: ol.proj.transformExtent([-180.0000, -90.0000, 180.0000, 90.0000], 'EPSG:4326', 'EPSG:3857')
     });
   }
 

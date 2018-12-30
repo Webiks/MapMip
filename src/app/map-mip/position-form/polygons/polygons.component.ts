@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'app-polygons',
   templateUrl: './polygons.component.html',
-  styleUrls: [ './polygons.component.scss' ]
+  styleUrls: ['./polygons.component.scss']
 })
 export class PolygonsComponent implements OnInit, OnChanges {
 
@@ -27,7 +27,7 @@ export class PolygonsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(simpleChange: SimpleChanges): void {
-    if (simpleChange[ 'polygons' ]) {
+    if (simpleChange['polygons']) {
       this.cloneEditedPolygons();
     }
   }

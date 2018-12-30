@@ -39,7 +39,7 @@ export class CesiumMapView {
     let lightingP: number = this.cesium.queryParamsHelperService.queryLighting(params);
 
 
-    let arrayP: Array<number> = [ longitudeP, latitudeP, heightP, headingRadiansP, pitchRadiansP, rollRadiansP, mode3dP, rotateP, lightingP ];
+    let arrayP: Array<number> = [longitudeP, latitudeP, heightP, headingRadiansP, pitchRadiansP, rollRadiansP, mode3dP, rotateP, lightingP];
 
     let longitude: number = this.getCenter().lng;
     let latitude: number = this.getCenter().lat;
@@ -57,7 +57,7 @@ export class CesiumMapView {
     } else {
       rotate = 1;
     }
-    let array = [ longitude, latitude, height, headingRadians, pitchRadians, rollRadians, mode3d, rotate, lighting ];
+    let array = [longitude, latitude, height, headingRadians, pitchRadians, rollRadians, mode3d, rotate, lighting];
 
     arrayP = this.cesium.calcService.toFixes7Obj(arrayP);
     array = this.cesium.calcService.toFixes7Obj(array);
@@ -112,16 +112,16 @@ export class CesiumMapView {
     let pitch: number = +Cesium.Math.toDegrees(this.cesium.viewer.camera.pitch); // .toFixed(7);
     let roll: number = +Cesium.Math.toDegrees(this.cesium.viewer.camera.roll); // .toFixed(7);
     let mode3d: number = this.cesium.viewer.scene.mode === Cesium.SceneMode.SCENE2D ? 0 : 1;
-    let markers = this.cesium.currentParams[ 'markers' ];
-    let layers = this.cesium.currentParams[ 'layers' ];
-    let rotate = this.cesium.currentParams[ 'rotate' ];
-    let size = this.cesium.currentParams[ 'size' ];
-    let position = this.cesium.currentParams[ 'position' ];
-    let terrain = this.cesium.currentParams[ 'terrain' ];
-    let lighting = this.cesium.currentParams[ 'lighting' ];
-    let geojson = this.cesium.currentParams[ 'geojson' ];
-    let polygons = this.cesium.currentParams[ 'polygons' ];
-    let polyline = this.cesium.currentParams[ 'polyline' ];
+    let markers = this.cesium.currentParams['markers'];
+    let layers = this.cesium.currentParams['layers'];
+    let rotate = this.cesium.currentParams['rotate'];
+    let size = this.cesium.currentParams['size'];
+    let position = this.cesium.currentParams['position'];
+    let terrain = this.cesium.currentParams['terrain'];
+    let lighting = this.cesium.currentParams['lighting'];
+    let geojson = this.cesium.currentParams['geojson'];
+    let polygons = this.cesium.currentParams['polygons'];
+    let polyline = this.cesium.currentParams['polyline'];
 
     rotate = this.cesium.viewer.scene.mode !== Cesium.SceneMode.SCENE2D || rotate !== 1 ? undefined : 1;
     let navigationExtras: NavigationExtras = this.cesium.queryParamsHelperService.getQuery({
@@ -152,7 +152,7 @@ export class CesiumMapView {
     return this.cesium.calcService.toFixes7Obj({ lat: lat, lng: lng });
   }
 
-  getBounds(): [ number, number, number, number ] {
+  getBounds(): [number, number, number, number] {
 
     let current_mode: number = this.cesium.viewer.scene.mode;
     let current_heading: number = this.cesium.viewer.camera.heading;
@@ -167,8 +167,8 @@ export class CesiumMapView {
       }
     });
 
-    let bounds: [ number, number, number, number ] = this.calcBounds();
-    bounds = <[ number, number, number, number ]> bounds.map((value: number) => Cesium.Math.toDegrees(value));
+    let bounds: [number, number, number, number] = this.calcBounds();
+    bounds = <[number, number, number, number]> bounds.map((value: number) => Cesium.Math.toDegrees(value));
     // let bounds: [number,number,number,number] = this.viewer.camera.computeViewRectangle();
     // if(isUndefined(bounds)) bounds = this.calcBounds();
 
@@ -185,8 +185,8 @@ export class CesiumMapView {
 
   }
 
-  calcBounds(): [ number, number, number, number ] {
-    let bounds: [ number, number, number, number ];
+  calcBounds(): [number, number, number, number] {
+    let bounds: [number, number, number, number];
 
     let leftTopCartesian2 = new Cesium.Cartesian2(0, 0);
     let leftTopCartesian3 = this.cesium.viewer.camera.pickEllipsoid(leftTopCartesian2);
@@ -195,18 +195,18 @@ export class CesiumMapView {
 
     if (_.isEmpty(leftTopCartesian3) || _.isEmpty(rightBottomCartesian3)) {
       let o_bounds = this.cesium.viewer.camera.computeViewRectangle();
-      return [ o_bounds.west, o_bounds.north, o_bounds.east, o_bounds.south ];
+      return [o_bounds.west, o_bounds.north, o_bounds.east, o_bounds.south];
     }
     let cartographicLeftTop = Cesium.Cartographic.fromCartesian(leftTopCartesian3);
     let cartographicRightBottom = Cesium.Cartographic.fromCartesian(rightBottomCartesian3);
-    bounds = [ cartographicRightBottom.longitude, cartographicLeftTop.latitude, cartographicLeftTop.longitude, cartographicRightBottom.latitude ];
+    bounds = [cartographicRightBottom.longitude, cartographicLeftTop.latitude, cartographicLeftTop.longitude, cartographicRightBottom.latitude];
 
     return bounds;
   }
 
 
   setMapBounds(params: Params): void {
-    let bounds: [ number, number, number, number ] = this.cesium.queryParamsHelperService.queryBounds(params);
+    let bounds: [number, number, number, number] = this.cesium.queryParamsHelperService.queryBounds(params);
     let heading: number = Cesium.Math.toRadians(this.cesium.queryParamsHelperService.queryHeading(params));
 
     this.cesium.viewer.camera.setView({
@@ -291,22 +291,22 @@ export class CesiumMapView {
 
     this.onLeave(go_north).subscribe(() => {
       let bounds = this.getBounds().toString();
-      let markers = this.cesium.currentParams[ 'markers' ];
-      let layers = this.cesium.currentParams[ 'layers' ];
-      let size = this.cesium.currentParams[ 'size' ];
-      let position = this.cesium.currentParams[ 'position' ];
-      let geojson = this.cesium.currentParams[ 'geojson' ];
-      let polygons = this.cesium.currentParams[ 'polygons' ];
-      let polyline = this.cesium.currentParams[ 'polyline' ];
+      let markers = this.cesium.currentParams['markers'];
+      let layers = this.cesium.currentParams['layers'];
+      let size = this.cesium.currentParams['size'];
+      let position = this.cesium.currentParams['position'];
+      let geojson = this.cesium.currentParams['geojson'];
+      let polygons = this.cesium.currentParams['polygons'];
+      let polyline = this.cesium.currentParams['polyline'];
 
       extras.queryParams = { bounds, markers, layers, size, position, geojson, polygons, polyline };
 
       if (state === MapMipService.OPENLAYERS_PATH) {
         let heading = this.cesium.queryParamsHelperService.queryHeading(this.cesium.currentParams);
-        extras.queryParams[ 'heading' ] = heading;
+        extras.queryParams['heading'] = heading;
       }
 
-      this.cesium.mapMipService.navigate([ state ], extras).then(() => {
+      this.cesium.mapMipService.navigate([state], extras).then(() => {
         this.cesium.viewer.camera.moveEnd._listeners.pop();
         this.gotoEmitterSubscriber.unsubscribe();
       });

@@ -4,14 +4,14 @@ import { QueryParamsHelperService } from '../../services/query-params-helper.ser
 @Component({
   selector: 'app-map-size',
   templateUrl: './map-size.component.html',
-  styleUrls: [ './map-size.component.scss' ]
+  styleUrls: ['./map-size.component.scss']
 })
 export class MapSizeComponent implements OnChanges, OnInit {
 
   @Input() size: string;
   @Output() sizeChange = new EventEmitter();
   @Output() submitSizeEmitter = new EventEmitter();
-  public sizeArr: [ number, number ];
+  public sizeArr: [number, number];
 
   constructor(private queryParamsHelperService: QueryParamsHelperService) {
   }
@@ -26,7 +26,7 @@ export class MapSizeComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes[ 'size' ]) {
+    if (changes['size']) {
       this.setSizeArr();
     }
   }

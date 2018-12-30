@@ -20,7 +20,7 @@ import { ContextMenuService } from '../context-menu/services/context-menu.servic
 @Component({
   selector: 'app-openlayers',
   templateUrl: './openlayers.component.html',
-  styleUrls: [ './openlayers.component.scss' ],
+  styleUrls: ['./openlayers.component.scss'],
   animations: animations
 })
 
@@ -54,7 +54,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy {
               public positionFormService: PositionFormService,
               public mapMipService: MapMipService,
               public contextMenuService: ContextMenuService) {
-    window[ 'current' ] = this;
+    window['current'] = this;
     this.queryParamsSubscriber = this.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
 
   }
@@ -85,7 +85,7 @@ export class OpenlayersComponent implements OnInit, OnDestroy {
 
     this.map = new ol.Map(<any>{
       target: this.container.nativeElement,
-      projection: new ol.proj.Projection(<any>{ code: 'EPSG:4326', extent: [ -180.0000, -90.0000, 180.0000, 90.0000 ] })
+      projection: new ol.proj.Projection(<any>{ code: 'EPSG:4326', extent: [-180.0000, -90.0000, 180.0000, 90.0000] })
     });
     this.ol = ol;
     this.layers = new OpenlayersLayers(this);

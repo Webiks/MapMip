@@ -43,7 +43,7 @@ export class CesiumPolygons {
   }
 
   addPolygonsViaUrl(params_polygons_array: any[]) {
-    const polygonsOnMap = _.filter(this.cesium.viewer.entities.values, (ent) => ent[ 'polygon' ]);
+    const polygonsOnMap = _.filter(this.cesium.viewer.entities.values, (ent) => ent['polygon']);
 
     polygonsOnMap.forEach(polygon_obj => {
       this.cesium.viewer.entities.remove(polygon_obj);
@@ -58,7 +58,7 @@ export class CesiumPolygons {
           id: that.polygon_id += 1,
           name: 'PolygonDrawer' + that.polygon_id,
           polygon: {
-            hierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(coords[ 0 ])),
+            hierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(coords[0])),
             material: Cesium.Color.LIGHTSKYBLUE.withAlpha(0.5),
             outline: true,
             outlineColor: Cesium.Color.RED
@@ -70,28 +70,28 @@ export class CesiumPolygons {
 
   polygonsExistOnMap(coords): boolean {
     // no entities on map - don't check:
-    const polygonsOnMap = _.filter(this.cesium.viewer.entities.values, (ent) => ent[ 'polygon' ]);
+    const polygonsOnMap = _.filter(this.cesium.viewer.entities.values, (ent) => ent['polygon']);
     if (polygonsOnMap.length === 0) {
       return false;
     }
 
     for (let a = 0; a < this.cesium.viewer.entities.values.length; a++) {
-      if (this.cesium.viewer.entities.values[ a ].polygon) {
+      if (this.cesium.viewer.entities.values[a].polygon) {
 
 
-        const exist = this.cesium.viewer.entities.values[ a ].polygon.hierarchy.getValue();
+        const exist = this.cesium.viewer.entities.values[a].polygon.hierarchy.getValue();
 
 
         for (let i = 0; i < exist.positions.length; i++) {
-          let lng = Cesium.Cartographic.fromCartesian(exist.positions[ i ]).longitude;
+          let lng = Cesium.Cartographic.fromCartesian(exist.positions[i]).longitude;
           let lngDeg = Cesium.Math.toDegrees(lng);
           let lngFixed = lngDeg.toFixed(7);
 
-          let lat = Cesium.Cartographic.fromCartesian(exist.positions[ i ]).latitude;
+          let lat = Cesium.Cartographic.fromCartesian(exist.positions[i]).latitude;
           let latDeg = Cesium.Math.toDegrees(lat);
           let latFixed = latDeg.toFixed(7);
 
-          if (lngFixed !== coords[ 0 ][ (2 * i) ] || latFixed !== coords[ 0 ][ (2 * i) + 1 ]) {
+          if (lngFixed !== coords[0][(2 * i)] || latFixed !== coords[0][(2 * i) + 1]) {
             return false;
           }
         }
@@ -250,7 +250,7 @@ export class CesiumPolygons {
 
       // handle reference binding
       if (!isUndefined(property)) {
-        return value[ property ];
+        return value[property];
       }
 
       return value;

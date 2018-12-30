@@ -62,12 +62,12 @@ export class OpenlayersPolygons {
   removePolygonsViaUrl(params_polygons_array, map_polygons_array) {
     map_polygons_array.forEach((map_polygon_obj) => {
       if (!this.polygonExistOnParams(map_polygon_obj, params_polygons_array)) {
-        const featureGeomCoor = (<any>this.getFeaturePolygon(map_polygon_obj).getGeometry()).getCoordinates()[ 0 ];
+        const featureGeomCoor = (<any>this.getFeaturePolygon(map_polygon_obj).getGeometry()).getCoordinates()[0];
         const VectorSourceFeatureFeature = this.vectorSource.getFeatures().find(
           (vectorSourceFeature) => {
-            const vectorSourceFeatureGeomCoor = (<any>vectorSourceFeature.getGeometry()).getCoordinates()[ 0 ];
-            const parsedFeatureGeomCoor = featureGeomCoor.map(elem => [ elem[ 0 ].toFixed(7), elem[ 1 ].toFixed(7) ]);
-            const parsedvectorSourceFeatureGeomCoor = vectorSourceFeatureGeomCoor.map(elem => [ elem[ 0 ].toFixed(7), elem[ 1 ].toFixed(7) ]);
+            const vectorSourceFeatureGeomCoor = (<any>vectorSourceFeature.getGeometry()).getCoordinates()[0];
+            const parsedFeatureGeomCoor = featureGeomCoor.map(elem => [elem[0].toFixed(7), elem[1].toFixed(7)]);
+            const parsedvectorSourceFeatureGeomCoor = vectorSourceFeatureGeomCoor.map(elem => [elem[0].toFixed(7), elem[1].toFixed(7)]);
             return _.isEqual(parsedFeatureGeomCoor, parsedvectorSourceFeatureGeomCoor);
           });
         this.vectorSource.removeFeature(VectorSourceFeatureFeature);
@@ -78,19 +78,19 @@ export class OpenlayersPolygons {
   getFeaturePolygon(polygon_obj: { coords: number[] }): ol.Feature {
     let transformedCoords = [];
     for (let i = 0; i < polygon_obj.coords.length; i += 2) {
-      transformedCoords.push([ polygon_obj.coords[ i ], polygon_obj.coords[ i + 1 ] ]);
+      transformedCoords.push([polygon_obj.coords[i], polygon_obj.coords[i + 1]]);
     }
     transformedCoords = transformedCoords.map((coords) => ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857'));
     transformedCoords = /*this.openlayers.calcService.toFixes7Obj(*/transformedCoords;
-    const geometry = new ol.geom.Polygon([ transformedCoords ]);
+    const geometry = new ol.geom.Polygon([transformedCoords]);
     return new ol.Feature({ geometry });
   }
 
   getPolygonObj(feature: ol.Feature) {
     let coords = [];
-    const featureCoords = (<any>feature.getGeometry()).getCoordinates()[ 0 ];
+    const featureCoords = (<any>feature.getGeometry()).getCoordinates()[0];
     featureCoords.forEach(f_coords => {
-      const [ number_a, number_b ] = ol.proj.transform(f_coords, 'EPSG:3857', 'EPSG:4326');
+      const [number_a, number_b] = ol.proj.transform(f_coords, 'EPSG:3857', 'EPSG:4326');
       coords.push(number_a);
       coords.push(number_b);
     });
@@ -125,10 +125,10 @@ export class OpenlayersPolygons {
       that.vectorSource.addFeature(evt.feature);
       let initcoordinates = evt.feature.getGeometry().getCoordinates();
       let coordinates = [];
-      initcoordinates [ 0 ].forEach(coord => {
+      initcoordinates [0].forEach(coord => {
         let coordToPush = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326');
-        coordinates.push(coordToPush[ 0 ]);
-        coordinates.push(coordToPush[ 1 ]);
+        coordinates.push(coordToPush[0]);
+        coordinates.push(coordToPush[1]);
       });
       that.openlayers.queryParamsHelperService.addPolygon(coordinates);
     });

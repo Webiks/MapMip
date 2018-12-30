@@ -5,7 +5,7 @@ import { PositionFormService } from './position-form/position-form.service';
 @Component({
   selector: 'map-mip',
   templateUrl: 'map-mip.component.html',
-  styleUrls: [ 'map-mip.component.scss' ]
+  styleUrls: ['map-mip.component.scss']
 })
 
 export class MapLayerComponent implements OnInit {

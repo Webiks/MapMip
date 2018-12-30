@@ -12,9 +12,9 @@ describe('NavbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NavbarComponent ],
-      imports: [ RouterTestingModule, CollapseModule ],
-      providers: [ MapMipService, PositionFormService ]
+      declarations: [NavbarComponent],
+      imports: [RouterTestingModule, CollapseModule],
+      providers: [MapMipService, PositionFormService]
     })
       .compileComponents();
   }));

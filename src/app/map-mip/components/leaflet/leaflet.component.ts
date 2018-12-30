@@ -24,7 +24,7 @@ import { LeafletPolygons } from './classes/leaflet.component.polygons';
 @Component({
   selector: 'app-leaflet',
   templateUrl: './leaflet.component.html',
-  styleUrls: [ './leaflet.component.scss' ],
+  styleUrls: ['./leaflet.component.scss'],
   animations: animations
 })
 
@@ -54,7 +54,7 @@ export class LeafletComponent implements OnInit, OnDestroy {
 
 
   constructor(public router: Router, public activatedRoute: ActivatedRoute, public queryParamsHelperService: QueryParamsHelperService, public calcService: CalcService, public positionFormService: PositionFormService, public mapMipService: MapMipService) {
-    window[ 'current' ] = this;
+    window['current'] = this;
     this.queryParamsSubscriber = this.activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
 
   }
@@ -79,13 +79,13 @@ export class LeafletComponent implements OnInit, OnDestroy {
       minZoom: 3,
       maxBounds: [
         // south west
-        [ -87.71179927260242, -180 ],
+        [-87.71179927260242, -180],
         // north east
-        [ 89.45016124669523, 180 ]
+        [89.45016124669523, 180]
       ]
     });
     this.L = L;
-    this.map.setView([ 0, 0 ], 3);
+    this.map.setView([0, 0], 3);
 
 
   }

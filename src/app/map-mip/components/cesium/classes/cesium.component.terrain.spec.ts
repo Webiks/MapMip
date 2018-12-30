@@ -23,13 +23,13 @@ xdescribe('CesiumComponent', () => {
         HttpModule,
         BrowserAnimationsModule
       ],
-      declarations: [ CesiumComponent ],
-      providers: [ QueryParamsHelperService, MapMipService, CalcService, PositionFormService ]
+      declarations: [CesiumComponent],
+      providers: [QueryParamsHelperService, MapMipService, CalcService, PositionFormService]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([ QueryParamsHelperService ], (_queryParamsHelperService: QueryParamsHelperService) => {
+  beforeEach(inject([QueryParamsHelperService], (_queryParamsHelperService: QueryParamsHelperService) => {
     fixture = TestBed.createComponent(CesiumComponent);
     component = fixture.componentInstance;
     queryParamsHelperService = _queryParamsHelperService;

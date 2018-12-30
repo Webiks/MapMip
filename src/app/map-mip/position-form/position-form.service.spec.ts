@@ -7,11 +7,11 @@ describe('PositionFormService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ PositionFormService ]
+      providers: [PositionFormService]
     });
   });
 
-  beforeEach(inject([ PositionFormService ], (_positionFormService: PositionFormService) => {
+  beforeEach(inject([PositionFormService], (_positionFormService: PositionFormService) => {
     positionFormService = _positionFormService;
   }));
 

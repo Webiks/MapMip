@@ -5,7 +5,7 @@ import { config } from '../../../../../config/config';
 @Component({
   selector: 'app-context-menu',
   templateUrl: './context-menu.component.html',
-  styleUrls: [ './context-menu.component.scss' ]
+  styleUrls: ['./context-menu.component.scss']
 })
 export class ContextMenuComponent implements OnInit {
   coordinates;
@@ -19,7 +19,7 @@ export class ContextMenuComponent implements OnInit {
     return 0;
   }
 
-  @HostListener('contextmenu', [ '$event' ])
+  @HostListener('contextmenu', ['$event'])
   contextmenu($event: MouseEvent) {
     $event.preventDefault();
   }

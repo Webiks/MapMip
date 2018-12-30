@@ -6,7 +6,7 @@ import { MapMipService } from '../../api/map-mip.service';
 @Component({
   selector: 'app-map-lighting',
   templateUrl: './map-lighting.component.html',
-  styleUrls: [ './map-lighting.component.scss' ]
+  styleUrls: ['./map-lighting.component.scss']
 })
 export class MapLightingComponent implements OnChanges {
   @Input() lighting: string;
@@ -16,7 +16,7 @@ export class MapLightingComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes[ 'lighting' ]) {
+    if (changes['lighting']) {
       let lighting = this.lighting;
       this.lighting_value = this.queryParamsHelperService.queryLighting({ lighting });
     }
@@ -25,9 +25,9 @@ export class MapLightingComponent implements OnChanges {
   toggleLight() {
     this.lighting_value = 1 - this.lighting_value;
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
-    urlTree.queryParams[ 'lighting' ] = this.lighting_value.toString();
+    urlTree.queryParams['lighting'] = this.lighting_value.toString();
     if (this.lighting_value !== 1) {
-      delete urlTree.queryParams[ 'lighting' ];
+      delete urlTree.queryParams['lighting'];
     }
     this.mapMipService.navigateByUrl(urlTree.toString());
   }

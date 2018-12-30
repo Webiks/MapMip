@@ -18,14 +18,14 @@ describe('OpenLayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterTestingModule, HttpModule, ContextMenuModule, BrowserAnimationsModule ],
-      declarations: [ OpenlayersComponent ],
-      providers: [ QueryParamsHelperService, CalcService, PositionFormService, MapMipService ]
+      imports: [RouterTestingModule, HttpModule, ContextMenuModule, BrowserAnimationsModule],
+      declarations: [OpenlayersComponent],
+      providers: [QueryParamsHelperService, CalcService, PositionFormService, MapMipService]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([ QueryParamsHelperService ], (_queryParamsHelperService: QueryParamsHelperService) => {
+  beforeEach(inject([QueryParamsHelperService], (_queryParamsHelperService: QueryParamsHelperService) => {
     fixture = TestBed.createComponent(OpenlayersComponent);
     component = fixture.componentInstance;
     queryParamsHelperService = _queryParamsHelperService;
@@ -40,7 +40,7 @@ describe('OpenLayersComponent', () => {
 
     it('queryParams should check if any changes on mapsize and set [width, height] if need', () => {
       spyOn(queryParamsHelperService, 'anySizeChange').and.returnValue(true);
-      spyOn(queryParamsHelperService, 'querySize').and.returnValue([ 50, 60 ]);
+      spyOn(queryParamsHelperService, 'querySize').and.returnValue([50, 60]);
       map_size.queryParams({});
       expect(component.container.nativeElement.style.width).toEqual('50%');
       expect(component.container.nativeElement.style.height).toEqual('60%');

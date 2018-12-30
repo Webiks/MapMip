@@ -25,12 +25,12 @@ xdescribe('CesiumComponent', () => {
         HttpModule,
         BrowserAnimationsModule
       ],
-      declarations: [ CesiumComponent ],
-      providers: [ QueryParamsHelperService, MapMipService, CalcService, PositionFormService ]
+      declarations: [CesiumComponent],
+      providers: [QueryParamsHelperService, MapMipService, CalcService, PositionFormService]
     })
       .compileComponents();
   }));
-  beforeEach(inject([ QueryParamsHelperService, CalcService, PositionFormService ], (_queryParamsHelperService: QueryParamsHelperService, _calcService: CalcService, _positionFormService: PositionFormService) => {
+  beforeEach(inject([QueryParamsHelperService, CalcService, PositionFormService], (_queryParamsHelperService: QueryParamsHelperService, _calcService: CalcService, _positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(CesiumComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -86,15 +86,15 @@ xdescribe('CesiumComponent', () => {
 
     it('setMarkersChanges: should call addMarkersViaUrl with params_markers_position and call removeMarkersViaUrl with map_markers_positions', () => {
       let params: Params = {};
-      let params_marker1 = { position: [ 30, 20 ], color: 'green' };
-      let params_marker2 = { position: [ 60, 50, 40 ] };
-      let map_marker1 = { position: Cesium.Cartesian3.fromDegrees(...[ 30, 20 ]), color: 'green' };
+      let params_marker1 = { position: [30, 20], color: 'green' };
+      let params_marker2 = { position: [60, 50, 40] };
+      let map_marker1 = { position: Cesium.Cartesian3.fromDegrees(...[30, 20]), color: 'green' };
       let map_marker2 = {
-        position: Cesium.Cartesian3.fromDegrees(...[ 60, 50, 40 ]),
+        position: Cesium.Cartesian3.fromDegrees(...[60, 50, 40]),
         color: config.defaultMarker.icon
       };
-      let params_markers = [ params_marker1, params_marker2 ];
-      let map_markers = [ map_marker1, map_marker2 ];
+      let params_markers = [params_marker1, params_marker2];
+      let map_markers = [map_marker1, map_marker2];
       spyOn(queryParamsHelperService, 'queryMarkers').and.callFake(() => params_markers);
       spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers);
       spyOn(markers, 'addMarkersViaUrl');
@@ -107,47 +107,47 @@ xdescribe('CesiumComponent', () => {
 
     it('addMarkersViaUrl: should get positions array from params. for each position create marker if not exists on map', () => {
       let markers_map_positions = [
-        { position: Cesium.Cartesian3.fromDegrees(...[ 1, 2, 3 ]), color: 'red' }
+        { position: Cesium.Cartesian3.fromDegrees(...[1, 2, 3]), color: 'red' }
       ];
       let markers_params_positions = [
-        { position: [ 1, 2, 3 ], color: 'red' },
-        { position: [ 4, 5, 6 ] }
+        { position: [1, 2, 3], color: 'red' },
+        { position: [4, 5, 6] }
       ];
       spyOn(markers, 'addMarker');
       markers.addMarkersViaUrl(markers_params_positions, markers_map_positions);
-      expect(markers.addMarker).toHaveBeenCalledWith(markers_params_positions[ 1 ]);
+      expect(markers.addMarker).toHaveBeenCalledWith(markers_params_positions[1]);
     });
 
     it('removeMarkersViaUrl should get positions array from map. for each position remvoe marker if not exists on params', () => {
       let markers_map_positions = [
-        { position: Cesium.Cartesian3.fromDegrees(...[ 1, 2, 3 ]), color: 'red' },
-        { position: Cesium.Cartesian3.fromDegrees(...[ 4, 5, 6 ]), color: config.defaultMarker.icon }
+        { position: Cesium.Cartesian3.fromDegrees(...[1, 2, 3]), color: 'red' },
+        { position: Cesium.Cartesian3.fromDegrees(...[4, 5, 6]), color: config.defaultMarker.icon }
       ];
       let markers_params_positions = [
-        { position: [ 1, 2, 3 ], color: 'red' }
+        { position: [1, 2, 3], color: 'red' }
       ];
       spyOn(markers, 'removeMarker');
       markers.removeMarkersViaUrl(markers_params_positions, markers_map_positions);
-      expect(markers.removeMarker).toHaveBeenCalledWith(markers_map_positions[ 1 ]);
+      expect(markers.removeMarker).toHaveBeenCalledWith(markers_map_positions[1]);
     });
 
     it('markerExistOnMap: should get one position and return if there is marker on map with that position', () => {
       let markers_map_positions = [
-        { position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[ 1, 2, 3 ])), color: 'red' },
+        { position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[1, 2, 3])), color: 'red' },
         {
-          position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[ 4, 5, 6 ])),
+          position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[4, 5, 6])),
           color: config.defaultMarker.icon
         }
       ];
       let paramMarkerObj = {
-        position: [ 1, 2, 3 ],
+        position: [1, 2, 3],
         color: 'red'
       };
       let blueParamMarkerObj = {
-        position: [ 4, 5, 6 ]
+        position: [4, 5, 6]
       };
       let notExistMapMarkerObj = {
-        position: [ 7, 8, 9 ],
+        position: [7, 8, 9],
         color: 'black'
       };
       expect(markers.markerExistOnMap(markers_map_positions, paramMarkerObj)).toBeTruthy();
@@ -157,19 +157,19 @@ xdescribe('CesiumComponent', () => {
 
     it('markerExistOnParams: should get one position and return if there is marker on params with that position', () => {
       let markers_params_positions = [
-        { position: [ 1, 2, 3 ], color: 'red' },
-        { position: [ 4, 5, 6 ] }
+        { position: [1, 2, 3], color: 'red' },
+        { position: [4, 5, 6] }
       ];
       let mapMarkerObj = {
-        position: Cesium.Cartesian3.fromDegrees(...[ 1, 2, 3 ]),
+        position: Cesium.Cartesian3.fromDegrees(...[1, 2, 3]),
         color: 'red'
       };
       let blueMapMarkerObj = {
-        position: Cesium.Cartesian3.fromDegrees(...[ 4, 5, 6 ]),
+        position: Cesium.Cartesian3.fromDegrees(...[4, 5, 6]),
         color: config.defaultMarker.icon
       };
       let notExistMapMarkerObj = {
-        position: Cesium.Cartesian3.fromDegrees(...[ 7, 8, 9 ]),
+        position: Cesium.Cartesian3.fromDegrees(...[7, 8, 9]),
         color: 'black'
       };
       expect(markers.markerExistOnParams(markers_params_positions, mapMarkerObj)).toBeTruthy();
@@ -178,26 +178,26 @@ xdescribe('CesiumComponent', () => {
     });
 
     it('anyMarkersMapChanges: should get params and compere between markers on params and markers on map', () => {
-      let params_marker1 = { position: [ 30, 20 ], color: 'green' };
-      let params_marker2 = { position: [ 60, 50, 40 ] };
+      let params_marker1 = { position: [30, 20], color: 'green' };
+      let params_marker2 = { position: [60, 50, 40] };
       let map_marker1 = {
-        position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[ 30, 20 ])),
+        position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[30, 20])),
         color: 'green'
       };
       let map_marker2 = {
-        position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[ 60, 50, 40 ])),
+        position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[60, 50, 40])),
         color: config.defaultMarker.icon
       };
-      let params_markers = [ params_marker1, params_marker2 ];
-      let map_markers = [ map_marker1, map_marker2 ];
+      let params_markers = [params_marker1, params_marker2];
+      let map_markers = [map_marker1, map_marker2];
 
       spyOn(queryParamsHelperService, 'queryMarkers').and.callFake(() => params_markers);
       spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers);
 
       expect(markers.anyMarkersMapChanges({})).toBeFalsy();
-      params_marker1 = { position: [ 31, 20 ], color: 'green' };
-      params_marker2 = { position: [ 60, 50, 40 ] };
-      params_markers = [ params_marker1, params_marker2 ];
+      params_marker1 = { position: [31, 20], color: 'green' };
+      params_marker2 = { position: [60, 50, 40] };
+      params_markers = [params_marker1, params_marker2];
       expect(markers.anyMarkersMapChanges({})).toBeTruthy();
 
       expect(queryParamsHelperService.queryMarkers).toHaveBeenCalledTimes(2);
@@ -206,24 +206,24 @@ xdescribe('CesiumComponent', () => {
 
     it('getMarkersPosition should return positions array ( [lng, lat], [lng, lat],...)', () => {
       component.viewer.entities.add({
-        position: Cesium.Cartesian3.fromDegrees(...[ 1, 2, 3 ]),
+        position: Cesium.Cartesian3.fromDegrees(...[1, 2, 3]),
         billboard: {
           image: positionFormService.getMarkerUrlByColor('red')
         }
       });
       component.viewer.entities.add({
-        position: Cesium.Cartesian3.fromDegrees(...[ 4, 5, 6 ]),
+        position: Cesium.Cartesian3.fromDegrees(...[4, 5, 6]),
         billboard: {
           image: positionFormService.getMarkerUrlByColor('green')
         }
       });
       expect(markers.getMarkersPosition().length).toEqual(2);
-      expect(markers.getMarkersPosition()[ 0 ]).toEqual({
-        position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[ 1, 2, 3 ])),
+      expect(markers.getMarkersPosition()[0]).toEqual({
+        position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[1, 2, 3])),
         color: 'red'
       });
-      expect(markers.getMarkersPosition()[ 1 ]).toEqual({
-        position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[ 4, 5, 6 ])),
+      expect(markers.getMarkersPosition()[1]).toEqual({
+        position: calcService.toFixes7Obj(Cesium.Cartesian3.fromDegrees(...[4, 5, 6])),
         color: 'green'
       });
     });
@@ -253,7 +253,7 @@ xdescribe('CesiumComponent', () => {
         longitude: radian_30
       }));
       markers.leftClickInputAction(event);
-      let position = [ deg_30, deg_30 ];
+      let position = [deg_30, deg_30];
       expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith({ position });
     });
 
@@ -282,7 +282,7 @@ xdescribe('CesiumComponent', () => {
     });
 
     it('should addMarker add billboard marker to entities', () => {
-      let marker = { position: [ 1, 2, 3 ] };
+      let marker = { position: [1, 2, 3] };
       spyOn(component.viewer.entities, 'add');
       markers.addMarker(marker);
       expect(component.viewer.entities.add).toHaveBeenCalledWith({
@@ -297,7 +297,7 @@ xdescribe('CesiumComponent', () => {
     });
 
     it('should removeMarker rmv billboard marker from entities', () => {
-      let marker = { position: Cesium.Cartesian3.fromDegrees(...[ 1, 2, 3 ]), color: config.defaultMarker.icon };
+      let marker = { position: Cesium.Cartesian3.fromDegrees(...[1, 2, 3]), color: config.defaultMarker.icon };
       spyOn(markers, 'getEntityByMarker').and.callFake(() => marker);
       spyOn(component.viewer.entities, 'remove');
       markers.removeMarker(marker);

@@ -5,11 +5,11 @@ import { ContextMenuService } from './context-menu.service';
 describe('ContextMenuService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ ContextMenuService ]
+      providers: [ContextMenuService]
     });
   });
 
-  it('should be created', inject([ ContextMenuService ], (service: ContextMenuService) => {
+  it('should be created', inject([ContextMenuService], (service: ContextMenuService) => {
     expect(service).toBeTruthy();
   }));
 });

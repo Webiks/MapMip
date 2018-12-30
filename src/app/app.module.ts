@@ -21,7 +21,7 @@ import { CollapseModule } from 'ngx-bootstrap';
     BrowserAnimationsModule,
     CollapseModule
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }

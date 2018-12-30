@@ -7,7 +7,7 @@ import { AjaxService } from '../../services/ajax.service';
 @Component({
   selector: 'app-geojson-layer',
   templateUrl: './geojson-layer.component.html',
-  styleUrls: [ './geojson-layer.component.scss' ]
+  styleUrls: ['./geojson-layer.component.scss']
 })
 export class GeojsonLayerComponent {
   @ViewChild('geoJsonModal') public geoJsonModal: ModalDirective;
@@ -50,7 +50,7 @@ export class GeojsonLayerComponent {
 
   submitAddGeojson(input) {
     if (this.add_geojson.onEdit()) {
-      this.geojson_array[ this.add_geojson.edit_index ] = input;
+      this.geojson_array[this.add_geojson.edit_index] = input;
     } else {
       this.geojson_array.push(input);
     }
@@ -84,7 +84,7 @@ export class GeojsonLayerComponent {
   }
 
   editModal(index: number): void {
-    this.add_geojson.geojson = _.cloneDeep(this.geojson_array[ index ]);
+    this.add_geojson.geojson = _.cloneDeep(this.geojson_array[index]);
     this.add_geojson.edit_index = index;
     this.defaultModal.show();
   }

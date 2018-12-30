@@ -16,9 +16,9 @@ describe('MapLayerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterTestingModule ],
-      providers: [ PositionFormService ],
-      declarations: [ MapLayerComponent, ...MockComponents ]
+      imports: [RouterTestingModule],
+      providers: [PositionFormService],
+      declarations: [MapLayerComponent, ...MockComponents]
     })
       .compileComponents();
   }));

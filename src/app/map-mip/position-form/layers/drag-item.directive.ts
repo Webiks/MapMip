@@ -4,7 +4,7 @@ import { Directive, ElementRef, EventEmitter, HostBinding, HostListener, Input, 
   selector: '[appDragItem]'
 })
 export class DragItemDirective {
-  @Input() public appDragItem: [ number, Array<any> ];
+  @Input() public appDragItem: [number, Array<any>];
   @Output() onDrop = new EventEmitter();
   public shift_down = false;
   @HostBinding('draggable') draggable = true;
@@ -13,9 +13,9 @@ export class DragItemDirective {
   }
 
 
-  @HostListener('dragstart', [ '$event' ])
+  @HostListener('dragstart', ['$event'])
   dragstart($event: DragEvent) {
-    let dragIndex: string = this.appDragItem[ 0 ].toString();
+    let dragIndex: string = this.appDragItem[0].toString();
     $event.dataTransfer.setData('dragIndex', dragIndex);
     this.el.nativeElement.classList.add('dragged');
   }
@@ -25,7 +25,7 @@ export class DragItemDirective {
     this.el.nativeElement.classList.remove('dragged');
   }
 
-  @HostListener('dragover', [ '$event' ])
+  @HostListener('dragover', ['$event'])
   dragover($event) {
     $event.preventDefault();
     this.el.nativeElement.classList.add('dragovered');
@@ -37,22 +37,22 @@ export class DragItemDirective {
   }
 
 
-  @HostListener('drop', [ '$event' ])
+  @HostListener('drop', ['$event'])
   drop($event: DragEvent) {
-    let dropIndex = this.appDragItem[ 0 ];
+    let dropIndex = this.appDragItem[0];
     let dragIndex: number = +$event.dataTransfer.getData('dragIndex');
-    let array = this.appDragItem[ 1 ];
+    let array = this.appDragItem[1];
     this.el.nativeElement.classList.remove('dragovered');
 
     if (dropIndex !== dragIndex) {
-      let temp = array[ dragIndex ];
-      array[ dragIndex ] = array[ dropIndex ];
-      array[ dropIndex ] = temp;
+      let temp = array[dragIndex];
+      array[dragIndex] = array[dropIndex];
+      array[dropIndex] = temp;
       this.onDrop.emit(array);
     }
   }
 
-  @HostListener('keyup', [ '$event' ])
+  @HostListener('keyup', ['$event'])
   keyup($event) {
     switch ($event.which) {
       case 16:
@@ -61,7 +61,7 @@ export class DragItemDirective {
     }
   }
 
-  @HostListener('keydown', [ '$event' ])
+  @HostListener('keydown', ['$event'])
   keydown($event) {
     switch ($event.which) {
       case 38:
@@ -93,29 +93,29 @@ export class DragItemDirective {
   }
 
   switchNext() {
-    let dropIndex = this.appDragItem[ 0 ];
-    let array = this.appDragItem[ 1 ];
+    let dropIndex = this.appDragItem[0];
+    let array = this.appDragItem[1];
     let swapIndex, temp;
     swapIndex = (dropIndex + 1) % array.length;
-    temp = array[ dropIndex ];
-    array[ dropIndex ] = array[ swapIndex ];
-    array[ swapIndex ] = temp;
+    temp = array[dropIndex];
+    array[dropIndex] = array[swapIndex];
+    array[swapIndex] = temp;
     setTimeout(() => {
       this.el.nativeElement.focus();
     }, 0);
   }
 
   switchPrev() {
-    let dropIndex = this.appDragItem[ 0 ];
-    let array = this.appDragItem[ 1 ];
+    let dropIndex = this.appDragItem[0];
+    let array = this.appDragItem[1];
     let swapIndex, temp;
     swapIndex = (dropIndex - 1) % array.length;
     if (swapIndex < 0) {
       swapIndex += array.length;
     }
-    temp = array[ dropIndex ];
-    array[ dropIndex ] = array[ swapIndex ];
-    array[ swapIndex ] = temp;
+    temp = array[dropIndex];
+    array[dropIndex] = array[swapIndex];
+    array[swapIndex] = temp;
     setTimeout(() => {
       this.el.nativeElement.focus();
     }, 0);
@@ -127,7 +127,7 @@ export class DragItemDirective {
     let array = [].slice.call(brothers);
     let myindex = array.indexOf(this.el.nativeElement);
     let prev_index = (myindex - 1) < 0 ? array.length + (myindex - 1) : (myindex - 1);
-    array[ prev_index ].focus();
+    array[prev_index].focus();
   }
 
   focusPrev() {
@@ -136,7 +136,7 @@ export class DragItemDirective {
     let array = [].slice.call(brothers);
     let myindex = array.indexOf(this.el.nativeElement);
     let next_index = (myindex + 1) % array.length;
-    array[ next_index ].focus();
+    array[next_index].focus();
   }
 
 }

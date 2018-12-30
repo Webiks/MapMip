@@ -6,7 +6,7 @@ export class AppState {
   polygons: Observable<Array<any>>;
 
   constructor(private router: Router) {
-    this.polygons = this.router[ 'currentUrlTree' ].queryParams[ 'polygons' ];
+    this.polygons = this.router['currentUrlTree'].queryParams['polygons'];
   }
 
 

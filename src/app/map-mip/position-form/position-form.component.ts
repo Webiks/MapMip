@@ -8,22 +8,22 @@ import { PositionFormService } from './position-form.service';
 import { MapMipService } from '../api/map-mip.service';
 
 
-const position_form_animations = [ trigger('showTools',
-  [ transition(':enter', [
+const position_form_animations = [trigger('showTools',
+  [transition(':enter', [
     style({ maxHeight: '0', opacity: 0 }),
     animate('0.3s', style({ maxHeight: '500px', opacity: 1 }))
   ]),
     transition(':leave', [
       style({ maxHeight: '500px', opacity: 1 }),
       animate('0.3s', style({ maxHeight: '0', opacity: 0 }))
-    ]) ]
-) ];
+    ])]
+)];
 
 
 @Component({
   selector: 'app-position-form',
   templateUrl: './position-form.component.html',
-  styleUrls: [ './position-form.component.scss' ],
+  styleUrls: ['./position-form.component.scss'],
   animations: position_form_animations
 })
 
@@ -52,43 +52,43 @@ export class PositionFormComponent implements OnInit {
     polygons: { val?: string, permissions: number[], input_type?: string },
     polyline: { val?: string, permissions: number[], input_type?: string }
   } = {
-    lng: { permissions: [ Permissions[ '/cesium' ], Permissions[ '/leaflet' ], Permissions[ '/openlayers' ] ] },
-    lat: { permissions: [ Permissions[ '/cesium' ], Permissions[ '/leaflet' ], Permissions[ '/openlayers' ] ] },
-    zoom: { permissions: [ Permissions[ '/leaflet' ], Permissions[ '/openlayers' ] ] },
-    heading: { permissions: [ Permissions[ '/cesium' ], Permissions[ '/openlayers' ] ] },
-    pitch: { permissions: [ Permissions[ '/cesium' ] ] },
-    roll: { permissions: [ Permissions[ '/cesium' ] ] },
-    height: { permissions: [ Permissions[ '/cesium' ] ] },
-    mode3d: { permissions: [ Permissions[ '/cesium' ] ], input_type: 'Bswitch' },
-    rotate: { permissions: [ Permissions[ '/openlayers' ], Permissions[ '/cesium?mode3d=0' ] ], input_type: 'Bswitch' },
+    lng: { permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']] },
+    lat: { permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']] },
+    zoom: { permissions: [Permissions['/leaflet'], Permissions['/openlayers']] },
+    heading: { permissions: [Permissions['/cesium'], Permissions['/openlayers']] },
+    pitch: { permissions: [Permissions['/cesium']] },
+    roll: { permissions: [Permissions['/cesium']] },
+    height: { permissions: [Permissions['/cesium']] },
+    mode3d: { permissions: [Permissions['/cesium']], input_type: 'Bswitch' },
+    rotate: { permissions: [Permissions['/openlayers'], Permissions['/cesium?mode3d=0']], input_type: 'Bswitch' },
     markers: {
-      permissions: [ Permissions[ '/cesium' ], Permissions[ '/leaflet' ], Permissions[ '/openlayers' ] ],
+      permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']],
       input_type: 'app-markers'
     },
     layers: {
-      permissions: [ Permissions[ '/leaflet' ], Permissions[ '/openlayers' ], Permissions[ '/cesium' ] ],
+      permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']],
       input_type: 'app-layers'
     },
     size: {
-      permissions: [ Permissions[ '/leaflet' ], Permissions[ '/openlayers' ], Permissions[ '/cesium' ] ],
+      permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']],
       input_type: 'app-map-size'
     },
     position: {
-      permissions: [ Permissions[ '/leaflet' ], Permissions[ '/openlayers' ], Permissions[ '/cesium' ] ],
+      permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']],
       input_type: 'app-map-position'
     },
-    terrain: { permissions: [ Permissions[ '/cesium' ] ], input_type: 'app-terrain' },
+    terrain: { permissions: [Permissions['/cesium']], input_type: 'app-terrain' },
     geojson: {
-      permissions: [ Permissions[ '/leaflet' ], Permissions[ '/openlayers' ], Permissions[ '/cesium' ] ],
+      permissions: [Permissions['/leaflet'], Permissions['/openlayers'], Permissions['/cesium']],
       input_type: 'app-geojson-layer'
     },
-    lighting: { permissions: [ Permissions[ '/cesium' ] ], input_type: 'app-map-lighting' },
+    lighting: { permissions: [Permissions['/cesium']], input_type: 'app-map-lighting' },
     polygons: {
-      permissions: [ Permissions[ '/cesium' ], Permissions[ '/leaflet' ], Permissions[ '/openlayers' ] ],
+      permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']],
       input_type: 'app-polygons'
     },
     polyline: {
-      permissions: [ Permissions[ '/cesium' ], Permissions[ '/leaflet' ], Permissions[ '/openlayers' ] ],
+      permissions: [Permissions['/cesium'], Permissions['/leaflet'], Permissions['/openlayers']],
       input_type: 'app-polyline'
     }
   };
@@ -97,7 +97,7 @@ export class PositionFormComponent implements OnInit {
   }
 
   removeMe(key, event) {
-    this.params[ key ].val = event;
+    this.params[key].val = event;
     this.submitForm();
   }
 
@@ -145,27 +145,27 @@ export class PositionFormComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe((params: Params) => {
       this.keys(this.params).forEach(key => {
-        let obj = this.params[ key ];
+        let obj = this.params[key];
         switch (key) {
           case 'mode3d':
-            obj.val = params[ 'mode3d' ] === 0 ? false : true;
+            obj.val = params['mode3d'] === 0 ? false : true;
             break;
           case 'rotate':
             if (this.router.isActive('/openlayers', false)) {
-              obj.val = params[ 'rotate' ] === 0 ? false : true;
+              obj.val = params['rotate'] === 0 ? false : true;
             } else {
-              obj.val = params[ 'rotate' ] === 1 ? true : false;
+              obj.val = params['rotate'] === 1 ? true : false;
             }
             break;
           default:
-            obj.val = params[ key ] || undefined;
+            obj.val = params[key] || undefined;
         }
       });
     });
   }
 
   submitForm() {
-    let queryParams: { [ key: string ]: number | string | boolean } = {};
+    let queryParams: { [key: string]: number | string | boolean } = {};
 
     _.forEach(this.params, (obj, key) => {
       let val = obj.val;
@@ -181,7 +181,7 @@ export class PositionFormComponent implements OnInit {
           }
           break;
       }
-      queryParams[ key ] = val;
+      queryParams[key] = val;
     });
 
     let navigationExtras: NavigationExtras = this.queryParamsHelperService.getQuery(queryParams);
@@ -192,10 +192,10 @@ export class PositionFormComponent implements OnInit {
     let urlTreeCurrent: UrlTree = this.router.parseUrl(this.router.url);
     let havePermission = false;
     this.keys(obj.permissions).forEach(key => {
-      const num = obj.permissions[ key ];
-      let url: string = Permissions[ num ];
+      const num = obj.permissions[key];
+      let url: string = Permissions[num];
       let urlTreeCheck: UrlTree = this.router.parseUrl(url);
-      let path_premission: string = urlTreeCheck.root.children[ 'primary' ].segments[ 0 ].path;
+      let path_premission: string = urlTreeCheck.root.children['primary'].segments[0].path;
 
       let url_router: string = this.router.url;
       let urlTreeCheckRouter: UrlTree = this.router.parseUrl(url_router);
@@ -204,7 +204,7 @@ export class PositionFormComponent implements OnInit {
       if (path_premission && path_router && path_router.includes(path_premission)) {
         havePermission = true;
         _.forEach(urlTreeCheck.queryParams, (val, key) => {
-          if (urlTreeCheck.queryParams[ key ] !== urlTreeCurrent.queryParams[ key ]) {
+          if (urlTreeCheck.queryParams[key] !== urlTreeCurrent.queryParams[key]) {
             havePermission = false;
           }
         });

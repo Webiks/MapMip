@@ -5,7 +5,7 @@ import { PositionFormService } from '../position-form.service';
 @Component({
   selector: 'app-polyline',
   templateUrl: './polyline.component.html',
-  styleUrls: [ './polyline.component.css' ]
+  styleUrls: ['./polyline.component.css']
 })
 export class PolylineComponent implements OnInit {
   @Input() polyline: string;

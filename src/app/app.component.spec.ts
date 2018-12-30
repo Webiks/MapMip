@@ -17,7 +17,7 @@ describe('AppComponent', () => {
         navbar,
         mapmip
       ],
-      imports: [ RouterTestingModule ]
+      imports: [RouterTestingModule]
     });
     TestBed.compileComponents();
   });

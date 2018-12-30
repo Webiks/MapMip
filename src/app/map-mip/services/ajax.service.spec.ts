@@ -8,11 +8,11 @@ let http: Http;
 describe('AjaxService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ AjaxService ],
-      imports: [ HttpModule ]
+      providers: [AjaxService],
+      imports: [HttpModule]
     });
   });
-  beforeEach(inject([ AjaxService, Http ], (_ajaxService: AjaxService, _http: Http) => {
+  beforeEach(inject([AjaxService, Http], (_ajaxService: AjaxService, _http: Http) => {
     ajaxService = _ajaxService;
     http = _http;
   }));

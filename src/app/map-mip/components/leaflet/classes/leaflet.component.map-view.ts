@@ -36,12 +36,12 @@ export class LeafletMapView {
     let lng: number = event.target.getCenter().lng;
     let lat: number = event.target.getCenter().lat;
     let zoom: number = event.target.getZoom();
-    let markers = this.leaflet.currentParams[ 'markers' ];
-    let layers = this.leaflet.currentParams[ 'layers' ];
-    let size = this.leaflet.currentParams[ 'size' ];
-    let position = this.leaflet.currentParams[ 'position' ];
-    let geojson = this.leaflet.currentParams[ 'geojson' ];
-    let polygons = this.leaflet.currentParams[ 'polygons' ];
+    let markers = this.leaflet.currentParams['markers'];
+    let layers = this.leaflet.currentParams['layers'];
+    let size = this.leaflet.currentParams['size'];
+    let position = this.leaflet.currentParams['position'];
+    let geojson = this.leaflet.currentParams['geojson'];
+    let polygons = this.leaflet.currentParams['polygons'];
 
 
     let navigationExtras: NavigationExtras = this.leaflet.queryParamsHelperService.getQuery({
@@ -65,12 +65,12 @@ export class LeafletMapView {
     let latitude: number = this.leaflet.queryParamsHelperService.queryLat(params);
     let zoom: number = this.leaflet.queryParamsHelperService.queryZoom(params);
 
-    this.leaflet.map.setView([ latitude, longitude ], zoom);
+    this.leaflet.map.setView([latitude, longitude], zoom);
   }
 
   setMapBounds(params: Params): void {
-    let bounds: [ number, number, number, number ] = this.leaflet.queryParamsHelperService.queryBounds(params);
-    this.leaflet.map.fitBounds(<L.LatLngBoundsExpression> [ [ bounds[ 1 ], bounds[ 0 ] ], [ bounds[ 3 ], bounds[ 2 ] ] ], null);
+    let bounds: [number, number, number, number] = this.leaflet.queryParamsHelperService.queryBounds(params);
+    this.leaflet.map.fitBounds(<L.LatLngBoundsExpression> [[bounds[1], bounds[0]], [bounds[3], bounds[2]]], null);
   }
 
   anyParamChanges(params: Params): boolean {
@@ -78,7 +78,7 @@ export class LeafletMapView {
     let latitudeP: number = this.leaflet.queryParamsHelperService.queryLat(params);
     let zoomP: number = this.leaflet.queryParamsHelperService.queryZoom(params);
 
-    let arrayP = [ longitudeP, latitudeP, zoomP ];
+    let arrayP = [longitudeP, latitudeP, zoomP];
 
     let longitude: number;
     let latitude: number;
@@ -93,7 +93,7 @@ export class LeafletMapView {
       return true;
     }
 
-    let array = [ longitude, latitude, zoom ];
+    let array = [longitude, latitude, zoom];
 
     arrayP = this.leaflet.calcService.toFixes7Obj(arrayP);
     array = this.leaflet.calcService.toFixes7Obj(array);
@@ -101,9 +101,9 @@ export class LeafletMapView {
     return !_.isEqual(arrayP, array);
   }
 
-  getBounds(): [ number, number, number, number ] {
+  getBounds(): [number, number, number, number] {
     let leaflet_bounds: L.LatLngBounds = this.leaflet.map.getBounds();
-    let saved_bounds: [ number, number, number, number ] = [ leaflet_bounds.getNorthWest().lng, leaflet_bounds.getNorthWest().lat, leaflet_bounds.getSouthEast().lng, leaflet_bounds.getSouthEast().lat ];
+    let saved_bounds: [number, number, number, number] = [leaflet_bounds.getNorthWest().lng, leaflet_bounds.getNorthWest().lat, leaflet_bounds.getSouthEast().lng, leaflet_bounds.getSouthEast().lat];
     return saved_bounds;
   }
 
@@ -112,19 +112,19 @@ export class LeafletMapView {
     switch (state) {
       case MapMipService.CESIUM_PATH:
         let bounds = this.getBounds().toString();
-        let markers = this.leaflet.currentParams[ 'markers' ];
-        let layers = this.leaflet.currentParams[ 'layers' ];
-        let size = this.leaflet.currentParams[ 'size' ];
-        let position = this.leaflet.currentParams[ 'position' ];
-        let geojson = this.leaflet.currentParams[ 'geojson' ];
-        let polygons = this.leaflet.currentParams[ 'polygons' ];
+        let markers = this.leaflet.currentParams['markers'];
+        let layers = this.leaflet.currentParams['layers'];
+        let size = this.leaflet.currentParams['size'];
+        let position = this.leaflet.currentParams['position'];
+        let geojson = this.leaflet.currentParams['geojson'];
+        let polygons = this.leaflet.currentParams['polygons'];
         extras.queryParams = { bounds, markers, layers, size, position, geojson, polygons };
         break;
       case MapMipService.OPENLAYERS_PATH:
         extras = { queryParamsHandling: 'preserve' };
         break;
     }
-    this.leaflet.mapMipService.navigate([ state ], extras).then(() => {
+    this.leaflet.mapMipService.navigate([state], extras).then(() => {
       this.leaflet.map.off('moveend');
       this.gotoEmitterSubscriber.unsubscribe();
     });

@@ -29,7 +29,7 @@ export class CesiumGeoJson {
             that.cesium.viewer.dataSources.add(dataSource);
             let d = dataSource;
             let entities = dataSource.entities.values;
-            let cartesianArr = dataSource.entities.values[ 0 ].polyline.positions.getValue();
+            let cartesianArr = dataSource.entities.values[0].polyline.positions.getValue();
             _.forEach(entities, function (ent) {
               that.cesium.viewer.dataSources.remove(d);
               let positionArr = [];
@@ -60,7 +60,7 @@ export class CesiumGeoJson {
               });
 
               that.cesium.viewer.scene.primitives.add(new Cesium.GroundPrimitive({
-                geometryInstances: [ coloredCorridorInstance ]
+                geometryInstances: [coloredCorridorInstance]
               }));
               (<any>ent).billboard.image = '/assets/Markers/marker-icon-blue.png';
             });

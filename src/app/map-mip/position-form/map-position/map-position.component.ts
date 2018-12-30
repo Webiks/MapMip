@@ -5,7 +5,7 @@ import { PositionFormService } from '../position-form.service';
 @Component({
   selector: 'app-map-position',
   templateUrl: './map-position.component.html',
-  styleUrls: [ './map-position.component.scss' ]
+  styleUrls: ['./map-position.component.scss']
 })
 
 export class MapPositionComponent implements OnChanges, OnInit {
@@ -29,7 +29,7 @@ export class MapPositionComponent implements OnChanges, OnInit {
     width: '0%'
   };
 
-  public positionArr: [ number, number ];
+  public positionArr: [number, number];
   public mouseDown = false;
 
   public drag_obj = {
@@ -43,12 +43,12 @@ export class MapPositionComponent implements OnChanges, OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
 
-    if (changes[ 'size' ]) {
+    if (changes['size']) {
       this.onSizeChanges();
       this.onPositionChanges();
     }
 
-    if (changes[ 'position' ]) {
+    if (changes['position']) {
       this.onPositionChanges();
     }
 
@@ -58,8 +58,8 @@ export class MapPositionComponent implements OnChanges, OnInit {
     let position = this.position;
     this.positionArr = this.queryParamsHelperService.queryPosition({ position });
 
-    let pixelLeft = this.maxBoundX() * this.positionArr[ 0 ] / 100;
-    let pixelTop = this.maxBoundY() * this.positionArr[ 1 ] / 100;
+    let pixelLeft = this.maxBoundX() * this.positionArr[0] / 100;
+    let pixelTop = this.maxBoundY() * this.positionArr[1] / 100;
 
     pixelLeft = Math.max(pixelLeft, 0);
     pixelTop = Math.max(pixelTop, 0);
@@ -74,8 +74,8 @@ export class MapPositionComponent implements OnChanges, OnInit {
   onSizeChanges(): void {
     let size = this.size;
     let sizeArr = this.queryParamsHelperService.querySize({ size });
-    this.dragStyle.width = `${sizeArr[ 0 ]}%`;
-    this.dragStyle.height = `${sizeArr[ 1 ]}%`;
+    this.dragStyle.width = `${sizeArr[0]}%`;
+    this.dragStyle.height = `${sizeArr[1]}%`;
   }
 
   onResize() {
@@ -124,7 +124,7 @@ export class MapPositionComponent implements OnChanges, OnInit {
     }
   }
 
-  convertPixelsToPrecnt(left: string = this.dragStyle.left, top: string = this.dragStyle.top): [ number, number ] {
+  convertPixelsToPrecnt(left: string = this.dragStyle.left, top: string = this.dragStyle.top): [number, number] {
     let _maxBoundX = this.maxBoundX();
     if (_maxBoundX === 0) {
       _maxBoundX = 100;
@@ -139,7 +139,7 @@ export class MapPositionComponent implements OnChanges, OnInit {
     let precent_top = parseFloat(parseFloat(top) / _maxBoundY * 100 + '');
     precent_left = Math.max(0, Math.min(100, precent_left));
     precent_top = Math.max(0, Math.min(100, precent_top));
-    return [ parseInt(precent_left.toString(), 10), parseInt(precent_top.toString(), 10) ];
+    return [parseInt(precent_left.toString(), 10), parseInt(precent_top.toString(), 10)];
   }
 
   maxBoundX(): number {
