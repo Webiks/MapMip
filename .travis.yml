@@ -31,9 +31,7 @@ before_deploy:
 
 deploy:
   provider: script
-  script:
-   - aws s3 rm $BUCKET_URL --recursive
-   - aws s3 cp dist $BUCKET_URL --recursive
+  script: sh -x scripts/deploy.sh $BUCKET_URL
   skip_cleanup: true
   on:
     branch: master
