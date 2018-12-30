@@ -17,6 +17,7 @@ before_script:
 
 script:
  - npm run test
+ - npm run build:prod
 
 cache:
   directories:
@@ -26,13 +27,13 @@ notifications:
   email: false
 
 before_deploy:
-  - npm run build:prod
   - pip install --user awscli
-  - aws ecr get-login --no-include-email --region us-west-2
 
 deploy:
   provider: script
-  script: aws s3 cp /dist/ s3://mapmiptest.webiks.com/ --recursive
+  script:
+   - aws s3 rm s3://mapmip.webiks.com --recursive
+   - aws s3 cp dist s3://mapmip.webiks.com/ --recursive
   skip_cleanup: true
   on:
     branch: master
