@@ -26,13 +26,13 @@ describe('LeafletComponent', () => {
         BrowserAnimationsModule,
         HttpModule
       ],
-      declarations: [LeafletComponent],
-      providers: [QueryParamsHelperService, CalcService, PositionFormService, MapMipService]
+      declarations: [ LeafletComponent ],
+      providers: [ QueryParamsHelperService, CalcService, PositionFormService, MapMipService ]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([QueryParamsHelperService, Router, PositionFormService], (_queryParamsHelperService: QueryParamsHelperService, _router: Router, _positionFormService: PositionFormService) => {
+  beforeEach(inject([ QueryParamsHelperService, Router, PositionFormService ], (_queryParamsHelperService: QueryParamsHelperService, _router: Router, _positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(LeafletComponent);
     component = fixture.componentInstance;
     queryParamsHelperService = _queryParamsHelperService;
@@ -89,12 +89,15 @@ describe('LeafletComponent', () => {
 
     it('anyMarkersMapChanges: should get params and compere between markers on params and markers on map', () => {
       let params = {};
-      let params_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50] }];
-      let map_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50], color: config.defaultMarker.icon }];
+      let params_markers = [ { position: [ 30, 20 ], color: 'green' }, { position: [ 60, 50 ] } ];
+      let map_markers = [ { position: [ 30, 20 ], color: 'green' }, {
+        position: [ 60, 50 ],
+        color: config.defaultMarker.icon
+      } ];
       spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(() => params_markers);
       spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers);
       expect(markers.anyMarkersMapChanges(params)).toBeFalsy();
-      params_markers[1].icon = 'red';
+      params_markers[ 1 ].icon = 'red';
       expect(markers.anyMarkersMapChanges({})).toBeTruthy();
     });
 
@@ -105,18 +108,21 @@ describe('LeafletComponent', () => {
     });
 
     it('getMarkersPosition should return positions array ( {position,color}, {position,color},...)', () => {
-      let marker_a = { position: [20, 30], color: 'red' };
-      let marker_b = { position: [40, 50] };
+      let marker_a = { position: [ 20, 30 ], color: 'red' };
+      let marker_b = { position: [ 40, 50 ] };
       markers.getBaseMarker(marker_a).addTo(component.map);
       markers.getBaseMarker(marker_b).addTo(component.map);
       expect(markers.getMarkersPosition().length).toEqual(2);
-      expect(markers.getMarkersPosition()[0]).toEqual({ position: [20, 30], color: 'red' });
-      expect(markers.getMarkersPosition()[1]).toEqual({ position: [40, 50], color: config.defaultMarker.icon });
+      expect(markers.getMarkersPosition()[ 0 ]).toEqual({ position: [ 20, 30 ], color: 'red' });
+      expect(markers.getMarkersPosition()[ 1 ]).toEqual({ position: [ 40, 50 ], color: config.defaultMarker.icon });
     });
 
     it('setMarkersChanges: should call addMarkersViaUrl with params_markers_position and call removeMarkersViaUrl with map_markers_positions', () => {
-      let params_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50] }];
-      let map_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50], color: config.defaultMarker.icon }];
+      let params_markers = [ { position: [ 30, 20 ], color: 'green' }, { position: [ 60, 50 ] } ];
+      let map_markers = [ { position: [ 30, 20 ], color: 'green' }, {
+        position: [ 60, 50 ],
+        color: config.defaultMarker.icon
+      } ];
       spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(() => params_markers);
       spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers);
       spyOn(markers, 'addMarkersViaUrl');
@@ -133,20 +139,20 @@ describe('LeafletComponent', () => {
       };
       spyOn(fake_marker, 'addTo');
       spyOn(markers, 'getBaseMarker').and.callFake(() => fake_marker);
-      let params_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50], color: 'red' }];
-      let map_markers = [{ position: [30, 20], color: 'green' }];
+      let params_markers = [ { position: [ 30, 20 ], color: 'green' }, { position: [ 60, 50 ], color: 'red' } ];
+      let map_markers = [ { position: [ 30, 20 ], color: 'green' } ];
       markers.addMarkersViaUrl(params_markers, map_markers);
-      expect(markers.getBaseMarker).toHaveBeenCalledWith({ position: [60, 50], color: 'red' });
+      expect(markers.getBaseMarker).toHaveBeenCalledWith({ position: [ 60, 50 ], color: 'red' });
       expect(markers.getBaseMarker).toHaveBeenCalledTimes(1);
       expect(fake_marker.addTo).toHaveBeenCalledTimes(1);
     });
 
     it('removeMarkersViaUrl: should get {positions,color} array from map. for each {position,color} remove marker if not exists on params', () => {
-      let not_exist_marker = { position: [60, 50], color: 'red' };
+      let not_exist_marker = { position: [ 60, 50 ], color: 'red' };
       spyOn(component.map, 'removeLayer');
       spyOn(markers, 'getMarkerViaMarkerObj').and.callFake(marker => marker);
-      let params_markers = [{ position: [30, 20], color: 'green' }];
-      let map_markers = [{ position: [30, 20], color: 'green' }, not_exist_marker];
+      let params_markers = [ { position: [ 30, 20 ], color: 'green' } ];
+      let map_markers = [ { position: [ 30, 20 ], color: 'green' }, not_exist_marker ];
       markers.removeMarkersViaUrl(params_markers, map_markers);
 
       expect(markers.getMarkerViaMarkerObj).toHaveBeenCalledTimes(1);
@@ -155,17 +161,17 @@ describe('LeafletComponent', () => {
     });
 
     it('markerExistOnMap: should get one {position,color} and return if there is marker on map with that {position,color}', () => {
-      let existMarkerObj = { position: [60, 50] };
-      let notExistMarkerObj = { position: [60, 50], color: 'red' };
-      let map_markers = [{ position: [60, 50], color: config.defaultMarker.icon }];
+      let existMarkerObj = { position: [ 60, 50 ] };
+      let notExistMarkerObj = { position: [ 60, 50 ], color: 'red' };
+      let map_markers = [ { position: [ 60, 50 ], color: config.defaultMarker.icon } ];
       expect(markers.markerExistOnMap(map_markers, existMarkerObj)).toBeTruthy();
       expect(markers.markerExistOnMap(map_markers, notExistMarkerObj)).toBeFalsy();
     });
 
     it('markerExistOnParams: should get one position and return if there is marker on params with that position', () => {
-      let existMarkerObj = { position: [60, 50], color: config.defaultMarker.icon };
-      let notExistMarkerObj = { position: [60, 50], color: 'red' };
-      let params_markers = [{ position: [60, 50] }];
+      let existMarkerObj = { position: [ 60, 50 ], color: config.defaultMarker.icon };
+      let notExistMarkerObj = { position: [ 60, 50 ], color: 'red' };
+      let params_markers = [ { position: [ 60, 50 ] } ];
       expect(markers.markerExistOnParams(params_markers, existMarkerObj)).toBeTruthy();
       expect(markers.markerExistOnParams(params_markers, notExistMarkerObj)).toBeFalsy();
     });
@@ -183,12 +189,12 @@ describe('LeafletComponent', () => {
 
     it('leftClickInputAction should get event with latlng, and call addMarker with latlng', () => {
       spyOn(queryParamsHelperService, 'addMarker');
-      spyOn(component.map, 'layerPointToLatLng').and.callFake(() => L.latLng([20, 20]));
+      spyOn(component.map, 'layerPointToLatLng').and.callFake(() => L.latLng([ 20, 20 ]));
 
       let event: { layerPoint: L.Point } = <any>{ layerPoint: L.point(30, 30) };
       positionFormService.selectedColorIndex = positionFormService.getSelectedColorIndex('black');
       markers.leftClickInputAction(event);
-      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith({ position: [20, 20], color: 'black' });
+      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith({ position: [ 20, 20 ], color: 'black' });
     });
 
   });

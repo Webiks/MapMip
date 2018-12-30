@@ -23,16 +23,16 @@ describe('TerrainComponent', () => {
         FormsModule,
         PopoverModule.forRoot()
       ],
-      declarations: [TerrainComponent],
-      providers: [QueryParamsHelperService, CalcService, {
+      declarations: [ TerrainComponent ],
+      providers: [ QueryParamsHelperService, CalcService, {
         provide: AjaxService,
         useValue: fake_Ajax_Service
-      }, PositionFormService, MapMipService]
+      }, PositionFormService, MapMipService ]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([QueryParamsHelperService], (_queryParamsHelperService: QueryParamsHelperService) => {
+  beforeEach(inject([ QueryParamsHelperService ], (_queryParamsHelperService: QueryParamsHelperService) => {
     fixture = TestBed.createComponent(TerrainComponent);
     component = fixture.componentInstance;
     queryParamsHelperService = _queryParamsHelperService;

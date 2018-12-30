@@ -4,10 +4,10 @@ import { ContextMenuComponent } from './context-menu/context-menu.component';
 import { ContextMenuService } from './services/context-menu.service';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [ContextMenuComponent],
-  exports: [ContextMenuComponent],
-  providers: [ContextMenuService]
+  imports: [ CommonModule ],
+  declarations: [ ContextMenuComponent ],
+  exports: [ ContextMenuComponent ],
+  providers: [ ContextMenuService ]
 })
 export class ContextMenuModule {
 }

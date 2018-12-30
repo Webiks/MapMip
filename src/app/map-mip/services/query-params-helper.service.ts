@@ -19,91 +19,91 @@ export class QueryParamsHelperService {
   constructor(private router: Router, private mapMipService: MapMipService) {
   }
 
-  queryBounds(params: Params): [number, number, number, number] {
-    let boundsString = params['bounds'];
-    let bounds: [number, number, number, number] = boundsString.split(',').map(strToNum => +strToNum);
+  queryBounds(params: Params): [ number, number, number, number ] {
+    let boundsString = params[ 'bounds' ];
+    let bounds: [ number, number, number, number ] = boundsString.split(',').map(strToNum => +strToNum);
     return bounds;
   }
 
   hasQueryBounds(params: Params): boolean {
-    let boundsString = params['bounds'];
+    let boundsString = params[ 'bounds' ];
     return !_.isEmpty(boundsString);
   }
 
   queryLat(params: Params): number {
-    return +params['lat'] || 0;
+    return +params[ 'lat' ] || 0;
   }
 
   queryLng(params: Params): number {
-    return +params['lng'] || 0;
+    return +params[ 'lng' ] || 0;
   }
 
   queryZoom(params: Params): number {
-    return +params['zoom'] || 0;
+    return +params[ 'zoom' ] || 0;
   }
 
   queryHeading(params: Params): number {
-    return +params['heading'] || 0;
+    return +params[ 'heading' ] || 0;
   }
 
   queryRoll(params: Params) {
-    return +params['roll'] || 0;
+    return +params[ 'roll' ] || 0;
   }
 
   queryHeight(params: Params): number {
-    return +params['height'] || 0;
+    return +params[ 'height' ] || 0;
   }
 
   queryPitch(params: Params): number {
-    return +params['pitch'] || -90;
+    return +params[ 'pitch' ] || -90;
   }
 
   queryMode3d(params: Params) {
-    return +params['mode3d'] === 0 ? 0 : 1;
+    return +params[ 'mode3d' ] === 0 ? 0 : 1;
   }
 
   queryRotate(params: Params): number {
-    return +params['rotate'];
+    return +params[ 'rotate' ];
   }
 
-  querySize(params: Params): [number, number] {
-    let size = params['size'];
+  querySize(params: Params): [ number, number ] {
+    let size = params[ 'size' ];
     if (_.isEmpty(size)) {
-      return [100, 100];
+      return [ 100, 100 ];
     }
     return size.split(',').map(str => +str);
   }
 
   queryTerrain(params: Params): string {
-    return params['terrain'];
+    return params[ 'terrain' ];
   }
 
   queryGeoJson(params: Params): string[] {
-    return this.geojsonStrToArray(params['geojson']);
+    return this.geojsonStrToArray(params[ 'geojson' ]);
   }
 
   queryLighting(params: Params): number {
-    if (+params['lighting'] !== 1) {
+    if (+params[ 'lighting' ] !== 1) {
       return 0;
     }
     return 1;
   }
 
-  queryPosition(params: Params): [number, number] {
-    let position = params['position'];
+  queryPosition(params: Params): [ number, number ] {
+    let position = params[ 'position' ];
     if (_.isEmpty(position)) {
-      return [50, 50];
+      return [ 50, 50 ];
     }
     return position.split(',').map(str => +str);
   }
 
   queryPolygons(params: Params): Array<any> {
-    return this.polygonsStrToArray(params['polygons']);
+    return this.polygonsStrToArray(params[ 'polygons' ]);
 
   }
 
   queryPolyline(params: Params): Array<any> {
-    return this.polylineStrToArray(params['polyline']);
+    return this.polylineStrToArray(params[ 'polyline' ]);
 
   }
 
@@ -151,52 +151,52 @@ export class QueryParamsHelperService {
 
   addMarker(marker: MapMipMarker) {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
-    let markers_array: Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
+    let markers_array: Array<any> = this.markersStrToArray(urlTree.queryParams[ 'markers' ]);
     markers_array.push(marker);
-    urlTree.queryParams['markers'] = this.markersArrayToStr(markers_array);
+    urlTree.queryParams[ 'markers' ] = this.markersArrayToStr(markers_array);
     this.mapMipService.navigateByUrl(urlTree.toString());
   }
 
   addPolyline(coords: number[]) {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
-    const polyline_url = urlTree.queryParams['polyline'] || '';
+    const polyline_url = urlTree.queryParams[ 'polyline' ] || '';
     const polyline_array = rison.decode_array(polyline_url);
     polyline_array.push({ coords });
-    urlTree.queryParams['polyline'] = rison.encode_array(polyline_array);
+    urlTree.queryParams[ 'polyline' ] = rison.encode_array(polyline_array);
     this.mapMipService.navigateByUrl(urlTree.toString());
   }
 
   addPolygon(coords: number[]) {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
-    const polygons_url = urlTree.queryParams['polygons'] || '';
+    const polygons_url = urlTree.queryParams[ 'polygons' ] || '';
     const polygons_array = rison.decode_array(polygons_url);
     polygons_array.push({ coords });
-    urlTree.queryParams['polygons'] = rison.encode_array(polygons_array);
+    urlTree.queryParams[ 'polygons' ] = rison.encode_array(polygons_array);
     this.mapMipService.navigateByUrl(urlTree.toString());
   }
 
   removeMarker(marker) {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
-    let markers_array: Array<any> = this.markersStrToArray(urlTree.queryParams['markers']);
+    let markers_array: Array<any> = this.markersStrToArray(urlTree.queryParams[ 'markers' ]);
     _.forEach(markers_array, function (m, index) {
-      if (marker.position[0] === m.position[0] && marker.position[1] === m.position[1] && marker.icon === m.icon) {
+      if (marker.position[ 0 ] === m.position[ 0 ] && marker.position[ 1 ] === m.position[ 1 ] && marker.icon === m.icon) {
         markers_array.splice(index, 1);
       }
     });
-    urlTree.queryParams['markers'] = this.markersArrayToStr(markers_array);
+    urlTree.queryParams[ 'markers' ] = this.markersArrayToStr(markers_array);
     this.mapMipService.navigateByUrl(urlTree.toString());
   }
 
   addGeojson(geojson) {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
-    let geojson_array: Array<any> = this.geojsonStrToArray(urlTree.queryParams['geojson']);
+    let geojson_array: Array<any> = this.geojsonStrToArray(urlTree.queryParams[ 'geojson' ]);
     geojson_array.push(geojson);
-    urlTree.queryParams['geojson'] = this.geojsonArrayToStr(geojson_array);
+    urlTree.queryParams[ 'geojson' ] = this.geojsonArrayToStr(geojson_array);
     this.mapMipService.navigateByUrl(urlTree.toString());
   }
 
   queryMarkers(params: Params): Array<MapMipMarker> {
-    return this.markersStrToArray(params['markers']).map(this.markerIncludeDefaults.bind(this));
+    return this.markersStrToArray(params[ 'markers' ]).map(this.markerIncludeDefaults.bind(this));
   }
 
 
@@ -211,7 +211,7 @@ export class QueryParamsHelperService {
     let decode_array = this.queryLayersStrings(params);
     decode_array.forEach(layer_obj => {
       _.forEach(layer_obj, (val, key, obj) => {
-        obj[key] = decodeURIComponent(<any>val);
+        obj[ key ] = decodeURIComponent(<any>val);
       });
     });
     return decode_array;
@@ -222,7 +222,7 @@ export class QueryParamsHelperService {
   }
 
   queryLayersStringToObjects(params: Params): Array<Object> {
-    let layer_to_decode: string = params['layers'];
+    let layer_to_decode: string = params[ 'layers' ];
     if (_.isEmpty(layer_to_decode)) {
       layer_to_decode = '';
     }
@@ -231,7 +231,7 @@ export class QueryParamsHelperService {
   }
 
   queryGeojsonStringToObjects(params: Params): Array<Object> {
-    let geojson_to_decode: string = params['geojson'];
+    let geojson_to_decode: string = params[ 'geojson' ];
     if (_.isEmpty(geojson_to_decode)) {
       geojson_to_decode = '';
     }
@@ -263,7 +263,7 @@ export class QueryParamsHelperService {
       } else {
         url += '&';
       }
-      url += `${val}=${obj[val]}`;
+      url += `${val}=${obj[ val ]}`;
     });
     return url;
   }
@@ -271,7 +271,7 @@ export class QueryParamsHelperService {
   queryMarkersNoHeight(params: Params) {
     let markers = this.queryMarkers(params);
     markers.forEach(marker => {
-      marker.position = [marker.position[0], marker.position[1]];
+      marker.position = [ marker.position[ 0 ], marker.position[ 1 ] ];
     });
     return markers;
   }
@@ -299,8 +299,8 @@ export class QueryParamsHelperService {
 
   markerExcludeDefaults(marker: MapMipMarker): void {
     Object.keys(marker).forEach((key) => {
-      if (!marker[key] || marker[key] === config.defaultMarker[key]) {
-        delete marker[key];
+      if (!marker[ key ] || marker[ key ] === config.defaultMarker[ key ]) {
+        delete marker[ key ];
       }
     });
   }
@@ -309,8 +309,8 @@ export class QueryParamsHelperService {
     return {
       ...marker,
       icon: marker.icon || config.defaultMarker.icon,
-      label: marker.label || config.defaultMarker.label,
-    }
+      label: marker.label || config.defaultMarker.label
+    };
   }
 
   geojsonStrToArray(geojsonStr: string) {
@@ -358,7 +358,7 @@ export class QueryParamsHelperService {
     queryObj.heading = queryObj.heading % 360 === 0 ? undefined : queryObj.heading;
     queryObj.pitch = queryObj.pitch === -90 ? undefined : queryObj.pitch;
     queryObj.mode3d = queryObj.mode3d === 0 ? queryObj.mode3d : undefined;
-    // queryObj.rotate  = queryObj.rotate == 1 ? 1 : undefined;
+    // queryObj.rotate  = queryObj.rotate ===  1 ? 1 : undefined;
     queryObj.markers = _.isEmpty(queryObj.markers) ? undefined : queryObj.markers;
     queryObj.layers = _.isEmpty(queryObj.layers) ? undefined : queryObj.layers;
     queryObj.size = _.isEqual(queryObj.size, '100,100') ? undefined : queryObj.size;

@@ -9,8 +9,8 @@ describe('FlipSwitchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [TooltipModule.forRoot()],
-      declarations: [FlipSwitchComponent]
+      imports: [ TooltipModule.forRoot() ],
+      declarations: [ FlipSwitchComponent ]
     })
       .compileComponents();
   }));

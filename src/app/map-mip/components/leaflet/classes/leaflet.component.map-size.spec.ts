@@ -21,13 +21,13 @@ describe('LeafletComponent', () => {
         BrowserAnimationsModule,
         HttpModule
       ],
-      declarations: [LeafletComponent],
-      providers: [QueryParamsHelperService, CalcService, PositionFormService, MapMipService]
+      declarations: [ LeafletComponent ],
+      providers: [ QueryParamsHelperService, CalcService, PositionFormService, MapMipService ]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([QueryParamsHelperService], (_queryParamsHelperService: QueryParamsHelperService) => {
+  beforeEach(inject([ QueryParamsHelperService ], (_queryParamsHelperService: QueryParamsHelperService) => {
     fixture = TestBed.createComponent(LeafletComponent);
     component = fixture.componentInstance;
     queryParamsHelperService = _queryParamsHelperService;
@@ -42,7 +42,7 @@ describe('LeafletComponent', () => {
 
     it('queryParams should check if any changes on mapsize and set [width, height] if need', () => {
       spyOn(queryParamsHelperService, 'anySizeChange').and.returnValue(true);
-      spyOn(queryParamsHelperService, 'querySize').and.returnValue([50, 60]);
+      spyOn(queryParamsHelperService, 'querySize').and.returnValue([ 50, 60 ]);
       spyOn(component.map, 'invalidateSize');
       map_size.queryParams({});
       expect(component.container.nativeElement.style.width).toEqual('50%');

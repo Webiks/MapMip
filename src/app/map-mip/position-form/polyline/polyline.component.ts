@@ -5,7 +5,7 @@ import { PositionFormService } from '../position-form.service';
 @Component({
   selector: 'app-polyline',
   templateUrl: './polyline.component.html',
-  styleUrls: ['./polyline.component.css']
+  styleUrls: [ './polyline.component.css' ]
 })
 export class PolylineComponent implements OnInit {
   @Input() polyline: string;
@@ -24,7 +24,7 @@ export class PolylineComponent implements OnInit {
   };
 
   togglePolylinePicked(onPolylinePicked: boolean) {
-    //do toggle to button and start draw mode
+    // do toggle to button and start draw mode
     this.positionFormService.onPolylinePicked = onPolylinePicked;
     this.positionFormService.polylinePickerEmitter.emit(this.positionFormService.onPolylinePicked);
 

@@ -47,7 +47,7 @@ export class LeafletMarkers {
 
   leftClickInputAction(event: { layerPoint: L.Point }) {
     let fix_latlng: L.LatLng = this.leaflet.map.layerPointToLatLng(event.layerPoint);
-    let position: [number, number] = [fix_latlng.lng, fix_latlng.lat];
+    let position: [ number, number ] = [ fix_latlng.lng, fix_latlng.lat ];
     let icon: string = this.leaflet.positionFormService.getSelectedColor();
     let label: string = this.leaflet.positionFormService.markerLabel;
     this.leaflet.queryParamsHelperService.addMarker({ position, icon, label });
@@ -69,8 +69,8 @@ export class LeafletMarkers {
 
   parseLayerToMarker(layer: L.Marker): MapMipMarker {
     const latlng = layer.getLatLng();
-    const position = [+latlng.lng.toFixed(7), +latlng.lat.toFixed(7)];
-    const icon = this.leaflet.positionFormService.getMarkerColorByUrl(layer['_icon'].src) || config.defaultMarker.icon;
+    const position = [ +latlng.lng.toFixed(7), +latlng.lat.toFixed(7) ];
+    const icon = this.leaflet.positionFormService.getMarkerColorByUrl(layer[ '_icon' ].src) || config.defaultMarker.icon;
     const labelSpan = layer.getElement().querySelector('.my-div-span');
     const label = (labelSpan && labelSpan.textContent) || config.defaultMarker.label;
     return { position, icon, label };
@@ -104,10 +104,10 @@ export class LeafletMarkers {
     const icon = new L.DivIcon({
       className: 'my-div-icon',
       html: this.getIconHtml(marker),
-      iconSize: [baseMarker.width, baseMarker.height],
-      iconAnchor: [0, 0]
+      iconSize: [ baseMarker.width, baseMarker.height ],
+      iconAnchor: [ 0, 0 ]
     });
-    return L.marker([marker.position[1], marker.position[0]], { icon });
+    return L.marker([ marker.position[ 1 ], marker.position[ 0 ] ], { icon });
   }
 
   getIconHtml(marker) {
@@ -124,7 +124,7 @@ export class LeafletMarkers {
   }
 
   getMarkerLayersArray(): Array<L.Marker> {  // addition: exclude geojson
-    return <Array<L.Marker>> _.filter(this.leaflet.map['_layers'], (l) => l['getLatLng'] && !l.hasOwnProperty('feature') && !l.hasOwnProperty('_closeButton'));
+    return <Array<L.Marker>> _.filter(this.leaflet.map[ '_layers' ], (l) => l[ 'getLatLng' ] && !l.hasOwnProperty('feature') && !l.hasOwnProperty('_closeButton'));
 
   }
 

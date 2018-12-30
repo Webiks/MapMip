@@ -47,16 +47,16 @@ export class LeafletPolygons {
 
   addPolygonsViaUrl(params_polygons_array: any[]) {
 
-    let polygonsOnMap = _.filter(this.leaflet.map['_layers'], (l) => l['_latlngs'] && !l.hasOwnProperty('feature') && !l.hasOwnProperty('_icon'));
+    let polygonsOnMap = _.filter(this.leaflet.map[ '_layers' ], (l) => l[ '_latlngs' ] && !l.hasOwnProperty('feature') && !l.hasOwnProperty('_icon'));
 
     polygonsOnMap.forEach(polygon_obj => {
-      polygon_obj['remove']();
+      polygon_obj[ 'remove' ]();
     });
 
     params_polygons_array.forEach(polygon_obj => {
       let coords = [];
       for (let i = 0; i < polygon_obj.coords.length; i += 2) {
-        coords.push([polygon_obj.coords[i + 1], polygon_obj.coords[i]]);
+        coords.push([ polygon_obj.coords[ i + 1 ], polygon_obj.coords[ i ] ]);
       }
       if (!this.polygonsExistOnMap(coords)) {
         L.polygon(
@@ -67,9 +67,9 @@ export class LeafletPolygons {
   }
 
   polygonsExistOnMap(coords: L.LatLng[]): boolean {
-    const polygonsOnMap = _.filter(this.leaflet.map['_layers'], (l) => l['_latlngs'] && !l.hasOwnProperty('feature') && !l.hasOwnProperty('_icon'));
+    const polygonsOnMap = _.filter(this.leaflet.map[ '_layers' ], (l) => l[ '_latlngs' ] && !l.hasOwnProperty('feature') && !l.hasOwnProperty('_icon'));
     const exist_polygon = polygonsOnMap.find((polygon: L.Polygon) => {
-      const real_coord: L.LatLng[] = (polygon.getLatLngs()[0] as any).map(o => [o.lat, o.lng]);
+      const real_coord: L.LatLng[] = (polygon.getLatLngs()[ 0 ] as any).map(o => [ o.lat, o.lng ]);
       return _.isEqual(real_coord, coords);
     });
     return !_.isNil(exist_polygon);
@@ -92,17 +92,17 @@ export class LeafletPolygons {
 
   togglePolygonPicker() {
     let that = this;
-    var polygonDrawer = new this.leaflet.L.Draw['Polygon'](this.leaflet.map);
+    const polygonDrawer = new this.leaflet.L.Draw[ 'Polygon' ](this.leaflet.map);
     polygonDrawer.enable();
 
     this.leaflet.map.on('draw:created', function (e) {
       let str = '';
       const poly_arr = [];
-      var type = e['layerType'],
-        layer = e['layer'];
+      const type = e[ 'layerType' ],
+        layer = e[ 'layer' ];
       layer.addTo(that.leaflet.map);
-      that.polygonsCoords.push(layer['_latlngs']);
-      _.forEach(layer['_latlngs'], function (point) {
+      that.polygonsCoords.push(layer[ '_latlngs' ]);
+      _.forEach(layer[ '_latlngs' ], function (point) {
         _.forEach(point, function (p: any) {
           poly_arr.push(p.lng);
           poly_arr.push(p.lat);

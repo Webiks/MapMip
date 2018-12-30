@@ -21,9 +21,9 @@ export class SwitchLayersDirective {
   }
 
 
-  @HostListener('window:keypress', ['$event'])
+  @HostListener('window:keypress', [ '$event' ])
   keypress($event) {
-    if ($event.which == 32 && this.active) {
+    if ($event.which === 32 && this.active) {
       this.switchLayers();
     }
   }
@@ -31,8 +31,8 @@ export class SwitchLayersDirective {
 
   switchLayers() {
     const newLayersArray: any[] = this.layersArray.map((val, index: number, array) => {
-      var prev = (index - 1) < 0 ? array.length + (index - 1) : (index - 1);
-      return array[prev];
+      const prev = (index - 1) < 0 ? array.length + (index - 1) : (index - 1);
+      return array[ prev ];
     });
     const parsed_layer: string = this.queryParamsHelperService.queryLayersObjectToString(newLayersArray);
     const urlTree = this.router.parseUrl(this.router.url);

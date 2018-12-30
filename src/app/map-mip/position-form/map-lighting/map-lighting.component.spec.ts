@@ -12,9 +12,9 @@ describe('MapLightingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      providers: [MapMipService, PositionFormService, QueryParamsHelperService, CalcService],
-      declarations: [MapLightingComponent]
+      imports: [ RouterTestingModule ],
+      providers: [ MapMipService, PositionFormService, QueryParamsHelperService, CalcService ],
+      declarations: [ MapLightingComponent ]
     })
       .compileComponents();
   }));

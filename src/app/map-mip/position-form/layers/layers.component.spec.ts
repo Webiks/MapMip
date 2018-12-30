@@ -22,12 +22,12 @@ describe('LayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpModule, ModalModule.forRoot(), TooltipModule.forRoot(), BsDropdownModule.forRoot(), FormsModule],
-      declarations: [LayersComponent, SwitchLayersComponent, ReversePipe, DragItemDirective],
-      providers: [PositionFormService, QueryParamsHelperService, CalcService, MapMipService, {
+      imports: [ RouterTestingModule, HttpModule, ModalModule.forRoot(), TooltipModule.forRoot(), BsDropdownModule.forRoot(), FormsModule ],
+      declarations: [ LayersComponent, SwitchLayersComponent, ReversePipe, DragItemDirective ],
+      providers: [ PositionFormService, QueryParamsHelperService, CalcService, MapMipService, {
         provide: AjaxService,
         useValue: fake_Ajax_Service
-      }, PositioningService]
+      }, PositioningService ]
     })
       .compileComponents();
   }));

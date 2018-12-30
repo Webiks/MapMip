@@ -23,13 +23,13 @@ describe('LeafletComponent', () => {
         BrowserAnimationsModule,
         HttpModule
       ],
-      declarations: [LeafletComponent],
-      providers: [QueryParamsHelperService, CalcService, PositionFormService, MapMipService]
+      declarations: [ LeafletComponent ],
+      providers: [ QueryParamsHelperService, CalcService, PositionFormService, MapMipService ]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([QueryParamsHelperService, Router, PositionFormService], (_queryParamsHelperService: QueryParamsHelperService, _router: Router, _positionFormService: PositionFormService) => {
+  beforeEach(inject([ QueryParamsHelperService, Router, PositionFormService ], (_queryParamsHelperService: QueryParamsHelperService, _router: Router, _positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(LeafletComponent);
     component = fixture.componentInstance;
     queryParamsHelperService = _queryParamsHelperService;

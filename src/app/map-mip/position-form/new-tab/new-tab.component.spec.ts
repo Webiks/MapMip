@@ -8,8 +8,8 @@ describe('NewTabComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [NewTabComponent]
+      imports: [ RouterTestingModule ],
+      declarations: [ NewTabComponent ]
     })
       .compileComponents();
   }));

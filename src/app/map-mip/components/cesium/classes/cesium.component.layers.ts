@@ -7,9 +7,9 @@ export class CesiumLayers {
 
   static getBingLayer(layer_obj) {
     return new Cesium.BingMapsImageryProvider({
-      url: layer_obj['url'],
-      key: layer_obj['key'],
-      mapStyle: layer_obj['style']
+      url: layer_obj[ 'url' ],
+      key: layer_obj[ 'key' ],
+      mapStyle: layer_obj[ 'style' ]
     });
   }
 
@@ -33,10 +33,10 @@ export class CesiumLayers {
 
   getMapboxLayer(layer_obj) {
     return new Cesium.MapboxImageryProvider({
-      url: layer_obj['url'],
-      mapId: layer_obj['mapid'],
-      accessToken: layer_obj['access_token'],
-      format: layer_obj['format'] ? layer_obj['format'] : undefined,
+      url: layer_obj[ 'url' ],
+      mapId: layer_obj[ 'mapid' ],
+      accessToken: layer_obj[ 'access_token' ],
+      format: layer_obj[ 'format' ] ? layer_obj[ 'format' ] : undefined,
       proxy: {
         getURL: (url: string) => this.parseMapBoxUrl(layer_obj, url)
       }
@@ -75,15 +75,15 @@ export class CesiumLayers {
 
   getTmsLayer(layer_obj) {
     return new Cesium.createTileMapServiceImageryProvider({
-      url: layer_obj['url'],
-      fileExtension: layer_obj['format']
+      url: layer_obj[ 'url' ],
+      fileExtension: layer_obj[ 'format' ]
     });
   }
 
   getOpenstreetmapLayer(layer_obj) {
     return new Cesium.createOpenStreetMapImageryProvider({
-      url: layer_obj['url'],
-      format: layer_obj['format'],
+      url: layer_obj[ 'url' ],
+      format: layer_obj[ 'format' ],
       proxy: {
         getURL: (url: string) => this.parseMapBoxUrl(layer_obj, url)
       }
@@ -157,11 +157,11 @@ export class CesiumLayers {
     let imageryProvider = imageryLayer.imageryProvider;
     return imageryProvider instanceof _imageryProvider.constructor
       && index === imageryLayer._layerIndex
-      && imageryProvider['_url'] === _imageryProvider['_url']
-      && imageryProvider['_accessToken'] === _imageryProvider['_accessToken'] // MapboxImageryProvider
-      && imageryProvider['_mapId'] === _imageryProvider['_mapId'] // MapboxImageryProvider
-      && imageryProvider['_mapStyle'] === _imageryProvider['_mapStyle'] // BingImageryProvider
-      && imageryProvider['_key'] === _imageryProvider['_key']; // BingImageryProvider
+      && imageryProvider[ '_url' ] === _imageryProvider[ '_url' ]
+      && imageryProvider[ '_accessToken' ] === _imageryProvider[ '_accessToken' ] // MapboxImageryProvider
+      && imageryProvider[ '_mapId' ] === _imageryProvider[ '_mapId' ] // MapboxImageryProvider
+      && imageryProvider[ '_mapStyle' ] === _imageryProvider[ '_mapStyle' ] // BingImageryProvider
+      && imageryProvider[ '_key' ] === _imageryProvider[ '_key' ]; // BingImageryProvider
   }
 
 

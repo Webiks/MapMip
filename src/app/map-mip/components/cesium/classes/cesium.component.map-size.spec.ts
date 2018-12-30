@@ -22,13 +22,13 @@ xdescribe('CesiumComponent', () => {
         HttpModule,
         BrowserAnimationsModule
       ],
-      declarations: [CesiumComponent],
-      providers: [QueryParamsHelperService, MapMipService, CalcService, PositionFormService]
+      declarations: [ CesiumComponent ],
+      providers: [ QueryParamsHelperService, MapMipService, CalcService, PositionFormService ]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([QueryParamsHelperService], (_queryParamsHelperService: QueryParamsHelperService) => {
+  beforeEach(inject([ QueryParamsHelperService ], (_queryParamsHelperService: QueryParamsHelperService) => {
     fixture = TestBed.createComponent(CesiumComponent);
     component = fixture.componentInstance;
     queryParamsHelperService = _queryParamsHelperService;
@@ -43,7 +43,7 @@ xdescribe('CesiumComponent', () => {
 
     it('queryParams should check if any changes on mapsize and set [width, height] if need', () => {
       spyOn(queryParamsHelperService, 'anySizeChange').and.returnValue(true);
-      spyOn(queryParamsHelperService, 'querySize').and.returnValue([50, 60]);
+      spyOn(queryParamsHelperService, 'querySize').and.returnValue([ 50, 60 ]);
       map_size.queryParams({});
       expect(component.container.nativeElement.style.width).toEqual('50%');
       expect(component.container.nativeElement.style.height).toEqual('60%');

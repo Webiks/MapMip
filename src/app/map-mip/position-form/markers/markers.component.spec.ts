@@ -19,8 +19,8 @@ describe('MarkersComponent', () => {
   let positionFormService: PositionFormService;
   const AppColorPickerMockComponent = MockComponent({
     selector: 'app-color-picker',
-    inputs: ['Active', 'selectedIndex'],
-    outputs: ['selectedIndexChange', 'togglePickedEmitter']
+    inputs: [ 'Active', 'selectedIndex' ],
+    outputs: [ 'selectedIndexChange', 'togglePickedEmitter' ]
   });
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -30,13 +30,13 @@ describe('MarkersComponent', () => {
         ModalModule.forRoot(),
         BsDropdownModule.forRoot()
       ],
-      declarations: [MarkersComponent, AppColorPickerMockComponent],
-      providers: [QueryParamsHelperService, CalcService, PositionFormService, MapMipService]
+      declarations: [ MarkersComponent, AppColorPickerMockComponent ],
+      providers: [ QueryParamsHelperService, CalcService, PositionFormService, MapMipService ]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([QueryParamsHelperService, PositionFormService], (_queryParamsHelperService: QueryParamsHelperService, _positionFormService: PositionFormService) => {
+  beforeEach(inject([ QueryParamsHelperService, PositionFormService ], (_queryParamsHelperService: QueryParamsHelperService, _positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(MarkersComponent);
     component = fixture.componentInstance;
     element = fixture.nativeElement;
@@ -67,20 +67,20 @@ describe('MarkersComponent', () => {
         markers: '(1,2,3),(4,5,red),(6,7,8,green)'
       };
       component.queryParams(params);
-      expect(component.markers_array).toEqual([{
+      expect(component.markers_array).toEqual([ {
         position: '1,2,3',
         colorIndex: positionFormService.getSelectedColorIndex(config.defaultMarker.icon)
       }, { position: '4,5', colorIndex: positionFormService.getSelectedColorIndex('red') }, {
         position: '6,7,8',
         colorIndex: positionFormService.getSelectedColorIndex('green')
-      }]);
+      } ]);
       expect(component.cloneEditedMarkers).toHaveBeenCalled();
     });
 
     it('cloneEditedMarkers: should copy markers_array values to edited_markers_array', () => {
-      component.markers_array = [1, 2, 3];
+      component.markers_array = [ 1, 2, 3 ];
       component.cloneEditedMarkers();
-      expect(component.edited_markers_array).toEqual([1, 2, 3]);
+      expect(component.edited_markers_array).toEqual([ 1, 2, 3 ]);
     });
 
     it('rmvMarker: should get index and remove the object at that index from "edited_markers_array"', () => {
@@ -91,7 +91,7 @@ describe('MarkersComponent', () => {
       expect(component.edited_markers_array.length).toEqual(2);
       component.rmvMarker(1);
       expect(component.edited_markers_array.length).toEqual(1);
-      expect(component.edited_markers_array).toEqual([{ position: '1,2,3', colorIndex: 0 }]);
+      expect(component.edited_markers_array).toEqual([ { position: '1,2,3', colorIndex: 0 } ]);
     });
 
 
@@ -159,7 +159,7 @@ describe('MarkersComponent', () => {
       component.submitAddMarkers('11,12,13');
       expect(component.addModal.hide).toHaveBeenCalled();
       expect(component.edited_markers_array.length).toEqual(4);
-      expect(component.edited_markers_array[3]).toEqual('11,12,13');
+      expect(component.edited_markers_array[ 3 ]).toEqual('11,12,13');
     });
 
 
@@ -238,7 +238,7 @@ describe('MarkersComponent', () => {
       spyOn(queryParamsHelperService, 'addMarker');
       positionFormService.selectedColorIndex = positionFormService.getSelectedColorIndex('red');
       component.markerCenter();
-      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith({ position: [2, 1], color: 'red' });
+      expect(queryParamsHelperService.addMarker).toHaveBeenCalledWith({ position: [ 2, 1 ], color: 'red' });
     });
 
     it('markerCenter btn should call markerCenter function by click', () => {

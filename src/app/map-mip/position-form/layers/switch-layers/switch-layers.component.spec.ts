@@ -7,7 +7,7 @@ describe('SwitchLayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SwitchLayersComponent]
+      declarations: [ SwitchLayersComponent ]
     })
       .compileComponents();
   }));

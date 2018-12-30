@@ -15,9 +15,9 @@ describe('GeojsonLayerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, FormsModule, ModalModule.forRoot()],
-      providers: [QueryParamsHelperService, AjaxService, CalcService, MapMipService, PositionFormService],
-      declarations: [GeojsonLayerComponent]
+      imports: [ RouterTestingModule, FormsModule, ModalModule.forRoot() ],
+      providers: [ QueryParamsHelperService, AjaxService, CalcService, MapMipService, PositionFormService ],
+      declarations: [ GeojsonLayerComponent ]
     })
       .compileComponents();
   }));

@@ -9,8 +9,8 @@ describe('ContextMenuComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ContextMenuComponent],
-      providers: [ContextMenuService]
+      declarations: [ ContextMenuComponent ],
+      providers: [ ContextMenuService ]
     })
       .compileComponents();
   }));

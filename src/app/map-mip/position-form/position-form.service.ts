@@ -4,7 +4,7 @@ import * as MARKERS_COLOR_JSON from '../../../assets/Markers/Markers.json';
 import { config } from '../../../config/config';
 
 export const MARKER_COLORS: any = MARKERS_COLOR_JSON.default;
-export const MARKER_COLORS_HEX: Array<string> = ['#277fca', '#3c3c3c', '#23aa1f', '#777777', '#cb832c', '#cbc32c', '#c92139', '#9b29ca'];
+export const MARKER_COLORS_HEX: Array<string> = [ '#277fca', '#3c3c3c', '#23aa1f', '#777777', '#cb832c', '#cbc32c', '#c92139', '#9b29ca' ];
 
 @Injectable()
 export class PositionFormService {
@@ -25,15 +25,15 @@ export class PositionFormService {
   }
 
   getSelectedMarkerWidth(): number {
-    return MARKER_COLORS[this.getSelectedColorIndex()].width;
+    return MARKER_COLORS[ this.getSelectedColorIndex() ].width;
   }
 
   getSelectedMarkerHeight(): number {
-    return MARKER_COLORS[this.getSelectedColorIndex()].height;
+    return MARKER_COLORS[ this.getSelectedColorIndex() ].height;
   }
 
   getSelectedColor(index: number = this.selectedColorIndex): string {
-    return MARKER_COLORS[index].icon;
+    return MARKER_COLORS[ index ].icon;
   }
 
   getSelectedColorIndex(icon: string = this.getSelectedColor()): number {
@@ -41,7 +41,7 @@ export class PositionFormService {
   }
 
   getSelectedColorHEX(index: number = this.selectedColorIndex): string {
-    return MARKER_COLORS_HEX[index];
+    return MARKER_COLORS_HEX[ index ];
   }
 
   getMarkerCursorStyle(): SafeStyle {

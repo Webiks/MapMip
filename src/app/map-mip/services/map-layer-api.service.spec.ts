@@ -9,12 +9,12 @@ import { PositionFormService } from '../position-form/position-form.service';
 describe('MapLayerApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      providers: [MapLayerApiService, QueryParamsHelperService, CalcService, MapMipService, PositionFormService]
+      imports: [ RouterTestingModule ],
+      providers: [ MapLayerApiService, QueryParamsHelperService, CalcService, MapMipService, PositionFormService ]
     });
   });
 
-  it('should ...', inject([MapLayerApiService], (service: MapLayerApiService) => {
+  it('should ...', inject([ MapLayerApiService ], (service: MapLayerApiService) => {
     expect(service).toBeTruthy();
   }));
 });

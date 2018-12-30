@@ -25,14 +25,14 @@ describe('LeafletComponent', () => {
         BrowserAnimationsModule,
         HttpModule
       ],
-      declarations: [LeafletComponent],
-      providers: [QueryParamsHelperService, CalcService, PositionFormService, MapMipService]
+      declarations: [ LeafletComponent ],
+      providers: [ QueryParamsHelperService, CalcService, PositionFormService, MapMipService ]
     })
       .compileComponents();
   }));
 
 
-  beforeEach(inject([QueryParamsHelperService, Router, PositionFormService], (_queryParamsHelperService: QueryParamsHelperService, _router: Router, _positionFormService: PositionFormService) => {
+  beforeEach(inject([ QueryParamsHelperService, Router, PositionFormService ], (_queryParamsHelperService: QueryParamsHelperService, _router: Router, _positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(LeafletComponent);
     component = fixture.componentInstance;
     queryParamsHelperService = _queryParamsHelperService;
@@ -126,7 +126,7 @@ describe('LeafletComponent', () => {
         zoom: 10
       };
       map_view.setMapView(params);
-      expect(component.map.setView).toHaveBeenCalledWith([2, 1], 10);
+      expect(component.map.setView).toHaveBeenCalledWith([ 2, 1 ], 10);
     });
 
     it('setMapBounds should get params and use them to call map.fitBounds', () => {
@@ -137,7 +137,7 @@ describe('LeafletComponent', () => {
       };
 
       map_view.setMapBounds(params);
-      expect(component.map.fitBounds).toHaveBeenCalledWith([[2, 1], [4, 3]], null);
+      expect(component.map.fitBounds).toHaveBeenCalledWith([ [ 2, 1 ], [ 4, 3 ] ], null);
     });
 
     it('anyParamChanges should get params and check if there\'s any changes between params and map', () => {
@@ -153,15 +153,15 @@ describe('LeafletComponent', () => {
       spyOn(component.map, 'getCenter').and.callFake(getCenter);
       spyOn(component.map, 'getZoom').and.callFake(getZoom);
       expect(map_view.anyParamChanges(params)).toBeFalsy();
-      params['zoom'] = 12;
+      params[ 'zoom' ] = 12;
       expect(map_view.anyParamChanges(params)).toBeTruthy();
     });
 
     it('getBounds should get bounds(L.LatLngBounds) from map and return the bounds as [number,number,number,number]', () => {
-      let latlngBounds: L.LatLngBounds = L.latLngBounds([[1, 2], [3, 4]]);
+      let latlngBounds: L.LatLngBounds = L.latLngBounds([ [ 1, 2 ], [ 3, 4 ] ]);
       spyOn(component.map, 'getBounds').and.returnValue(latlngBounds);
-      let boundsRes: [number, number, number, number] = map_view.getBounds();
-      expect(boundsRes).toEqual([2, 3, 4, 1]);
+      let boundsRes: [ number, number, number, number ] = map_view.getBounds();
+      expect(boundsRes).toEqual([ 2, 3, 4, 1 ]);
     });
 
   });

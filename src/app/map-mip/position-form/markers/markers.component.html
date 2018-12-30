@@ -69,7 +69,8 @@
       <div class="modal-body">
         <div class="form-group">
           <div class="input-and-picker">
-            <app-color-picker [(selectedIndex)]="edit_obj.marker.colorIndex" [(label)]="edit_obj.marker.label"></app-color-picker>
+            <app-color-picker [(selectedIndex)]="edit_obj.marker.colorIndex"
+                              [(label)]="edit_obj.marker.label"></app-color-picker>
 
             <input class="form-control text-center" [(ngModel)]="edit_obj.marker.position"
                    [ngModelOptions]="{standalone: true}"

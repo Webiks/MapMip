@@ -57,8 +57,8 @@ export class LeafletLayers {
       async (layer_obj: { source: string }) => {
         if (!this.layerExistOnMap(map_tile_layers, layer_obj)) {
           let layer: L.TileLayer = this.getLayerFromLayerObj(layer_obj);
-          if (layer_obj.source == 'tms') {
-            await this.setTmsOptions(layer_obj['url'], layer);
+          if (layer_obj.source === 'tms') {
+            await this.setTmsOptions(layer_obj[ 'url' ], layer);
           }
           layer.addTo(this.leaflet.map);
         }
@@ -112,9 +112,9 @@ export class LeafletLayers {
 
     switch (layer_obj.source) {
       case 'bing':
-        return _.isEqual(_.pick(layer['options'], ['bingMapsKey', 'imagerySet']), _.pick(_layer['options'], ['bingMapsKey', 'imagerySet']));
+        return _.isEqual(_.pick(layer[ 'options' ], [ 'bingMapsKey', 'imagerySet' ]), _.pick(_layer[ 'options' ], [ 'bingMapsKey', 'imagerySet' ]));
       default:
-        return _.isEqual(_layer['_url'], layer['_url']) && _.isEqual(_.pickBy(layer['options'], (val, key) => key != 'zIndex'), _.pickBy(_layer['options'], (val, key) => key != 'zIndex'));
+        return _.isEqual(_layer[ '_url' ], layer[ '_url' ]) && _.isEqual(_.pickBy(layer[ 'options' ], (val, key) => key !== 'zIndex'), _.pickBy(_layer[ 'options' ], (val, key) => key !== 'zIndex'));
     }
   }
 
@@ -126,7 +126,7 @@ export class LeafletLayers {
 
 
   parseMapboxUrl(mapbox_obj): string {
-    return `${mapbox_obj['url']}${mapbox_obj['mapid'] ? mapbox_obj['mapid'] + '/' : ''}{z}/{x}/{y}${mapbox_obj['format'] ? '.' + mapbox_obj['format'] : ''}?access_token=${mapbox_obj['access_token']}`;
+    return `${mapbox_obj[ 'url' ]}${mapbox_obj[ 'mapid' ] ? mapbox_obj[ 'mapid' ] + '/' : ''}{z}/{x}/{y}${mapbox_obj[ 'format' ] ? '.' + mapbox_obj[ 'format' ] : ''}?access_token=${mapbox_obj[ 'access_token' ]}`;
   }
 
   getOpenstreetmapLayer(osm_obj) {
@@ -135,11 +135,11 @@ export class LeafletLayers {
   }
 
   getBingLayer(bing_obj): L.TileLayer {
-    return L.tileLayer['bing']({ bingMapsKey: bing_obj['key'], imagerySet: bing_obj['style'] });
+    return L.tileLayer[ 'bing' ]({ bingMapsKey: bing_obj[ 'key' ], imagerySet: bing_obj[ 'style' ] });
   }
 
   getJson(geoJsonUrl): any {
-    return L.GeoJSON['AJAX'](geoJsonUrl);
+    return L.GeoJSON[ 'AJAX' ](geoJsonUrl);
   }
 
   getTmsLayer(tms_obj) {
@@ -152,11 +152,11 @@ export class LeafletLayers {
   }
 
   parseTmsUrl(osm_obj) {
-    return `${osm_obj['url']}/{z}/{x}/{y}${osm_obj['format'] ? '.' + osm_obj['format'] : ''}`;
+    return `${osm_obj[ 'url' ]}/{z}/{x}/{y}${osm_obj[ 'format' ] ? '.' + osm_obj[ 'format' ] : ''}`;
   }
 
   parseOpenstreetmapUrl(osm_obj) {
-    return `${osm_obj['url']}/{z}/{x}/{y}${osm_obj['format'] ? '.' + osm_obj['format'] : ''}`;
+    return `${osm_obj[ 'url' ]}/{z}/{x}/{y}${osm_obj[ 'format' ] ? '.' + osm_obj[ 'format' ] : ''}`;
   }
 
   setTmsOptions(url, layer): Promise<any> {
@@ -164,9 +164,9 @@ export class LeafletLayers {
       let cesium_tms_layer = Cesium.createTileMapServiceImageryProvider({ url });
       cesium_tms_layer.readyPromise.then((response) => {
         let bounds = _.map(cesium_tms_layer.rectangle, (a) => Cesium.Math.toDegrees(a));
-        layer['options'].bounds = L.latLngBounds(L.latLng(bounds[1], bounds[0]), L.latLng(bounds[3], bounds[2]));
-        layer['options'].maxZoom = cesium_tms_layer.maximumLevel;
-        layer['options'].minZoom = cesium_tms_layer.minimumLevel;
+        layer[ 'options' ].bounds = L.latLngBounds(L.latLng(bounds[ 1 ], bounds[ 0 ]), L.latLng(bounds[ 3 ], bounds[ 2 ]));
+        layer[ 'options' ].maxZoom = cesium_tms_layer.maximumLevel;
+        layer[ 'options' ].minZoom = cesium_tms_layer.minimumLevel;
         res(response);
       });
     });

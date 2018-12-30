@@ -20,7 +20,7 @@ export class CalcService {
   toFixes7Obj(obj) {
     _.forEach(obj, (val: number, key) => {
       if (!isNaN(val)) {
-        obj[key] = +(+val).toFixed(7);
+        obj[ key ] = +(+val).toFixed(7);
       }
     });
     return obj;
@@ -35,7 +35,7 @@ export class CalcService {
       url
     });
     let subdomains_array = cesium_imagery_provider._subdomains;
-    let parsed_subdomains = `{${_.isEmpty(subdomains_array) ? '' : subdomains_array [0] + '-' + subdomains_array [subdomains_array.length - 1]}}`;
+    let parsed_subdomains = `{${_.isEmpty(subdomains_array) ? '' : subdomains_array [ 0 ] + '-' + subdomains_array [ subdomains_array.length - 1 ]}}`;
     return url.replace('{s}', parsed_subdomains);
   }
 

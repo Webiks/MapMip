@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ColorPickerPipe implements PipeTransform {
 
   transform(value: any[], iconsPerRow = 1): any {
-    // if(iconsPerRow  == 1) {
+    // if(iconsPerRow  ===  1) {
     //   return value;
     // }
 

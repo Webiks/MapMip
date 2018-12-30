@@ -1,4 +1,4 @@
-import  { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
 import * as _ from 'lodash';
 import { MapMipMarker, QueryParamsHelperService } from '../../services/query-params-helper.service';
@@ -15,14 +15,16 @@ export interface MapMipEditedMarker {
 export interface MarkersEditObj {
   marker: MapMipEditedMarker;
   edit_index: number;
+
   onEdit(): void;
+
   init(): void;
 }
 
 @Component({
   selector: 'app-markers',
   templateUrl: './markers.component.html',
-  styleUrls: ['./markers.component.scss']
+  styleUrls: [ './markers.component.scss' ]
 })
 
 export class MarkersComponent implements OnInit {
@@ -114,7 +116,7 @@ export class MarkersComponent implements OnInit {
 
   submitAddMarkers(markerObj: MapMipEditedMarker) {
     if (this.edit_obj.onEdit()) {
-      this.edited_markers_array[this.edit_obj.edit_index] = markerObj;
+      this.edited_markers_array[ this.edit_obj.edit_index ] = markerObj;
     } else {
       this.edited_markers_array.push(markerObj);
     }
@@ -130,7 +132,7 @@ export class MarkersComponent implements OnInit {
   }
 
   markerCenter() {
-    let position: [number, number] = [this.lng, this.lat];
+    let position: [ number, number ] = [ this.lng, this.lat ];
     let center_marker: MapMipMarker = { position };
     if (this.positionFormService.getSelectedColor() !== config.defaultMarker.icon) {
       center_marker.icon = this.positionFormService.getSelectedColor();
@@ -148,7 +150,7 @@ export class MarkersComponent implements OnInit {
   }
 
   editMarker(index: number) {
-    this.edit_obj.marker = _.cloneDeep(this.edited_markers_array[index]);
+    this.edit_obj.marker = _.cloneDeep(this.edited_markers_array[ index ]);
     this.edit_obj.edit_index = index;
     this.addModal.show();
   }

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-new-tab',
   templateUrl: './new-tab.component.html',
-  styleUrls: ['./new-tab.component.scss']
+  styleUrls: [ './new-tab.component.scss' ]
 })
 export class NewTabComponent implements OnInit {
 

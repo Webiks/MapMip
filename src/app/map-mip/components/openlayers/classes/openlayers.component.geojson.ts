@@ -13,13 +13,13 @@ export class OpenlayersGeoJson {
     'Point': new this.openlayers.ol.style.Style({
       image: new this.openlayers.ol.style.Icon({
         src: '/assets/Markers/marker-icon-blue.png',
-        anchor: [0.5, 1]
+        anchor: [ 0.5, 1 ]
       })
     }),
     'MultiPoint': new this.openlayers.ol.style.Style({
       image: new this.openlayers.ol.style.Icon({
         src: '/assets/Markers/marker-icon-blue.png',
-        anchor: [0.5, 1]
+        anchor: [ 0.5, 1 ]
       })
     }),
     'LineString': new this.openlayers.ol.style.Style({
@@ -100,7 +100,7 @@ export class OpenlayersGeoJson {
       // then add the new geojson layers from the url into the array
 
       _.forEach(urls, function (url, index) {
-        that.geojsonLayers[index] = new that.openlayers.ol.layer.Vector({
+        that.geojsonLayers[ index ] = new that.openlayers.ol.layer.Vector({
           source: new that.openlayers.ol.source.Vector({
             format: new that.openlayers.ol.format.GeoJSON(),
             url: url
@@ -109,7 +109,7 @@ export class OpenlayersGeoJson {
 
         });
         // add each elem of the array
-        that.openlayers.map.addLayer(<any> that.geojsonLayers[index]);
+        that.openlayers.map.addLayer(<any> that.geojsonLayers[ index ]);
       });
 
 
@@ -143,22 +143,20 @@ export class OpenlayersGeoJson {
     if (feature.getGeometry().getType() === 'GeometryCollection') {
       let geoColStyle = [];
       _.forEach(feature.getGeometry().getGeometries(), function (geometry: any) {
-        geoColStyle.push(that.myMultiStyle[geometry.getType()]);
+        geoColStyle.push(that.myMultiStyle[ geometry.getType() ]);
 
       });
       return geoColStyle;
 
-    }
-    else if (feature.getGeometry().getType() === 'LineString') {
+    } else if (feature.getGeometry().getType() === 'LineString') {
       return new this.openlayers.ol.style.Style({
         stroke: new this.openlayers.ol.style.Stroke({
           color: this.getColor(this.feature),
           width: 3
         })
       });
-    }
-    else {
-      return this.myMultiStyle[feature.getGeometry().getType()];
+    } else {
+      return this.myMultiStyle[ feature.getGeometry().getType() ];
     }
   }
 }

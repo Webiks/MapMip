@@ -10,14 +10,14 @@ describe('ColorPickerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), BsDropdownModule.forRoot(), TooltipModule.forRoot()],
-      declarations: [ColorPickerComponent],
-      providers: [PositionFormService]
+      imports: [ ModalModule.forRoot(), BsDropdownModule.forRoot(), TooltipModule.forRoot() ],
+      declarations: [ ColorPickerComponent ],
+      providers: [ PositionFormService ]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([PositionFormService], (_positionFormService: PositionFormService) => {
+  beforeEach(inject([ PositionFormService ], (_positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(ColorPickerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -91,7 +91,7 @@ export class CesiumMarkers {
     const positionCartographic = Cesium.Cartographic.fromCartesian(positionCartesian3);
     const lngDeg: number = Cesium.Math.toDegrees(positionCartographic.longitude);
     const latDeg: number = Cesium.Math.toDegrees(positionCartographic.latitude);
-    return [lngDeg, latDeg];
+    return [ lngDeg, latDeg ];
 
   }
 
@@ -181,7 +181,7 @@ export class CesiumMarkers {
       let icon: string = this.getColorFromBillboardEntity(entity);
       let label: string = this.getLabelFromBillboardEntity(entity);
       mapMarkerObj.position = this.cesium.calcService.toFixes7Obj(mapMarkerObj.position);
-      return _.isEqual( { position, icon, label }, mapMarkerObj);
+      return _.isEqual({ position, icon, label }, mapMarkerObj);
     });
   }
 

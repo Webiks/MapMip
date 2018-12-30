@@ -21,14 +21,14 @@ describe('OpenlayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpModule, ContextMenuModule, BrowserAnimationsModule],
-      declarations: [OpenlayersComponent],
-      providers: [QueryParamsHelperService, CalcService, PositionFormService, MapMipService]
+      imports: [ RouterTestingModule, HttpModule, ContextMenuModule, BrowserAnimationsModule ],
+      declarations: [ OpenlayersComponent ],
+      providers: [ QueryParamsHelperService, CalcService, PositionFormService, MapMipService ]
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([CalcService, Router, QueryParamsHelperService, PositionFormService], (_calcService: CalcService, _router: Router, _queryParamsHelperService: QueryParamsHelperService, _positionFormService: PositionFormService) => {
+  beforeEach(inject([ CalcService, Router, QueryParamsHelperService, PositionFormService ], (_calcService: CalcService, _router: Router, _queryParamsHelperService: QueryParamsHelperService, _positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(OpenlayersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

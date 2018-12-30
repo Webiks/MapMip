@@ -43,7 +43,7 @@ export class CesiumPolygons {
   }
 
   addPolygonsViaUrl(params_polygons_array: any[]) {
-    const polygonsOnMap = _.filter(this.cesium.viewer.entities.values, (ent) => ent['polygon']);
+    const polygonsOnMap = _.filter(this.cesium.viewer.entities.values, (ent) => ent[ 'polygon' ]);
 
     polygonsOnMap.forEach(polygon_obj => {
       this.cesium.viewer.entities.remove(polygon_obj);
@@ -58,7 +58,7 @@ export class CesiumPolygons {
           id: that.polygon_id += 1,
           name: 'PolygonDrawer' + that.polygon_id,
           polygon: {
-            hierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(coords[0])),
+            hierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(coords[ 0 ])),
             material: Cesium.Color.LIGHTSKYBLUE.withAlpha(0.5),
             outline: true,
             outlineColor: Cesium.Color.RED
@@ -69,29 +69,29 @@ export class CesiumPolygons {
   }
 
   polygonsExistOnMap(coords): boolean {
-    //no entities on map - don't check:
-    const polygonsOnMap = _.filter(this.cesium.viewer.entities.values, (ent) => ent['polygon']);
-    if (polygonsOnMap.length == 0) {
+    // no entities on map - don't check:
+    const polygonsOnMap = _.filter(this.cesium.viewer.entities.values, (ent) => ent[ 'polygon' ]);
+    if (polygonsOnMap.length === 0) {
       return false;
     }
 
     for (let a = 0; a < this.cesium.viewer.entities.values.length; a++) {
-      if (this.cesium.viewer.entities.values[a].polygon) {
+      if (this.cesium.viewer.entities.values[ a ].polygon) {
 
 
-        var exist = this.cesium.viewer.entities.values[a].polygon.hierarchy.getValue();
+        const exist = this.cesium.viewer.entities.values[ a ].polygon.hierarchy.getValue();
 
 
         for (let i = 0; i < exist.positions.length; i++) {
-          let lng = Cesium.Cartographic.fromCartesian(exist.positions[i]).longitude;
+          let lng = Cesium.Cartographic.fromCartesian(exist.positions[ i ]).longitude;
           let lngDeg = Cesium.Math.toDegrees(lng);
           let lngFixed = lngDeg.toFixed(7);
 
-          let lat = Cesium.Cartographic.fromCartesian(exist.positions[i]).latitude;
+          let lat = Cesium.Cartographic.fromCartesian(exist.positions[ i ]).latitude;
           let latDeg = Cesium.Math.toDegrees(lat);
           let latFixed = latDeg.toFixed(7);
 
-          if (lngFixed !== coords[0][(2 * i)] || latFixed !== coords[0][(2 * i) + 1]) {
+          if (lngFixed !== coords[ 0 ][ (2 * i) ] || latFixed !== coords[ 0 ][ (2 * i) + 1 ]) {
             return false;
           }
         }
@@ -124,7 +124,7 @@ export class CesiumPolygons {
 
   calcPositions(cartesianArr) {
     // terrain case
-    var positionArr = [];
+    let positionArr = [];
     /*if(this.cesium.viewer.terrainProvider.hasOwnProperty("_url")) {
       //var pickedObject = this.cesium.viewer.scene.pick(event.position); // Tr
       let positionCartesian3 = this.cesium.viewer.scene.pickPosition(event.position); // Tr
@@ -149,7 +149,7 @@ export class CesiumPolygons {
       let lngDeg: number = Cesium.Math.toDegrees(cartographic.longitude).toFixed(7);
       positionArr.push(lngDeg, latDeg);
     });
-    positionArr.splice(positionArr.length - 4, 4); //remove redundant points from double click
+    positionArr.splice(positionArr.length - 4, 4); // remove redundant points from double click
     positionArr = positionArr.map(newArr => parseFloat(newArr));
     return positionArr;
 
@@ -159,7 +159,7 @@ export class CesiumPolygons {
     this.cesium.viewer.cesiumHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.viewer.scene.canvas);
     this.cesium.viewer.cesiumHandler.setInputAction(this.leftClickInputAction.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
     this.cesium.viewer.cesiumHandler.setInputAction(this.mouseMoveInputAction.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-    this.cesium.viewer.cesiumHandler.setInputAction(this.doubleClickInputAction.bind(this), Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK); //end draw polygon
+    this.cesium.viewer.cesiumHandler.setInputAction(this.doubleClickInputAction.bind(this), Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK); // end draw polygon
   }
 
   /*ngOnDestroy() {
@@ -204,10 +204,9 @@ export class CesiumPolygons {
       return;
     }
 
-    if (this._positions.length == 1) {
+    if (this._positions.length === 1) {
       this._positions.push(cartesian);
-    }
-    else if (this._positions.length > 1) {
+    } else if (this._positions.length > 1) {
       this._positions.splice(this._positions.length - 1, 1, cartesian);
     }
 
@@ -251,7 +250,7 @@ export class CesiumPolygons {
 
       // handle reference binding
       if (!isUndefined(property)) {
-        return value[property];
+        return value[ property ];
       }
 
       return value;

@@ -18,9 +18,9 @@ export class LeafletGeoJson {
   popUp(f, l) {
     const out = [];
     if (f.properties) {
-      for (let key in f.properties) {
-        out.push(key + ': ' + f.properties[key]);
-      }
+      Object.keys(f.properties).forEach((key) => {
+        out.push(key + ': ' + f.properties[ key ]);
+      });
       l.bindPopup(out.join('<br />'));
     }
   }
@@ -57,10 +57,10 @@ export class LeafletGeoJson {
       let urls = this.leaflet.queryParamsHelperService.queryGeoJson(params);
 
       _.forEach(urls, function (url, index) {
-        that.geoJsonLayers[index] = that.leaflet.L.geoJSON['ajax'](url, { onEachFeature: that.popUp });
-        that.geoJsonLayers[index]['setStyle'](that.setStyle);
-        L.Util.setOptions(that.geoJsonLayers[index], { style: that.setStyle });
-        that.assetLayerGroup.addLayer(that.geoJsonLayers[index]);
+        that.geoJsonLayers[ index ] = that.leaflet.L.geoJSON[ 'ajax' ](url, { onEachFeature: that.popUp });
+        that.geoJsonLayers[ index ][ 'setStyle' ](that.setStyle);
+        L.Util.setOptions(that.geoJsonLayers[ index ], { style: that.setStyle });
+        that.assetLayerGroup.addLayer(that.geoJsonLayers[ index ]);
       });
 
       // add the whole group to map

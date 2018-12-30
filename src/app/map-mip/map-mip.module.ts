@@ -44,9 +44,9 @@ export const MapMipChildren: Routes = [
     HttpModule,
     ContextMenuModule
   ],
-  declarations: [MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent, NewTabComponent, SwitchLayersDirective],
-  exports: [MapLayerComponent, SwitchLayersDirective],
-  providers: [QueryParamsHelperService, CalcService, AjaxService, MapLayerApiService, MapMipService]
+  declarations: [ MapLayerComponent, CesiumComponent, LeafletComponent, OpenlayersComponent, NewTabComponent, SwitchLayersDirective ],
+  exports: [ MapLayerComponent, SwitchLayersDirective ],
+  providers: [ QueryParamsHelperService, CalcService, AjaxService, MapLayerApiService, MapMipService ]
 })
 export class MapMipModule {
 }

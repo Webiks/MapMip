@@ -7,30 +7,15 @@ import { AjaxService } from '../../services/ajax.service';
 @Component({
   selector: 'app-geojson-layer',
   templateUrl: './geojson-layer.component.html',
-  styleUrls: ['./geojson-layer.component.scss']
+  styleUrls: [ './geojson-layer.component.scss' ]
 })
 export class GeojsonLayerComponent {
   @ViewChild('geoJsonModal') public geoJsonModal: ModalDirective;
   @ViewChild('defaultModal') public defaultModal: ModalDirective;
+  @Output() submitGeoJsonEmitter = new EventEmitter();
 
   private _geojson: string;
   public examples$ = this.ajaxService.getGeoJsonExam();
-
-  @Input('geojson')
-  set geojson(geojson: string) {
-    this._geojson = geojson;
-    this.initializeGeojsonArray();
-  }
-
-  get geojson(): string {
-    return this._geojson;
-  }
-
-  initializeGeojsonArray(geojson = this.geojson): void {
-    this.geojson_array = this.queryParamsHelperService.queryGeoJson({ geojson });
-  }
-
-  @Output() submitGeoJsonEmitter = new EventEmitter();
 
   public add_geojson = {
     geojson: '',
@@ -46,16 +31,30 @@ export class GeojsonLayerComponent {
 
   public geojson_array = [];
 
+  @Input('geojson')
+  set geojson(geojson: string) {
+    this._geojson = geojson;
+    this.initializeGeojsonArray();
+  }
+
+  get geojson(): string {
+    return this._geojson;
+  }
+
   constructor(private queryParamsHelperService: QueryParamsHelperService, private ajaxService: AjaxService) {
+  }
+
+  initializeGeojsonArray(geojson = this.geojson): void {
+    this.geojson_array = this.queryParamsHelperService.queryGeoJson({ geojson });
   }
 
   submitAddGeojson(input) {
     if (this.add_geojson.onEdit()) {
-      this.geojson_array[this.add_geojson.edit_index] = input;
+      this.geojson_array[ this.add_geojson.edit_index ] = input;
     } else {
       this.geojson_array.push(input);
     }
-    if (input != '') {
+    if (input !== '') {
       this.add_geojson.init();
       this.defaultModal.hide();
     }
@@ -85,7 +84,7 @@ export class GeojsonLayerComponent {
   }
 
   editModal(index: number): void {
-    this.add_geojson.geojson = _.cloneDeep(this.geojson_array[index]);
+    this.add_geojson.geojson = _.cloneDeep(this.geojson_array[ index ]);
     this.add_geojson.edit_index = index;
     this.defaultModal.show();
   }

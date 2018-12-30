@@ -18,10 +18,10 @@ import { Permissions } from './permissions.enum';
 
 export let fake_Ajax_Service = {
   getLayerExam(): Observable<any> {
-    return Observable.of([{ name: 'exap1' }, { name: 'exap2' }]);
+    return Observable.of([ { name: 'exap1' }, { name: 'exap2' } ]);
   },
   getTerrainsExam(): Observable<any> {
-    return Observable.of([{ name: 'tr_exap1' }, { name: 'tr_exap2' }]);
+    return Observable.of([ { name: 'tr_exap1' }, { name: 'tr_exap2' } ]);
   },
   getGeoJsonExam(): Observable<any> {
     return Observable.of({});
@@ -31,42 +31,42 @@ export let fake_Ajax_Service = {
 const MockComponents = [
   MockComponent({
     selector: 'app-map-position',
-    inputs: ['position', 'size'],
-    outputs: ['positionChange', 'submitPositionEmitter']
+    inputs: [ 'position', 'size' ],
+    outputs: [ 'positionChange', 'submitPositionEmitter' ]
   }),
   MockComponent({
     selector: 'app-layers',
-    inputs: ['layersString'],
-    outputs: ['submitLayersEmitter']
+    inputs: [ 'layersString' ],
+    outputs: [ 'submitLayersEmitter' ]
   }),
   MockComponent({
     selector: 'app-markers',
-    inputs: ['lat', 'lng'],
-    outputs: ['submitMarkersEmitter']
+    inputs: [ 'lat', 'lng' ],
+    outputs: [ 'submitMarkersEmitter' ]
   }),
   MockComponent({
     selector: 'app-map-size',
-    inputs: ['size'],
-    outputs: ['sizeChange', 'submitSizeEmitter']
+    inputs: [ 'size' ],
+    outputs: [ 'sizeChange', 'submitSizeEmitter' ]
   }),
   MockComponent({
     selector: 'app-polygons',
-    inputs: ['polygons'],
-    outputs: ['togglePickedEmitter', 'submitPolygonsEmitter']
+    inputs: [ 'polygons' ],
+    outputs: [ 'togglePickedEmitter', 'submitPolygonsEmitter' ]
   }),
   MockComponent({
     selector: 'app-geojson-layer',
-    inputs: ['geojson'],
-    outputs: ['submitGeoJsonEmitter', 'submitPolygonsEmitter']
+    inputs: [ 'geojson' ],
+    outputs: [ 'submitGeoJsonEmitter', 'submitPolygonsEmitter' ]
   }),
   MockComponent({
     selector: 'app-map-lighting',
-    inputs: ['lighting']
+    inputs: [ 'lighting' ]
   }),
   MockComponent({
     selector: 'app-terrain',
-    inputs: ['lighting', 'terrain'],
-    outputs: ['submitTerrainEmitter', 'terrainChange']
+    inputs: [ 'lighting', 'terrain' ],
+    outputs: [ 'submitTerrainEmitter', 'terrainChange' ]
   })
 ];
 
@@ -87,7 +87,7 @@ describe('PositionFormComponent', () => {
         TooltipModule.forRoot(),
         HttpModule
       ],
-      declarations: [FlipSwitchComponent, PositionFormComponent, ...MockComponents],
+      declarations: [ FlipSwitchComponent, PositionFormComponent, ...MockComponents ],
       providers: [
         PositionFormService,
         QueryParamsHelperService,
@@ -101,7 +101,7 @@ describe('PositionFormComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(inject([QueryParamsHelperService], (_queryParamsHelperService: QueryParamsHelperService) => {
+  beforeEach(inject([ QueryParamsHelperService ], (_queryParamsHelperService: QueryParamsHelperService) => {
     fixture = TestBed.createComponent(PositionFormComponent);
     component = fixture.componentInstance;
     element = fixture.nativeElement;
@@ -114,7 +114,7 @@ describe('PositionFormComponent', () => {
       return current_state.includes(url);
     });
 
-    component.mapMipService['__defineGetter__']('url', () => current_state);
+    component.mapMipService[ '__defineGetter__' ]('url', () => current_state);
 
   }));
 
@@ -125,19 +125,19 @@ describe('PositionFormComponent', () => {
   xit('should havePermission to return if param should include on current state', () => {
 
     let height = {
-      permissions: [Permissions['/cesium']]
+      permissions: [ Permissions[ '/cesium' ] ]
     };
 
     let zoom = {
-      permissions: [Permissions['/leaflet']]
+      permissions: [ Permissions[ '/leaflet' ] ]
     };
 
     let lat = {
-      permissions: [Permissions['/cesium'], Permissions['/leaflet']]
+      permissions: [ Permissions[ '/cesium' ], Permissions[ '/leaflet' ] ]
     };
 
     let rotate = {
-      permissions: [Permissions['/openlayers'], Permissions['/cesium?mode3d=0']]
+      permissions: [ Permissions[ '/openlayers' ], Permissions[ '/cesium?mode3d=0' ] ]
     };
 
 
@@ -175,9 +175,9 @@ describe('PositionFormComponent', () => {
 
     current_state = '/leaflet'; // lat,lng,zoom have permissions.
 
-    component.params['lat'].val = 30;
-    component.params['lng'].val = 20;
-    component.params['zoom'].val = 10;
+    component.params[ 'lat' ].val = 30;
+    component.params[ 'lng' ].val = 20;
+    component.params[ 'zoom' ].val = 10;
 
     fixture.detectChanges();
 
@@ -185,16 +185,16 @@ describe('PositionFormComponent', () => {
 
     expect(form_groups.length).toEqual(3);
 
-    let lng = form_groups[0];
-    let lat = form_groups[1];
-    let zoom = form_groups[2];
+    let lng = form_groups[ 0 ];
+    let lat = form_groups[ 1 ];
+    let zoom = form_groups[ 2 ];
 
     expect(lat.querySelector('span').textContent).toEqual('lat');
     expect(lng.querySelector('span').textContent).toEqual('lng');
     expect(zoom.querySelector('span').textContent).toEqual('zoom');
-    expect(+lat.querySelector('input').attributes['ng-reflect-model'].value).toEqual(30);
-    expect(+lng.querySelector('input').attributes['ng-reflect-model'].value).toEqual(20);
-    expect(+zoom.querySelector('input').attributes['ng-reflect-model'].value).toEqual(10);
+    expect(+lat.querySelector('input').attributes[ 'ng-reflect-model' ].value).toEqual(30);
+    expect(+lng.querySelector('input').attributes[ 'ng-reflect-model' ].value).toEqual(20);
+    expect(+zoom.querySelector('input').attributes[ 'ng-reflect-model' ].value).toEqual(10);
   });
 
   it('submitMarkers should: put the correct value on markers, call submitForm and hide modal if need', async(() => {

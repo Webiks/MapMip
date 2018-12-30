@@ -86,7 +86,7 @@ export class OpenlayersMarkers {
   addMarkersViaUrl(paramsMarkers, mapMarkers) {
     paramsMarkers
       .filter((marker) => !this.isMarkerExistOnArray(mapMarkers, marker))
-      .forEach( this.addIcon.bind(this));
+      .forEach(this.addIcon.bind(this));
   }
 
   removeMarkersViaUrl(paramsMarkers, mapMarkers: MapMipMarker[]) {
@@ -103,12 +103,12 @@ export class OpenlayersMarkers {
   addIcon(marker: MapMipMarker) {
 
     const iconFeature = new ol.Feature({
-      geometry: new ol.geom.Point(ol.proj.transform(<[number, number]>marker.position, 'EPSG:4326', 'EPSG:3857'))
+      geometry: new ol.geom.Point(ol.proj.transform(<[ number, number ]>marker.position, 'EPSG:4326', 'EPSG:3857'))
     });
 
     iconFeature.setStyle(new ol.style.Style(<any>{
       image: new ol.style.Icon(<any>{
-        anchor: [0, 0],
+        anchor: [ 0, 0 ],
         src: this.openlayers.positionFormService.getMarkerUrlByColor(marker.icon)
       }),
 
@@ -121,7 +121,7 @@ export class OpenlayersMarkers {
           color: 'rgba(47, 47, 47, 0.78)'
         }),
         fill: new ol.style.Fill({
-          color: 'white',
+          color: 'white'
         }),
         stroke: new ol.style.Stroke({
           color: 'black',
@@ -141,7 +141,7 @@ export class OpenlayersMarkers {
     position = ol.proj.transform(position, 'EPSG:3857', 'EPSG:4326');
     position = this.openlayers.calcService.toFixes7Obj(position);
     const icon: string = this.openlayers.positionFormService.getMarkerColorByUrl(src);
-    return { position, icon, label }
+    return { position, icon, label };
   }
 
   removeMarker(mapMarker: MapMipMarker): void {
@@ -149,7 +149,7 @@ export class OpenlayersMarkers {
       .find((feature: ol.Feature) => {
         const marker = this.parseFeatureToMarker(feature);
         return _.isEqual(mapMarker, marker);
-    });
+      });
     this.vectorSource.removeFeature(marker_feature_to_remove);
   }
 

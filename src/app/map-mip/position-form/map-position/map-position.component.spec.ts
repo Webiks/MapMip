@@ -15,22 +15,22 @@ describe('MapPositionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MapPositionComponent],
-      providers: [PositionFormService, QueryParamsHelperService, CalcService, MapMipService],
-      imports: [RouterTestingModule, PopoverModule.forRoot()]
+      declarations: [ MapPositionComponent ],
+      providers: [ PositionFormService, QueryParamsHelperService, CalcService, MapMipService ],
+      imports: [ RouterTestingModule, PopoverModule.forRoot() ]
 
     })
       .compileComponents();
   }));
 
-  beforeEach(inject([PositionFormService, QueryParamsHelperService], (_positionFormService: PositionFormService, _queryParamsHelperService: QueryParamsHelperService) => {
+  beforeEach(inject([ PositionFormService, QueryParamsHelperService ], (_positionFormService: PositionFormService, _queryParamsHelperService: QueryParamsHelperService) => {
     fixture = TestBed.createComponent(MapPositionComponent);
     component = fixture.componentInstance;
     positionFormService = _positionFormService;
     queryParamsHelperService = _queryParamsHelperService;
     positionFormService.mapsCont = {};
     positionFormService.mapsCont.nativeElement = {};
-    positionFormService.mapsCont.nativeElement['offsetWidth'] = 80;
+    positionFormService.mapsCont.nativeElement[ 'offsetWidth' ] = 80;
 
     fixture.detectChanges();
   }));
@@ -63,7 +63,7 @@ describe('MapPositionComponent', () => {
     component.dragStyle.top = `${10}px`;
     spyOn(component, 'maxBoundX').and.returnValue(10);
     spyOn(component, 'maxBoundY').and.returnValue(10);
-    expect(component.convertPixelsToPrecnt()).toEqual([100, 100]);
+    expect(component.convertPixelsToPrecnt()).toEqual([ 100, 100 ]);
   });
 
   it('should test mouseUp case A: click event', () => {
@@ -71,7 +71,7 @@ describe('MapPositionComponent', () => {
     component.drag = { nativeElement: { clientWidth: 30, clientHeight: 40 } };
     let event = { which: 1, offsetX: 50, offsetY: 40, target: 'hi' };
     component.mouseDown = false;
-    spyOn(component, 'convertPixelsToPrecnt').and.returnValue([35, 20]);
+    spyOn(component, 'convertPixelsToPrecnt').and.returnValue([ 35, 20 ]);
     spyOn(component.positionChange, 'emit');
     spyOn(component.submitPositionEmitter, 'emit');
     component.mouseUp(event);
@@ -88,7 +88,7 @@ describe('MapPositionComponent', () => {
     component.dragStyle = { left: '35px', top: '20px', height: '', width: '' };
     spyOn(component.positionChange, 'emit');
     spyOn(component.submitPositionEmitter, 'emit');
-    spyOn(component, 'convertPixelsToPrecnt').and.returnValue([35, 20]);
+    spyOn(component, 'convertPixelsToPrecnt').and.returnValue([ 35, 20 ]);
     component.mouseUp(event);
     expect(component.convertPixelsToPrecnt).toHaveBeenCalled();
     expect(component.positionChange.emit).toHaveBeenCalledWith('35,20');
@@ -98,14 +98,14 @@ describe('MapPositionComponent', () => {
   });
 
   it('should test onSizeChanges', () => {
-    spyOn(queryParamsHelperService, 'querySize').and.returnValue([100, 100]);
+    spyOn(queryParamsHelperService, 'querySize').and.returnValue([ 100, 100 ]);
     component.onSizeChanges();
     expect(component.dragStyle.width).toEqual(`${100}%`);
     expect(component.dragStyle.height).toEqual(`${100}%`);
   });
 
   it('should test onPositionChanges', () => {
-    spyOn(queryParamsHelperService, 'queryPosition').and.returnValue([50, 50]);
+    spyOn(queryParamsHelperService, 'queryPosition').and.returnValue([ 50, 50 ]);
     spyOn(component, 'maxBoundX').and.returnValue(10);
     spyOn(component, 'maxBoundY').and.returnValue(10);
     component.onPositionChanges();

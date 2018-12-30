@@ -11,7 +11,7 @@ import { AppState } from '../../../app.store';
 export class CesiumPolyline {
   queryParamsSubscriber;
   public _polylineEntity;
-  public _positions: Array<any> = []; //TODO: should be on the url
+  public _positions: Array<any> = []; // TODO: should be on the url
   public polyline_id = 0;
   public polyline_changed: AppState = new AppState(this.cesium.router);
 
@@ -45,10 +45,10 @@ export class CesiumPolyline {
 
      let polygons_splitted = params.polygons.split(" ").join("").split(")(").map(
      (str, index, array) => {
-     if(index == 0){
+     if(index ===  0){
      str = str.replace("(", "")
      }
-     if(index == array.length - 1) {
+     if(index ===  array.length - 1) {
      str = str.replace(")", "")
      }
      return str
@@ -81,7 +81,7 @@ export class CesiumPolyline {
       let coords = [];
       coords.push(polyline_obj.coords);
       if (!this.polylineExistOnMap(coords)) {
-        //add to map
+        // add to map
 
 
         that.cesium.viewer.entities.add({
@@ -89,7 +89,7 @@ export class CesiumPolyline {
           name: 'PolylineDrawer' + that.polyline_id,
           polyline: {
             show: true,
-            positions: Cesium.Cartesian3.fromDegreesArray((coords[0])),
+            positions: Cesium.Cartesian3.fromDegreesArray((coords[ 0 ])),
             material: Cesium.Color.LIGHTSKYBLUE
           }
 
@@ -101,7 +101,7 @@ export class CesiumPolyline {
   }
 
   polylineExistOnMap(coords): boolean {
-    //no entities on map - don't check:
+    // no entities on map - don't check:
     return false;
     /* if (this.cesium.viewer.entities.values==0)
      {
@@ -147,7 +147,7 @@ export class CesiumPolyline {
 
   calcPositions(cartesianArr) {
     // terrain case
-    var positionArr = [];
+    const positionArr = [];
     /*if(this.cesium.viewer.terrainProvider.hasOwnProperty("_url")) {
      //var pickedObject = this.cesium.viewer.scene.pick(event.position); // Tr
      let positionCartesian3 = this.cesium.viewer.scene.pickPosition(event.position); // Tr
@@ -172,7 +172,7 @@ export class CesiumPolyline {
       let lngDeg: number = Cesium.Math.toDegrees(cartographic.longitude).toFixed(7);
       positionArr.push(lngDeg, latDeg);
     });
-    positionArr.splice(positionArr.length - 4, 4); //remove redundant points from double click
+    positionArr.splice(positionArr.length - 4, 4); // remove redundant points from double click
     return positionArr;
 
   }
@@ -181,7 +181,7 @@ export class CesiumPolyline {
     this.cesium.viewer.cesiumHandler = new Cesium.ScreenSpaceEventHandler(this.cesium.viewer.scene.canvas);
     this.cesium.viewer.cesiumHandler.setInputAction(this.leftClickInputAction.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
     this.cesium.viewer.cesiumHandler.setInputAction(this.mouseMoveInputAction.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-    this.cesium.viewer.cesiumHandler.setInputAction(this.doubleClickInputAction.bind(this), Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK); //end draw polygon
+    this.cesium.viewer.cesiumHandler.setInputAction(this.doubleClickInputAction.bind(this), Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK); // end draw polygon
   }
 
   /*ngOnDestroy() {
@@ -225,10 +225,9 @@ export class CesiumPolyline {
       return;
     }
 
-    if (this._positions.length == 1) {
+    if (this._positions.length === 1) {
       this._positions.push(cartesian);
-    }
-    else if (this._positions.length > 1) {
+    } else if (this._positions.length > 1) {
       this._positions.splice(this._positions.length - 1, 1, cartesian);
     }
 
@@ -258,7 +257,7 @@ export class CesiumPolyline {
 
       // handle reference binding
       if (!isUndefined(property)) {
-        return value[property];
+        return value[ property ];
       }
 
       return value;

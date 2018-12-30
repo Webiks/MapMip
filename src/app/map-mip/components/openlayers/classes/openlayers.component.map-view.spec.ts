@@ -23,15 +23,15 @@ xdescribe('OpenlayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpModule, ContextMenuModule, BrowserAnimationsModule],
-      declarations: [OpenlayersComponent],
-      providers: [QueryParamsHelperService, CalcService, PositionFormService, MapMipService]
+      imports: [ RouterTestingModule, HttpModule, ContextMenuModule, BrowserAnimationsModule ],
+      declarations: [ OpenlayersComponent ],
+      providers: [ QueryParamsHelperService, CalcService, PositionFormService, MapMipService ]
     })
       .compileComponents();
   }));
 
 
-  beforeEach(inject([CalcService, Router, QueryParamsHelperService, PositionFormService], (_calcService: CalcService, _router: Router, _queryParamsHelperService: QueryParamsHelperService, _positionFormService: PositionFormService) => {
+  beforeEach(inject([ CalcService, Router, QueryParamsHelperService, PositionFormService ], (_calcService: CalcService, _router: Router, _queryParamsHelperService: QueryParamsHelperService, _positionFormService: PositionFormService) => {
     fixture = TestBed.createComponent(OpenlayersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -89,7 +89,7 @@ xdescribe('OpenlayersComponent', () => {
       };
 
       let viewObj = {
-        center: ol.proj.fromLonLat([1, 2]),
+        center: ol.proj.fromLonLat([ 1, 2 ]),
         zoom: 10,
         rotation: 0
       };
@@ -163,13 +163,13 @@ xdescribe('OpenlayersComponent', () => {
       };
 
       map_view.setMapBounds(params);
-      expect(view.fit).toHaveBeenCalledWith(component.transformExtent([1, 2, 3, 4]), component.map.getSize());
+      expect(view.fit).toHaveBeenCalledWith(component.transformExtent([ 1, 2, 3, 4 ]), component.map.getSize());
       expect(view.setRotation).toHaveBeenCalledWith(calcService.toRadians(90));
     });
 
 
     it('anyParamChanges should get params and check if there\'s any changes between params and map', () => {
-      let center = [1.11111111111111111, 2.222222222222222222];
+      let center = [ 1.11111111111111111, 2.222222222222222222 ];
       let zoom = 10;
       let heading = calcService.toRadians(90);
 
@@ -190,14 +190,14 @@ xdescribe('OpenlayersComponent', () => {
       spyOn(view, 'getRotation').and.callFake(getRotation);
 
       expect(map_view.anyParamChanges(params)).toBeFalsy();
-      params['zoom'] = 12;
+      params[ 'zoom' ] = 12;
       expect(map_view.anyParamChanges(params)).toBeTruthy();
     });
 
 
     it('moveEnd: should get lat,lng and zoom parameters from "event" and markers from currentParams', () => {
       spyOn(router, 'navigate');
-      spyOn(ol.proj, 'transform').and.returnValue([2, 1]);
+      spyOn(ol.proj, 'transform').and.returnValue([ 2, 1 ]);
       component.currentParams = { markers: '(1,2,3)', layers: 'tms_strings', rotate: '0' };
 
       let event = {
@@ -230,7 +230,7 @@ xdescribe('OpenlayersComponent', () => {
       });
       expect(router.navigate).toHaveBeenCalledWith([], navigationExtras);
 
-      component.currentParams['rotate'] = '1';
+      component.currentParams[ 'rotate' ] = '1';
       map_view.moveEnd(event);
       navigationExtras = queryParamsHelperService.getQuery({
         lng: 2,
@@ -247,8 +247,8 @@ xdescribe('OpenlayersComponent', () => {
 
     it('transformExtent should can extent on EPSG:4326 projection and transform extent to EPSG ', () => {
       spyOn(ol.proj, 'transformExtent');
-      component.transformExtent([1, 2, 3, 4]);
-      expect(ol.proj.transformExtent).toHaveBeenCalledWith([1, 2, 3, 4], 'EPSG:4326', 'EPSG:3857');
+      component.transformExtent([ 1, 2, 3, 4 ]);
+      expect(ol.proj.transformExtent).toHaveBeenCalledWith([ 1, 2, 3, 4 ], 'EPSG:4326', 'EPSG:3857');
     });
 
     it('getBounds: should initialize rotation to zero, get bounds from map, transform them to EPSG:4326 , return them as [number, number, number, number] and set rotation to saved rotation', () => {

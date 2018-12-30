@@ -24,7 +24,7 @@ import { AjaxService } from '../../services/ajax.service';
 
   selector: 'app-layers',
   templateUrl: './layers.component.html',
-  styleUrls: ['./layers.component.scss']
+  styleUrls: [ './layers.component.scss' ]
 })
 export class LayersComponent implements OnInit, OnChanges {
   @ViewChild('layersModal') public layersModal: ModalDirective;
@@ -190,7 +190,7 @@ export class LayersComponent implements OnInit, OnChanges {
     let modal = this.layersModal;
 
     if (this.canApply()) {
-      let parsed_layer: string = this.queryParamsHelperService.queryLayersObjectToString(this.layersArray.map(tmsArrayObj => tmsArrayObj['layer_obj']));
+      let parsed_layer: string = this.queryParamsHelperService.queryLayersObjectToString(this.layersArray.map(tmsArrayObj => tmsArrayObj[ 'layer_obj' ]));
       this.submitLayersEmitter.emit({ hide, modal, parsed_layer });
     } else {
       if (hide) {
@@ -206,43 +206,43 @@ export class LayersComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (!_.isNil(changes['layersString'])) {
+    if (!_.isNil(changes[ 'layersString' ])) {
       this.initLayersArray();
     }
   }
 
   editModal(layer_item, index: number) {
     let source = layer_item.layer_obj.source ? layer_item.layer_obj.source : 'default';
-    let add_obj = this.addObject[source];
+    let add_obj = this.addObject[ source ];
     add_obj.obj = _.cloneDeep(layer_item.layer_obj);
     add_obj.edit_index = index;
     _.forEach(add_obj.required, (val, key: string, obj) => {
-      obj[key] = !_.isEmpty(add_obj.obj[key]);
+      obj[ key ] = !_.isEmpty(add_obj.obj[ key ]);
     });
-    this[add_obj.modal].show();
+    this[ add_obj.modal ].show();
   }
 
   submitAddLayer(layer_obj) {
     let source = layer_obj.source ? layer_obj.source : 'default';
-    let add_obj = this.addObject[source];
+    let add_obj = this.addObject[ source ];
     if (layer_obj.source === 'default') {
       delete layer_obj.source;
     }
 
     _.forEach(layer_obj, (val, key: string, obj) => {
-        if (!_.isNil(add_obj.required[key]) && !add_obj.required[key]) {
-          delete obj[key];
+        if (!_.isNil(add_obj.required[ key ]) && !add_obj.required[ key ]) {
+          delete obj[ key ];
         }
       }
     );
 
     if (add_obj.onEdit()) {
-      this.layersArray[add_obj.edit_index]['layer_obj'] = layer_obj;
+      this.layersArray[ add_obj.edit_index ][ 'layer_obj' ] = layer_obj;
     } else {
       this.layersArray.push({ layer_obj });
     }
 
-    this[add_obj.modal].hide();
+    this[ add_obj.modal ].hide();
   }
 
   expandParams(layer_item) {
@@ -264,13 +264,13 @@ export class LayersComponent implements OnInit, OnChanges {
 
   canApply(): boolean {
     let before_change = this.queryParamsHelperService.queryLayersStringToObjects({ layers: this.layersString });
-    let after_change = this.layersArray.map(layerItem => layerItem['layer_obj']);
+    let after_change = this.layersArray.map(layerItem => layerItem[ 'layer_obj' ]);
 
     return !_.isEqual(before_change, after_change);
   }
 
   deleteKey(obj: {}, key: string) {
-    delete obj[key];
+    delete obj[ key ];
   }
 
   removeAllLayers() {

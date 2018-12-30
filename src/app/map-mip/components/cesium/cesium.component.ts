@@ -20,7 +20,7 @@ import { CesiumPolyline } from './classes/cesium.component.polyline';
 @Component({
   selector: 'app-cesium',
   templateUrl: './cesium.component.html',
-  styleUrls: ['./cesium.component.scss'],
+  styleUrls: [ './cesium.component.scss' ],
   animations: animations
 })
 
@@ -51,7 +51,7 @@ export class CesiumComponent implements OnInit, OnDestroy {
   constructor(public queryParamsHelperService: QueryParamsHelperService, public activatedRoute: ActivatedRoute, public router: Router, public calcService: CalcService, public positionFormService: PositionFormService, public mapMipService: MapMipService) {
     this.queryParamsSubscriber = activatedRoute.queryParams.subscribe(this.queryParams.bind(this));
 
-    window['current'] = this;
+    window[ 'current' ] = this;
   }
 
   ngOnDestroy(): void {

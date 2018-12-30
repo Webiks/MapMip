@@ -6,11 +6,11 @@ describe('CalcServiceService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [CalcService]
+      providers: [ CalcService ]
     });
   });
 
-  beforeEach(inject([CalcService], (_calcService: CalcService) => {
+  beforeEach(inject([ CalcService ], (_calcService: CalcService) => {
     calcService = _calcService;
   }));
 
