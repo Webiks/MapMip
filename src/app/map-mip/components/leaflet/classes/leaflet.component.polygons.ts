@@ -92,13 +92,13 @@ export class LeafletPolygons {
 
   togglePolygonPicker() {
     let that = this;
-    var polygonDrawer = new this.leaflet.L.Draw['Polygon'](this.leaflet.map);
+    const polygonDrawer = new this.leaflet.L.Draw['Polygon'](this.leaflet.map);
     polygonDrawer.enable();
 
     this.leaflet.map.on('draw:created', function (e) {
       let str = '';
       const poly_arr = [];
-      var type = e['layerType'],
+      const type = e['layerType'],
         layer = e['layer'];
       layer.addTo(that.leaflet.map);
       that.polygonsCoords.push(layer['_latlngs']);

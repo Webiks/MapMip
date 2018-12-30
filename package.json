@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "lint": "ng lint",
+    "lint": "ng lint mapmip --type-check",
     "test": "echo \"Tests not working\" ",
     "test:single-run": "ng test --single-run",
     "build:prod": "ng build --prod",

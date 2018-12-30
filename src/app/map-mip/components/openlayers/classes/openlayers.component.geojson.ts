@@ -148,16 +148,14 @@ export class OpenlayersGeoJson {
       });
       return geoColStyle;
 
-    }
-    else if (feature.getGeometry().getType() === 'LineString') {
+    } else if (feature.getGeometry().getType() === 'LineString') {
       return new this.openlayers.ol.style.Style({
         stroke: new this.openlayers.ol.style.Stroke({
           color: this.getColor(this.feature),
           width: 3
         })
       });
-    }
-    else {
+    } else {
       return this.myMultiStyle[feature.getGeometry().getType()];
     }
   }

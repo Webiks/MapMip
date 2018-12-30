@@ -47,12 +47,12 @@ export class CesiumMapView {
     let headingRadians: number = +Cesium.Math.toDegrees(this.cesium.viewer.camera.heading) % 360;
     let pitchRadians: number = +Cesium.Math.toDegrees(this.cesium.viewer.camera.pitch) % 360;
     let rollRadians: number = +Cesium.Math.toDegrees(this.cesium.viewer.camera.roll) % 360;
-    let mode3d: number = this.cesium.viewer.scene.mode == Cesium.SceneMode.SCENE3D ? 1 : 0;
+    let mode3d: number = this.cesium.viewer.scene.mode === Cesium.SceneMode.SCENE3D ? 1 : 0;
     let rotate: number;
     let lighting: number = this.cesium.viewer.scene.globe.enableLighting ? 1 : 0;
 
 
-    if (this.cesium.viewer.scene.mode === Cesium.SceneMode.SCENE3D || this.cesium.viewer.scene._mapMode2D == 1) {
+    if (this.cesium.viewer.scene.mode === Cesium.SceneMode.SCENE3D || this.cesium.viewer.scene._mapMode2D === 1) {
       rotate = NaN;
     } else {
       rotate = 1;
@@ -106,12 +106,12 @@ export class CesiumMapView {
     }
     let lat: number = center.lat;
     let lng: number = center.lng;
-    let height: number = this.cesium.viewer.camera.positionCartographic.height;//.toFixed(7);
-    let heading: number = +Cesium.Math.toDegrees(this.cesium.viewer.camera.heading);//.toFixed(7);
+    let height: number = this.cesium.viewer.camera.positionCartographic.height; // .toFixed(7);
+    let heading: number = +Cesium.Math.toDegrees(this.cesium.viewer.camera.heading); // .toFixed(7);
 
-    let pitch: number = +Cesium.Math.toDegrees(this.cesium.viewer.camera.pitch);//.toFixed(7);
-    let roll: number = +Cesium.Math.toDegrees(this.cesium.viewer.camera.roll);//.toFixed(7);
-    let mode3d: number = this.cesium.viewer.scene.mode == Cesium.SceneMode.SCENE2D ? 0 : 1;
+    let pitch: number = +Cesium.Math.toDegrees(this.cesium.viewer.camera.pitch); // .toFixed(7);
+    let roll: number = +Cesium.Math.toDegrees(this.cesium.viewer.camera.roll); // .toFixed(7);
+    let mode3d: number = this.cesium.viewer.scene.mode === Cesium.SceneMode.SCENE2D ? 0 : 1;
     let markers = this.cesium.currentParams['markers'];
     let layers = this.cesium.currentParams['layers'];
     let rotate = this.cesium.currentParams['rotate'];
@@ -123,7 +123,7 @@ export class CesiumMapView {
     let polygons = this.cesium.currentParams['polygons'];
     let polyline = this.cesium.currentParams['polyline'];
 
-    rotate = this.cesium.viewer.scene.mode != Cesium.SceneMode.SCENE2D || rotate != 1 ? undefined : 1;
+    rotate = this.cesium.viewer.scene.mode !== Cesium.SceneMode.SCENE2D || rotate !== 1 ? undefined : 1;
     let navigationExtras: NavigationExtras = this.cesium.queryParamsHelperService.getQuery({
       lng,
       lat,
@@ -234,20 +234,17 @@ export class CesiumMapView {
     const rollDeg = Cesium.Math.toDegrees(this.cesium.viewer.camera.roll);
 
     let on_d3 = headingDeg % 360 === 0 && pitchDeg === -90 && rollDeg % 360 === 0;
-    let on_d2 = this.cesium.viewer.scene.mode == Cesium.SceneMode.SCENE2D;
+    let on_d2 = this.cesium.viewer.scene.mode === Cesium.SceneMode.SCENE2D;
     if (on_d3 || on_d2) {
       return Observable.of(true);
-    }
-
-    else {
+    } else {
       let position, that = this;
       return new Observable<any>(obs => {
         let heading = this.cesium.viewer.camera.heading;
 
         if (Math.cos(that.cesium.viewer.camera.pitch) < 0.001) {
           position = that.cesium.viewer.camera.position;
-        }
-        else {
+        } else {
           try {
             let rect = that.cesium.viewer.canvas.getBoundingClientRect();
 
@@ -258,8 +255,7 @@ export class CesiumMapView {
             cartographic.height = that.cesium.viewer.camera.positionCartographic.height;
 
             position = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, cartographic.height);
-          }
-          catch (err) {
+          } catch (err) {
             position = that.cesium.viewer.camera.position;
           }
         }
@@ -269,8 +265,8 @@ export class CesiumMapView {
           easingFunction: Cesium.EasingFunction.LINEAR_NONE,
           orientation: {
             heading: go_north ? 0 : heading,
-            pitch: Cesium.Math.toRadians(-90.0), //look down
-            roll: 0.0 //no change
+            pitch: Cesium.Math.toRadians(-90.0), // look down
+            roll: 0.0 // no change
           },
           duration: 0.5,
           complete: () => {

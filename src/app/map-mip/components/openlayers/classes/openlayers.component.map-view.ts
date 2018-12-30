@@ -3,8 +3,8 @@ import { Observable, Observer } from 'rxjs';
 import { NavigationExtras, Params } from '@angular/router';
 import * as _ from 'lodash';
 import * as ol from 'openlayers';
-import { MapMipService } from '../../../api/map-mip.service';
 import { olx } from 'openlayers';
+import { MapMipService } from '../../../api/map-mip.service';
 
 export class OpenlayersMapView {
   public go_north = false;

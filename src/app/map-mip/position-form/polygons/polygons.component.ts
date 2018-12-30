@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChange, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { PositionFormService } from '../position-form.service';
 import { ModalDirective } from 'ngx-bootstrap';
@@ -9,7 +9,7 @@ import * as _ from 'lodash';
   templateUrl: './polygons.component.html',
   styleUrls: ['./polygons.component.scss']
 })
-export class PolygonsComponent implements OnInit {
+export class PolygonsComponent implements OnInit, OnChanges {
 
   @Input() Active;
   @Input() polygons: string;
@@ -26,7 +26,7 @@ export class PolygonsComponent implements OnInit {
   ngOnInit() {
   }
 
-  ngOnChanges(simpleChange: SimpleChange) {
+  ngOnChanges(simpleChange: SimpleChanges): void {
     if (simpleChange['polygons']) {
       this.cloneEditedPolygons();
     }
@@ -48,7 +48,7 @@ export class PolygonsComponent implements OnInit {
     this.polygonsArray = [];
   }
 
-  submitPolygons(hide: boolean = false) {
+  submitPolygons(hide = false) {
     !this.canApply() ? this.smModal.hide() : this.submitPolygonsEmitter.emit({
       parsed_polygons: this.polygonsArrayToStr(),
       smModal: this.smModal,
@@ -61,7 +61,7 @@ export class PolygonsComponent implements OnInit {
   }
 
   togglePolygonPicked(onPolygonPicked: boolean) {
-    //do toggle to button and start draw mode
+    // do toggle to button and start draw mode
     this.positionFormService.onPolygonPicked = onPolygonPicked;
     this.positionFormService.polygonPickerEmitter.emit(this.positionFormService.onPolygonPicked);
   }

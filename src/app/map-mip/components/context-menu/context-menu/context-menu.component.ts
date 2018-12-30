@@ -10,7 +10,7 @@ import { config } from '../../../../../config/config';
 export class ContextMenuComponent implements OnInit {
   coordinates;
 
-  get baseLink () {
+  get baseLink() {
     return config.contextMenuHref;
   }
 

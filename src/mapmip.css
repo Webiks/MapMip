@@ -9,43 +9,50 @@
 @import url("~cesium/Build/Cesium/Widgets/widgets.css");
 @import url("~@angular/material/prebuilt-themes/deeppurple-amber.css");
 
-.url-tooltip div.tooltip-inner{
+.url-tooltip div.tooltip-inner {
   max-width: none !important;
 }
 
-[hidden]{
+[hidden] {
   display: none !important;
 }
 
 app-map-size .popover-title {
-  color:#5cb85c;
+  color: #5cb85c;
 }
 
 app-map-position .popover-title {
-  color:#f0ad4e;
+  color: #f0ad4e;
 }
 
 app-terrain .popover-title {
-  color:#46b8da;
+  color: #46b8da;
 }
-popover-container.popover{
+
+popover-container.popover {
   max-width: none;
 }
-.mat-form-field-infix{
+
+.mat-form-field-infix {
   width: auto !important;
 }
-.mat-primary, .mat-form-field-placeholder{
+
+.mat-primary, .mat-form-field-placeholder {
   color: #c5cdea !important;
 }
+
 .mat-primary.mat-focused, .mat-primary.mat-focused .mat-form-field-placeholder {
   color: white !important;
 }
-.mat-form-field-underline{
+
+.mat-form-field-underline {
   background-color: #c5cdea !important;
 }
-.mat-form-field-ripple{
+
+.mat-form-field-ripple {
   background-color: white !important;
 }
-.modal-open .modal{
+
+.modal-open .modal {
   overflow: visible !important;
 }

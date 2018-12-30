@@ -18,9 +18,9 @@ export class LeafletGeoJson {
   popUp(f, l) {
     const out = [];
     if (f.properties) {
-      for (let key in f.properties) {
+      Object.keys(f.properties).forEach((key) => {
         out.push(key + ': ' + f.properties[key]);
-      }
+      });
       l.bindPopup(out.join('<br />'));
     }
   }

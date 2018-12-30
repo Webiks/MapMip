@@ -9,7 +9,7 @@ export class CesiumMapSize {
   }
 
   queryParams(params: Params) {
-    let width_or_height_are_nil = this.cesium.container.nativeElement.style.width == '' || this.cesium.container.nativeElement.style.height == '';
+    let width_or_height_are_nil = this.cesium.container.nativeElement.style.width === '' || this.cesium.container.nativeElement.style.height === '';
     if (this.cesium.queryParamsHelperService.anySizeChange(this.cesium.prevParams, this.cesium.currentParams) || width_or_height_are_nil) {
       let sizeArr: [number, number] = this.cesium.queryParamsHelperService.querySize(params);
       this.cesium.container.nativeElement.style.width = `${sizeArr[0]}%`;

@@ -84,7 +84,10 @@ describe('OpenlayersComponent', () => {
     it('anyMarkersMapChanges: should get params and compere between markers on params and markers on map', () => {
       let params = {};
       let params_markers: any = [{ position: [30, 20], icon: 'green' }, { position: [60, 50] }];
-      let map_markers = [{ position: [30, 20], icon: 'green' }, { position: [60, 50], color: config.defaultMarker.icon }];
+      let map_markers = [{ position: [30, 20], icon: 'green' }, {
+        position: [60, 50],
+        color: config.defaultMarker.icon
+      }];
       spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(() => params_markers);
       spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers);
       expect(markers.anyMarkersMapChanges(params)).toBeFalsy();
@@ -105,7 +108,10 @@ describe('OpenlayersComponent', () => {
 
     it('setMarkersChanges: should call addMarkersViaUrl with params_markers_position and call removeMarkersViaUrl with map_markers_positions', () => {
       let params_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50] }];
-      let map_markers = [{ position: [30, 20], color: 'green' }, { position: [60, 50], color: config.defaultMarker.icon }];
+      let map_markers = [{ position: [30, 20], color: 'green' }, {
+        position: [60, 50],
+        color: config.defaultMarker.icon
+      }];
       spyOn(queryParamsHelperService, 'queryMarkersNoHeight').and.callFake(() => params_markers);
       spyOn(markers, 'getMarkersPosition').and.callFake(() => map_markers);
       spyOn(markers, 'addMarkersViaUrl');

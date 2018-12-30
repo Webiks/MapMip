@@ -24,7 +24,7 @@ export class PolylineComponent implements OnInit {
   };
 
   togglePolylinePicked(onPolylinePicked: boolean) {
-    //do toggle to button and start draw mode
+    // do toggle to button and start draw mode
     this.positionFormService.onPolylinePicked = onPolylinePicked;
     this.positionFormService.polylinePickerEmitter.emit(this.positionFormService.onPolylinePicked);
 

@@ -21,7 +21,7 @@ export class MapLayerApiService {
     this.mapmipService.router.navigateByUrl(urlTree.toString());
   }
 
-  //cesium specific
+  // cesium specific
   cesiumChangeHeight(height: string) {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
     if (!urlTree.queryParams.hasOwnProperty('height')) {
@@ -31,7 +31,7 @@ export class MapLayerApiService {
     this.mapmipService.router.navigateByUrl(urlTree.toString());
   }
 
-  //cesium & OL3 specific
+  // cesium & OL3 specific
   ChangeHeading(heading: string) {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
     if (!urlTree.queryParams.hasOwnProperty('heading')) {
@@ -61,7 +61,7 @@ export class MapLayerApiService {
 
   cesiumChangeMode3d(mode3d: string) {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
-    if (!urlTree.queryParams.hasOwnProperty('mode3d') && mode3d != '0' || mode3d == '') {
+    if (!urlTree.queryParams.hasOwnProperty('mode3d') && mode3d !== '0' || mode3d === '') {
       return;
     }
     urlTree.queryParams['mode3d'] = mode3d;
@@ -70,10 +70,10 @@ export class MapLayerApiService {
 
   cesiumRotate(rotate: string) {
     let urlTree = this.router.parseUrl(this.router.url);
-    if (urlTree.queryParams['mode3d'] != '0') {
+    if (urlTree.queryParams['mode3d'] !== '0') {
       return;
     }
-    if (rotate != '1') {
+    if (rotate !== '1') {
       delete urlTree.queryParams['rotate'];
       this.mapmipService.router.navigateByUrl(urlTree.toString());
       return;
@@ -96,7 +96,7 @@ export class MapLayerApiService {
 
   Ol3Rotate(rotate: string) {
     let urlTree: UrlTree = this.router.parseUrl(this.router.url);
-    if (!urlTree.queryParams.hasOwnProperty('rotate') && rotate != '0' || rotate == '') {
+    if (!urlTree.queryParams.hasOwnProperty('rotate') && rotate !== '0' || rotate === '') {
       return;
     }
     urlTree.queryParams['rotate'] = rotate;

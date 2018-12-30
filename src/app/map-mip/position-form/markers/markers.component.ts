@@ -1,4 +1,4 @@
-import  { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
 import * as _ from 'lodash';
 import { MapMipMarker, QueryParamsHelperService } from '../../services/query-params-helper.service';
@@ -15,7 +15,9 @@ export interface MapMipEditedMarker {
 export interface MarkersEditObj {
   marker: MapMipEditedMarker;
   edit_index: number;
+
   onEdit(): void;
+
   init(): void;
 }
 

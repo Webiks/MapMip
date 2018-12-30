@@ -4,22 +4,21 @@ import { Directive, ElementRef, EventEmitter, HostBinding, HostListener, Input, 
   selector: '[appDragItem]'
 })
 export class DragItemDirective {
+  @Input() public appDragItem: [number, Array<any>];
+  @Output() onDrop = new EventEmitter();
+  public shift_down = false;
+  @HostBinding('draggable') draggable = true;
 
   constructor(private el: ElementRef) {
   }
 
-  @Input('appDragItem') public data: [number, Array<any>];
-  @Output() onDrop = new EventEmitter();
-  public shift_down: boolean = false;
 
   @HostListener('dragstart', ['$event'])
   dragstart($event: DragEvent) {
-    let dragIndex: string = this.data[0].toString();
+    let dragIndex: string = this.appDragItem[0].toString();
     $event.dataTransfer.setData('dragIndex', dragIndex);
     this.el.nativeElement.classList.add('dragged');
   }
-
-  @HostBinding('draggable') draggable = true;
 
   @HostListener('dragend')
   dragend() {
@@ -40,12 +39,12 @@ export class DragItemDirective {
 
   @HostListener('drop', ['$event'])
   drop($event: DragEvent) {
-    let dropIndex = this.data[0];
+    let dropIndex = this.appDragItem[0];
     let dragIndex: number = +$event.dataTransfer.getData('dragIndex');
-    let array = this.data[1];
+    let array = this.appDragItem[1];
     this.el.nativeElement.classList.remove('dragovered');
 
-    if (dropIndex != dragIndex) {
+    if (dropIndex !== dragIndex) {
       let temp = array[dragIndex];
       array[dragIndex] = array[dropIndex];
       array[dropIndex] = temp;
@@ -94,8 +93,8 @@ export class DragItemDirective {
   }
 
   switchNext() {
-    let dropIndex = this.data[0];
-    let array = this.data[1];
+    let dropIndex = this.appDragItem[0];
+    let array = this.appDragItem[1];
     let swapIndex, temp;
     swapIndex = (dropIndex + 1) % array.length;
     temp = array[dropIndex];
@@ -107,8 +106,8 @@ export class DragItemDirective {
   }
 
   switchPrev() {
-    let dropIndex = this.data[0];
-    let array = this.data[1];
+    let dropIndex = this.appDragItem[0];
+    let array = this.appDragItem[1];
     let swapIndex, temp;
     swapIndex = (dropIndex - 1) % array.length;
     if (swapIndex < 0) {

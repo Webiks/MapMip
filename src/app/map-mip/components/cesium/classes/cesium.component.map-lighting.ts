@@ -15,7 +15,7 @@ export class CesiumMapLighting {
     if (this.cesium.queryParamsHelperService.anyLightingChange(this.cesium.prevParams, this.cesium.currentParams)) {
       let state = this.cesium.queryParamsHelperService.queryLighting(params);
 
-      if (state == 1) {
+      if (state === 1) {
         this.cesium.viewer.scene.globe.enableLighting = true;
       } else {
         this.cesium.viewer.scene.globe.enableLighting = false;

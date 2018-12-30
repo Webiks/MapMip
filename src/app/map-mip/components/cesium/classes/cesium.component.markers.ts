@@ -181,7 +181,7 @@ export class CesiumMarkers {
       let icon: string = this.getColorFromBillboardEntity(entity);
       let label: string = this.getLabelFromBillboardEntity(entity);
       mapMarkerObj.position = this.cesium.calcService.toFixes7Obj(mapMarkerObj.position);
-      return _.isEqual( { position, icon, label }, mapMarkerObj);
+      return _.isEqual({ position, icon, label }, mapMarkerObj);
     });
   }
 

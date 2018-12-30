@@ -57,7 +57,7 @@ export class LeafletLayers {
       async (layer_obj: { source: string }) => {
         if (!this.layerExistOnMap(map_tile_layers, layer_obj)) {
           let layer: L.TileLayer = this.getLayerFromLayerObj(layer_obj);
-          if (layer_obj.source == 'tms') {
+          if (layer_obj.source === 'tms') {
             await this.setTmsOptions(layer_obj['url'], layer);
           }
           layer.addTo(this.leaflet.map);
@@ -114,7 +114,7 @@ export class LeafletLayers {
       case 'bing':
         return _.isEqual(_.pick(layer['options'], ['bingMapsKey', 'imagerySet']), _.pick(_layer['options'], ['bingMapsKey', 'imagerySet']));
       default:
-        return _.isEqual(_layer['_url'], layer['_url']) && _.isEqual(_.pickBy(layer['options'], (val, key) => key != 'zIndex'), _.pickBy(_layer['options'], (val, key) => key != 'zIndex'));
+        return _.isEqual(_layer['_url'], layer['_url']) && _.isEqual(_.pickBy(layer['options'], (val, key) => key !== 'zIndex'), _.pickBy(_layer['options'], (val, key) => key !== 'zIndex'));
     }
   }
 

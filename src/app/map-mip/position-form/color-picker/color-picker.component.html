@@ -21,7 +21,7 @@
 
 
   <ng-template #labelTemplate>
-    <form (clickOutside)="pop.hide()" exclude="button#labelpicker"  (ngSubmit)="submitLabel(pop, labelInput.value)">
+    <form (clickOutside)="pop.hide()" exclude="button#labelpicker" (ngSubmit)="submitLabel(pop, labelInput.value)">
       <input [value]="label" placeholder="Label" #labelInput/>
       <button
         type="submit"
@@ -31,7 +31,6 @@
 
     </form>
   </ng-template>
-
 
 
 </div>

@@ -44,7 +44,7 @@ describe('DragItemDirective', () => {
         }
       }
     };
-    dragItemDirective.data = [10, []];
+    dragItemDirective.appDragItem = [10, []];
     spyOn($event.dataTransfer, 'setData');
     spyOn(el.nativeElement.classList, 'add');
 
@@ -81,7 +81,7 @@ describe('DragItemDirective', () => {
     let dropIndex = 2;
     let dragIndex = 2;
 
-    dragItemDirective.data = [dropIndex, [1, 2, 3, 4, 5, 6]];
+    dragItemDirective.appDragItem = [dropIndex, [1, 2, 3, 4, 5, 6]];
     let $event: DragEvent = <any>{ dataTransfer: { getData: (): number => dragIndex } };
     el.nativeElement.classList = {
       remove: (class_name): void => {
@@ -93,13 +93,13 @@ describe('DragItemDirective', () => {
 
     dragItemDirective.drop($event);
     expect(el.nativeElement.classList.remove).toHaveBeenCalledWith('dragovered');
-    expect(dragItemDirective.data[1]).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(dragItemDirective.appDragItem[1]).toEqual([1, 2, 3, 4, 5, 6]);
     expect(dragItemDirective.onDrop.emit).not.toHaveBeenCalled();
 
     dragIndex = 3;
     dragItemDirective.drop($event);
 
-    expect(dragItemDirective.data[1]).toEqual([1, 2, 4, 3, 5, 6]);
+    expect(dragItemDirective.appDragItem[1]).toEqual([1, 2, 4, 3, 5, 6]);
     expect(dragItemDirective.onDrop.emit).toHaveBeenCalledWith([1, 2, 4, 3, 5, 6]);
   });
 
@@ -160,16 +160,16 @@ describe('DragItemDirective', () => {
 
   it('switchNext should swap between dropIndex to next index', () => {
     let dropIndex = 2;
-    dragItemDirective.data = [dropIndex, [1, 2, 3, 4, 5, 6]];
+    dragItemDirective.appDragItem = [dropIndex, [1, 2, 3, 4, 5, 6]];
     dragItemDirective.switchNext();
-    expect(dragItemDirective.data[1]).toEqual([1, 2, 4, 3, 5, 6]);
+    expect(dragItemDirective.appDragItem[1]).toEqual([1, 2, 4, 3, 5, 6]);
   });
 
   it('switchPrev should swap between dropIndex to prev index', () => {
     let dropIndex = 2;
-    dragItemDirective.data = [dropIndex, [1, 2, 3, 4, 5, 6]];
+    dragItemDirective.appDragItem = [dropIndex, [1, 2, 3, 4, 5, 6]];
     dragItemDirective.switchPrev();
-    expect(dragItemDirective.data[1]).toEqual([1, 3, 2, 4, 5, 6]);
+    expect(dragItemDirective.appDragItem[1]).toEqual([1, 3, 2, 4, 5, 6]);
   });
 
   it('focusNext should take next element from element fathers children and focus on him', () => {

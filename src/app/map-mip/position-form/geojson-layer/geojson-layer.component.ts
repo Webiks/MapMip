@@ -12,25 +12,10 @@ import { AjaxService } from '../../services/ajax.service';
 export class GeojsonLayerComponent {
   @ViewChild('geoJsonModal') public geoJsonModal: ModalDirective;
   @ViewChild('defaultModal') public defaultModal: ModalDirective;
+  @Output() submitGeoJsonEmitter = new EventEmitter();
 
   private _geojson: string;
   public examples$ = this.ajaxService.getGeoJsonExam();
-
-  @Input('geojson')
-  set geojson(geojson: string) {
-    this._geojson = geojson;
-    this.initializeGeojsonArray();
-  }
-
-  get geojson(): string {
-    return this._geojson;
-  }
-
-  initializeGeojsonArray(geojson = this.geojson): void {
-    this.geojson_array = this.queryParamsHelperService.queryGeoJson({ geojson });
-  }
-
-  @Output() submitGeoJsonEmitter = new EventEmitter();
 
   public add_geojson = {
     geojson: '',
@@ -46,7 +31,21 @@ export class GeojsonLayerComponent {
 
   public geojson_array = [];
 
+  @Input('geojson')
+  set geojson(geojson: string) {
+    this._geojson = geojson;
+    this.initializeGeojsonArray();
+  }
+
+  get geojson(): string {
+    return this._geojson;
+  }
+
   constructor(private queryParamsHelperService: QueryParamsHelperService, private ajaxService: AjaxService) {
+  }
+
+  initializeGeojsonArray(geojson = this.geojson): void {
+    this.geojson_array = this.queryParamsHelperService.queryGeoJson({ geojson });
   }
 
   submitAddGeojson(input) {
@@ -55,7 +54,7 @@ export class GeojsonLayerComponent {
     } else {
       this.geojson_array.push(input);
     }
-    if (input != '') {
+    if (input !== '') {
       this.add_geojson.init();
       this.defaultModal.hide();
     }

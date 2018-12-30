@@ -309,8 +309,8 @@ export class QueryParamsHelperService {
     return {
       ...marker,
       icon: marker.icon || config.defaultMarker.icon,
-      label: marker.label || config.defaultMarker.label,
-    }
+      label: marker.label || config.defaultMarker.label
+    };
   }
 
   geojsonStrToArray(geojsonStr: string) {
@@ -358,7 +358,7 @@ export class QueryParamsHelperService {
     queryObj.heading = queryObj.heading % 360 === 0 ? undefined : queryObj.heading;
     queryObj.pitch = queryObj.pitch === -90 ? undefined : queryObj.pitch;
     queryObj.mode3d = queryObj.mode3d === 0 ? queryObj.mode3d : undefined;
-    // queryObj.rotate  = queryObj.rotate == 1 ? 1 : undefined;
+    // queryObj.rotate  = queryObj.rotate ===  1 ? 1 : undefined;
     queryObj.markers = _.isEmpty(queryObj.markers) ? undefined : queryObj.markers;
     queryObj.layers = _.isEmpty(queryObj.layers) ? undefined : queryObj.layers;
     queryObj.size = _.isEqual(queryObj.size, '100,100') ? undefined : queryObj.size;

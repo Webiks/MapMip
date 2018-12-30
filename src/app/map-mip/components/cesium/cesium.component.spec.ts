@@ -3,7 +3,7 @@ import { CesiumComponent } from './cesium.component';
 import { QueryParamsHelperService } from '../../services/query-params-helper.service';
 import { CalcService } from '../../services/calc-service';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Params, Router } from '@angular/router';
+import { Params } from '@angular/router';
 import { PositionFormService } from '../../position-form/position-form.service';
 import { MapMipService } from '../../api/map-mip.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';

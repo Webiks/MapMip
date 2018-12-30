@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MARKER_COLORS, PositionFormService } from '../position-form.service';
 
 @Component({
@@ -7,7 +7,18 @@ import { MARKER_COLORS, PositionFormService } from '../position-form.service';
   styleUrls: ['./color-picker.component.scss']
 })
 export class ColorPickerComponent {
-  @Input('selectedIndex') private _selectedIndex = 0;
+  private _selectedIndex = 0;
+
+  @Input()
+  set selectedIndex(value) {
+    this._selectedIndex = value;
+    this.selectedIndexChange.emit(value);
+  }
+
+  get selectedIndex(): number {
+    return this._selectedIndex;
+  }
+
   @Input('Active') Active;
   @Output('togglePickedEmitter') togglePickedEmitter = new EventEmitter();
   @Output('selectedIndexChange') selectedIndexChange = new EventEmitter();
@@ -28,17 +39,8 @@ export class ColorPickerComponent {
     popDirective.hide();
   }
 
-  set selectedIndex(value) {
-    this._selectedIndex = value;
-    this.selectedIndexChange.emit(value);
-  }
-
   get selectedColor(): string {
     return MARKER_COLORS[this.selectedIndex].icon;
-  }
-
-  get selectedIndex(): number {
-    return this._selectedIndex;
   }
 
   changeMarkerColor(selectedColorIndex) {

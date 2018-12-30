@@ -87,7 +87,10 @@ describe('LeafletComponent', () => {
       let bing_obj = { key: 'fake_key', style: 'fake_style' };
       spyOn(<any>L.tileLayer, 'bing');
       layers.getBingLayer(bing_obj);
-      expect(L.tileLayer['bing']).toHaveBeenCalledWith({ bingMapsKey: bing_obj['key'], imagerySet: bing_obj['style'] });
+      expect(L.tileLayer['bing']).toHaveBeenCalledWith({
+        bingMapsKey: bing_obj['key'],
+        imagerySet: bing_obj['style']
+      });
     });
     it('should getLayerFromLayerObj call the right get Layer functions via layer_obj.source', () => {
       let layer_obj: { source: string } = <any>{};

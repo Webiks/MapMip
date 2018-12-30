@@ -21,8 +21,8 @@ import { animate, style, transition, trigger } from '@angular/animations';
 })
 
 export class SwitchLayersComponent {
-  private _active: boolean = true;
-  alert: boolean = false;
+  private _active = true;
+  alert = false;
   timeoutEvent;
 
   @Input() public layersArray;
@@ -31,7 +31,7 @@ export class SwitchLayersComponent {
 
   @HostListener('window:keypress', ['$event'])
   keypress($event) {
-    if ($event.which == 32 && this.active) {
+    if ($event.which === 32 && this.active) {
       this.switch();
       this.submitLayersEmitter.emit();
     }
@@ -44,7 +44,7 @@ export class SwitchLayersComponent {
 
   switch() {
     let newLayersArray = this.layersArray.map((val, index: number, array) => {
-      var prev = (index - 1) < 0 ? array.length + (index - 1) : (index - 1);
+      const prev = (index - 1) < 0 ? array.length + (index - 1) : (index - 1);
       return array[prev];
     });
     this.layersArrayChange.emit(newLayersArray);
