@@ -32,7 +32,7 @@ before_deploy:
 deploy:
   provider: script
   script:
-   - aws s3 rm s3://mapmip.webiks.com --recursive
+   - aws s3 rm $BUCKET_URLs3://mapmip.webiks.com --recursive
    - aws s3 cp dist s3://mapmip.webiks.com/ --recursive
   skip_cleanup: true
   on:
